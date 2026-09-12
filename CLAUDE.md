@@ -37,4 +37,4 @@ uv add <package>                                # add a runtime dependency (upda
 uv add --dev <package>                          # add to the `dev` dependency group
 ```
 
-pytest and ruff are dev dependencies running on default settings: there is no `[tool.pytest.ini_options]` or `[tool.ruff]` section and no tests yet. `ruff format` also scans Markdown (including `specs/`, `README.md`, and this file) and reformats Python code blocks inside it.
+pytest and ruff are dev dependencies. Ruff lints with its default rule set — already broad in ruff 0.16 (pyflakes, pylint, simplify, and partial bugbear/pyupgrade, among others) — extended with every `I` (import sorting), `B` (bugbear), and `UP` (pyupgrade, targeting Python 3.14 via `requires-python`) rule through `extend-select` in `[tool.ruff.lint]`. Don't switch that to `select`, which replaces the defaults rather than adding to them; pytest has no `[tool.pytest.ini_options]` section and there are no tests yet. `ruff format` also scans Markdown (including `specs/`, `README.md`, and this file) and reformats Python code blocks inside it.

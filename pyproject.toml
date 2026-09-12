@@ -21,3 +21,8 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.7",
 ]
+
+[tool.ruff.lint]
+# Enable every isort (I), flake8-bugbear (B), and pyupgrade (UP) rule on top of ruff's
+# default rule set; `select` would replace the defaults instead of extending them.
+extend-select = ["I", "B", "UP"]
