@@ -1,7 +1,7 @@
 [project]
 name = "ces-revisions"
 version = "0.1.0"
-description = "Add your description here"
+description = "Bayesian state-space analysis of the magnitude of U.S. CES payroll employment revisions"
 readme = "README.md"
 authors = [
     { name = "Lowell Mason", email = "mason.lowell@mac.com" }
