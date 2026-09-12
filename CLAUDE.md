@@ -9,12 +9,13 @@ Research project on the **magnitude** (scale, not mean bias) of U.S. CES payroll
 ## Specs
 
 - `specs/ces-revisions-prompt.md` — the research brief: required sections, the five candidate drivers, and the design requirements. Treat it as the statement of scope.
-- `specs/ces-revisions-research-{chatgpt,claude,gemini}.md` — three independent AI-generated responses to that brief. They are unverified drafts: figures, dates, and citations have not been checked against primary BLS sources, and the documents disagree with each other (e.g. 13 vs. ~11 NAICS supersectors). Verify a claim against primary sources before building on it. The filename labels may not match the tool that produced each file — the `gemini` file originally contained ChatGPT Deep Research citation markers.
+- `specs/ces-revisions-research-{chatgpt,claude,gemini}.md` — three independent AI-generated responses to that brief. They are unverified drafts: figures, dates, and citations have not been checked against primary BLS sources, and the documents disagree with each other (e.g. the gemini draft puts the post-pandemic first-closing rate near 40%, while the chatgpt and claude drafts give 60.4% for 2024 — collection and response rates are easy to conflate). Verify a claim against primary sources before building on it. Drafts are replaced wholesale when regenerated; re-normalize a replacement to the conventions below before committing it.
 
-Markdown in `specs/` is kept GitHub-renderable. When editing it:
+Markdown in `specs/` is kept GitHub-renderable. Freshly pasted AI output usually arrives with `$…$`/`$$…$$` or `\(…\)`/`\[…\]` math and needs converting. When adding or editing:
 
-- Put display math in ```` ```math ```` fences and inline math in `` $`…`$ ``. Do not use `\(…\)`, `\[…\]`, or bare `$…$`: GitHub ignores the first two, and Markdown escapes/emphasis can corrupt TeX inside bare dollars (a lone `=` or `-` line in unfenced math even becomes a setext heading).
-- Escape literal dollar amounts as `\$`.
+- Put display math in ```` ```math ```` fences and inline math in `` $`…`$ ``. Do not use `\(…\)`, `\[…\]`, `$$…$$`, or bare `$…$`: GitHub ignores the backslash forms, and Markdown escapes/emphasis can corrupt TeX inside bare dollars (`\%` loses its backslash; a lone `=` or `-` line in unfenced math becomes a setext heading).
+- Escape literal dollar amounts as `\$` (e.g. `\$544.3 million`, `(\$m)`); an unescaped pair on one line is read as math, and a `|` inside it splits table cells.
+- Use real headings (`##`, `###`), not bold-only lines, and write hard line breaks as a trailing `\` rather than two trailing spaces, which whitespace cleanup silently deletes.
 - Put non-TeX pseudo-math containing `_` (e.g. `θ_{s,t}`) in code spans so underscores are not read as emphasis.
 
 ## Layout and tooling
