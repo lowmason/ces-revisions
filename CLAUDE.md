@@ -29,12 +29,13 @@ Markdown in `specs/` is kept GitHub-renderable. Freshly pasted AI output usually
 ```bash
 uv sync                                         # create/update .venv; installs the package (editable) and the dev group
 uv run ces-revisions                            # run the console entry point
-uv run pytest                                   # run all tests (exit code 5 = no tests collected)
-uv run pytest path/to/test_file.py::test_name   # run a single test
+uv run pytest                                   # run all tests
+uv run pytest -m "not slow and not network"     # fast, hermetic tier to run on every change
+uv run pytest tests/test_smoke.py::test_main_prints_greeting   # run a single test
 uv run ruff check                               # lint (--fix applies safe fixes)
 uv run ruff format                              # format (--check to verify without writing)
 uv add <package>                                # add a runtime dependency (updates pyproject.toml + uv.lock)
 uv add --dev <package>                          # add to the `dev` dependency group
 ```
 
-pytest and ruff are dev dependencies. Ruff lints with its default rule set — already broad in ruff 0.16 (pyflakes, pylint, simplify, and partial bugbear/pyupgrade, among others) — extended with every `I` (import sorting), `B` (bugbear), and `UP` (pyupgrade, targeting Python 3.14 via `requires-python`) rule through `extend-select` in `[tool.ruff.lint]`. Don't switch that to `select`, which replaces the defaults rather than adding to them; pytest has no `[tool.pytest.ini_options]` section and there are no tests yet. `ruff format` also scans Markdown (including `specs/`, `README.md`, and this file) and reformats Python code blocks inside it.
+pytest and ruff are dev dependencies. Ruff lints with its default rule set — already broad in ruff 0.16 (pyflakes, pylint, simplify, and partial bugbear/pyupgrade, among others) — extended with every `I` (import sorting), `B` (bugbear), and `UP` (pyupgrade, targeting Python 3.14 via `requires-python`) rule through `extend-select` in `[tool.ruff.lint]`. Don't switch that to `select`, which replaces the defaults rather than adding to them; tests live in `tests/`, and `[tool.pytest.ini_options]` registers the `network` (live BLS fetches, layout canaries) and `slow` (MCMC, end-to-end runs) markers and turns an unregistered marker into a collection error, so a misspelled marker can't slip past `-m` deselection. `ruff format` also scans Markdown (including `specs/`, `README.md`, and this file) and reformats Python code blocks inside it.

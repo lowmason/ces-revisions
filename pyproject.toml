@@ -22,6 +22,15 @@ dev = [
     "ruff>=0.16.7",
 ]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# An unregistered (e.g. misspelled) marker fails collection instead of silently escaping `-m` filters.
+filterwarnings = ["error::pytest.PytestUnknownMarkWarning"]
+markers = [
+    "network: hits the network (live BLS fetch or layout canary); deselect with -m 'not network'",
+    "slow: MCMC or end-to-end runs taking seconds to minutes; deselect with -m 'not slow'",
+]
+
 [tool.ruff.lint]
 # Enable every isort (I), flake8-bugbear (B), and pyupgrade (UP) rule on top of ruff's
 # default rule set; `select` would replace the defaults instead of extending them.
