@@ -26,10 +26,14 @@ Markdown in `specs/` is kept GitHub-renderable. When editing it:
 ## Commands
 
 ```bash
-uv sync                  # create/update .venv and install the package in editable mode
-uv run ces-revisions     # run the console entry point
-uv add <package>         # add a runtime dependency (updates pyproject.toml + uv.lock)
-uv add --dev <package>   # add a dev dependency
+uv sync                                         # create/update .venv; installs the package (editable) and the dev group
+uv run ces-revisions                            # run the console entry point
+uv run pytest                                   # run all tests (exit code 5 = no tests collected)
+uv run pytest path/to/test_file.py::test_name   # run a single test
+uv run ruff check                               # lint (--fix applies safe fixes)
+uv run ruff format                              # format (--check to verify without writing)
+uv add <package>                                # add a runtime dependency (updates pyproject.toml + uv.lock)
+uv add --dev <package>                          # add to the `dev` dependency group
 ```
 
-No test runner, linter, or formatter is configured yet. When one is added, record its commands here, including how to run a single test.
+pytest and ruff are dev dependencies running on default settings: there is no `[tool.pytest.ini_options]` or `[tool.ruff]` section and no tests yet. `ruff format` also scans Markdown (including `specs/`, `README.md`, and this file) and reformats Python code blocks inside it.
