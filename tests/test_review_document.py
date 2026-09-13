@@ -295,3 +295,17 @@ def test_collection_window_and_seasonal_inventory():
 
 def test_ruling_on_collection_rate_versus_response_rate():
     check_ruling("Collection rate versus response rate")
+
+
+def test_birth_death_sample_and_macro_inventory():
+    check_inventory_group("Net birth–death")
+    check_inventory_group("Sample")
+    check_inventory_group("Macro and tail controls")
+
+
+def test_ruling_on_the_2025_program_cuts():
+    check_ruling("Whether the 2025 program cuts reached CES")
+
+
+def test_ruling_on_the_2024_and_2025_benchmark_revisions():
+    check_ruling("The 2024 and 2025 preliminary and final benchmark revisions")
