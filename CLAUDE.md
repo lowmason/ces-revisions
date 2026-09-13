@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Purpose
 
-Research project on the **magnitude** (scale, not mean bias) of U.S. CES payroll revisions across four stages — first → second print, second → third, third → annual benchmark, and post-benchmark wedge-back — plus a Bayesian state-space design in which collection-interval, seasonal-adjustment, sample, BLS-funding, and staffing covariates enter the revision *variance*. The Python package is still the `uv init --package` scaffold; the substance so far lives in `specs/`.
+Research project on the **magnitude** (scale, not mean bias) of U.S. CES payroll revisions across four stages — first → second print, second → third, third → annual benchmark, and post-benchmark wedge-back — plus a Bayesian state-space design in which collection-interval, seasonal-adjustment, sample, BLS-funding, and staffing covariates enter the revision *variance*. The Python package so far holds the marginalized Kalman engine (`src/ces_revisions/kalman.py`); the design lives in `specs/` (the spec `specs/ces-revisions.md`, staged by `specs/ces-revisions-roadmap.md`) and decision records in `docs/decisions/`.
 
 ## Specs
 
@@ -21,8 +21,8 @@ Markdown in `specs/` is kept GitHub-renderable. Freshly pasted AI output usually
 ## Layout and tooling
 
 - `src/ces_revisions/` is an installable package (src layout, `uv_build` backend). `main()` in `__init__.py` is exposed as the `ces-revisions` console script via `[project.scripts]`. `uv_build` expects the module at `src/ces_revisions`, matching `name = "ces-revisions"` in `pyproject.toml`; rename both together.
-- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`). No runtime dependencies yet.
-- The design in `specs/` targets NumPyro (NUTS), Dynamax, BlackJAX, ArviZ, and Polars. None are installed; confirm each supports Python 3.14 when adding it.
+- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`). Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), and Polars; Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
+- `src/ces_revisions/kalman.py` is the hand-written, NaN-masked Kalman filter and smoother chosen in `docs/decisions/engine.md`. Models add its log likelihood with `kalman_factor`, so states are never sampled sites. All JAX work is float64: `numpyro.enable_x64()` (and `numpyro.set_host_device_count`) must run before the first JAX operation, which `tests/conftest.py` does for the test session. BlackJAX waits for the sampler benchmark (roadmap Stage 17); confirm Python 3.14 support for any package you add.
 
 ## Commands
 
@@ -31,6 +31,7 @@ uv sync                                         # create/update .venv; installs 
 uv run ces-revisions                            # run the console entry point
 uv run pytest                                   # run all tests
 uv run pytest -m "not slow and not network"     # fast, hermetic tier to run on every change
+uv run pytest -m slow                           # the synthetic pilot's four-chain NUTS fit (~15 s)
 uv run pytest tests/test_smoke.py::test_main_prints_greeting   # run a single test
 uv run ruff check                               # lint (--fix applies safe fixes)
 uv run ruff format                              # format (--check to verify without writing)
