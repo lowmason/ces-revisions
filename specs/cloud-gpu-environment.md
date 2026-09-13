@@ -1,8 +1,10 @@
 # Cloud GPU development environment — Design Spec
 
-> For agentic workers: REQUIRED NEXT SKILL: writing-plans — plan this spec as one plan, in the
-> Rollout note's order. It sits outside [`specs/ces-revisions-roadmap.md`](ces-revisions-roadmap.md);
-> do not route it through derive-roadmap.
+> For agentic workers: REQUIRED NEXT SKILL: writing-plans — plan this spec as two plans, split
+> where the Rollout note says: plan 1 covers Reqs 1, 2, and 7 and creates no AWS resource; plan 2
+> covers Reqs 3–6 and 8–10. It sits outside
+> [`specs/ces-revisions-roadmap.md`](ces-revisions-roadmap.md); do not route it through
+> derive-roadmap.
 
 A remote development environment for ces-revisions on AWS: one EC2 instance on one EBS disk whose
 instance type switches between a CPU size for daily work and two GPU sizes for fits. It is built
@@ -218,11 +220,15 @@ variable (default `dev`):
 
 **Req 9 — Operations wrapper and runbook.**
 
+- `infra/` is operated from the Mac, never from the VM: resizing stops the instance, which would
+  kill an apply running on it, and the instance role has no AWS permission beyond Systems Manager.
+  `infra/bin/vm` exits with that explanation when run on the VM.
 - `infra/bin/vm` provides `start`, `stop`, `status`, `connect` (a Session Manager shell),
   `size <dev|l4|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config`
   (Req 6). Every subcommand prints the AWS CLI or OpenTofu command it runs before running it.
 - `docs/cloud-gpu-runbook.md` covers one-time setup, daily use, switching sizes, running a long GPU
-  job, checking spend, snapshots and restore, token rotation, recovery after a budget stop,
+  job, checking spend, snapshots and restore, token rotation, updating the held driver or pinned image,
+  recovery after a budget stop,
   teardown (removing `prevent_destroy`, then destroying `infra/env` and `infra/state`), and
   troubleshooting (insufficient capacity, quota errors, Session Manager not connecting, JAX not
   seeing the GPU). Each step gives its commands and a short note on what happens underneath. The
@@ -238,7 +244,8 @@ bullets pass, from their recorded evidence, and contains no placeholder.
   the access method that worked; OpenTofu; the guards and budget.
 - Evidence: prior and requested quota values; a probe table for the Mac, `dev`, `l4`, and `h100` at
   T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files
-  under `docs/decisions/cloud-gpu-probe/`; and the BLS canary result.
+  under `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its
+  HTTP status).
 - Alternatives considered: Azure NC24ads A100 v4; the dev-box-plus-runners and Mac-dev topologies;
   the Deep Learning Base AMI; IAM Identity Center; a private subnet with a NAT gateway; SageMaker
   and AWS Batch; an L40S size.
@@ -251,8 +258,10 @@ roadmap assigns it, not in this record.
 
 ## Verification — observable outcomes
 
-- [ ] Req 2's zone choice and quota requests are recorded with command outputs, prior quota values,
-      and request IDs, and the chosen zone meets Req 2's rule.
+- [ ] The IAM user has no access keys (`aws iam list-access-keys`), the account summary reports root
+      MFA enabled (`aws iam get-account-summary`), and Req 2's zone choice and quota requests are
+      recorded with command outputs, prior quota values, and request IDs, the chosen zone meeting
+      Req 2's rule.
 - [ ] `tofu apply` succeeds from empty state in `infra/state` and then in `infra/env`, and an
       immediate `tofu plan` in each reports no changes.
 - [ ] OpenTofu authenticates from an `aws login` session, and the decision record says whether
@@ -277,8 +286,9 @@ roadmap assigns it, not in this record.
 - [ ] On the VM, `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, and the skill, agent, and command
       links exist, and a Claude Code session there lists the personal skills and reads the project
       memory.
-- [ ] One small `download.bls.gov` fetch from the VM, sent with a User-Agent naming the project and
-      a contact, is recorded as allowed or blocked.
+- [ ] One small `download.bls.gov` fetch, run once by hand from a VM shell with a User-Agent naming
+      the project and a contact, is recorded in the decision record only as allowed or blocked with
+      its HTTP status; no committed file holds the User-Agent string.
 - [ ] On the Mac, the fast tier passes, including `tests/test_devices.py` and
       `tests/test_engine_probe.py`, and `uv run ruff check` and `uv run ruff format --check` pass.
 - [ ] The runbook and the decision record are committed, and CLAUDE.md and the README describe the
@@ -308,6 +318,11 @@ waits for it:
 4. Reqs 3–6, 8, and 9 at `size = dev`, and the `dev` Verification bullets.
 5. The `l4` bullets, then the `h100` bullets, each once its quota is approved.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
+
+Plan 1 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
+documents the `cuda` extra, `devices.py`, and `engine_probe.py`. Plan 2 is steps 4–6. It adds the
+`infra/` and runbook references to CLAUDE.md and the README and discharges the remaining bullets;
+its GPU steps wait on quota approval, and its `dev` steps do not.
 
 Steps that enter credentials or change account security belong to the user: root MFA, creating the
 IAM user and registering its MFA device, the `aws login` browser sign-in, activating the cost
