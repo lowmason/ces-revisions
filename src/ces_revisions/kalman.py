@@ -18,6 +18,7 @@ from typing import NamedTuple
 
 import jax
 import jax.numpy as jnp
+import numpyro
 from jax.scipy.linalg import cho_solve
 
 # A Python float, not a JAX constant: a module-level JAX array would run a JAX
@@ -153,6 +154,16 @@ def kalman_smoother(ssm: LinearGaussianSSM, filtered: FilterResult) -> SmootherR
     return SmootherResult(
         jnp.concatenate([means, last[0][None]]), jnp.concatenate([covs, last[1][None]])
     )
+
+
+def kalman_factor(name: str, ssm: LinearGaussianSSM, y: jax.Array) -> FilterResult:
+    """Add log p(y), with the states integrated out, as the NumPyro factor site ``name``.
+
+    Returns the filter pass, so a caller can record per-step contributions or moments.
+    """
+    filtered = kalman_filter(ssm, y)
+    numpyro.factor(name, filtered.log_likelihood)
+    return filtered
 
 
 def _validate(ssm: LinearGaussianSSM, y: jax.Array) -> None:
