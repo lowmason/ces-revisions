@@ -309,3 +309,16 @@ def test_ruling_on_the_2025_program_cuts():
 
 def test_ruling_on_the_2024_and_2025_benchmark_revisions():
     check_ruling("The 2024 and 2025 preliminary and final benchmark revisions")
+
+
+def test_institutional_and_party_inventory():
+    check_inventory_group("Institutional")
+    check_inventory_group("Party composition")
+
+
+def test_ruling_on_the_2018_to_2019_lapse():
+    check_ruling("The December 2018 to January 2019 lapse in appropriations")
+
+
+def test_ruling_on_fte_concepts():
+    check_ruling("FTE concepts: authorized versus actual, and FTE versus headcount")
