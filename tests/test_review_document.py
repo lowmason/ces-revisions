@@ -22,6 +22,7 @@ from archive_inventory import (
     vintages_from_rows,
 )
 from review_document import (
+    EVIDENCE_LABELS,
     REVIEW_PATH,
     headings,
     is_primary,
@@ -29,6 +30,7 @@ from review_document import (
     outside_fences,
     read_review,
     section,
+    tables,
 )
 
 SECTIONS = [
@@ -88,6 +90,19 @@ REQ3_SERIES = {
     ],
 }
 
+INVENTORY_TABLE_COLUMNS = [
+    "Series",
+    "Vintage coverage",
+    "Frequency",
+    "Earliest date",
+    "Access route",
+    "Hand-build constraint",
+    "First-publication lag",
+    "Evidence",
+    "Citation",
+]
+PLACEHOLDER_CELLS = {"", "-", "—", "?", "n/a", "tbd", "todo"}
+
 RULINGS = [
     "Collection rate versus response rate",
     "The December 2018 to January 2019 lapse in appropriations",
@@ -95,6 +110,14 @@ RULINGS = [
     "FTE concepts: authorized versus actual, and FTE versus headcount",
     "The 2024 and 2025 preliminary and final benchmark revisions",
 ]
+RULING_PARAGRAPHS = [
+    "Drafts.",
+    "Primary sources.",
+    "Ruling.",
+    "Evidence:",
+    "Consequence.",
+]
+_DRAFT_LOCATOR = re.compile(r"\((chatgpt|claude|gemini) §")
 
 ARCHIVE_SUBSECTIONS = [
     "What BLS publishes",
@@ -217,3 +240,58 @@ def test_archive_section_cites_primary_sources_only():
     )
     assert urls
     assert [url for url in urls if not is_primary(url)] == []
+
+
+# --- Tasks 5 to 7: data-availability inventory and rulings ---------------------------------
+
+
+def check_inventory_group(group: str) -> None:
+    inventory = section(read_review(), "Data-availability inventory", level=2)
+    found = tables(section(inventory, group, level=3))
+    assert len(found) == 1, f"{group}: expected one table, found {len(found)}"
+    table = found[0]
+    assert list(table[0]) == INVENTORY_TABLE_COLUMNS, group
+    assert [row["Series"].strip("`") for row in table] == REQ3_SERIES[group]
+    for row in table:
+        series = row["Series"]
+        placeholders = [
+            column
+            for column, cell in row.items()
+            if cell.strip("*_ ").lower() in PLACEHOLDER_CELLS
+        ]
+        assert not placeholders, (series, placeholders)
+        assert row["Evidence"].strip("*_ ") in EVIDENCE_LABELS, series
+        cited = links(row["Citation"])
+        verified = bool(cited) and all(is_primary(url) for url in cited)
+        assert verified or row["Citation"] == "*unverified*", (series, row["Citation"])
+
+
+def check_ruling(title: str) -> None:
+    rulings = section(read_review(), "Draft disagreements resolved", level=2)
+    body = section(rulings, title, level=3)
+    blocks = [block.strip() for block in body.split("\n\n") if block.strip()]
+    paragraphs = {
+        block.split("**")[1]: block for block in blocks if block.startswith("**")
+    }
+    assert list(paragraphs) == RULING_PARAGRAPHS, (title, list(paragraphs))
+    assert set(_DRAFT_LOCATOR.findall(paragraphs["Drafts."])) == {
+        "chatgpt",
+        "claude",
+        "gemini",
+    }
+    _, *bullets = paragraphs["Primary sources."].splitlines()
+    assert bullets, title
+    assert [bullet for bullet in bullets if not links(bullet)] == [], title
+    sources = links(paragraphs["Primary sources."])
+    assert [url for url in sources if not is_primary(url)] == [], title
+    label = paragraphs["Evidence:"].removeprefix("**Evidence:**").strip(" .*_")
+    assert label in EVIDENCE_LABELS, (title, label)
+
+
+def test_collection_window_and_seasonal_inventory():
+    check_inventory_group("Collection window")
+    check_inventory_group("Seasonal")
+
+
+def test_ruling_on_collection_rate_versus_response_rate():
+    check_ruling("Collection rate versus response rate")
