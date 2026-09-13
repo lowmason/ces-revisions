@@ -1,5 +1,7 @@
 # Stage 2 — Data and Archive Inventory Implementation Plan
 
+**Status: COMPLETE (2026-09-13)** — executed via executing-plans; deferred items in specs/deferred_items.md
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revisions-roadmap.md, Stage 2 — on plan completion, tick the stage and
@@ -11,7 +13,7 @@
 
 **Tech Stack:** Python 3.14 standard library (`urllib`, `zipfile`, `csv`, `zoneinfo`), Polars 1.44.2 for one-off LABSTAT computations, pytest 9.1.1, ruff 0.16.7, `pdftotext` (poppler), and the Internet Archive CDX API.
 
-**Source:** [`specs/ces-revisions.md`](../ces-revisions.md) Req 20, Req 9 (the (open) archive item), Req 3, the Rollout note, and Verification bullets 4 and 13 (inventory half); [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md) Stage 2.
+**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 20, Req 9 (the (open) archive item), Req 3, the Rollout note, and Verification bullets 4 and 13 (inventory half); [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 2.
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 2 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 2: COMPLETE (YYYY-MM-DD) — implemented by plan 2 (specs/plans/completed/2-ces-revisions.md). Next: resume the roadmap.`
@@ -160,7 +162,7 @@ The live `captures` step was not run, because its output is this stage's deliver
   - In `tests/test_review_document.py`, the constants `SECTIONS`, `STAGE_23_STUBS`, `REQ3_SERIES` (group heading to series slugs), `RULINGS`, and `CONVENTION_BREAKS`. Later tasks import nothing from this file; they append to it.
   - The document's headings. Each unfinished section carries a `**Status:** in progress — plan 2, Task N.` line, which the task that fills the section removes.
 
-- [ ] **Step 1: Create the document helper module**
+- [x] **Step 1: Create the document helper module**
 
 Create `tests/review_document.py`:
 
@@ -285,7 +287,7 @@ def github_anchor(heading: str) -> str:
 
 `tables` zips cells with `strict=True`, so an unescaped `|` inside a cell raises instead of silently shifting columns.
 
-- [ ] **Step 2: Write the failing structural tests**
+- [x] **Step 2: Write the failing structural tests**
 
 Create `tests/test_review_document.py`:
 
@@ -424,12 +426,12 @@ def test_ruff_format_accepts_the_review():
     assert result.returncode == 0, result.stdout + result.stderr
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q`
 Expected: FAIL. Every test errors with `FileNotFoundError` for `docs/ces-revisions-review.md`, except `test_ruff_format_accepts_the_review`, which fails because ruff cannot find the file.
 
-- [ ] **Step 4: Create the document skeleton**
+- [x] **Step 4: Create the document skeleton**
 
 Create `docs/ces-revisions-review.md`:
 
@@ -523,12 +525,12 @@ Req 20 names five disagreements among the research drafts. Each subsection state
 
 The heading `Net birth–death` uses an en dash, matching `REQ3_SERIES`.
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_review_document.py -q`
 Expected: PASS, 14 passed.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 uv run ruff format tests docs/ces-revisions-review.md
@@ -536,6 +538,8 @@ uv run ruff check tests
 git add tests/review_document.py tests/test_review_document.py docs/ces-revisions-review.md
 git commit -m "Add the Req 20 review skeleton and its structural tests"
 ```
+
+> Deviation: a separate commit before this one (89fcd33) ignores the local `.project.env` secrets file.
 
 ### Task 2: Vintage enumeration from the Employment Situation release index
 
@@ -560,7 +564,7 @@ git commit -m "Add the Req 20 review skeleton and its structural tests"
   - `user_agent() -> str` and `fetch(url: str) -> bytes`.
 - Test helpers: `index_excerpt() -> str` and `vintage(reference_month: str, released: str) -> Vintage`. Tasks 3 and 4 add more.
 
-- [ ] **Step 1: Put `scripts/` on the test path**
+- [x] **Step 1: Put `scripts/` on the test path**
 
 In `pyproject.toml`, under `[tool.pytest.ini_options]`, insert these two lines directly after `testpaths = ["tests"]`:
 
@@ -569,7 +573,7 @@ In `pyproject.toml`, under `[tool.pytest.ini_options]`, insert these two lines d
 pythonpath = ["scripts"]
 ```
 
-- [ ] **Step 2: Record the index fixture**
+- [x] **Step 2: Record the index fixture**
 
 Create `tests/fixtures/archive_inventory/empsit-index-excerpt.html`. The list items copy the live index's markup, including a release scheduled after 2026-09-13, the missing October 2025 release, and 2003's text-and-PDF-only items:
 
@@ -596,7 +600,7 @@ Create `tests/fixtures/archive_inventory/empsit-index-excerpt.html`. The list it
 <ul class="nav"><li><a href="/bls/news-release/empsit.htm">The Employment Situation</a></li></ul>
 ```
 
-- [ ] **Step 3: Write the failing vintage tests**
+- [x] **Step 3: Write the failing vintage tests**
 
 Create `tests/test_archive_inventory.py`:
 
@@ -729,12 +733,12 @@ def test_live_release_index_starts_the_modern_vintages_on_june_6_2003():
     assert all(month >= date(2025, 10, 1) for month in missing)
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: FAIL at collection with `ModuleNotFoundError: No module named 'archive_inventory'`.
 
-- [ ] **Step 5: Write the vintage, CSV, and network sections of the script**
+- [x] **Step 5: Write the vintage, CSV, and network sections of the script**
 
 Create `scripts/archive_inventory.py`. The module docstring already names the `captures` and `inventory` subcommands, which Tasks 3 and 4 add:
 
@@ -926,17 +930,21 @@ def fetch(url: str) -> bytes:
         return response.read()
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, `select_vintages` keeps a release only once its 8:30 a.m. Eastern embargo has passed, instead of comparing UTC dates, which kept the next morning's release on the evening before, once the UTC date had turned.
+
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: PASS, 8 passed, 1 deselected.
 
-- [ ] **Step 7: Run the live index canary**
+- [x] **Step 7: Run the live index canary**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m network` (with `BLS_CONTACT_EMAIL` exported)
 Expected: PASS, 1 passed. On a failure, open the live index. Changed list-item markup is a parser fix plus a re-recorded fixture. A reference month without a release other than 2025-10 is a stop condition.
 
-- [ ] **Step 8: Commit**
+> Deviation: the canary found 2019-03 and 2019-07 missing because the index links those releases by absolute URL; the link pattern accepts an optional https://www.bls.gov prefix, and the fixture was re-recorded.
+
+- [x] **Step 8: Commit**
 
 ```bash
 uv run ruff format scripts tests
@@ -967,7 +975,7 @@ git commit -m "Enumerate Employment Situation vintages from the BLS release inde
   - `main(argv=None) -> int`, accepting only `captures` until Task 4.
 - Test helper: `make_zip(members: dict[str, bytes], date_time=...) -> bytes`.
 
-- [ ] **Step 1: Write the failing capture tests**
+- [x] **Step 1: Write the failing capture tests**
 
 In `tests/test_archive_inventory.py`, replace the import lines between the module docstring and `FIXTURES = ...` with:
 
@@ -1165,12 +1173,12 @@ def test_live_cdx_lists_2014_captures_of_the_other_inputs_zip():
     assert any(moment.year == 2014 and status == "200" for moment, _, status, _ in rows)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: FAIL at collection with `ImportError: cannot import name 'Capture' from 'archive_inventory'`.
 
-- [ ] **Step 3: Replace the script's import block**
+- [x] **Step 3: Replace the script's import block**
 
 In `scripts/archive_inventory.py`, replace the import block (from `import csv` through `from zoneinfo import ZoneInfo`) with:
 
@@ -1196,7 +1204,7 @@ from zoneinfo import ZoneInfo
 
 `datetime.time` is imported as `time` and `time.sleep` as `sleep`, so the two never collide.
 
-- [ ] **Step 4: Append the Captures section**
+- [x] **Step 4: Append the Captures section**
 
 Append after the Network section:
 
@@ -1411,7 +1419,9 @@ def collect_captures(now: datetime) -> list[Capture]:
 
 Test doubles replace `fetch`, `list_captures`, and `sleep` through module attributes, so each helper must look those names up at call time, as written above. Do not bind them to locals.
 
-- [ ] **Step 5: Append the command line**
+> Deviation: after the whole-branch review, `inspect_zip` also opens a nested ZIP one level down to check its members for unexplained files; fingerprints still use top-level members only.
+
+- [x] **Step 5: Append the command line**
 
 Append at the end of the file:
 
@@ -1453,7 +1463,7 @@ if __name__ == "__main__":
 
 The evidence CSVs are written before the exit code is decided, so an unexplained member never costs the capture.
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: PASS, 19 passed, 2 deselected.
@@ -1461,7 +1471,7 @@ Expected: PASS, 19 passed, 2 deselected.
 Run: `uv run pytest tests/test_archive_inventory.py -q -m network` (with `BLS_CONTACT_EMAIL` exported)
 Expected: PASS, 2 passed.
 
-- [ ] **Step 7: Capture the evidence**
+- [x] **Step 7: Capture the evidence**
 
 Run in the background, with `BLS_CONTACT_EMAIL` exported:
 
@@ -1475,7 +1485,9 @@ On exit 1, read the `unexplained members` lines:
 - **A documented non-data input.** The member is a seasonal-adjustment input that `cesseasadjtn.htm` documents and that is not NSA data, such as a metafile or a readme under another name. Add its pattern to `_EXPLAINED` with a comment citing the technical notes. Add a test asserting `inspect_zip` explains that member name, then rerun `captures`.
 - **Anything that could hold NSA input data.** Stop and report: it would change the unrounded-inputs finding.
 
-- [ ] **Step 8: Summarize the evidence**
+> Deviation: `captures` exited 1 on a ZIP nested inside the Internet Archive's 2021-03-18 copy of `ces.spec.other.zip`. Opened by hand, it held only documented inputs, so `_EXPLAINED` names it, with a unit test, and fast-tier counts run one above the plan from Task 4 on. The listing held 34 captures of `ces.spec.other.zip`, not Planning evidence's 33.
+
+- [x] **Step 8: Summarize the evidence**
 
 ```bash
 uv run python - <<'EOF'
@@ -1513,7 +1525,7 @@ Expected:
 
 Any other outcome is a stop condition.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 uv run ruff format scripts tests
@@ -1549,7 +1561,7 @@ git commit -m "Capture BLS and Internet Archive copies of the seasonal-adjustmen
   - The document's generated-block markers, `<!-- BEGIN GENERATED <name> -->` and `<!-- END GENERATED <name> -->`.
 - Test helper: `capture(timestamp: str, **fingerprints: str) -> Capture`.
 
-- [ ] **Step 1: Write the failing inventory tests**
+- [x] **Step 1: Write the failing inventory tests**
 
 In `tests/test_archive_inventory.py`, add `file_status`, `generated_block`, `inventory_rows`, `live_windows`, `render_blocks`, and `replace_generated` to the `from archive_inventory import (...)` list. `ruff check --fix` sorts the list.
 
@@ -1733,12 +1745,12 @@ def test_rendered_vintage_rows_link_the_copy_that_evidences_them():
     ) in render_blocks(rows)["archive-vintages"]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: FAIL at collection with `ImportError: cannot import name 'file_status' from 'archive_inventory'`.
 
-- [ ] **Step 3: Insert the Inventory section**
+- [x] **Step 3: Insert the Inventory section**
 
 In `scripts/archive_inventory.py`, insert this section between the Captures section and `# --- Command line`:
 
@@ -1970,7 +1982,9 @@ def replace_generated(document: str, name: str, body: str) -> str:
 
 A conflict is flagged whenever the fingerprints inside one window differ, even when one of the copies is BLS's current file, so a mid-year specification change can never hide behind the annual window.
 
-- [ ] **Step 4: Add the offline command**
+> Deviation: after the whole-branch review, `inventory_rows` first gives each revisit record, status `-`, the fingerprints of the opened copy with the same digest, so a revisit alone in its window still counts; none of the five changes a status.
+
+- [x] **Step 4: Add the offline command**
 
 In `scripts/archive_inventory.py`, replace `def main(...)` and its body with:
 
@@ -1999,12 +2013,14 @@ def main(argv: list[str] | None = None) -> int:
 
 Keep the `if __name__ == "__main__":` block that follows.
 
-- [ ] **Step 5: Run the unit tests to verify they pass**
+- [x] **Step 5: Run the unit tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_inventory.py -q -m "not network"`
 Expected: PASS, 30 passed, 2 deselected.
 
-- [ ] **Step 6: Write the failing document tests**
+> Deviation: 31 passed, 2 deselected, counting the Task 3 nested-ZIP test.
+
+- [x] **Step 6: Write the failing document tests**
 
 In `tests/test_review_document.py`, replace the `from review_document import ...` line with:
 
@@ -2106,12 +2122,12 @@ def test_archive_section_cites_primary_sources_only():
     assert [url for url in urls if not is_primary(url)] == []
 ```
 
-- [ ] **Step 7: Run the document tests to verify they fail**
+- [x] **Step 7: Run the document tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q`
 Expected: FAIL. `test_archive_section_has_its_subsections` fails on `[] == ARCHIVE_SUBSECTIONS`. The CSV-based tests error with `FileNotFoundError` for `archive-inventory.csv`, and the generated-block tests with `ValueError: document has no generated block`. The 14 Task 1 tests, and `test_no_copy_of_a_seasonal_adjustment_zip_holds_an_unexplained_file` on Task 3's evidence, pass.
 
-- [ ] **Step 8: Re-verify the statements the section cites**
+- [x] **Step 8: Re-verify the statements the section cites**
 
 With `BLS_CONTACT_EMAIL` exported:
 
@@ -2157,7 +2173,7 @@ Expected:
 
 A `False` line or a missing link is a stop condition. The section below states those facts and must not survive a failed check.
 
-- [ ] **Step 9: Measure the published precision of NSA levels**
+- [x] **Step 9: Measure the published precision of NSA levels**
 
 ```bash
 curl -s -A "$UA" https://download.bls.gov/pub/time.series/ce/ce.data.0.AllCESSeries -o /tmp/ce.data.0.AllCESSeries
@@ -2196,7 +2212,9 @@ EOF
 
 Expected: twelve series rows, each with a `nonzero_decimals` count, then a count of NSA vintage files. Planning saw whole thousands for total nonfarm only. Record both outputs for Step 12.
 
-- [ ] **Step 10: Write the archive section**
+> Deviation: after the whole-branch review, the precision measure also covers seasonally adjusted levels: LABSTAT's SA aggregates carry no decimals, and the same 21 of the 113 SA vintage files are whole thousands, with 7,471,110 decimal values in the other 92.
+
+- [x] **Step 10: Write the archive section**
 
 In `docs/ces-revisions-review.md`, replace
 
@@ -2259,7 +2277,9 @@ PRECISION
 - **The seasonal-flag panel of Req 3.** Calendar regressors and specification regimes are observable release by release only where specification files survive. Elsewhere the model specification tables in the benchmark articles are the fallback, and they cover 2003 through 2013.
 ```
 
-- [ ] **Step 11: Generate the inventory tables**
+> Deviation: two sentences beyond the plan's text record the CDX revisit records and the nested copy's contents. After the whole-branch review, the plan's unsourced sentence on the monthly window cites the files page and the evidence that fits it, and the Stage 3 consequence limits `es-vintages.csv` to May 1999 on, because index links before then carry a two-digit year.
+
+- [x] **Step 11: Generate the inventory tables**
 
 Run: `uv run python scripts/archive_inventory.py inventory`
 Expected: exit 0. It writes `docs/inventory/archive-inventory.csv` and fills the three generated blocks. Print the findings with:
@@ -2268,7 +2288,7 @@ Expected: exit 0. It writes `docs/inventory/archive-inventory.csv` and fills the
 sed -n '/^### Findings/,/^### Coverage by year/p' docs/ces-revisions-review.md
 ```
 
-- [ ] **Step 12: Replace the two marked paragraphs**
+- [x] **Step 12: Replace the two marked paragraphs**
 
 Replace the line `PRECISION` from the Step 9 output:
 - **When every one of the twelve series shows `nonzero_decimals` 0 and no NSA vintage file has nonzero decimals**, write:
@@ -2290,12 +2310,14 @@ Replace `CHANNEL-B` from the findings block's line `All three file types survive
   Only the releases counted above as keeping all three file types can seed a vintage-specific X-13 reproduction, and none of them has unrounded inputs, so Stage 25 can at best match published SA values to rounding from rounded inputs. Every other release carries the channel-(a) flag.
   ```
 
-- [ ] **Step 13: Run the tests to verify they pass**
+- [x] **Step 13: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS, 82 passed, 4 deselected. That is 30 from before this plan, 30 archive tests, and 22 document tests.
 
-- [ ] **Step 14: Commit**
+> Deviation: 83 passed, 4 deselected.
+
+- [x] **Step 14: Commit**
 
 ```bash
 uv run ruff format scripts tests docs/ces-revisions-review.md
@@ -2318,7 +2340,7 @@ git commit -m "Derive the per-vintage archive inventory and write its section"
   - Table format: one pipe table per group with the columns in `INVENTORY_TABLE_COLUMNS`. The `Series` cell is the slug in a code span, `Evidence` is one label, and `Citation` holds only primary links, each followed by its access date, or exactly `*unverified*`.
   - Ruling format: paragraphs opening `**Drafts.**`, `**Primary sources.**` (with lead-in text on the same line, then a bullet list with no blank line between, each bullet carrying at least one link; a bold-only line breaks the conventions test, and a blank line detaches the bullets from the paragraph the checker reads), `**Ruling.**`, `**Evidence:**`, and `**Consequence.**`, in that order, with no other bold-led paragraph.
 
-- [ ] **Step 1: Write the failing inventory and ruling tests**
+- [x] **Step 1: Write the failing inventory and ruling tests**
 
 In `tests/test_review_document.py`, add `EVIDENCE_LABELS` and `tables` to the `from review_document import (...)` list.
 
@@ -2410,14 +2432,14 @@ def test_ruling_on_collection_rate_versus_response_rate():
     check_ruling("Collection rate versus response rate")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q -k "collection"`
 Expected: FAIL.
 - `test_collection_window_and_seasonal_inventory` fails with `Collection window: expected one table, found 0`.
 - `test_ruling_on_collection_rate_versus_response_rate` fails because its only paragraph is `Status:`.
 
-- [ ] **Step 3: Measure the collection- and response-rate series**
+- [x] **Step 3: Measure the collection- and response-rate series**
 
 With `BLS_CONTACT_EMAIL` exported:
 
@@ -2454,7 +2476,7 @@ EOF
 
 Expected: the `ce.series` lines match Planning evidence. The output then prints months present per series and decade, the 2024 means of all four series, and the yearly means of C1 and RR since 2015. Keep all three tables: they fill the C1–C3 and RR rows and the ruling.
 
-- [ ] **Step 4: Fetch the collection-window sources**
+- [x] **Step 4: Fetch the collection-window sources**
 
 ```bash
 page() { uv run python -c 'import re,sys; t=open(sys.argv[1],errors="replace").read(); print(re.sub(r"\s+"," ",re.sub(r"<[^>]+>"," ",t)))' "$1"; }
@@ -2485,7 +2507,7 @@ From these pages, establish:
 - **Lapses.** Each lapse's dates and release changes, from the lapse pages.
 - **Earlier publication.** Whether the April 2019 release text reports a collection rate, which shows whether rates were public before the December 2024 database addition. Where a release reports one, cite that release.
 
-- [ ] **Step 5: Inspect the seasonal-adjustment inputs**
+- [x] **Step 5: Inspect the seasonal-adjustment inputs**
 
 ```bash
 fetch_to https://www.bls.gov/web/empsit/ces.spec.other.zip /tmp/s-other.zip
@@ -2507,7 +2529,7 @@ From these, establish:
 - **The MLR account.** When the 2022 article says the COVID intervention treatments were adopted.
 - **Current tables.** Which model specification tables `cesseasadj.htm` lists now.
 
-- [ ] **Step 6: Write the Collection window and Seasonal tables**
+- [x] **Step 6: Write the Collection window and Seasonal tables**
 
 Under `### Collection window` and `### Seasonal` in `docs/ces-revisions-review.md`, write one table each. Both start with this header and separator:
 
@@ -2545,7 +2567,7 @@ Write `\|` for a literal pipe and `\$` for a dollar sign. Never leave a cell emp
 | `specification_regime` | Adjustment mode and calendar treatments per series per benchmark year. Annual. Tables for 2003–2013 are in the benchmark articles and the current year's is on `cesseasadj.htm`; other years only where specification files survive. Lag: with the benchmark release. | model specification tables; `cesbmkarch.htm` |
 | `covid_interventions` | The 2020–2021 AO, LS, and TC treatments and when BLS adopted them. Annual, from 2020. Lag: with the benchmark release. | Hudson, Mercurio, and Kropf (2022), Monthly Labor Review; `.spc` files |
 
-- [ ] **Step 7: Write the collection-versus-response ruling**
+- [x] **Step 7: Write the collection-versus-response ruling**
 
 Under `### Collection rate versus response rate`, replace the status line with the text below. Fill each `from Step N` element with the observed value, and set each access date to the day you fetched the page.
 
@@ -2572,12 +2594,14 @@ Under `### Collection rate versus response rate`, replace the status line with t
 
 The `**Ruling.**` paragraph in the document is your written ruling, not the bullet list above, which states what the ruling must cover. If the definitions or start dates cannot be read from BLS files, use `**Evidence:** supported` or `not found`, whichever fits, and say why.
 
-- [ ] **Step 8: Run the tests to verify they pass**
+- [x] **Step 8: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS, 84 passed, 4 deselected.
 
-- [ ] **Step 9: Commit**
+> Deviation: 85 passed, 4 deselected.
+
+- [x] **Step 9: Commit**
 
 ```bash
 uv run ruff format tests docs/ces-revisions-review.md
@@ -2596,7 +2620,7 @@ git commit -m "Inventory the collection-window and seasonal series and rule on c
 - Consumes (Task 5): `check_inventory_group`, `check_ruling`, and the table and ruling formats.
 - Produces: the three tables and two rulings. Stage 4 reads the benchmark ruling and the birth–death and sample rows.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/test_review_document.py`:
 
@@ -2615,14 +2639,14 @@ def test_ruling_on_the_2024_and_2025_benchmark_revisions():
     check_ruling("The 2024 and 2025 preliminary and final benchmark revisions")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q -k "birth_death or program_cuts or benchmark_revisions"`
 Expected: FAIL.
 - The inventory test fails with `Net birth–death: expected one table, found 0`.
 - Both ruling tests fail because their only paragraph is `Status:`.
 
-- [ ] **Step 3: Fetch the birth–death and sample sources**
+- [x] **Step 3: Fetch the birth–death and sample sources**
 
 With `BLS_CONTACT_EMAIL` exported:
 
@@ -2660,7 +2684,9 @@ Establish, for the Net birth–death and Sample rows:
 - **Forecast-versus-realized tables.** In each benchmark article: the table title, its unit, and the first benchmark year it appears. First read each article's opening lines to confirm which March benchmark it covers.
 - **Linked coverage.** Which `cestn.htm` and benchmark-article tables give usable linked coverage and relative standard errors by supersector, their first year, and each change in the unit counted (organizations, UI accounts, worksites).
 
-- [ ] **Step 4: Fetch the macro and tail-control sources**
+> Deviation: `cesbdhst.htm` has April–December tables for every year from 2003 to 2024, not from 2019, and the sample rows also drew on the benchmark articles for 2004 to 2023 and on the Internet Archive's copies of the technical notes year by year.
+
+- [x] **Step 4: Fetch the macro and tail-control sources**
 
 ```bash
 fetch_to https://www.nber.org/research/data/us-business-cycle-expansions-and-contractions /tmp/m-nber.htm
@@ -2683,7 +2709,7 @@ Establish, for the Macro and tail controls rows:
 
 A source that does not resolve is cited as *unverified*, and its row explains what was tried.
 
-- [ ] **Step 5: Fetch the 2025 program-cut sources**
+- [x] **Step 5: Fetch the 2025 program-cut sources**
 
 ```bash
 fetch_to https://www.bls.gov/ces/notices/ /tmp/p-ces-notices.htm
@@ -2700,7 +2726,7 @@ grep -n -i -E 'discontinu|sample' /tmp/b-bmk-2025.txt | head -20
 
 Open every 2025 and 2026 notice the `grep` lists for CES, for State and Area CES (from the SAE notices index linked on `/sae/`), for CPI, and for PPI. For each, record its date, what it reduces, suspends, or discontinues, and the reason BLS gives.
 
-- [ ] **Step 6: Fetch the benchmark sources**
+- [x] **Step 6: Fetch the benchmark sources**
 
 ```bash
 uv run python - <<'EOF'
@@ -2731,7 +2757,7 @@ Establish:
 - **The −862 figure.** Whether the article states −862 thousand, and why it differs from −861.
 - **The current preliminary release.** The March 2026 preliminary figure and its release date.
 
-- [ ] **Step 7: Write the three tables**
+- [x] **Step 7: Write the three tables**
 
 Write one table under each of `### Net birth–death`, `### Sample`, and `### Macro and tail controls`. Use the header, separator, and cell rules from Task 5 Step 6, with one row per series in this order:
 
@@ -2746,7 +2772,7 @@ Write one table under each of `### Net birth–death`, `### Sample`, and `### Ma
 | `strikes` | Strikes affecting CES counts, and how the CES strike report relates to major work stoppages; lag. | CES strike report; BLS work stoppages |
 | `severe_weather` | Storm Events coverage and update lag; weather statements in releases, citing one if found. | NOAA Storm Events; the January 2024 release |
 
-- [ ] **Step 8: Write the ruling on 2025 program cuts**
+- [x] **Step 8: Write the ruling on 2025 program cuts**
 
 Under `### Whether the 2025 program cuts reached CES`, replace the status line with the text below. Fill each `from Step N` element with the observed value, link each source that a bullet names without a link, and set each access date to the day you fetched the page. Keep the benchmark-article bullet only if Step 3 confirmed that the article covers the March 2025 benchmark.
 
@@ -2776,7 +2802,7 @@ Choose the label on the `**Evidence:**` line:
 - **`documented`** when a notice announces a CES reduction, or when BLS states that CES was unaffected.
 - **`not found`** when no notice addresses CES at all. State in the ruling that no BLS notice documents a 2025 CES reduction.
 
-- [ ] **Step 9: Write the benchmark ruling**
+- [x] **Step 9: Write the benchmark ruling**
 
 Under `### The 2024 and 2025 preliminary and final benchmark revisions`, replace the status line with the text below. Fill each `from Step N` element with the observed value, link each source that a bullet names without a link, and set each access date to the day you fetched the page.
 
@@ -2801,12 +2827,16 @@ Under `### The 2024 and 2025 preliminary and final benchmark revisions`, replace
 
 If Table 5 or the articles disagree with Planning evidence, stop and report.
 
-- [ ] **Step 10: Run the tests to verify they pass**
+> Deviation (plan-level defect): no source explains −862,000 against −861,000, so the ruling records the difference as unexplained instead of explaining it from footnote 12, as the step asked.
+
+- [x] **Step 10: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS, 87 passed, 4 deselected.
 
-- [ ] **Step 11: Commit**
+> Deviation: 88 passed, 4 deselected.
+
+- [x] **Step 11: Commit**
 
 ```bash
 uv run ruff format tests docs/ces-revisions-review.md
@@ -2827,7 +2857,7 @@ git commit -m "Inventory the birth-death, sample, and macro series and rule on 2
   - From Task 3: `docs/inventory/es-vintages.csv`, for release URLs.
 - Produces: the last two tables and two rulings. Stage 13 reads the shutdown and FTE rulings. Stage 27 reads the FTE ruling.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tests/test_review_document.py`:
 
@@ -2845,14 +2875,14 @@ def test_ruling_on_fte_concepts():
     check_ruling("FTE concepts: authorized versus actual, and FTE versus headcount")
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q -k "institutional or 2018 or fte"`
 Expected: FAIL.
 - The inventory test fails with `Institutional: expected one table, found 0`.
 - Both ruling tests fail because their only paragraph is `Status:`.
 
-- [ ] **Step 3: Fetch the budget, FTE, and headcount sources**
+- [x] **Step 3: Fetch the budget, FTE, and headcount sources**
 
 With `BLS_CONTACT_EMAIL` exported:
 
@@ -2884,7 +2914,9 @@ Establish:
 - **Headcount.** OPM's BLS on-board headcount route, and its snapshot dates.
 - **Workyears.** The CES workyears that Robertson (2016) reports, and whether any CBJ reports them.
 
-- [ ] **Step 4: Fetch the appropriations, shutdown, and party sources**
+> Deviation: the CBJs showed FY2024's 2,058 to be authorized FTE, with actual FTE 2,062, and five OPM monthly employment files were downloaded to count BLS headcount, which confirmed three of the chatgpt draft's four counts.
+
+- [x] **Step 4: Fetch the appropriations, shutdown, and party sources**
 
 ```bash
 for month in 2013-09 2013-10 2018-12 2019-01 2025-09 2025-11 2025-12 2026-01; do
@@ -2915,7 +2947,7 @@ Establish:
 - **Continuing resolutions.** Days under CRs, counts of CRs, and full-year status for each fiscal year from FY2009.
 - **Party control.** House and Senate majorities for each Congress since 2003, including any mid-Congress Senate change.
 
-- [ ] **Step 5: Write the two tables**
+- [x] **Step 5: Write the two tables**
 
 Write one table under `### Institutional` and one under `### Party composition`. Use the header, separator, and cell rules from Task 5 Step 6, with one row per series in this order:
 
@@ -2938,7 +2970,7 @@ Write one table under `### Institutional` and one under `### Party composition`.
 
 In the Institutional table, the Hand-build constraint cell of each `shutdown_*` row lists the lapses whose field no BLS or DOL page documents.
 
-- [ ] **Step 6: Write the ruling on the 2018–19 lapse**
+- [x] **Step 6: Write the ruling on the 2018–19 lapse**
 
 Under `### The December 2018 to January 2019 lapse in appropriations`, replace the status line with the text below. Fill each `from Step N` element with the observed value, link each source that a bullet names without a link, and set each access date to the day you fetched the page.
 
@@ -2962,7 +2994,7 @@ Under `### The December 2018 to January 2019 lapse in appropriations`, replace t
 **Consequence.** Roadmap Stage 13's shutdown-events table codes this lapse with the four values above, and no generic federal-shutdown indicator stands in for them.
 ```
 
-- [ ] **Step 7: Write the FTE ruling**
+- [x] **Step 7: Write the FTE ruling**
 
 Under `### FTE concepts: authorized versus actual, and FTE versus headcount`, replace the status line with the text below. Fill each `from Step N` element with the observed value, link each source that a bullet names without a link, and set each access date to the day you fetched the page.
 
@@ -2987,16 +3019,18 @@ Under `### FTE concepts: authorized versus actual, and FTE versus headcount`, re
 **Consequence.** Roadmap Stage 13's institutional panel keeps actual FTE, from the CBJ columns that report completed years, and OPM on-board headcount as separate series with a definition flag. Stage 16's capacity factor loads actual FTE, never a plan, and Stage 27 applies the same concepts to pre-2009 budget justifications.
 ```
 
-- [ ] **Step 8: Close the inventory section**
+- [x] **Step 8: Close the inventory section**
 
 In `## Data-availability inventory`, delete the line `**Status:** in progress — plan 2, Tasks 5 to 7.` and the blank line that follows it.
 
-- [ ] **Step 9: Run the tests to verify they pass**
+- [x] **Step 9: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS, 90 passed, 4 deselected.
 
-- [ ] **Step 10: Commit**
+> Deviation: 91 passed, 4 deselected.
+
+- [x] **Step 10: Commit**
 
 ```bash
 uv run ruff format tests docs/ces-revisions-review.md
@@ -3016,7 +3050,7 @@ git commit -m "Inventory the institutional and party series and rule on the 2018
 - Consumes: every earlier section of the document, and the GitHub heading anchors of `## Seasonal-adjustment archive inventory`'s subsections, the inventory groups, and the rulings.
 - Produces: the finished Stage 2 document and CLAUDE.md's notes on `scripts/` and `docs/inventory/`.
 
-- [ ] **Step 1: Write the failing completion tests**
+- [x] **Step 1: Write the failing completion tests**
 
 In `tests/test_review_document.py`, add `github_anchor` to the `from review_document import (...)` list, then append:
 
@@ -3058,12 +3092,14 @@ def test_no_parameterized_marker_survives(marker):
     assert not found, found[:3]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+> Deviation: after the whole-branch review, a further test checks that the review's relative links resolve to files.
+
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_review_document.py -q -k "in_progress or summary_finding or internal_links or marker"`
 Expected: FAIL. `test_no_section_is_left_in_progress` fails on the Summary's status line, and `test_every_summary_finding_links_its_evidence` fails on `assert 0 >= 9`. `test_internal_links_resolve_to_headings` passes, because the document has no internal links yet. `test_no_parameterized_marker_survives` passes unless an earlier task left an access-date placeholder, a `PRECISION` or `CHANNEL-B` marker, or a plan-step reference such as `from Step 3` in the document; fix any it reports before going on.
 
-- [ ] **Step 3: Write the summary**
+- [x] **Step 3: Write the summary**
 
 Under `## Summary of findings`, replace the status line with one bullet per finding below, in this order. Each bullet states the determination the linked section records, in one or two sentences, and ends with the link shown:
 
@@ -3081,7 +3117,9 @@ Under `## Summary of findings`, replace the status line with one bullet per find
 
 Write each bullet as `- **Label.** Determination ([link text](#anchor)).`
 
-- [ ] **Step 4: Note the tooling in CLAUDE.md**
+> Deviation (plan-level defect, found by the whole-branch review): the unverified-rows bullet counted rows only, so it now also names the six shutdown lapse values that no page documents.
+
+- [x] **Step 4: Note the tooling in CLAUDE.md**
 
 In `CLAUDE.md`, make three edits.
 
@@ -3109,7 +3147,9 @@ In `CLAUDE.md`, make three edits.
    uv run python scripts/archive_inventory.py inventory   # rebuild the archive inventory from docs/inventory/ (offline)
    ```
 
-- [ ] **Step 5: Run the complete verification**
+> Deviation: the Purpose replacement adds a comma that the step's text omits.
+
+- [x] **Step 5: Run the complete verification**
 
 ```bash
 uv run ruff format --check scripts tests docs CLAUDE.md
@@ -3135,7 +3175,9 @@ Then check the roadmap's Stage 2 exit clause by clause:
 - each of the five rulings has its own cited subsection;
 - `uv run ruff format --check docs/ces-revisions-review.md` passes.
 
-- [ ] **Step 6: Commit**
+> Deviation: 98 passed, 4 deselected. After the whole-branch review's fixes (eae5c0a) the fast tier gives 103 passed, and the network tier's CDX canary passed on a rerun after an Internet Archive 503.
+
+- [x] **Step 6: Commit**
 
 ```bash
 uv run ruff format tests docs/ces-revisions-review.md CLAUDE.md

@@ -74,7 +74,7 @@ alongside Stages 2–5 and gating Stage 6.
       Exit: `uv sync` on 3.14 with the pins recorded and every import test passing, any package failing on 3.14 recorded with the fallback taken; the synthetic pilot passes on the determined engine with time-varying rows, NaN cells, irregular annual rows, four chains, zero divergences (bullet 5); the dense-reference test matches likelihood and smoother moments to tolerance; no latent state among sampled sites; the engine determination is committed.\
       ROUTING: writing-plans
 
-- [ ] Stage 2: Data and archive inventory\
+- [x] Stage 2: Data and archive inventory\
       Objective: Write the inventory half of the Req 20 finding — per-driver data inventory with publication lags, the Req 9 archive inventory, and the five draft-disagreement rulings.\
       Spec: Req 20 (inventory, rulings); Req 9 (open); Req 3; Rollout note\
       Gap closed: Req 9 ((open) archive inventory); Req 20 (inventory half)\
