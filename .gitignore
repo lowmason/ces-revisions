@@ -11,3 +11,6 @@ wheels/
 
 # macOS Finder metadata
 .DS_Store
+
+# Local API keys and contact settings, read with python-dotenv
+.project.env
