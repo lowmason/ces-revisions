@@ -5,13 +5,15 @@
 > this document wholesale.
 
 Source spec: [`specs/ces-revisions.md`](ces-revisions.md) (`237b426`, 2026-09-12). Derived
-2026-09-12 at fresh entry; 27 stages.
+2026-09-12 at fresh entry; 27 stages. Resumed 2026-09-13 at `cd835c5`: Stage 1 complete per its
+stamp, and Stages 2–27 re-validated against what it shipped.
 
 ## Gap analysis
 
 Search boundary: the whole repository at `237b426` — `src/ces_revisions/__init__.py` is the
 two-line scaffold `main()`, `tests/test_smoke.py` holds two smoke tests, `pyproject.toml` has
-`dependencies = []`, and there is no `docs/`, no data, and no `specs/deferred_items.md`.
+`dependencies = []`, and there is no `docs/`, no data, and no `specs/deferred_items.md`. The
+table is that entry snapshot; a Note dated 2026-09-13 records what a later stage has shipped.
 
 | Req | Verdict | Evidence | Note |
 |---|---|---|---|
@@ -31,8 +33,8 @@ two-line scaffold `main()`, `tests/test_smoke.py` holds two smoke tests, `pyproj
 | 14 Structural change | missing | none found | — |
 | 15 Priors + prior predictive | missing | none found | — |
 | 16 Identification assumptions | missing | none found | — |
-| 17 Inference | missing | no NumPyro/JAX/Dynamax in `pyproject.toml` | two (open) items block the first fit |
-| 18 Validation | missing | none found | pytest `network`/`slow` markers exist as infrastructure only |
+| 17 Inference | missing | no NumPyro/JAX/Dynamax in `pyproject.toml` | two (open) items block the first fit. 2026-09-13: Stage 1 (plan 1) discharged both and shipped the engine (`src/ces_revisions/kalman.py`, `docs/decisions/engine.md`); steps (1)–(5) remain in Stages 5, 6, 10, 17; "InferenceData" is read as the ArviZ 1.x `DataTree` (`docs/decisions/engine.md:32`); a scratch probe on an M4 Max CPU, not the fit target, timed one dense value+grad at 0.54 s (T=280, n=150, p=70) and about 1.1 s at n=250, p=100 or at T=570; Stage 6 re-measures on the cloud GPU |
+| 18 Validation | missing | none found | pytest `network`/`slow` markers exist as infrastructure only. 2026-09-13: Stage 1's slow tier asserts the MCMC thresholds on the synthetic pilot, with energy-BFMI above 0.3 per chain and under 1% of draws at maximum tree depth 10 (`tests/test_synthetic_pilot.py:30-34`) — the reading later stages inherit unless a plan records a Deviation |
 | 19 Outputs | missing | none found | — |
 | 20 Written finding | missing | no `docs/` | — |
 | — greeting console script | in-code-but-not-in-spec | `src/ces_revisions/__init__.py:1-2`; `[project.scripts]` | `uv init` scaffold; flagged, not a defect |
@@ -59,14 +61,16 @@ is proven. The written finding is split by information order: its data and archi
 literature review (Stage 23) gates nothing but the report. Bullet numbers cite the spec's
 Verification bullets in file order (1–14). Decision records live under `docs/decisions/`.
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
-run them alongside.
+run them alongside. The cloud GPU environment that later fits run on is its own brainstorming cycle
+outside this roadmap (user decision, 2026-09-13) — no spec requirement covers it — running
+alongside Stages 2–5 and gating Stage 6.
 
 - [x] Stage 1: Inference stack and Kalman engine on Python 3.14\
       Objective: Discharge Req 17's two (open) items by pinning the inference stack under Python 3.14 and shipping the marginalized Kalman engine — filter likelihood, smoother, per-step log-density contributions, one-step-ahead moments — as a tested NumPyro term proven on a synthetic pilot.\
       Spec: Req 17; Rollout note\
       Gap closed: Req 17 (engine; both (open) items)\
       Consumes: the spec and the scaffold only.\
-      Produces: stack pins in `pyproject.toml`/`uv.lock` with an import test per package; the Kalman engine module (`src/ces_revisions/kalman.py`) over time-varying transition/emission matrices and offsets, NaN cells, irregular rows, and per-cell time-varying observation and process covariances, exposing the smoother, per-time-step contributions, and one-step-ahead moments; its dense-reference and marginalization-site tests; the synthetic pilot test (slow-marked); the engine determination at `docs/decisions/engine.md`.\
+      Produces: stack pins in `pyproject.toml`/`uv.lock` with an import test per package; the Kalman engine module (`src/ces_revisions/kalman.py`) over time-varying transition/emission matrices and offsets, NaN cells, irregular rows, and per-cell time-varying observation and process covariances, exposing the smoother, per-time-step contributions, and one-step-ahead moments; its dense-reference and marginalization-site tests; the synthetic pilot test (slow-marked); the engine determination at `docs/decisions/engine.md`; the dense oracle `tests/dense_reference.py`, the parity gate for any engine change or gradient check; the engine's input contracts (float64 arrays; a missing cell's `observation_cov` entries reach only `one_step_cov`; the smoother needs positive-definite predicted covariances after the first step — `kalman.py` docstrings).\
       Exit: `uv sync` on 3.14 with the pins recorded and every import test passing, any package failing on 3.14 recorded with the fallback taken; the synthetic pilot passes on the determined engine with time-varying rows, NaN cells, irregular annual rows, four chains, zero divergences (bullet 5); the dense-reference test matches likelihood and smoother moments to tolerance; no latent state among sampled sites; the engine determination is committed.\
       ROUTING: writing-plans
 
@@ -110,18 +114,18 @@ run them alongside.
       Objective: Run Req 17 step (2) on the real total-nonfarm aggregate — 2003+ closings and the 1979+ leg with its composite 2003 shift, March anchor rows only — to debug state layout and sampler geometry, and ship the run harness every later fit reuses.\
       Spec: Req 17 (step 2); Req 4; Req 6; Req 7; Req 15; Req 18\
       Gap closed: Req 4 (model half); Req 6 (aggregate); Req 7 (aggregate); Req 17 (step 2)\
-      Consumes: From Stage 1: the engine module, the engine determination. From Stage 3: the vintage panel (total-nonfarm rows), stage-label table, 1979+ leg, release-date index. From Stage 4: the benchmark table (final March anchors). From Stage 5: the operators module (March selection, masks), the operator-test-results record.\
-      Produces: the aggregate pilot model (Req 6 process including the crisis multiplier, Req 7 F/S/T news and noise, the 1979 leg as same-release change observations with one 2003 shift, March anchors as irregular rows, no wedge rows); the run harness (InferenceData writer with log-likelihood grouped by reference month and benchmark year; diagnostics JSON; provenance of seeds, data hashes, versions, and the operator-test record); the synthetic-panel simulator, SBC harness, and prior-predictive harness at aggregate scope; the seasonal-state decision at `docs/decisions/seasonal-state.md`; the pilot InferenceData.\
-      Exit: the pilot meets Req 18 thresholds with diagnostics JSON and provenance in the run directory (Req 17 step 2); a test asserts the likelihood contains irregular anchor rows and NaN cells and no latent state among sampled sites; a test asserts the 1979 leg is partially observed with exactly one 2003 shift (Req 4); the layer-local prior predictive satisfies the Req 15 monthly constraint at total nonfarm before the fit; the April 2020 movement is absorbed by the latent state under the crisis multiplier (Req 6); reduced-panel SBC recovers the news/noise allocation (bullet 7, reduced half); the seasonal-state decision is committed.\
+      Consumes: From Stage 1: the engine module, the engine determination, the dense oracle. From Stage 3: the vintage panel (total-nonfarm rows), stage-label table, 1979+ leg, release-date index. From Stage 4: the benchmark table (final March anchors). From Stage 5: the operators module (March selection, masks), the operator-test-results record. Outside this roadmap: the cloud GPU environment and its decision record.\
+      Produces: the aggregate pilot model (Req 6 process including the crisis multiplier, Req 7 F/S/T news and noise, the 1979 leg as same-release change observations with one 2003 shift, March anchors as irregular rows, no wedge rows); the run harness (InferenceData writer with log-likelihood grouped by reference month and benchmark year; diagnostics JSON; provenance of seeds, data hashes, versions, and the operator-test record); the synthetic-panel simulator, SBC harness, and prior-predictive harness at aggregate scope; the seasonal-state decision at `docs/decisions/seasonal-state.md`, recording the engine's value-and-gradient time on the cloud GPU at the Stage 7–9 state and cell dimensions of the chosen layout (the seasonal block is the largest share of each sector's state, so its choice largely fixes those dimensions); the pilot InferenceData.\
+      Exit: the pilot meets Req 18 thresholds with diagnostics JSON and provenance in the run directory (Req 17 step 2); a test asserts the likelihood contains irregular anchor rows and NaN cells and no latent state among sampled sites; a test asserts the 1979 leg is partially observed with exactly one 2003 shift (Req 4); the layer-local prior predictive satisfies the Req 15 monthly constraint at total nonfarm before the fit; the April 2020 movement is absorbed by the latent state under the crisis multiplier (Req 6); reduced-panel SBC recovers the news/noise allocation (bullet 7, reduced half); the seasonal-state decision is committed with the GPU cost measurement; the dispersed-chain-starts item in `specs/deferred_items.md` (plan 1) is closed, and its `A_t`/`Z_t` gradient-check item too if the pilot samples a parameter entering `transition_matrix` or `observation_matrix`. If the cost measurement makes the Stage 7–9 fits or their SBC infeasible, resume re-validates Stages 7–17 before routing Stage 7.\
       ROUTING: writing-plans
 
 - [ ] Stage 7: Gaussian closing-stage core across supersectors\
       Objective: Widen the pilot to the eleven supersectors with the common factor, cross-sector news factors, shared noise recursion, and reconciliation — comparator (0)'s closing-stage half.\
       Spec: Req 5; Req 6; Req 7; Req 4; Req 15; Req 18\
       Gap closed: Req 5 (model half); Req 6; Req 7 (closing stages)\
-      Consumes: From Stage 6: the pilot model, run harness, the three harnesses, the seasonal-state decision. From Stage 3: the vintage panel (sector NSA rows), stage-label table. From Stage 5: the operators module (aggregation, masks).\
+      Consumes: From Stage 6: the pilot model, run harness, the three harnesses, the seasonal-state decision. From Stage 3: the vintage panel (sector NSA rows), stage-label table. From Stage 5: the operators module (aggregation, masks). From Stage 1: the dense oracle.\
       Produces: the sector Gaussian core and the comparator-settings registry (from here every model is one module with nested settings); the harnesses extended to sector panels; the pre-2003 sector-state decision at `docs/decisions/pre-2003-states.md`; fitted InferenceData and diagnostics.\
-      Exit: the fit meets Req 18 thresholds (bullet 8, comparator (0) closing half); a test asserts sector states sum to the total within the reconciliation tolerance, the published total is observed in its own right, and no sector observation row precedes May 2003 (Req 5, Req 4); loading and news-factor sign constraints hold in every draw (Req 6, Req 7); the layer-local prior predictive shows sector revisions aggregating plausibly before the fit; SBC on synthetic sector panels recovers the news/noise allocation and the news-factor share (bullet 7, sector half).\
+      Exit: the fit meets Req 18 thresholds (bullet 8, comparator (0) closing half); a test asserts sector states sum to the total within the reconciliation tolerance, the published total is observed in its own right, and no sector observation row precedes May 2003 (Req 5, Req 4); loading and news-factor sign constraints hold in every draw (Req 6, Req 7); the layer-local prior predictive shows sector revisions aggregating plausibly before the fit; SBC on synthetic sector panels recovers the news/noise allocation and the news-factor share (bullet 7, sector half); the `A_t`/`Z_t` gradient-check item in `specs/deferred_items.md` (plan 1) is closed if Stage 6 left it open.\
       ROUTING: writing-plans
 
 - [ ] Stage 8: Benchmark anchors, wedge, post-March recursion, and mature horizon in the model\
@@ -146,7 +150,7 @@ run them alongside.
       Objective: Replace Gaussian errors with Student-t scale mixtures — news, noise, the bivariate NSA/factor news, and the process innovations — sampling mixing variables with the linear states marginalized: comparator (1).\
       Spec: Req 8; Req 6; Req 9; Req 17 (steps 3–4); Req 15; Req 18\
       Gap closed: Req 8 (Student-t layer); Req 17 (steps 3–4)\
-      Consumes: From Stage 9: comparator (0) joint, settings, harnesses, run harness. From Stage 1: the engine module.\
+      Consumes: From Stage 9: comparator (0) joint, settings, harnesses, run harness. From Stage 1: the engine module, the dense oracle.\
       Produces: comparator (1) (64-bit, non-centered innovations); the mixing-representation decision at `docs/decisions/mixing.md`, with the engine extension and its dense-reference test if the finite-mixture fallback is adopted; fitted InferenceData and diagnostics.\
       Exit: the fit meets thresholds in 64-bit (bullet 8, comparator (1)); a test asserts fixing the degrees of freedom large reproduces comparator (0) joint's log-likelihood (Req 8 nesting); the decision record exists, with the triggering benchmark if the fallback was adopted (Req 17 step 4); SBC recovers the degrees of freedom and the allocation on heavy-tailed synthetic panels; the layer-local prior predictive satisfies the Req 15 tail constraint before the fit; rank plots for the degrees of freedom exist.\
       ROUTING: writing-plans
@@ -209,16 +213,16 @@ run them alongside.
       Objective: Make the first conditional fit of the full model, benchmark the sampler by block, decide the kernel per Req 17 step (5), and run the Req 12 geometry comparison on real geometry.\
       Spec: Req 17 (step 5); Req 12; Req 18\
       Gap closed: Req 17 (step 5); Req 12 (geometry comparison)\
-      Consumes: From Stage 16: comparator (3), the gated prior table, design tables, harnesses, run harness. From Stage 11: the sampler benchmark record.\
+      Consumes: From Stage 16: comparator (3), the gated prior table, design tables, harnesses, run harness. From Stage 11: the sampler benchmark record. From Stage 1: the engine determination and its revisit triggers.\
       Produces: the reported comparator-(3) fit (InferenceData, diagnostics JSON) under the kernel the decision names; the sampler benchmark record extended; the kernel decision at `docs/decisions/kernel.md`; the geometry-comparison record at `docs/decisions/geometry.md`; the decomposition table and the latent-path-vs-wedge table on comparator (3).\
-      Exit: the fit meets Req 18 thresholds with rank plots for scale, capacity, and hierarchy SDs (bullet 8, comparator (3)); the kernel decision exists with its benchmark evidence, and BlackJAX appears in the pins with a 3.14 import test if and only if adopted (Req 17 step 5); the geometry record names every centered block and a test asserts centered parameterization appears only in blocks it favored (Req 12); the two tables exist on comparator (3) (bullet 11, on the reported model). If the benchmark demands a blocked kernel beyond one plan's scope, the plan's Scope Check splits it out and resume re-validates.\
+      Exit: the fit meets Req 18 thresholds with rank plots for scale, capacity, and hierarchy SDs (bullet 8, comparator (3)); the kernel decision exists with its benchmark evidence, and BlackJAX appears in the pins with a 3.14 import test if and only if adopted (Req 17 step 5); the geometry record names every centered block and a test asserts centered parameterization appears only in blocks it favored (Req 12); the two tables exist on comparator (3) (bullet 11, on the reported model). If the benchmark demands a blocked kernel or trips an `engine.md` revisit trigger beyond one plan's scope, the plan's Scope Check splits it out and resume re-validates.\
       ROUTING: writing-plans
 
 - [ ] Stage 18: Posterior predictive checks and full-panel simulation-based calibration\
       Objective: Build the Req 18 posterior-predictive suite on the reported fit and close bullet 7 with full-panel SBC.\
       Spec: Req 18\
       Gap closed: Req 18 (PPC, SBC)\
-      Consumes: From Stage 17: the reported fit, the kernel decision. From Stage 16: the harnesses, the gated prior table. From Stage 3: the vintage panel, stage-label table.\
+      Consumes: From Stage 17: the reported fit, the kernel decision. From Stage 16: the harnesses, the gated prior table. From Stage 3: the vintage panel, stage-label table. From Stage 1: the engine module (one-step-ahead moments, smoother).\
       Produces: the validation module (PPC half); the PPC tables; the SBC report.\
       Exit: the PPC tables cover every Req 18 statistic by stage, sector, and regime with the 2020–22 panels separate, on the reported fit; the SBC report on full synthetic panels shows calibrated rank histograms for the scale coefficients and recovers the news/noise allocation and the wedge rank (bullet 7 closed).\
       ROUTING: writing-plans
@@ -263,7 +267,7 @@ run them alongside.
       Objective: Complete `docs/ces-revisions-review.md` — the literature by driver, the gap table, and the annotated bibliography — verified against primary sources.\
       Spec: Req 20\
       Gap closed: Req 20 (complete)\
-      Consumes: From Stage 2: the review document with its inventory sections and rulings. From Stage 5: the written link-relative determination (cited). The drafts and the prompt. Independent of Stages 6–22; may run any time after Stage 5.\
+      Consumes: From Stage 2: the review document with its inventory sections and rulings. From Stage 5: the written link-relative determination (cited). From Stage 1: the engine determination (cited as Req 17's discharge). The drafts and the prompt. Independent of Stages 6–22; may run any time after Stage 5.\
       Produces: the finished review document.\
       Exit: the four Req 20 parts exist; every numeric claim, date, and citation carries a primary-source citation or an unverified flag and an evidence label; the bibliography labels each source's status; `uv run ruff format --check` passes (bullet 13 closed).\
       ROUTING: writing-plans
@@ -281,8 +285,8 @@ run them alongside.
       Objective: For every vintage the archive inventory marks complete, reproduce the vintage-specific X-13 factors from the stored files and record match-to-published diagnostics.\
       Spec: Req 9 (channel (b)); Out of scope\
       Gap closed: Req 9 (channel (b), reproduction half)\
-      Consumes: From Stage 2: the archive inventory. From Stage 14: the seasonal-adjustment file store. From Stage 3: the vintage panel (NSA rows), the raw file archive. From Stage 1: the stack pins (any X-13 wrapper confirmed on 3.14).\
-      Produces: the X-13 reproduction module; the reproduced-factor table per vintage with match diagnostics and an explicit channel-(a) flag for partial-archive vintages.\
+      Consumes: From Stage 2: the archive inventory. From Stage 14: the seasonal-adjustment file store. From Stage 3: the vintage panel (NSA rows), the raw file archive. From Stage 1: the stack pins, which include no X-13 wrapper.\
+      Produces: the X-13 reproduction module, with any X-13 wrapper it adopts pinned under a Python 3.14 import test; the reproduced-factor table per vintage with match diagnostics and an explicit channel-(a) flag for partial-archive vintages.\
       Exit: for every archive-complete vintage a test shows the reproduced SA series matches the published SA vintage to rounding, and partial-archive vintages carry the channel-(a) flag; the table states how many vintages reproduce. If none do, resume parks Stage 26.\
       ROUTING: brainstorming
 
