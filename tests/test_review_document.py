@@ -24,6 +24,7 @@ from archive_inventory import (
 from review_document import (
     EVIDENCE_LABELS,
     REVIEW_PATH,
+    github_anchor,
     headings,
     is_primary,
     links,
@@ -322,3 +323,40 @@ def test_ruling_on_the_2018_to_2019_lapse():
 
 def test_ruling_on_fte_concepts():
     check_ruling("FTE concepts: authorized versus actual, and FTE versus headcount")
+
+
+# --- Task 8: summary and completion --------------------------------------------------------
+
+
+def test_no_section_is_left_in_progress():
+    assert "**Status:** in progress" not in read_review()
+
+
+def test_every_summary_finding_links_its_evidence():
+    body = section(read_review(), "Summary of findings", level=2)
+    bullets = [line for line in body.splitlines() if line.startswith("- ")]
+    assert len(bullets) >= 9
+    for bullet in bullets:
+        assert re.search(r"\]\((?:#[\w-]+|https?://[^)\s]+)\)", bullet), bullet
+
+
+def test_internal_links_resolve_to_headings():
+    text = read_review()
+    anchors = {
+        github_anchor(title)
+        for level in range(1, 7)
+        for title in headings(text, level=level)
+    }
+    targets = set(re.findall(r"\]\(#([\w-]+)\)", text))
+    assert targets <= anchors, sorted(targets - anchors)
+
+
+@pytest.mark.parametrize(
+    "marker", ["YYYY-MM-DD", "PRECISION", "CHANNEL-B", r"\bSteps? \d"]
+)
+def test_no_parameterized_marker_survives(marker):
+    text = read_review()
+    found = [
+        text[max(0, m.start() - 40) : m.end() + 40] for m in re.finditer(marker, text)
+    ]
+    assert not found, found[:3]
