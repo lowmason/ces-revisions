@@ -92,6 +92,41 @@ def test_fully_missing_step_adds_nothing_and_leaves_the_state_unconditioned(gapp
     )
 
 
+def _engine_outputs(ssm, y):
+    """Every filter and smoother field, plus the log-likelihood gradient along Q_t."""
+    engine_ssm, panel = _engine(ssm), jnp.asarray(y)
+    filtered = kalman_filter(engine_ssm, panel)
+
+    def log_likelihood(scale):
+        scaled = engine_ssm._replace(transition_cov=engine_ssm.transition_cov * scale)
+        return kalman_filter(scaled, panel).log_likelihood
+
+    return {
+        **filtered._asdict(),
+        **kalman_smoother(engine_ssm, filtered)._asdict(),
+        "process_cov_gradient": jax.grad(log_likelihood)(1.0),
+    }
+
+
+@pytest.mark.parametrize("poison", [np.inf, np.nan], ids=["inf", "nan"])
+def test_missing_cells_observation_noise_reaches_only_one_step_cov(gappy_case, poison):
+    ssm, y = gappy_case
+    missing = np.isnan(y)
+    observation_cov = ssm["observation_cov"].copy()
+    for step, cells in enumerate(missing):  # every missing cell's row and column
+        observation_cov[step, cells, :] = poison
+        observation_cov[step, :, cells] = poison
+    clean = _engine_outputs(ssm, y)
+    poisoned = _engine_outputs({**ssm, "observation_cov": observation_cov}, y)
+
+    # one_step_cov predicts missing cells too, so only its observed block must agree.
+    both_observed = ~missing[:, :, None] & ~missing[:, None, :]
+    for outputs in (clean, poisoned):
+        outputs["one_step_cov"] = np.asarray(outputs["one_step_cov"])[both_observed]
+    for field, expected in clean.items():
+        np.testing.assert_array_equal(poisoned[field], expected, err_msg=field)
+
+
 def test_log_likelihood_gradient_matches_a_dense_finite_difference(gappy_case):
     ssm, y = gappy_case
     engine_ssm = _engine(ssm)

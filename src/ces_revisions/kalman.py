@@ -9,8 +9,10 @@ is a row whose other cells are NaN.
 
 The filter's log likelihood integrates the states out, so a NumPyro model that adds it as a
 factor never samples a state. All arrays must be float64 (call ``numpyro.enable_x64()``
-before the first JAX operation), and every covariance must be finite, including in the rows
-and columns of missing cells.
+before the first JAX operation), and every model array must be finite except
+``observation_cov`` in a missing cell's row or column: those entries reach only that step's
+``one_step_cov``, never the log likelihood, the filtered or smoothed moments, or gradients
+with respect to the other arrays.
 """
 
 import math
@@ -87,10 +89,13 @@ def kalman_filter(ssm: LinearGaussianSSM, y: jax.Array) -> FilterResult:
         chol = jnp.linalg.cholesky(innovation_cov)
         gain = cho_solve((chol, True), observed_z @ predicted_cov).T
         filtered_mean = predicted_mean + gain @ innovation
-        # Joseph form keeps the filtered covariance positive semidefinite.
+        # Joseph form keeps the filtered covariance positive semidefinite. Its noise
+        # term uses only the observed block of R_t, so no entry in a missing cell's row
+        # or column can reach the filtered covariance, even a non-finite one.
         residual_map = state_eye - gain @ observed_z
+        observed_r = jnp.where(both_observed, r, 0.0)
         filtered_cov = _symmetrize(
-            residual_map @ predicted_cov @ residual_map.T + gain @ r @ gain.T
+            residual_map @ predicted_cov @ residual_map.T + gain @ observed_r @ gain.T
         )
 
         num_observed = observed_t.sum()
@@ -108,7 +113,8 @@ def kalman_filter(ssm: LinearGaussianSSM, y: jax.Array) -> FilterResult:
         )
         return (filtered_mean, filtered_cov), outputs
 
-    # Zero-filling keeps NaN out of the arithmetic, so gradients stay finite.
+    # Zero-fill missing cells so that no intermediate holds NaN. Masking the innovation
+    # already keeps the likelihood and gradients finite, so this is defense in depth.
     y_filled = jnp.where(observed, y, 0.0)
     inputs = (
         ssm.transition_matrix,
