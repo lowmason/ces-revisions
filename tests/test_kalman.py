@@ -6,7 +6,13 @@ import numpy as np
 import pytest
 from dense_reference import dense_reference, random_ssm, simulate, time_invariant
 
-from ces_revisions.kalman import FilterResult, LinearGaussianSSM, kalman_filter
+from ces_revisions.kalman import (
+    FilterResult,
+    LinearGaussianSSM,
+    SmootherResult,
+    kalman_filter,
+    kalman_smoother,
+)
 
 SEED = sum(map(ord, "ces-revisions-kalman-engine"))
 NUM_STEPS, STATE_DIM, OBS_DIM = 15, 3, 4
@@ -60,6 +66,17 @@ def test_filter_matches_the_dense_reference(case):
     for field in FilterResult._fields:
         np.testing.assert_allclose(
             getattr(filtered, field), reference[field], **TOLERANCE, err_msg=field
+        )
+
+
+def test_smoother_matches_the_dense_reference(case):
+    ssm, y = case
+    engine_ssm = _engine(ssm)
+    smoothed = kalman_smoother(engine_ssm, kalman_filter(engine_ssm, jnp.asarray(y)))
+    reference = dense_reference(ssm, y)
+    for field in SmootherResult._fields:
+        np.testing.assert_allclose(
+            getattr(smoothed, field), reference[field], **TOLERANCE, err_msg=field
         )
 
 

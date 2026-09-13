@@ -51,6 +51,13 @@ class FilterResult(NamedTuple):
     one_step_cov: jax.Array  # (T, p, p) Cov[y_t | y_<t]
 
 
+class SmootherResult(NamedTuple):
+    """Rauch–Tung–Striebel smoother output."""
+
+    smoothed_mean: jax.Array  # (T, n) E[x_t | y]
+    smoothed_cov: jax.Array  # (T, n, n)
+
+
 def kalman_filter(ssm: LinearGaussianSSM, y: jax.Array) -> FilterResult:
     """Filter the (T, p) panel y through ssm, conditioning only on its non-NaN cells."""
     ssm = LinearGaussianSSM(*(jnp.asarray(array) for array in ssm))
@@ -114,6 +121,38 @@ def kalman_filter(ssm: LinearGaussianSSM, y: jax.Array) -> FilterResult:
     )
     _, outputs = jax.lax.scan(step, (ssm.initial_mean, ssm.initial_cov), inputs)
     return FilterResult(outputs[0].sum(), *outputs)
+
+
+def kalman_smoother(ssm: LinearGaussianSSM, filtered: FilterResult) -> SmootherResult:
+    """Smooth a filter pass of the same model backward in time (Rauch–Tung–Striebel).
+
+    Every predicted covariance after the first step must be positive definite.
+    """
+    transition_matrix = jnp.asarray(ssm.transition_matrix)
+
+    def step(carry, inputs):
+        next_smoothed_mean, next_smoothed_cov = carry
+        mean, cov, next_a, next_predicted_mean, next_predicted_cov = inputs
+        chol = jnp.linalg.cholesky(next_predicted_cov)
+        gain = cho_solve((chol, True), next_a @ cov).T
+        smoothed_mean = mean + gain @ (next_smoothed_mean - next_predicted_mean)
+        smoothed_cov = _symmetrize(
+            cov + gain @ (next_smoothed_cov - next_predicted_cov) @ gain.T
+        )
+        return (smoothed_mean, smoothed_cov), (smoothed_mean, smoothed_cov)
+
+    last = (filtered.filtered_mean[-1], filtered.filtered_cov[-1])
+    inputs = (
+        filtered.filtered_mean[:-1],
+        filtered.filtered_cov[:-1],
+        transition_matrix[1:],
+        filtered.predicted_mean[1:],
+        filtered.predicted_cov[1:],
+    )
+    _, (means, covs) = jax.lax.scan(step, last, inputs, reverse=True)
+    return SmootherResult(
+        jnp.concatenate([means, last[0][None]]), jnp.concatenate([covs, last[1][None]])
+    )
 
 
 def _validate(ssm: LinearGaussianSSM, y: jax.Array) -> None:
