@@ -162,7 +162,11 @@ def test_rejects_arrays_whose_shapes_disagree_with_the_panel(gappy_case):
         kalman_filter(_engine(short), jnp.asarray(y))
 
 
-def test_rejects_float32_inputs(gappy_case):
+@pytest.mark.parametrize("field", ["y", "initial_mean", "observation_cov"])
+def test_rejects_float32_inputs(gappy_case, field):
     ssm, y = gappy_case
-    with pytest.raises(TypeError, match="float64"):
-        kalman_filter(_engine(ssm), jnp.asarray(y, dtype=jnp.float32))
+    arrays = {**ssm, "y": y}
+    arrays[field] = arrays[field].astype(np.float32)
+    panel = jnp.asarray(arrays.pop("y"))
+    with pytest.raises(TypeError, match=f"{field} is float32.*float64"):
+        kalman_filter(_engine(arrays), panel)
