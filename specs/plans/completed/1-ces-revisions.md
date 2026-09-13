@@ -1,5 +1,7 @@
 # Stage 1 — Inference Stack and Kalman Engine Implementation Plan
 
+**Status: COMPLETE (2026-09-12)** — executed via executing-plans; deferred items in specs/deferred_items.md
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revisions-roadmap.md, Stage 1 — on plan completion, tick the stage and
@@ -11,7 +13,7 @@
 
 **Tech Stack:** Python 3.14, uv, JAX 0.11.1 (float64), NumPyro 0.21.0, ArviZ 1.3.0, Polars 1.44.2 (pinned now, first used in Stage 3), Dynamax 1.0.2 (dev group), pytest, ruff.
 
-**Source:** [`specs/ces-revisions.md`](../ces-revisions.md) Req 17, the Rollout note, and Verification bullet 5; [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md) Stage 1.
+**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 17, the Rollout note, and Verification bullet 5; [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 1.
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 1 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 1: COMPLETE (YYYY-MM-DD) — implemented by plan 1 (specs/plans/completed/1-ces-revisions.md). Next: resume the roadmap.`
@@ -94,7 +96,7 @@ This plan's code was run end to end in a scratch clone of `0b1ad7c` before it wa
 - Consumes: the scaffold. `tests/test_smoke.py` must keep passing.
 - Produces: runtime dependencies `arviz`, `jax`, `numpy`, `numpyro`, `polars`, and dev dependency `dynamax`. Every later test runs with float64 JAX on four host CPU devices, set once in `tests/conftest.py`.
 
-- [ ] **Step 1: Write the failing import test**
+- [x] **Step 1: Write the failing import test**
 
 Create `tests/test_stack.py`:
 
@@ -134,12 +136,12 @@ def test_session_runs_float64_jax_on_four_host_devices():
     assert jax.local_device_count() == 4
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [x] **Step 2: Run it to verify it fails**
 
 Run: `uv run pytest tests/test_stack.py -q`\
 Expected: a collection error, `ModuleNotFoundError: No module named 'jax'`.
 
-- [ ] **Step 3: Add the stack with uv**
+- [x] **Step 3: Add the stack with uv**
 
 ```bash
 uv add jax numpy numpyro arviz polars
@@ -170,12 +172,12 @@ Expected `pyproject.toml` change (version floors may be newer if releases landed
 
 If any package fails to resolve or install on Python 3.14, stop and report. The roadmap's exit requires the failure and the fallback taken to be recorded, and that is a decision for your human partner.
 
-- [ ] **Step 4: Run the tests to see the numerics policy fail**
+- [x] **Step 4: Run the tests to see the numerics policy fail**
 
 Run: `uv run pytest tests/test_stack.py -q`\
 Expected: 7 passed, 1 failed. `test_session_runs_float64_jax_on_four_host_devices` fails on `assert jnp.zeros(1).dtype == jnp.float64` (the dtype is float32), because nothing has enabled x64 yet.
 
-- [ ] **Step 5: Write the session numerics policy**
+- [x] **Step 5: Write the session numerics policy**
 
 Create `tests/conftest.py`:
 
@@ -193,22 +195,26 @@ numpyro.set_host_device_count(4)
 numpyro.enable_x64()
 ```
 
-- [ ] **Step 6: Run the whole suite**
+- [x] **Step 6: Run the whole suite**
 
 Run: `uv run pytest -q`\
 Expected: `10 passed` (8 stack tests and 2 smoke tests), plus the three Dynamax import warnings.
 
-- [ ] **Step 7: Confirm the lock and lint**
+> Deviation: 10 passed with 2 warnings rather than 3 once bytecode is cached. The `SyntaxWarning` from dynamax's `parallel_inference.py` fires only when that file is compiled; a cold compile shows all three.
+
+- [x] **Step 7: Confirm the lock and lint**
 
 Run: `uv sync --locked && uv run ruff format && uv run ruff check`\
 Expected: `uv sync` reports no changes, and ruff reports `All checks passed!`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add pyproject.toml uv.lock tests/conftest.py tests/test_stack.py
 git commit -m "Pin the inference stack on Python 3.14 with import tests"
 ```
+
+> Deviation: every commit in this plan keeps the planned subject line and adds a body and a Co-Authored-By trailer, following the repository's commit convention.
 
 ---
 
@@ -229,7 +235,7 @@ git commit -m "Pin the inference stack on Python 3.14 with import tests"
   - `simulate(ssm, rng) -> np.ndarray` draws a fully observed `(T, p)` panel.
   - `dense_reference(ssm, y) -> dict` returns the keys `log_likelihood` `()`, `step_log_likelihood` `(T,)`, `predicted_mean`, `predicted_cov`, `filtered_mean`, `filtered_cov`, `one_step_mean` `(T, p)`, `one_step_cov` `(T, p, p)`, `smoothed_mean`, and `smoothed_cov`.
 
-- [ ] **Step 1: Write the oracle's self-test**
+- [x] **Step 1: Write the oracle's self-test**
 
 The oracle is only as good as its own check. This test pins it to numbers worked by hand. Its two steps have different transitions, so it also pins the indexing convention. Create `tests/test_dense_reference.py`:
 
@@ -284,12 +290,12 @@ def test_dense_reference_matches_a_hand_worked_two_step_model():
     )
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [x] **Step 2: Run it to verify it fails**
 
 Run: `uv run pytest tests/test_dense_reference.py -q`\
 Expected: a collection error, `ModuleNotFoundError: No module named 'dense_reference'`.
 
-- [ ] **Step 3: Write the oracle**
+- [x] **Step 3: Write the oracle**
 
 The oracle stacks all states and cells into one joint normal, then answers each question by conditioning. It never runs a recursion, so it shares no failure mode with the engine. Create `tests/dense_reference.py`:
 
@@ -475,12 +481,12 @@ def dense_reference(ssm, y):
     }
 ```
 
-- [ ] **Step 4: Run the self-test to verify it passes**
+- [x] **Step 4: Run the self-test to verify it passes**
 
 Run: `uv run pytest tests/test_dense_reference.py -q`\
 Expected: `1 passed`.
 
-- [ ] **Step 5: Write the Dynamax evidence tests**
+- [x] **Step 5: Write the Dynamax evidence tests**
 
 These tests characterize a third-party library. They pin what Dynamax does, not what we want, so they have no red phase. Create `tests/test_engine_determination.py`:
 
@@ -561,19 +567,19 @@ def test_dynamax_filter_has_no_step_terms_or_predicted_moments(model_and_panel):
     assert posterior.predicted_covariances is None
 ```
 
-- [ ] **Step 6: Run the evidence tests**
+- [x] **Step 6: Run the evidence tests**
 
 Run: `uv run pytest tests/test_engine_determination.py -v`\
 Expected: `5 passed`. The five tests are the time-varying match, the three missing-cell patterns, and the scalar-log-likelihood check.
 
 **If any test fails, stop.** Report which outcome differs before starting Task 3. The engine determination rests on these facts, and a different Dynamax outcome reopens the decision for your human partner.
 
-- [ ] **Step 7: Lint and run the fast tier**
+- [x] **Step 7: Lint and run the fast tier**
 
 Run: `uv run ruff format && uv run ruff check && uv run pytest -m "not slow and not network" -q`\
 Expected: `All checks passed!` and `16 passed`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tests/dense_reference.py tests/test_dense_reference.py tests/test_engine_determination.py
@@ -602,7 +608,7 @@ Design notes for the implementer and reviewer:
 - **Stability.** The Joseph-form update keeps filtered covariances positive semidefinite over long panels with precise anchors.
 - **Import side effects.** `_LOG_2PI` is a Python float. A module-level JAX constant would run a JAX operation at import, before callers can enable float64.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_kalman.py`:
 
@@ -725,12 +731,14 @@ def test_rejects_float32_inputs(gappy_case):
         kalman_filter(_engine(ssm), jnp.asarray(y, dtype=jnp.float32))
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+> Deviation: after the whole-branch review, `tests/test_kalman.py` gained `test_missing_cells_observation_noise_reaches_only_one_step_cov`, and `test_rejects_float32_inputs` was parametrized over `y`, `initial_mean`, and `observation_cov` so it covers the model fields as well as the panel.
+
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_kalman.py -q`\
 Expected: a collection error, `ModuleNotFoundError: No module named 'ces_revisions.kalman'`.
 
-- [ ] **Step 3: Write the filter**
+- [x] **Step 3: Write the filter**
 
 Create `src/ces_revisions/kalman.py`:
 
@@ -888,7 +896,9 @@ def _symmetrize(matrix: jax.Array) -> jax.Array:
     return 0.5 * (matrix + matrix.T)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+> Deviation (plan-level defect, found by the whole-branch review): the Joseph noise term used the full `R_t`, so a non-finite entry in a missing cell's row or column made the filtered and smoothed covariances and the gradients NaN, silently at the last step. The shipped code masks `R_t` to the observed block. The Finite gradients design note's rationale was also wrong: masking the innovation already keeps gradients finite, so zero-filling is defense in depth, and the code comment now says so.
+
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_kalman.py -v`\
 Expected: `6 passed`:
@@ -897,12 +907,12 @@ Expected: `6 passed`:
 - the gradient;
 - both input-contract tests.
 
-- [ ] **Step 5: Lint and run the fast tier**
+- [x] **Step 5: Lint and run the fast tier**
 
 Run: `uv run ruff format && uv run ruff check && uv run pytest -m "not slow and not network" -q`\
 Expected: `All checks passed!` and `22 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/ces_revisions/kalman.py tests/test_kalman.py
@@ -924,7 +934,7 @@ git commit -m "Add the NaN-masked Kalman filter, checked against the dense oracl
   - `kalman_smoother(ssm: LinearGaussianSSM, filtered: FilterResult) -> SmootherResult`, which smooths an existing filter pass of the same model, so callers never filter twice. It requires every predicted covariance after step 0 to be positive definite.
   - Stage 8 consumes this as the probabilistic wedge between March anchors, and Stage 9 for the seasonal decomposition.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 In `tests/test_kalman.py`, replace the `ces_revisions.kalman` import with:
 
@@ -952,12 +962,12 @@ def test_smoother_matches_the_dense_reference(case):
         )
 ```
 
-- [ ] **Step 2: Run it to verify it fails**
+- [x] **Step 2: Run it to verify it fails**
 
 Run: `uv run pytest tests/test_kalman.py -q`\
 Expected: a collection error, `ImportError: cannot import name 'SmootherResult' from 'ces_revisions.kalman'`.
 
-- [ ] **Step 3: Write the smoother**
+- [x] **Step 3: Write the smoother**
 
 In `src/ces_revisions/kalman.py`, insert this class immediately after the `FilterResult` class:
 
@@ -1006,17 +1016,17 @@ def kalman_smoother(ssm: LinearGaussianSSM, filtered: FilterResult) -> SmootherR
 
 The smoother gain at step `t` pairs the filtered moments at `t` with `transition_matrix[t + 1]` and the predicted moments at `t + 1`. That is why the scan inputs are offset by one.
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_kalman.py -v`\
 Expected: `8 passed`, with both `test_smoother_matches_the_dense_reference` cases added.
 
-- [ ] **Step 5: Lint and run the fast tier**
+- [x] **Step 5: Lint and run the fast tier**
 
 Run: `uv run ruff format && uv run ruff check && uv run pytest -m "not slow and not network" -q`\
 Expected: `All checks passed!` and `24 passed`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/ces_revisions/kalman.py tests/test_kalman.py
@@ -1051,7 +1061,7 @@ Pilot design: the pilot mirrors CES structure at toy scale, and the fixture test
 - **Crisis window.** A known window multiplies the level-innovation and closing-noise scales, exercising time-varying process and observation covariances.
 - **Independence.** The simulator is an explicit recursion that is independent of `pilot_ssm`, so a wrong matrix in `pilot_ssm` shows up as failed recovery.
 
-- [ ] **Step 1: Write the pilot model module**
+- [x] **Step 1: Write the pilot model module**
 
 Create `tests/synthetic_pilot.py`:
 
@@ -1193,7 +1203,9 @@ def pilot_model(y):
     kalman_factor("panel", pilot_ssm(scales), y)
 ```
 
-- [ ] **Step 2: Write the fast pilot tests**
+> Deviation (plan-level claim, no code change): the whole-branch review found that the Independence bullet above overstates the recovery check. A four-SD bound catches a gross error in `pilot_ssm`, such as swapped change and level rows, but probably not a crisis multiplier applied to the variance instead of the SD. The dense oracle, not the pilot, is the engine's correctness gate.
+
+- [x] **Step 2: Write the fast pilot tests**
 
 The second test is the marginalization-site test the roadmap's exit names: no latent state among the sampled sites. Create `tests/test_synthetic_pilot.py`:
 
@@ -1265,12 +1277,12 @@ def test_pilot_samples_only_static_scales_and_factors_the_marginal_likelihood(pa
     )
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_synthetic_pilot.py -q`\
 Expected: a collection error, `ImportError: cannot import name 'kalman_factor' from 'ces_revisions.kalman'`.
 
-- [ ] **Step 4: Write the factor term**
+- [x] **Step 4: Write the factor term**
 
 In `src/ces_revisions/kalman.py`, add `import numpyro` to the imports, so the import block reads:
 
@@ -1297,17 +1309,17 @@ def kalman_factor(name: str, ssm: LinearGaussianSSM, y: jax.Array) -> FilterResu
     return filtered
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_synthetic_pilot.py -v`\
 Expected: `2 passed`.
 
-- [ ] **Step 6: Lint and run the fast tier**
+- [x] **Step 6: Lint and run the fast tier**
 
 Run: `uv run ruff format && uv run ruff check && uv run pytest -m "not slow and not network" -q`\
 Expected: `All checks passed!` and `26 passed`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/ces_revisions/kalman.py tests/synthetic_pilot.py tests/test_synthetic_pilot.py
@@ -1327,7 +1339,7 @@ git commit -m "Add kalman_factor and a synthetic pilot that samples only static 
 
 This is an acceptance test of a model that already exists, so it has no red phase. The planning spike's values (see Task 7 Step 1) clear every threshold by a wide margin. If an assertion fails, stop and debug. Do not loosen a threshold, prior, draw count, or seed.
 
-- [ ] **Step 1: Add the imports, thresholds, and slow tests**
+- [x] **Step 1: Add the imports, thresholds, and slow tests**
 
 In `tests/test_synthetic_pilot.py`, add `import arviz as az` as the first import. Add `from numpyro.infer import MCMC, NUTS` immediately after `from numpyro import handlers`. The import block then begins:
 
@@ -1417,17 +1429,17 @@ Two API facts behind this code, both verified on arviz 1.3.0 and numpyro 0.21.0:
 - NumPyro's extra field `num_steps` appears in `az.from_numpyro`'s `sample_stats` as `n_steps`, with the leapfrog count `2**depth - 1` at saturation.
 - `az.ess(array, method="tail")` on a raw array raises `TypeError: ... missing 1 required positional argument: 'prob'`, which is why every diagnostic goes through the DataTree.
 
-- [ ] **Step 2: Run the slow tier**
+- [x] **Step 2: Run the slow tier**
 
 Run: `uv run pytest -m slow -v`\
 Expected: `2 passed, 26 deselected`. The fit takes about 12 s and the determinism check about 3 s on an Apple M4 Max; the first run includes JIT compilation.
 
-- [ ] **Step 3: Confirm the fast tier is unchanged**
+- [x] **Step 3: Confirm the fast tier is unchanged**
 
 Run: `uv run ruff format && uv run ruff check && uv run pytest -m "not slow and not network" -q`\
 Expected: `All checks passed!` and `26 passed, 2 deselected`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add tests/test_synthetic_pilot.py
@@ -1447,7 +1459,7 @@ git commit -m "Fit the synthetic pilot with four NUTS chains under Req 18's thre
 - Consumes: the evidence from Tasks 1–6: the locked versions, `tests/test_engine_determination.py`, `tests/test_kalman.py`, and `tests/test_synthetic_pilot.py`.
 - Produces: `docs/decisions/engine.md`, the engine determination later stages cite (roadmap Stages 6, 10, and 17).
 
-- [ ] **Step 1: Collect the evidence the record quotes**
+- [x] **Step 1: Collect the evidence the record quotes**
 
 Run each and compare with the planning values.
 
@@ -1516,7 +1528,7 @@ sigma_benchmark  rhat 1.0002 bulk  5117 tail  2580 |z| 0.37
 
 If any version or diagnostic differs, use the values you observe in Step 2's table and Consequences bullet, and note the difference as a `> Deviation:` under this step.
 
-- [ ] **Step 2: Write the decision record**
+- [x] **Step 2: Write the decision record**
 
 This is the repository's first `docs/` directory, so create it first:
 
@@ -1608,7 +1620,9 @@ Revisit this decision if either trigger occurs:
 - Stage 17's benchmark attributes sampling time to the dense filter. Candidate remedies are sequential per-cell updates, a square-root form, or a parallel scan.
 ````
 
-- [ ] **Step 3: Update CLAUDE.md**
+> Deviation: the committed record differs from this text. Its blast radius lists Stages 6–11, 15–21, 26, and 27, and Stage 22's change-point model, and its per-step cost is `O(n^3 + p^3)`; both corrections came from the whole-branch review, which superseded an execution-time edit that had only added Stage 27. After the review it also gives the observed oracle agreement (1.1e-13), the oracle's `atol`, the gradient check's direction, the missing-cell covariance contract, the `SyntaxWarning` caveat, and the pilot's asserted thresholds separately from one run's observed values, and it describes the pre-masked Dynamax alternative more exactly.
+
+- [x] **Step 3: Update CLAUDE.md**
 
 In `CLAUDE.md`, make these four edits.
 
@@ -1650,7 +1664,7 @@ In the Commands code block, add this line after the `uv run pytest -m "not slow 
 uv run pytest -m slow                           # the synthetic pilot's four-chain NUTS fit (~15 s)
 ```
 
-- [ ] **Step 4: Update README.md**
+- [x] **Step 4: Update README.md**
 
 In `README.md`, make these three edits.
 
@@ -1685,7 +1699,7 @@ with
 
 > The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).
 
-- [ ] **Step 5: Verify the stage exit**
+- [x] **Step 5: Verify the stage exit**
 
 Run:
 
@@ -1703,7 +1717,9 @@ Then check each roadmap Stage 1 exit item against its evidence:
 - **No sampled state.** No latent state appears among the sampled sites: `test_pilot_samples_only_static_scales_and_factors_the_marginal_likelihood`, and the slow fit's site assertion.
 - **Decision record.** The engine determination is committed: `docs/decisions/engine.md`.
 
-- [ ] **Step 6: Commit**
+> Deviation: the stage exit passed as planned with 28 tests. After the review fixes the suite has 32 (two poisoning cases and two more float64-guard cases), all passing.
+
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/decisions/engine.md CLAUDE.md README.md

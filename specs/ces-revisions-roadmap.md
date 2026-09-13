@@ -61,7 +61,7 @@ Verification bullets in file order (1–14). Decision records live under `docs/d
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
 run them alongside.
 
-- [ ] Stage 1: Inference stack and Kalman engine on Python 3.14\
+- [x] Stage 1: Inference stack and Kalman engine on Python 3.14\
       Objective: Discharge Req 17's two (open) items by pinning the inference stack under Python 3.14 and shipping the marginalized Kalman engine — filter likelihood, smoother, per-step log-density contributions, one-step-ahead moments — as a tested NumPyro term proven on a synthetic pilot.\
       Spec: Req 17; Rollout note\
       Gap closed: Req 17 (engine; both (open) items)\

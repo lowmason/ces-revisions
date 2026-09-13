@@ -680,3 +680,5 @@ much of the data inventory it produces is information later model stages consume
 should sequence by that information order rather than by the drafts' value ranking. The three
 research drafts and the prompt retire alongside this spec when its last stage completes; they
 are its inputs. Stage stamps and the roadmap reference are added to this note by derive-roadmap.
+
+Stage 1: COMPLETE (2026-09-12) — implemented by plan 1 (specs/plans/completed/1-ces-revisions.md). Next: resume the roadmap.
