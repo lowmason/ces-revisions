@@ -7,7 +7,13 @@ authors = [
     { name = "Lowell Mason", email = "mason.lowell@mac.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "arviz>=1.3.0",
+    "jax>=0.11.1",
+    "numpy>=2.5.3",
+    "numpyro>=0.21.0",
+    "polars>=1.44.2",
+]
 
 [project.scripts]
 ces-revisions = "ces_revisions:main"
@@ -18,6 +24,7 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = [
+    "dynamax>=1.0.2",
     "pytest>=9.1.1",
     "ruff>=0.16.7",
 ]
