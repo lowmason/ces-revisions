@@ -25,7 +25,7 @@ import sys
 import urllib.request
 import zipfile
 from collections.abc import Callable
-from dataclasses import asdict, dataclass, fields
+from dataclasses import asdict, dataclass, fields, replace
 from datetime import UTC, date, datetime, time
 from functools import partial
 from pathlib import Path, PurePosixPath
@@ -116,9 +116,11 @@ def parse_release_index(html: str) -> list[Vintage]:
     return sorted(vintages.values(), key=lambda vintage: vintage.reference_month)
 
 
-def select_vintages(vintages: list[Vintage], *, as_of: date) -> list[Vintage]:
-    """Drop releases after `as_of`: the index links scheduled releases before they happen."""
-    return [vintage for vintage in vintages if vintage.release_date <= as_of]
+def select_vintages(vintages: list[Vintage], *, now: datetime) -> list[Vintage]:
+    """Drop releases still under embargo at `now`: the index links scheduled releases early."""
+    return [
+        vintage for vintage in vintages if release_instant(vintage.release_date) <= now
+    ]
 
 
 def next_month(month: date) -> date:
@@ -208,9 +210,29 @@ _MEMBER_PATTERNS = {
 # Internet Archive's 2021-03-18 copy of ces.spec.other.zip also nests an earlier copy of itself,
 # which holds only the inputs the technical notes describe: the calendar regressor files, a readme,
 # the prior-adjustment file, and the outlier file (https://www.bls.gov/web/empsit/cesseasadjtn.htm).
+# `inspect_zip` opens a nested ZIP one level down, so its members face the same check.
 _EXPLAINED = re.compile(
     r"^(readme[.\w]*\.txt|new\.readme\.announcement\.txt|f?dum\w*\.dat|ces\.spec\.other\.zip)$"
 )
+
+
+def _unexplained(name: str) -> bool:
+    return not _EXPLAINED.match(name) and not any(
+        pattern.search(name) for pattern in _MEMBER_PATTERNS.values()
+    )
+
+
+def _nested_names(payload: bytes) -> list[str]:
+    """Member names of a ZIP nested inside a seasonal-adjustment ZIP."""
+    try:
+        with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+            return [
+                PurePosixPath(info.filename).name.lower()
+                for info in archive.infolist()
+                if not info.is_dir()
+            ]
+    except zipfile.BadZipFile:
+        return ["unreadable nested zip"]
 
 
 def inspect_zip(payload: bytes) -> dict[str, str]:
@@ -218,13 +240,20 @@ def inspect_zip(payload: bytes) -> dict[str, str]:
 
     A fingerprint hashes member names and CRC-32s, so re-zipping identical files under new
     timestamps keeps it and any change of contents alters it. An empty fingerprint means the
-    file type is absent.
+    file type is absent. Fingerprints use top-level members only, but a nested ZIP's members are
+    checked for unexplained files too, and reported as `nested.zip/member`.
     """
     with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+        infos = [info for info in archive.infolist() if not info.is_dir()]
         members = [
-            (PurePosixPath(info.filename).name.lower(), info.CRC)
-            for info in archive.infolist()
-            if not info.is_dir()
+            (PurePosixPath(info.filename).name.lower(), info.CRC) for info in infos
+        ]
+        nested = [
+            f"{PurePosixPath(info.filename).name.lower()}/{name}"
+            for info in infos
+            if info.filename.lower().endswith(".zip")
+            for name in _nested_names(archive.read(info))
+            if _unexplained(name)
         ]
     result = {}
     for file_type, pattern in _MEMBER_PATTERNS.items():
@@ -234,12 +263,7 @@ def inspect_zip(payload: bytes) -> dict[str, str]:
             hashlib.sha256(listing.encode()).hexdigest()[:16] if matched else ""
         )
     result["unexpected"] = ";".join(
-        sorted(
-            name
-            for name, _ in members
-            if not _EXPLAINED.match(name)
-            and not any(pattern.search(name) for pattern in _MEMBER_PATTERNS.values())
-        )
+        sorted([*(name for name, _ in members if _unexplained(name)), *nested])
     )
     return result
 
@@ -457,16 +481,41 @@ def live_windows(
     return windows
 
 
+def resolve_revisits(captures: list[Capture]) -> list[Capture]:
+    """Give each revisit record the fingerprints of the opened copy with the same digest.
+
+    The Internet Archive lists a copy identical to an earlier one as a revisit, with status `-`,
+    and `captures` does not download it. The same digest means the same bytes, so a revisit
+    evidences the same files at its own time. A revisit with no opened twin stays empty.
+    """
+    opened = {
+        (capture.artifact, capture.digest): capture
+        for capture in captures
+        if capture.status == "200"
+    }
+    resolved = []
+    for capture in captures:
+        twin = opened.get((capture.artifact, capture.digest))
+        if capture.status == "-" and twin is not None:
+            copied = (*FILE_TYPES, "unexpected")
+            capture = replace(capture, **{name: getattr(twin, name) for name in copied})
+        resolved.append(capture)
+    return resolved
+
+
 def file_status(
     captures: list[Capture], file_type: str, window: tuple[datetime, datetime | None]
 ) -> tuple[str, str]:
-    """One file type's status for one vintage, with the URL of the copy that evidences it."""
+    """One file type's status for one vintage, with the URL of the copy that evidences it.
+
+    Opened copies count, and so do revisit records once `resolve_revisits` has filled them in.
+    """
     start, end = window
     holding = sorted(
         (
             capture
             for capture in captures
-            if capture.status == "200"
+            if capture.status in ("200", "-")
             and getattr(capture, file_type)
             and start <= capture.timestamp
             and (end is None or capture.timestamp < end)
@@ -485,6 +534,7 @@ def inventory_rows(
     vintages: list[Vintage], captures: list[Capture]
 ) -> list[dict[str, str]]:
     """One row per reference month from May 2003 through the latest vintage."""
+    captures = resolve_revisits(captures)
     windows = {
         "specification": live_windows(vintages, annual=True),
         "prior_adjustment": live_windows(vintages, annual=False),
@@ -640,7 +690,7 @@ def capture_evidence() -> int:
     now = datetime.now(UTC).replace(microsecond=0)
     index = retrying(partial(fetch, RELEASE_INDEX_URL), what=RELEASE_INDEX_URL)
     vintages = select_vintages(
-        parse_release_index(index.decode("utf-8", "replace")), as_of=now.date()
+        parse_release_index(index.decode("utf-8", "replace")), now=now
     )
     write_csv(VINTAGES_PATH, vintage_rows(vintages), VINTAGE_COLUMNS)
     captures = collect_captures(now)

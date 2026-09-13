@@ -2,6 +2,7 @@
 
 import io
 import zipfile
+from dataclasses import replace
 from datetime import UTC, date, datetime
 from pathlib import Path
 
@@ -117,11 +118,24 @@ def test_two_release_dates_for_one_reference_month_are_an_error():
         parse_release_index(html)
 
 
-def test_releases_scheduled_after_the_as_of_date_are_dropped():
+def test_releases_scheduled_after_now_are_dropped():
     kept = select_vintages(
-        parse_release_index(index_excerpt()), as_of=date(2026, 9, 13)
+        parse_release_index(index_excerpt()),
+        now=datetime(2026, 9, 13, 15, tzinfo=UTC),
     )
     assert kept[-1].reference_month == date(2026, 8, 1)
+
+
+def test_a_release_is_kept_only_once_its_embargo_lifts():
+    vintages = parse_release_index(index_excerpt())
+    # The September 2026 release is dated 2026-10-02; 00:30 UTC that day is still October 1 in
+    # Washington, and the embargo lifts at 12:30 UTC.
+    for moment, expected in (
+        (datetime(2026, 10, 2, 0, 30, tzinfo=UTC), date(2026, 8, 1)),
+        (datetime(2026, 10, 2, 12, 29, tzinfo=UTC), date(2026, 8, 1)),
+        (datetime(2026, 10, 2, 12, 30, tzinfo=UTC), date(2026, 9, 1)),
+    ):
+        assert select_vintages(vintages, now=moment)[-1].reference_month == expected
 
 
 def test_missing_reference_months_finds_the_absent_october_2025_release():
@@ -157,9 +171,7 @@ def test_vintages_round_trip_through_csv_rows():
 @pytest.mark.network
 def test_live_release_index_starts_the_modern_vintages_on_june_6_2003():
     html = fetch(RELEASE_INDEX_URL).decode("utf-8", "replace")
-    vintages = select_vintages(
-        parse_release_index(html), as_of=datetime.now(UTC).date()
-    )
+    vintages = select_vintages(parse_release_index(html), now=datetime.now(UTC))
     first = next(v for v in vintages if v.reference_month == FIRST_REFERENCE_MONTH)
     assert first.release_date == date(2003, 6, 6)
     missing = missing_reference_months(vintages)
@@ -216,6 +228,14 @@ def test_inspect_zip_explains_a_nested_copy_of_the_other_inputs_zip():
     assert (
         found["outliers"] == inspect_zip(make_zip({"outliers.xlsx": b"AO"}))["outliers"]
     )
+
+
+def test_inspect_zip_reports_an_unexplained_member_of_a_nested_zip():
+    nested = make_zip({"outliers.xlsx": b"draft AO", "ces_input.dat": b"1 2"})
+    found = inspect_zip(
+        make_zip({"outliers.xlsx": b"AO", "ces.spec.other.zip": nested})
+    )
+    assert found["unexpected"] == "ces.spec.other.zip/ces_input.dat"
 
 
 def test_fingerprints_ignore_zip_timestamps_but_not_contents():
@@ -466,6 +486,23 @@ def test_files_complete_needs_all_three_file_types():
     two = capture("2003-06-10T00:00:00+00:00", specification="s", prior_adjustment="p")
     assert inventory_rows(vintages, [all_three])[0]["files_complete"] == "true"
     assert inventory_rows(vintages, [two])[0]["files_complete"] == "false"
+
+
+def test_a_revisit_record_evidences_its_window_with_its_twin_fingerprints():
+    vintages = [vintage("2003-05", "2003-06-06"), vintage("2003-06", "2003-07-03")]
+    opened = replace(capture("2003-06-10T00:00:00+00:00", outliers="o"), digest="SAME")
+    revisit = replace(capture("2003-07-10T00:00:00+00:00"), status="-", digest="SAME")
+    rows = inventory_rows(vintages, [opened, revisit])
+    assert [(row["outliers"], row["outliers_evidence"]) for row in rows] == [
+        ("internet_archive", opened.url),
+        ("internet_archive", revisit.url),
+    ]
+
+
+def test_a_revisit_record_without_an_opened_twin_evidences_nothing():
+    vintages = [vintage("2003-05", "2003-06-06")]
+    revisit = replace(capture("2003-06-10T00:00:00+00:00"), status="-", digest="ALONE")
+    assert inventory_rows(vintages, [revisit])[0]["outliers"] == "not_archived"
 
 
 def test_generated_blocks_are_replaced_in_place():

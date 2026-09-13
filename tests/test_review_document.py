@@ -351,6 +351,15 @@ def test_internal_links_resolve_to_headings():
     assert targets <= anchors, sorted(targets - anchors)
 
 
+def test_relative_links_resolve_to_files():
+    targets = set(re.findall(r"\]\((?!https?://|#)([^)\s]+)\)", read_review()))
+    assert targets
+    missing = [
+        target for target in targets if not (REVIEW_PATH.parent / target).exists()
+    ]
+    assert missing == [], missing
+
+
 @pytest.mark.parametrize(
     "marker", ["YYYY-MM-DD", "PRECISION", "CHANNEL-B", r"\bSteps? \d"]
 )
