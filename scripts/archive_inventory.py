@@ -407,6 +407,231 @@ def collect_captures(now: datetime) -> list[Capture]:
     return captures
 
 
+# --- Inventory -----------------------------------------------------------------------------
+
+PRESENT = ("bls_current", "internet_archive")
+STATUSES = (*PRESENT, "conflicting_captures", "not_archived", "no_release")
+INVENTORY_COLUMNS = [
+    "reference_month",
+    "release_date",
+    *FILE_TYPES,
+    "unrounded_nsa_inputs",
+    "files_complete",
+    *(f"{file_type}_evidence" for file_type in FILE_TYPES),
+]
+_FILE_LABELS = {
+    "specification": "Specification files",
+    "prior_adjustment": "Prior-adjustment files",
+    "outliers": "Outlier files",
+}
+
+
+def live_windows(
+    vintages: list[Vintage], *, annual: bool
+) -> dict[date, tuple[datetime, datetime | None]]:
+    """When each vintage's files were the ones BLS served.
+
+    Prior-adjustment and outlier files change with every release, so a vintage's window runs
+    from its release to the next. Specification files change only with the annual benchmark,
+    released with January estimates, so their window runs from one benchmark release to the
+    next. A vintage before the first benchmark release in the list opens at the list's start.
+    """
+    opens = [release_instant(vintage.release_date) for vintage in vintages]
+    boundaries = [
+        index
+        for index, vintage in enumerate(vintages)
+        if not annual or vintage.reference_month.month == 1
+    ]
+    windows = {}
+    for index, vintage in enumerate(vintages):
+        start = max(
+            (boundary for boundary in boundaries if boundary <= index), default=0
+        )
+        end = min(
+            (boundary for boundary in boundaries if boundary > index), default=None
+        )
+        windows[vintage.reference_month] = (
+            opens[start],
+            None if end is None else opens[end],
+        )
+    return windows
+
+
+def file_status(
+    captures: list[Capture], file_type: str, window: tuple[datetime, datetime | None]
+) -> tuple[str, str]:
+    """One file type's status for one vintage, with the URL of the copy that evidences it."""
+    start, end = window
+    holding = sorted(
+        (
+            capture
+            for capture in captures
+            if capture.status == "200"
+            and getattr(capture, file_type)
+            and start <= capture.timestamp
+            and (end is None or capture.timestamp < end)
+        ),
+        key=lambda capture: capture.timestamp,
+    )
+    if not holding:
+        return "not_archived", ""
+    if len({getattr(capture, file_type) for capture in holding}) > 1:
+        return "conflicting_captures", " ".join(capture.url for capture in holding)
+    chosen = min(holding, key=lambda capture: capture.source != "bls_current")
+    return chosen.source, chosen.url
+
+
+def inventory_rows(
+    vintages: list[Vintage], captures: list[Capture]
+) -> list[dict[str, str]]:
+    """One row per reference month from May 2003 through the latest vintage."""
+    windows = {
+        "specification": live_windows(vintages, annual=True),
+        "prior_adjustment": live_windows(vintages, annual=False),
+        "outliers": live_windows(vintages, annual=False),
+    }
+    released = {vintage.reference_month: vintage for vintage in vintages}
+    rows = []
+    month = FIRST_REFERENCE_MONTH
+    while month <= vintages[-1].reference_month:
+        row = dict.fromkeys(INVENTORY_COLUMNS, "")
+        row["reference_month"] = f"{month:%Y-%m}"
+        vintage = released.get(month)
+        if vintage is None:
+            row.update(dict.fromkeys(FILE_TYPES, "no_release"))
+            row.update(unrounded_nsa_inputs="no_release", files_complete="false")
+        else:
+            row["release_date"] = vintage.release_date.isoformat()
+            for file_type in FILE_TYPES:
+                row[file_type], row[f"{file_type}_evidence"] = file_status(
+                    captures, file_type, windows[file_type][month]
+                )
+            # cesseasadjtn.htm: X-13 runs on unrounded NSA data, and BLS publishes rounded data.
+            row["unrounded_nsa_inputs"] = "not_published"
+            complete = all(row[file_type] in PRESENT for file_type in FILE_TYPES)
+            row["files_complete"] = "true" if complete else "false"
+        rows.append(row)
+        month = next_month(month)
+    return rows
+
+
+def _status_cell(row: dict[str, str], file_type: str) -> str:
+    status = row[file_type]
+    if status in PRESENT:
+        return f"[`{status}`]({row[f'{file_type}_evidence']})"
+    return f"`{status}`"
+
+
+def render_findings(rows: list[dict[str, str]]) -> str:
+    released = [row for row in rows if row["release_date"]]
+    gaps = [row["reference_month"] for row in rows if not row["release_date"]]
+    lines = [
+        (
+            f"- Releases inventoried: {len(released)}, estimating reference months "
+            f"{released[0]['reference_month']} through {released[-1]['reference_month']} "
+            f"(released {released[0]['release_date']} to {released[-1]['release_date']})."
+        ),
+        f"- Reference months without a release of their own: {', '.join(gaps) or 'none'}.",
+    ]
+    for file_type, label in _FILE_LABELS.items():
+        present = [
+            row["reference_month"] for row in released if row[file_type] in PRESENT
+        ]
+        earliest = present[0] if present else "none"
+        lines.append(
+            f"- {label} survive for {len(present)} of {len(released)} releases; "
+            f"the earliest such release estimates {earliest}."
+        )
+    complete = sum(row["files_complete"] == "true" for row in released)
+    conflicts = sum(
+        row[file_type] == "conflicting_captures"
+        for row in released
+        for file_type in FILE_TYPES
+    )
+    lines.append(
+        f"- All three file types survive for {complete} of {len(released)} releases, "
+        f"and {conflicts} cells are `conflicting_captures`."
+    )
+    lines.append("- Unrounded NSA inputs are `not_published` for every release.")
+    return "\n".join(lines) + "\n"
+
+
+def render_coverage(rows: list[dict[str, str]]) -> str:
+    lines = [
+        "| Reference year | Releases | Specification | Prior adjustment | Outliers | All three |",
+        "|---:|---:|---:|---:|---:|---:|",
+    ]
+    years = sorted({row["reference_month"][:4] for row in rows})
+    for year in [*years, "Total"]:
+        subset = [
+            row
+            for row in rows
+            if row["release_date"] and year in ("Total", row["reference_month"][:4])
+        ]
+        counts = [str(sum(row[t] in PRESENT for row in subset)) for t in FILE_TYPES]
+        complete = sum(row["files_complete"] == "true" for row in subset)
+        lines.append(f"| {year} | {len(subset)} | {' | '.join(counts)} | {complete} |")
+    return "\n".join(lines) + "\n"
+
+
+def render_vintages(rows: list[dict[str, str]]) -> str:
+    lines = [
+        "<details>",
+        "<summary>One row per reference month from May 2003</summary>",
+        "",
+        (
+            "| Reference month | Release | Specification | Prior adjustment | Outliers "
+            "| Unrounded NSA inputs | All three |"
+        ),
+        "|---|---|---|---|---|---|---|",
+    ]
+    for row in rows:
+        cells = [
+            row["reference_month"],
+            row["release_date"] or "none",
+            *(_status_cell(row, file_type) for file_type in FILE_TYPES),
+            f"`{row['unrounded_nsa_inputs']}`",
+            row["files_complete"],
+        ]
+        lines.append(f"| {' | '.join(cells)} |")
+    lines += ["", "</details>"]
+    return "\n".join(lines) + "\n"
+
+
+def render_blocks(rows: list[dict[str, str]]) -> dict[str, str]:
+    """The generated blocks of the review's archive section, keyed by marker name."""
+    blocks = {
+        "archive-findings": render_findings(rows),
+        "archive-coverage": render_coverage(rows),
+        "archive-vintages": render_vintages(rows),
+    }
+    # Blank lines keep each table or list a block of its own beside the HTML-comment markers.
+    return {name: f"\n{body}\n" for name, body in blocks.items()}
+
+
+def _markers(name: str) -> tuple[str, str]:
+    return f"<!-- BEGIN GENERATED {name} -->\n", f"<!-- END GENERATED {name} -->"
+
+
+def _block_span(document: str, name: str) -> tuple[int, int]:
+    begin, end = _markers(name)
+    start = document.find(begin)
+    stop = document.find(end, start) if start >= 0 else -1
+    if stop < 0:
+        raise ValueError(f"document has no generated block named {name!r}")
+    return start + len(begin), stop
+
+
+def generated_block(document: str, name: str) -> str:
+    start, stop = _block_span(document, name)
+    return document[start:stop]
+
+
+def replace_generated(document: str, name: str, body: str) -> str:
+    start, stop = _block_span(document, name)
+    return document[:start] + body + document[stop:]
+
+
 # --- Command line --------------------------------------------------------------------------
 
 
@@ -431,11 +656,26 @@ def capture_evidence() -> int:
     return 1 if unexplained else 0
 
 
+def derive_inventory() -> int:
+    """Offline step: derive the inventory from the evidence and regenerate the review's tables."""
+    vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
+    captures = [capture_from_row(row) for row in read_csv(CAPTURES_PATH)]
+    rows = inventory_rows(vintages, captures)
+    write_csv(INVENTORY_PATH, rows, INVENTORY_COLUMNS)
+    document = REVIEW_PATH.read_text(encoding="utf-8")
+    for name, body in render_blocks(rows).items():
+        document = replace_generated(document, name, body)
+    REVIEW_PATH.write_text(document, encoding="utf-8")
+    return 0
+
+
+COMMANDS = {"captures": capture_evidence, "inventory": derive_inventory}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=("captures",))
-    parser.parse_args(argv)
-    return capture_evidence()
+    parser.add_argument("command", choices=COMMANDS)
+    return COMMANDS[parser.parse_args(argv).command]()
 
 
 if __name__ == "__main__":
