@@ -31,6 +31,8 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# scripts/ holds research tools that tests import by bare name, like the helpers in tests/.
+pythonpath = ["scripts"]
 # An unregistered (e.g. misspelled) marker fails collection instead of silently escaping `-m` filters.
 filterwarnings = ["error::pytest.PytestUnknownMarkWarning"]
 markers = [
