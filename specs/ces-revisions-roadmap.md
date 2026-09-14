@@ -4,39 +4,41 @@
 > reconcile step; route each unticked stage per its ROUTING line; never plan
 > this document wholesale.
 
-Source spec: [`specs/ces-revisions.md`](ces-revisions.md) (`237b426`, 2026-09-12). Derived
-2026-09-12 at fresh entry; 27 stages. Resumed 2026-09-13 at `cd835c5`: Stage 1 complete per its
-stamp, and Stages 2–27 re-validated against what it shipped.
+Source spec: [`specs/ces-revisions.md`](ces-revisions.md) (`237b426`, 2026-09-12; amended at
+`03879c4`, 2026-09-14). Derived 2026-09-12 at fresh entry; 27 stages. Resumed 2026-09-13 at
+`cd835c5`: Stage 1 complete per its stamp, and Stages 2–27 re-validated against what it shipped.
+Resumed 2026-09-14 at `1d93e9c`: Stage 2 complete per its stamp, and Stages 3–27 re-validated
+against what it shipped and against the spec's 2026-09-14 amendment.
 
 ## Gap analysis
 
 Search boundary: the whole repository at `237b426` — `src/ces_revisions/__init__.py` is the
 two-line scaffold `main()`, `tests/test_smoke.py` holds two smoke tests, `pyproject.toml` has
 `dependencies = []`, and there is no `docs/`, no data, and no `specs/deferred_items.md`. The
-table is that entry snapshot; a Note dated 2026-09-13 records what a later stage has shipped.
+table is that entry snapshot; a dated Note records what a later stage has shipped.
 
 | Req | Verdict | Evidence | Note |
 |---|---|---|---|
 | 1 Vintage panel | missing | none found; `pyproject.toml:9` `dependencies = []` | — |
 | 2 Stage definitions | missing | none found | — |
-| 3 Covariate panel | missing | none found | FY2009+ in v1; FY1979 is Stage 27 |
+| 3 Covariate panel | missing | none found | FY2009+ in v1; FY1979 is Stage 27. 2026-09-14: Stage 2 (plan 2) inventoried every Req 3 series with its first-publication lag ([data inventory](../docs/ces-revisions-review.md#data-availability-inventory)); the spec's amendment of that date revised the collection-window and sample rows, against which Stages 3, 4, and 12 are re-validated |
 | 4 Estimation window | missing | none found | — |
 | 5 Sector set / aggregation | missing | none found | — |
 | 6 Latent process | missing | none found | — |
 | 7 News/noise measurement | missing | none found | — |
 | 8 Scale equation + covariate map | missing | none found | — |
-| 9 Joint NSA/SA + decomposition | missing | none found | channel (b) is Stages 25–26; carries an (open) |
+| 9 Joint NSA/SA + decomposition | missing | none found | channel (b) is Stages 25–26; carries an (open). 2026-09-14: Stage 2 (plan 2) discharged the (open) archive item (bullet 4) in `docs/inventory/archive-inventory.csv`: all three file types survive for 28 of 279 releases and no release has unrounded NSA inputs, so plan 2's parking condition (no release keeps all three) did not fire and Stages 25–26 stay live, with Stage 25 reproducing from rounded inputs ([consequences](../docs/ces-revisions-review.md#consequences-for-later-stages)) |
 | 10 Benchmark observations + operators | missing | none found | carries an (open) |
 | 11 Birth–death | missing | none found | — |
 | 12 Hierarchy | missing | none found | — |
 | 13 Capacity + shrinkage | missing | none found | — |
 | 14 Structural change | missing | none found | — |
-| 15 Priors + prior predictive | missing | none found | — |
+| 15 Priors + prior predictive | missing | none found | 2026-09-14: Stage 2 confirmed the 1/12 rounding variance for the levels Reqs 4 and 5 model — total nonfarm, its aggregates, and the supersectors are published in whole thousands, SA and NSA — while the vintage files below those aggregates carry a decimal ([unrounded NSA inputs](../docs/ces-revisions-review.md#unrounded-nsa-inputs)); Stages 6–7 need no change |
 | 16 Identification assumptions | missing | none found | — |
 | 17 Inference | missing | no NumPyro/JAX/Dynamax in `pyproject.toml` | two (open) items block the first fit. 2026-09-13: Stage 1 (plan 1) discharged both and shipped the engine (`src/ces_revisions/kalman.py`, `docs/decisions/engine.md`); steps (1)–(5) remain in Stages 5, 6, 10, 17; "InferenceData" is read as the ArviZ 1.x `DataTree` (`docs/decisions/engine.md:32`); a scratch probe on an M4 Max CPU, not the fit target, timed one dense value+grad at 0.54 s (T=280, n=150, p=70) and about 1.1 s at n=250, p=100 or at T=570; Stage 6 re-measures on the cloud GPU |
 | 18 Validation | missing | none found | pytest `network`/`slow` markers exist as infrastructure only. 2026-09-13: Stage 1's slow tier asserts the MCMC thresholds on the synthetic pilot, with energy-BFMI above 0.3 per chain and under 1% of draws at maximum tree depth 10 (`tests/test_synthetic_pilot.py:30-34`) — the reading later stages inherit unless a plan records a Deviation |
 | 19 Outputs | missing | none found | — |
-| 20 Written finding | missing | no `docs/` | — |
+| 20 Written finding | missing | no `docs/` | 2026-09-14: Stage 2 (plan 2) shipped the inventory half of `docs/ces-revisions-review.md` — the data and archive inventories and the five rulings — with the literature, gap-table, and bibliography sections stubbed for Stage 23 |
 | — greeting console script | in-code-but-not-in-spec | `src/ces_revisions/__init__.py:1-2`; `[project.scripts]` | `uv init` scaffold; flagged, not a defect |
 
 Three ambiguities were resolved with the user at entry and govern the stages below: (a) Req 15's
@@ -63,7 +65,11 @@ Verification bullets in file order (1–14). Decision records live under `docs/d
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
 run them alongside. The cloud GPU environment that later fits run on is its own brainstorming cycle
 outside this roadmap (user decision, 2026-09-13) — no spec requirement covers it — running
-alongside Stages 2–5 and gating Stage 6.
+alongside Stages 3–5 and gating Stage 6. On 2026-09-14 its spec and plans 3 and 4 were on branch
+`claude/cloud-gpu-ces-revisions-ee5804`, unexecuted, so a stage plan takes the next free id. Once
+Stage 3 ships, Stages 4, 12, and 13 need nothing further and may run alongside one another. If BLS
+answers the request in `specs/deferred_items.md` (first-closing dates, matched-sample counts, lapse
+values), resume re-validates Stages 4, 12, and 13 before routing them.
 
 - [x] Stage 1: Inference stack and Kalman engine on Python 3.14\
       Objective: Discharge Req 17's two (open) items by pinning the inference stack under Python 3.14 and shipping the marginalized Kalman engine — filter likelihood, smoother, per-step log-density contributions, one-step-ahead moments — as a tested NumPyro term proven on a synthetic pilot.\
@@ -79,7 +85,7 @@ alongside Stages 2–5 and gating Stage 6.
       Spec: Req 20 (inventory, rulings); Req 9 (open); Req 3; Rollout note\
       Gap closed: Req 9 ((open) archive inventory); Req 20 (inventory half)\
       Consumes: the spec, the prompt, and the three research drafts in `specs/`; the CLAUDE.md Markdown conventions. Independent of Stage 1.\
-      Produces: `docs/ces-revisions-review.md` with the inventory sections complete and the literature sections stubbed — the data inventory (one row per Req 3 series: vintage coverage, frequency, earliest date, access route, hand-build constraint, first-publication lag); the archive inventory (per vintage: specification, prior-adjustment, and outlier files present or absent; unrounded NSA inputs recoverable or not); the disagreement rulings (the five named, each with a primary-source citation).\
+      Produces: `docs/ces-revisions-review.md` with the inventory sections complete and the literature sections stubbed — the data inventory (one row per Req 3 series: vintage coverage, frequency, earliest date, access route, hand-build constraint, first-publication lag); the archive inventory (per vintage: specification, prior-adjustment, and outlier files present or absent; unrounded NSA inputs recoverable or not); the disagreement rulings (the five named, each with a primary-source citation); the inventory evidence in `docs/inventory/` — `es-vintages.csv` (Employment Situation release dates, complete from May 1999), `archive-captures.csv`, and `archive-inventory.csv` — with `scripts/archive_inventory.py`, whose network `captures` step records that evidence and whose offline `inventory` step regenerates the document's generated blocks; the document's structural tests (`tests/test_review_document.py`), which every later edit of it must pass.\
       Exit: the archive inventory lists every vintage May 2003–present with the three file types and unrounded-input status (bullet 4); the data inventory has one row per Req 3 series with a publication-lag column; each ruling has its own cited subsection; `uv run ruff format --check` passes on the document (bullet 13, inventory half).\
       ROUTING: writing-plans
 
@@ -87,18 +93,18 @@ alongside Stages 2–5 and gating Stage 6.
       Objective: Build the Req 1 raw-value, transformations, and long tables for supersector SA and NSA vintages from May 2003 and the 1979+ total-nonfarm leg, label stages per Req 2, and ship the differencing operator that reproduces the official revision table.\
       Spec: Req 1; Req 2; Req 4; Req 5; Req 9 (identity)\
       Gap closed: Req 1 (vintage sources); Req 2 (data half); Req 4 (data half); Req 5 (data half); Req 9 (accounting identity)\
-      Consumes: From Stage 1: Polars in the stack pins.\
-      Produces: the vintage panel (immutable raw-value parquet with content hash; transformations parquet; long panel keyed per Req 1); the raw vintage file archive (every fetched release file, content-hashed); the stage-label table (F/S/T/B/M per Req 2, right-censored-M, nonstandard-release, `concept_regime`, missing-vintage flags for the 2003 gap and the 2025 lapse); the 1979+ aggregate leg (SA and NSA F/S/T same-release changes from the BLS revision table; RTDSM SA level vintages); the release-date index (release, closing, and publication dates); the differencing module; the accounting-decomposition table (the Req 9 identity by sector, stage, regime); recorded fixtures for the hermetic tier.\
-      Exit: the differencing module reproduces every row of the BLS 1979–present revision table — SA and NSA, all three pairwise MARs — to rounding, including the 2003 gap (bullet 1); re-ingest reproduces every panel value from raw plus transformations; every stage-label row carries exactly one stage, M is right-censored where its vintage does not exist, and the preliminary benchmark is not a stage (Req 2); no sector vintage precedes May 2003 and the aggregate leg carries `concept_regime` (Req 4); the eleven sector values sum to the published total within rounding in every release file (Req 5); the Req 9 identity holds on every same-release pair; live fetches carry the `network` marker and the default tier passes on fixtures.\
+      Consumes: From Stage 1: Polars in the stack pins. From Stage 2: `docs/inventory/es-vintages.csv` and the published-precision finding (supersector levels in whole thousands, SA and NSA). Outside this roadmap: the cloud GPU spec, which leaves this stage's data layout and fetch location to it.\
+      Produces: the vintage panel (immutable raw-value parquet with content hash; transformations parquet; long panel keyed per Req 1); the raw vintage file archive (every fetched release file, content-hashed); the stage-label table (F/S/T/B/M per Req 2, right-censored-M, the Req 1 nonstandard-release flag from the file comments (distinct from Stage 12's off-schedule-release indicator; [collection window](../docs/ces-revisions-review.md#collection-window)), `concept_regime`, missing-vintage flags for the 2003 gap and the 2025 lapse, which left October 2025 without a release); the 1979+ aggregate leg (SA and NSA F/S/T same-release changes from the BLS revision table; RTDSM SA level vintages); the release-date index (scheduled and actual release dates and publication dates; BLS publishes no closing dates, Req 3); the differencing module; the accounting-decomposition table (the Req 9 identity by sector, stage, regime); recorded fixtures for the hermetic tier.\
+      Exit: the differencing module reproduces every row of the BLS 1979–present revision table — SA and NSA, all three pairwise MARs — to rounding, including the 2003 gap (bullet 1); re-ingest reproduces every panel value from raw plus transformations; every stage-label row carries exactly one stage, M is right-censored where its vintage does not exist, and the preliminary benchmark is not a stage (Req 2); no sector vintage precedes May 2003 and the aggregate leg carries `concept_regime` (Req 4); the eleven sector values sum to the published total within rounding in every release file (Req 5); the Req 9 identity holds on every same-release pair; live fetches carry the `network` marker and the default tier passes on fixtures; the release-date index agrees with `es-vintages.csv` on every release from May 1999 on and covers the February 1995–April 1999 releases with checked dates or records those years as out of scope (the pre-May-1999 item in `specs/deferred_items.md`, plan 2).\
       ROUTING: writing-plans
 
 - [ ] Stage 4: Benchmark, birth–death, QCEW-revision, and sample tables\
-      Objective: Ingest the annual-source tables the operators and covariates read — benchmark revisions and sector contributions with publication dates, reconstruction events, birth–death forecasts and forecast-vs-realized rows, the 2017+ QCEW revision sequence, and coverage/RSE by supersector-year.\
+      Objective: Ingest the annual-source tables the operators and covariates read — benchmark revisions and sector contributions with publication dates, reconstruction events, birth–death forecasts and forecast-vs-realized rows, the 2017+ QCEW revision sequence, and the Table 1 coverage share and RSE by supersector-year.\
       Spec: Req 1; Req 3 (sample rows); Req 10 (inputs); Req 11\
       Gap closed: Req 1 (benchmark sources); Req 3 (sample panel); Req 11 (data half)\
-      Consumes: From Stage 3: the release-date index. From Stage 2: the data inventory.\
-      Produces: the benchmark table (preliminary 2000+ and final 1979+ March revisions, sector contributions 2003+, a publication date per figure); the reconstruction-events table (the single source of "documented reconstruction"); the birth–death table (monthly forecasts by supersector, revised values, forecast-vs-realized rows; zero for government); the QCEW revision table (2017+ aggregate sequence with a revision-precision proxy per benchmark year); the sample panel (coverage/RSE by supersector-year harmonized across definition switches); every value with provenance and an `observable_at` date.\
-      Exit: a final row exists for every benchmark year 1979–2025 and a preliminary row for 2000–2025, each with a publication date; every reconstruction event and benchmark publication date exists in Stage 3's release-date index; the birth–death table is zero for government in every row (Req 11, data half); the sample panel carries a definition-break flag at each documented switch (Req 3); a test asserts every `observable_at` is populated.\
+      Consumes: From Stage 3: the release-date index. From Stage 2: the data inventory (birth–death and sample rows), the benchmark ruling, the 2025 program-cuts ruling.\
+      Produces: the benchmark table (preliminary 2000+ and final 1979+ March revisions with Table 5's footnotes, sector contributions 2003+, a publication date per figure); the reconstruction-events table (the single source of "documented reconstruction"); the birth–death table (monthly forecasts by supersector, revised values, forecast-vs-realized rows; zero for government); the QCEW revision table (2017+ aggregate sequence with a revision-precision proxy per benchmark year); the sample panel (Table 1's coverage share, the Req 3 proxy for usable linked coverage, and RSE by supersector-year, with a definition note where the count of published series falls); every value with provenance and an `observable_at` date.\
+      Exit: a final row exists for every benchmark year 1979–2025 and a preliminary row for 2000–2026 (the March 2026 final is due in February 2027), each with a publication date; the March 2025 final row records the article's −862 beside Table 5's −861 as an unexplained difference, and footnote 12's changes are rows of the reconstruction-events table (Stage 2's benchmark ruling); every reconstruction event and benchmark publication date exists in Stage 3's release-date index; the birth–death table is zero for government in every row (Req 11, data half); the sample panel labels coverage as the Table 1 proxy, flags the missing March 2012 table, and carries an RSE break flag at each change in the published measure (Req 3; the coverage item in `specs/deferred_items.md`, plan 2); a test asserts every `observable_at` is populated.\
       ROUTING: writing-plans
 
 - [ ] Stage 5: Benchmark, aggregation, and seasonal-mapping operators\
@@ -168,9 +174,9 @@ alongside Stages 2–5 and gating Stage 6.
       Objective: Build the release-date-keyed covariate panels — the business-day collection window with its indicators, C1/C2/C3 and RR as distinct series with the calendar-predicted/residual C1 split, and macro/tail controls aligned to each release's information set.\
       Spec: Req 3 (collection and macro rows)\
       Gap closed: Req 3 (collection and macro rows)\
-      Consumes: From Stage 2: the data inventory, the collection-versus-response ruling. From Stage 3: the release-date index, the stage-label table (nonstandard-release flags). Independent of Stages 6–11.\
-      Produces: the collection-window panel (business days, holiday/nonstandard/lapse indicators, C1/C2/C3, RR, calendar-predicted and residual C1) with the first-stage C1 model and its validation; the macro-controls table keyed by release date; `observable_at` per value; provenance and definition-break flags.\
-      Exit: the panel is committed with provenance and flags and no monthly row carries an interpolated annual value (bullet 14, collection half); a test asserts RR and C3 are distinct series and predicted plus residual equals realized C1; a test asserts the first-stage design contains exactly the Req 3 regressor set, with an out-of-sample fit statistic recorded; the business-day count exists for every release since May 2003; every macro-control value's `observable_at` is no later than its release date (Req 3).\
+      Consumes: From Stage 2: the data inventory (collection-window and macro rows), the collection-versus-response ruling. From Stage 3: the release-date index (scheduled and actual release dates). Independent of Stages 6–11.\
+      Produces: the collection-window panel (business days to the release date, labeled the Req 3 proxy; holiday, off-schedule-release, and lapse indicators; C1/C2/C3 and RR from their LABSTAT start dates, each value as first published, from the archived collection-rate pages before December 2024; calendar-predicted and residual C1) with the first-stage C1 model and its validation; the macro-controls table keyed by release date; `observable_at` per value; provenance and definition-break flags.\
+      Exit: the panel is committed with provenance and flags and no monthly row carries an interpolated annual value (bullet 14, collection half); a test asserts RR and C3 are distinct series and predicted plus residual equals realized C1; a test asserts the first-stage design contains exactly the amended Req 3 regressor set, with no sector effects, and an out-of-sample fit statistic is recorded; the business-day count exists for every release since May 2003; every macro-control value's `observable_at` is no later than its release date (Req 3); every collection-rate value carries its first-published value and `observable_at` where an archived page or the database holds it, and a flag where neither does, so no revised rate reaches an earlier release (Req 18).\
       ROUTING: writing-plans
 
 - [ ] Stage 13: Institutional capacity panel and shutdown events, FY2009–present\
@@ -178,17 +184,17 @@ alongside Stages 2–5 and gating Stage 6.
       Spec: Req 3 (institutional rows); Req 13 (inputs)\
       Gap closed: Req 3 (institutional rows)\
       Consumes: From Stage 2: the data inventory (institutional rows), the rulings on the 2018–19 lapse, 2025 program cuts, and FTE concepts. From Stage 3: the release-date index. Independent of Stages 6–12.\
-      Produces: the institutional panel (FY2009+, per-series provenance, definition-break flag, `observable_at`); the shutdown-events table (BLS closed, collection stopped, release delayed, window extended — the single home for shutdown coding); the party-composition table (separate file, no monthly key).\
-      Exit: the panel is committed with fiscal-year keys only and no monthly expansion (bullet 14, institutional half); the 2018–19 lapse row's four fields match Stage 2's ruling and citation; no generic federal-shutdown column exists; the party table is not joinable to any monthly panel (Req 3).\
+      Produces: the institutional panel (FY2009+, actual FTE and OPM on-board headcount as separate series, the deflator choice, per-series provenance, definition-break flag, `observable_at`); the shutdown-events table (BLS closed, collection stopped, release delayed, window extended — the single home for shutdown coding); the party-composition table (separate file, no monthly key).\
+      Exit: the panel is committed with fiscal-year keys only and no monthly expansion (bullet 14, institutional half); every shutdown-events field carries Stage 2's documented value and citation, or a not-found flag for the six lapse values Stage 2 could not document, never a default no; no planned or authorized FTE value appears in the actual-FTE series (Stage 2's FTE ruling); no generic federal-shutdown column exists; the party table is not joinable to any monthly panel (Req 3).\
       ROUTING: writing-plans
 
 - [ ] Stage 14: Seasonal-adjustment file store, seasonal-flag panel, birth–death covariates, and interventions table\
-      Objective: Fetch and store BLS's archived seasonal-adjustment files, build the seasonal-flag panel and the birth–death covariate columns, and date the Req 14 intervention set with shutdown rows joined from Stage 13.\
+      Objective: Store the seasonal-adjustment file copies the archive inventory credits — BLS keeps no archive of its own — build the seasonal-flag panel and the birth–death covariate columns, and date the Req 14 intervention set with shutdown rows joined from Stage 13.\
       Spec: Req 3 (seasonal rows); Req 11; Req 14\
       Gap closed: Req 3 (seasonal rows); Req 11 (covariate columns); Req 14 (data half)\
-      Consumes: From Stage 2: the archive inventory. From Stage 3: the release-date index, stage-label table. From Stage 4: the birth–death and reconstruction-events tables. From Stage 13: the shutdown-events table.\
-      Produces: the seasonal-adjustment file store (specification, prior-adjustment, and outlier files per vintage, content-hashed, coverage scoped by the archive inventory); the seasonal-flag panel; the birth–death covariate columns (relative forecast, forecast-vs-realized; zero for government); the interventions table (the documented Req 14 set, shutdown-affected releases from Stage 13, NAICS/reconstruction flags from Stage 4); `observable_at` per value.\
-      Exit: every seasonal-flag row for a vintage the archive inventory marks incomplete carries a missing flag rather than a silent absence; the file store's coverage equals the archive inventory; the government birth–death covariate is zero in every row (Req 11); the interventions table contains every Req 14 documented event with a source, and every shutdown row resolves to its four-field Stage 13 row (Req 14, data half).\
+      Consumes: From Stage 2: the archive inventory with its evidence and `scripts/archive_inventory.py`, the seasonal and birth–death rows of the data inventory, the 2025 program-cuts ruling. From Stage 3: the release-date index, stage-label table. From Stage 4: the birth–death and reconstruction-events tables. From Stage 13: the shutdown-events table.\
+      Produces: the seasonal-adjustment file store (specification, prior-adjustment, and outlier files per vintage, content-hashed, coverage scoped by the archive inventory); the seasonal-flag panel (each flag from the file type that carries it where a copy survives, else the 2003–2013 benchmark-article specification tables); the birth–death covariate columns (relative forecast, forecast-vs-realized; zero for government); the interventions table (the documented Req 14 set, with each birth–death method change dated from Stage 2's birth–death row and a 2025 program change only from a notice Stage 2's ruling cites; shutdown-affected releases from Stage 13; NAICS/reconstruction flags from Stage 4); `observable_at` per value.\
+      Exit: every seasonal-flag value names its source file or table, and a flag with no surviving source carries a missing flag rather than a silent absence; the file store's coverage equals the archive inventory, and `captures` records each copy's newest ZIP member date with a test checking every credited copy against its release window (the member-date item in `specs/deferred_items.md`, plan 2); the government birth–death covariate is zero in every row (Req 11); the interventions table contains every Req 14 documented event with a source, and every shutdown row resolves to its four-field Stage 13 row (Req 14, data half).\
       ROUTING: writing-plans
 
 - [ ] Stage 15: Closing-stage scale layer\
@@ -204,9 +210,9 @@ alongside Stages 2–5 and gating Stage 6.
       Objective: Complete comparator (3) — the T→B and B→M rows, the capacity factor on closing and annual rows, the birth–death and shutdown interventions, the separate-covariate setting — and pass the complete Req 15 prior-predictive plan before its first conditional fit.\
       Spec: Req 8; Req 11; Req 12; Req 13; Req 14; Req 15; Req 18\
       Gap closed: Req 8 (complete); Req 11 (interventions); Req 12 (annual rows); Req 13; Req 14 (interventions); Req 15 (gate)\
-      Consumes: From Stage 15: the closing-stage scale model, design tables, harnesses, run harness. From Stage 13: the institutional panel, the shutdown-events table. From Stage 14: the birth–death covariate columns, the interventions table. From Stage 4: the benchmark, QCEW revision, and sample tables. From Stage 12: the collection-window panel (RR).\
+      Consumes: From Stage 15: the closing-stage scale model, design tables, harnesses, run harness. From Stage 2: the FTE ruling. From Stage 13: the institutional panel, the shutdown-events table. From Stage 14: the birth–death covariate columns, the interventions table. From Stage 4: the benchmark, QCEW revision, and sample tables. From Stage 12: the collection-window panel (RR).\
       Produces: comparator (3), complete and unfitted; the design tables completed; the prior-predictive report at `docs/prior-predictive.md`; the gated prior table (Req 15 as amended by the gate, each change a Deviation) — the table every later stage cites; the harnesses extended to annual rows and the capacity factor.\
-      Exit: tests assert comparators (0)–(3) are obtainable from comparator (3) by nested settings (Req 18); one shared capacity coefficient with shrunk stage deviations on closing and annual rows, missing indicators integrated out, and no unrestricted slow slope beside it (Req 13); the Req 12 hierarchy on T→B and B→M sector coefficients; the birth–death method changes as dated interventions on annual rows only (Req 11, Req 14); party composition absent from model inputs (Req 3); the prior-predictive report shows every Req 15 constraint satisfied on complete 1979–2026 panels with the doubled-SD rerun committed, before any conditional fit of comparator (3) (bullet 6 closed); layer-local SBC recovers the annual-row coefficients and the capacity loadings (bullet 7, annual part).\
+      Exit: tests assert comparators (0)–(3) are obtainable from comparator (3) by nested settings (Req 18); one shared capacity coefficient with shrunk stage deviations on closing and annual rows, missing indicators integrated out, actual FTE the only FTE indicator loaded, and no unrestricted slow slope beside it (Req 13); the Req 12 hierarchy on T→B and B→M sector coefficients; the birth–death method changes as dated interventions on annual rows only (Req 11, Req 14); party composition absent from model inputs (Req 3); the prior-predictive report shows every Req 15 constraint satisfied on complete 1979–2026 panels with the doubled-SD rerun committed, before any conditional fit of comparator (3) (bullet 6 closed); layer-local SBC recovers the annual-row coefficients and the capacity loadings (bullet 7, annual part).\
       ROUTING: writing-plans
 
 - [ ] Stage 17: First fit of comparator (3), sampler decision, and hierarchy geometry\
@@ -267,7 +273,7 @@ alongside Stages 2–5 and gating Stage 6.
       Objective: Complete `docs/ces-revisions-review.md` — the literature by driver, the gap table, and the annotated bibliography — verified against primary sources.\
       Spec: Req 20\
       Gap closed: Req 20 (complete)\
-      Consumes: From Stage 2: the review document with its inventory sections and rulings. From Stage 5: the written link-relative determination (cited). From Stage 1: the engine determination (cited as Req 17's discharge). The drafts and the prompt. Independent of Stages 6–22; may run any time after Stage 5.\
+      Consumes: From Stage 2: the review document with its inventory sections and rulings, and its structural tests. From Stage 5: the written link-relative determination (cited). From Stage 1: the engine determination (cited as Req 17's discharge). The drafts and the prompt. Independent of Stages 6–22; may run any time after Stage 5.\
       Produces: the finished review document.\
       Exit: the four Req 20 parts exist; every numeric claim, date, and citation carries a primary-source citation or an unverified flag and an evidence label; the bibliography labels each source's status; `uv run ruff format --check` passes (bullet 13 closed).\
       ROUTING: writing-plans
@@ -285,9 +291,9 @@ alongside Stages 2–5 and gating Stage 6.
       Objective: For every vintage the archive inventory marks complete, reproduce the vintage-specific X-13 factors from the stored files and record match-to-published diagnostics.\
       Spec: Req 9 (channel (b)); Out of scope\
       Gap closed: Req 9 (channel (b), reproduction half)\
-      Consumes: From Stage 2: the archive inventory. From Stage 14: the seasonal-adjustment file store. From Stage 3: the vintage panel (NSA rows), the raw file archive. From Stage 1: the stack pins, which include no X-13 wrapper.\
+      Consumes: From Stage 2: the archive inventory (28 archive-complete releases; unrounded NSA inputs not published) and the published-precision finding. From Stage 14: the seasonal-adjustment file store. From Stage 3: the vintage panel (NSA rows), the raw file archive. From Stage 1: the stack pins, which include no X-13 wrapper.\
       Produces: the X-13 reproduction module, with any X-13 wrapper it adopts pinned under a Python 3.14 import test; the reproduced-factor table per vintage with match diagnostics and an explicit channel-(a) flag for partial-archive vintages.\
-      Exit: for every archive-complete vintage a test shows the reproduced SA series matches the published SA vintage to rounding, and partial-archive vintages carry the channel-(a) flag; the table states how many vintages reproduce. If none do, resume parks Stage 26.\
+      Exit: for each archive-complete release a test records whether the SA series reproduced from rounded inputs matches the published SA vintage to rounding, and every release that does not match or is not archive-complete carries the channel-(a) flag; the table states how many releases reproduce. If none do, resume parks Stage 26.\
       ROUTING: brainstorming
 
 - [ ] Stage 26: Channel (b) observation and re-reported decomposition\
