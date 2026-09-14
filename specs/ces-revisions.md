@@ -48,16 +48,19 @@ The literature characterizes the **sign and mean bias** of CES revisions well an
   Copeland (2003) links short windows to late reporting, but the link to revision
   **dispersion** rests on pooled correlations of ~0.18 over two years and four industries
   (chatgpt §2.2). Collection rates in 2024 averaged 60.4 / 89.0 / 90.9 percent at the three
-  closings (C1–C3 series, monthly from January 2000); the distinct third-release response rate
-  fell from ~58 percent pre-2020 to ~43 percent in 2024 (chatgpt §2.2; claude §2 Driver 2).
+  closings (C1–C3 series, monthly from 1981 — C1 and C3 from January, C2 from March, per Stage 2's
+  [collection-rate ruling](../docs/ces-revisions-review.md#collection-rate-versus-response-rate));
+  the distinct third-release response rate fell from ~58 percent pre-2020 to ~43 percent in 2024
+  (chatgpt §2.2; claude §2 Driver 2).
   The gemini draft's "~40 percent first-closing rate" conflates the two (rejected).
 - The annual benchmark is the difference between two separately produced, errorful counts:
   QCEW is revised, BLS does not archive its vintages, and ALFRED's QCEW holdings lack industry
   detail. The published wedge distributes one March gap linearly over eleven months, and
   Robertson (2021) shows that linear error path is wrong on average (chatgpt §2.6, §3.3;
-  claude §3). The March 2025 final benchmark was −862 thousand NSA (−861 after a scope
-  reconstruction), −898 SA; the preliminary was −911 (chatgpt §2.6; claude §1;
-  `bls-data-context`).
+  claude §3). The March 2025 final benchmark was −861 thousand NSA in Table 5 of the CES
+  technical notes and the benchmark article's summary, −862 in the article's Table 3 (no source
+  explains the difference), and −898 SA; the preliminary was −911 (Stage 2's
+  [benchmark ruling](../docs/ces-revisions-review.md#the-2024-and-2025-preliminary-and-final-benchmark-revisions)).
 - No study — peer-reviewed or agency — relates real BLS appropriations, continuing
   resolutions, sequestration, shutdown exposure, or FTE to any CES revision scale. Budget
   authority, FTE, and sample size are slow, trending, collinear, and definition-broken
@@ -118,22 +121,31 @@ right-censored: `M` is integrated out and reported as a posterior predictive, ne
 series; annual series are **never** interpolated to monthly (chatgpt §2.5, §3.3; claude §3):
 
 - Collection window: $`D_t`$ = federal business days from the first business day after the 12th
-  through first closing, computed from archived release and closing schedules, with separate
-  indicators for federal holidays, nonstandard releases, and lapses in appropriations
-  (chatgpt §2.2). Collection rates `CEU00000000C1/C2/C3` (monthly, January 2000+) and the
-  total-private third-release response rate `CEU05000000RR` (2009+), never conflated
-  (chatgpt §2.2; the gemini §2 figure rejected). Realized first-close coverage is split into a
-  calendar-predicted component (a first-stage equation on business days, holidays, release
-  features, sector, and month effects) and its residual; only the residual enters the scale
+  up to, not including, the release date, computed from archived release schedules, with
+  separate indicators for federal holidays, nonstandard releases, and lapses in appropriations
+  (chatgpt §2.2). BLS publishes no first-closing dates, so $`D_t`$ is a labeled proxy for the
+  window to first closing that overstates it by the unpublished business days between first
+  closing and the release; historical first-closing dates, if BLS supplies them, end the window
+  instead (chosen — user decision 2026-09-14, after Stage 2 found no closing schedule). Collection
+  rates `CEU00000000C1/C2/C3` (monthly; C1 and C3 from January 1981, C2 from March 1981, per
+  Stage 2's collection-rate ruling) and the total-private third-release response rate
+  `CEU05000000RR` (April 2009+), never conflated (chatgpt §2.2; the gemini §2 figure rejected).
+  Realized first-close coverage is split into a calendar-predicted component (a first-stage
+  equation on business days, holidays, release features, and month effects; C1 is published for
+  total nonfarm only, so it has no sector effects) and its residual; only the residual enters the scale
   equation, as an associational term (chatgpt §4.4).
 - Seasonal: four/five-week interval, Easter/Labor Day/outlier flags, annual-specification
   regime, BLS COVID intervention-treatment indicators, from the CES seasonal-adjustment files
   (chatgpt §2.1, §4.4).
 - Net birth–death: published monthly forecasts by supersector and the benchmark-article
   forecast-vs-realized tables; zero for government (chatgpt §2.4; claude §3; user decision Q4).
-- Sample: annual benchmark technical tables — usable linked employment coverage and RSE by
-  supersector — harmonized across the organization/UI-account/worksite definition switches
-  (chatgpt §2.4, §3.3).
+- Sample: annual benchmark technical tables by supersector. Coverage is the sample's employment
+  as a percent of benchmark employment (Table 1 of the CES technical notes), a labeled proxy for
+  usable linked coverage because the table counts active sample reports, not the matched sample,
+  with the missing March 2012 table flagged; matched-sample counts replace it if BLS supplies
+  them. RSE carries a definition-break flag at each change in its published measure (chatgpt
+  §2.4, §3.3; chosen — user decision 2026-09-14, after Stage 2 found no organization, UI-account,
+  or worksite definition switch in the tables from March 2002 to March 2025).
 - Institutional: real BLS budget authority (General Fund plus Unemployment Trust Fund
   transfer, deflated), fiscal-year-average FTE from successive Congressional Budget
   Justifications cross-checked against OPM September headcount, CES federal/state/contractor
@@ -392,7 +404,7 @@ K_y=\phi_K K_{y-1}+\eta^K_y,
 over log real enacted budget authority, appropriation-funded FTE, and — when
 definition-consistent — CES workyears, budget loading fixed positive, missing indicators
 integrated out, each definition break with its own intercept. Usable linked coverage is not
-loaded into $`K_y`$ (its sector-month residual enters Req 8 directly). One shared $`K_y`$
+loaded into $`K_y`$ (its sector-year proxy, Req 3, enters Req 8 directly). One shared $`K_y`$
 coefficient across monthly closing stages with tightly shrunk stage deviations, learned from
 annual changes. Except for the two well-identified within-year covariates — collection days
 and the first-close residual — which take $`N(0,0.3^2)`$ priors on standardized scale
@@ -684,3 +696,10 @@ are its inputs. Stage stamps and the roadmap reference are added to this note by
 Stage 1: COMPLETE (2026-09-12) — implemented by plan 1 (specs/plans/completed/1-ces-revisions.md). Next: resume the roadmap.
 
 Stage 2: COMPLETE (2026-09-13) — implemented by plan 2 (specs/plans/completed/2-ces-revisions.md). Next: resume the roadmap.
+
+Amended 2026-09-14 after Stage 2 (user decisions): the Motivation and Req 3 take the
+collection-rate start dates and the March 2025 benchmark figures from Stage 2's rulings; Req 3
+ends the collection window at the release date as a labeled proxy and drops sector effects from
+the first-stage C1 equation; Req 3's sample row, and Req 13 with it, use Table 1's coverage share
+as a labeled proxy for usable linked coverage, with RSE break flags. The roadmap resume
+re-validates Stages 3, 4, and 12 against these amendments.
