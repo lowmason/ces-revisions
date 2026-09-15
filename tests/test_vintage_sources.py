@@ -183,6 +183,62 @@ def test_fetch_validates_every_payload_before_replacing_sources(
     assert not workbook_path.exists()
 
 
+def test_refresh_manifest_rehashes_bytes_without_changing_provenance(tmp_path: Path):
+    raw_dir = tmp_path / "raw"
+    source = raw_dir / raw.RESCHEDULES
+    source.parent.mkdir(parents=True)
+    source.write_text("old\n", encoding="utf-8")
+    row = dict.fromkeys(vintage_sources.MANIFEST_COLUMNS, "")
+    row.update(
+        file=raw.RESCHEDULES,
+        sha256="old hash",
+        bytes="4",
+        derived_from="hand-keyed from the citation on each row",
+    )
+    vintage_sources.archive_inventory.write_csv(
+        raw_dir / raw.MANIFEST, [row], vintage_sources.MANIFEST_COLUMNS
+    )
+
+    source.write_text("new source bytes\n", encoding="utf-8")
+    assert vintage_sources.refresh_manifest(raw_dir) == 1
+
+    [refreshed] = vintage_sources.archive_inventory.read_csv(raw_dir / raw.MANIFEST)
+    assert refreshed["sha256"] == raw.file_sha256(source)
+    assert refreshed["bytes"] == str(source.stat().st_size)
+    assert refreshed["derived_from"] == "hand-keyed from the citation on each row"
+    assert refreshed["url"] == ""
+    assert refreshed["fetched_at"] == ""
+
+
+def test_refresh_manifest_rejects_an_unrecorded_source(tmp_path: Path):
+    raw_dir = tmp_path / "raw"
+    raw_dir.mkdir()
+    vintage_sources.archive_inventory.write_csv(
+        raw_dir / raw.MANIFEST, [], vintage_sources.MANIFEST_COLUMNS
+    )
+    (raw_dir / "unexpected.csv").write_text("value\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="file set differs"):
+        vintage_sources.refresh_manifest(raw_dir)
+
+
+def test_manifest_command_reports_the_refreshed_file_count(monkeypatch, capsys):
+    monkeypatch.setattr(vintage_sources, "refresh_manifest", lambda: 9)
+    assert vintage_sources.main(["manifest"]) == 0
+    assert capsys.readouterr().out == "manifest: 9 source files\n"
+
+
+def test_historical_release_text_records_its_pdftotext_version():
+    rows = {row["file"]: row for row in manifest()}
+    assert rows[raw.HISTORICAL_RELEASE_DATES]["tool_version"].startswith(
+        "pdftotext version "
+    )
+    assert all(
+        not row["tool_version"]
+        for file, row in rows.items()
+        if file != raw.HISTORICAL_RELEASE_DATES
+    )
+
+
 def test_the_manifest_lists_every_committed_source_with_its_hash_and_size():
     rows = manifest()
     committed = sorted(

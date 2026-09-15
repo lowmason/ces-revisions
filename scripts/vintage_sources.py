@@ -1,7 +1,8 @@
 """Fetch roadmap Stage 3's source files into data/raw/, or build the vintage panel from them.
 
-    uv run python scripts/vintage_sources.py fetch   # network: refresh data/raw/ and its manifest
-    uv run python scripts/vintage_sources.py build   # offline: write data/panel/ from data/raw/
+    uv run python scripts/vintage_sources.py fetch     # network: refresh data/raw/ and its manifest
+    uv run python scripts/vintage_sources.py manifest  # offline: rehash existing data/raw/
+    uv run python scripts/vintage_sources.py build     # offline: write data/panel/ from data/raw/
 
 BLS keeps one current copy of each file and overwrites it in place, so the committed files are
 the raw archive Req 1 asks for. data/raw/manifest.csv records each file's origin, SHA-256, size,
@@ -186,6 +187,37 @@ def promote_tree(staging_dir: Path, target_dir: Path) -> None:
         staged.replace(target)
 
 
+def refresh_manifest(raw_dir: Path = RAW_DIR) -> int:
+    """Rehash the recorded archive without changing acquisition provenance."""
+    existing_rows = archive_inventory.read_csv(raw_dir / MANIFEST)
+    existing = {row["file"]: row for row in existing_rows}
+    files = sorted(
+        str(path.relative_to(raw_dir))
+        for path in raw_dir.rglob("*")
+        if path.is_file() and path.name not in {MANIFEST, ".DS_Store"}
+    )
+    if set(existing) != set(files):
+        missing = sorted(set(existing) - set(files))
+        unrecorded = sorted(set(files) - set(existing))
+        raise ValueError(
+            f"manifest file set differs: missing={missing}, unrecorded={unrecorded}"
+        )
+
+    rows = []
+    for file in files:
+        row = dict.fromkeys(MANIFEST_COLUMNS, "")
+        row.update(existing[file])
+        path = raw_dir / file
+        row.update(
+            file=file,
+            sha256=file_sha256(path),
+            bytes=str(path.stat().st_size),
+        )
+        rows.append(row)
+    archive_inventory.write_csv(raw_dir / MANIFEST, rows, MANIFEST_COLUMNS)
+    return len(rows)
+
+
 def fetch_sources(
     now: datetime,
     *,
@@ -321,10 +353,13 @@ def build_panel() -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=["fetch", "build"])
+    parser.add_argument("command", choices=["fetch", "manifest", "build"])
     command = parser.parse_args(argv).command
     if command == "fetch":
         return fetch_sources(datetime.now(UTC).replace(microsecond=0))
+    if command == "manifest":
+        print(f"manifest: {refresh_manifest()} source files")
+        return 0
     return build_panel()
 
 

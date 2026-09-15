@@ -1,10 +1,10 @@
-file,url,sha256,bytes,last_modified,fetched_at,derived_from,derived_from_sha256
-bls/cesnaicsrev.htm,https://www.bls.gov/web/empsit/cesnaicsrev.htm,9a1e83221f3aaf7521a137dc154a3ee4dcb54bf790c172dce451045a26c27c44,401161,,2026-09-15T01:28:27Z,,
-bls/cesvin00-comments.csv,,4addbd4b33c8907d189c350ec2fccd3189be22d25049fabe60ab7452f5be0d8f,8347,"Fri, 06 Mar 2026 12:06:28 GMT",2026-09-15T01:28:27Z,"https://www.bls.gov/web/empsit/cesvin00.xlsx, sheet Data Usage and Comments",7d5ee120523493c4048e766f6f01634bb2f5817fa4aa15bb26348209ad5ebdfd
-bls/cesvinall.zip,https://www.bls.gov/web/empsit/cesvinall.zip,c8a0d98cecd10d1ed35097d75a9c07344c2f15abb472d9d0164a2a164e4ab9fc,3095848,"Fri, 06 Mar 2026 12:06:34 GMT",2026-09-15T01:28:27Z,,
-bls/empsit-releases.csv,,ed838b1abb8a583ad6a6f1fa39c0284ea5f52f41965fefd1ff65625004300b80,26666,,2026-09-15T01:28:27Z,https://www.bls.gov/bls/news-release/empsit.htm,
-bls/histreleasedates.pdf,https://www.bls.gov/bls/histreleasedates.pdf,03b2f2f36a7fdafe36bf34895f0fe5ac3bc118821cd4db8f00806e9ff1a059cc,30838,"Thu, 06 Feb 2025 14:46:20 GMT",2026-09-15T01:28:27Z,,
-bls/histreleasedates.txt,,17b3a0fa2e487c695ae7765b4213390f9f529f1469e696144b3faa056849b6da,33971,,2026-09-15T01:28:27Z,pdftotext -layout bls/histreleasedates.pdf,03b2f2f36a7fdafe36bf34895f0fe5ac3bc118821cd4db8f00806e9ff1a059cc
-manual/es-reschedules.csv,,89c3199bb062a149afa1510a66aee49c7817a1f1e0ed1dd0f95da769af64a0c5,1652,,,hand-keyed from the citation on each row,
-philadelphiafed/employMvMd.xlsx,https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/employMvMd.xlsx,ae954f940b621d80e9f56c42b151a2d340ecf01744e03c33acad74e58da0aafa,2228010,,2026-09-15T01:28:27Z,,
-philadelphiafed/release-dates-employment-situation.xls,https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/documentation/Release_-Dates-Employment_Situation-BLS.xls,b583847169fd5ca4074917e1105887b0bc5b8e3b4d2f9576023388b5b57565ee,34816,,2026-09-15T01:28:27Z,,
+file,url,sha256,bytes,last_modified,fetched_at,derived_from,derived_from_sha256,tool_version
+bls/cesnaicsrev.htm,https://www.bls.gov/web/empsit/cesnaicsrev.htm,9a1e83221f3aaf7521a137dc154a3ee4dcb54bf790c172dce451045a26c27c44,401161,,2026-09-15T01:28:27Z,,,
+bls/cesvin00-comments.csv,,4addbd4b33c8907d189c350ec2fccd3189be22d25049fabe60ab7452f5be0d8f,8347,"Fri, 06 Mar 2026 12:06:28 GMT",2026-09-15T01:28:27Z,"https://www.bls.gov/web/empsit/cesvin00.xlsx, sheet Data Usage and Comments",7d5ee120523493c4048e766f6f01634bb2f5817fa4aa15bb26348209ad5ebdfd,
+bls/cesvinall.zip,https://www.bls.gov/web/empsit/cesvinall.zip,c8a0d98cecd10d1ed35097d75a9c07344c2f15abb472d9d0164a2a164e4ab9fc,3095848,"Fri, 06 Mar 2026 12:06:34 GMT",2026-09-15T01:28:27Z,,,
+bls/empsit-releases.csv,,ed838b1abb8a583ad6a6f1fa39c0284ea5f52f41965fefd1ff65625004300b80,26666,,2026-09-15T01:28:27Z,https://www.bls.gov/bls/news-release/empsit.htm,,
+bls/histreleasedates.pdf,https://www.bls.gov/bls/histreleasedates.pdf,03b2f2f36a7fdafe36bf34895f0fe5ac3bc118821cd4db8f00806e9ff1a059cc,30838,"Thu, 06 Feb 2025 14:46:20 GMT",2026-09-15T01:28:27Z,,,
+bls/histreleasedates.txt,,17b3a0fa2e487c695ae7765b4213390f9f529f1469e696144b3faa056849b6da,33971,,2026-09-15T01:28:27Z,pdftotext -layout bls/histreleasedates.pdf,03b2f2f36a7fdafe36bf34895f0fe5ac3bc118821cd4db8f00806e9ff1a059cc,pdftotext version 26.06.0
+manual/es-reschedules.csv,,89c3199bb062a149afa1510a66aee49c7817a1f1e0ed1dd0f95da769af64a0c5,1652,,,hand-keyed from the citation on each row,,
+philadelphiafed/employMvMd.xlsx,https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/xlsx/employMvMd.xlsx,ae954f940b621d80e9f56c42b151a2d340ecf01744e03c33acad74e58da0aafa,2228010,,2026-09-15T01:28:27Z,,,
+philadelphiafed/release-dates-employment-situation.xls,https://www.philadelphiafed.org/-/media/FRBP/Assets/Surveys-And-Data/real-time-data/data-files/documentation/Release_-Dates-Employment_Situation-BLS.xls,b583847169fd5ca4074917e1105887b0bc5b8e3b4d2f9576023388b5b57565ee,34816,,2026-09-15T01:28:27Z,,,
