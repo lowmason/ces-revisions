@@ -14,6 +14,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -162,8 +163,10 @@ def extract_comments(workbook: Path) -> list[dict[str, str]]:
     return comment_rows(sheet.to_polars().rows())
 
 
-def manifest_row(file: str, fetched_at: str, **fields: str) -> dict[str, str]:
-    path = RAW_DIR / file
+def manifest_row(
+    file: str, fetched_at: str, *, raw_dir: Path = RAW_DIR, **fields: str
+) -> dict[str, str]:
+    path = raw_dir / file
     row = dict.fromkeys(MANIFEST_COLUMNS, "")
     row.update(
         file=file,
@@ -175,8 +178,21 @@ def manifest_row(file: str, fetched_at: str, **fields: str) -> dict[str, str]:
     return row
 
 
-def fetch_sources(now: datetime) -> int:
-    """Network step: refresh every source file, its derived text, and the manifest."""
+def promote_tree(staging_dir: Path, target_dir: Path) -> None:
+    """Replace target files only after the caller has completed staging."""
+    for staged in sorted(path for path in staging_dir.rglob("*") if path.is_file()):
+        target = target_dir / staged.relative_to(staging_dir)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        staged.replace(target)
+
+
+def fetch_sources(
+    now: datetime,
+    *,
+    raw_dir: Path = RAW_DIR,
+    workbook_path: Path = WORKBOOK_PATH,
+) -> int:
+    """Refresh all sources only after a complete staged fetch validates."""
     if not os.environ.get("BLS_CONTACT_EMAIL"):
         print(
             "set BLS_CONTACT_EMAIL to the contact address BLS asks automated clients for",
@@ -186,70 +202,112 @@ def fetch_sources(now: datetime) -> int:
     if shutil.which("pdftotext") is None:
         print("pdftotext (poppler) is required: brew install poppler", file=sys.stderr)
         return 1
+
     stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    rows = []
-    for item in DOWNLOADS:
-        payload, last_modified = download(item.url)
-        target = RAW_DIR / item.file
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(payload)
+    tool_version = pdftotext_version()
+    raw_dir.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix="ces-stage3-fetch-", dir=raw_dir.parent
+    ) as directory:
+        staging_root = Path(directory)
+        staged_raw = staging_root / "raw"
+        staged_workbook = staging_root / "cache" / workbook_path.name
+        rows = []
+
+        for item in DOWNLOADS:
+            payload, last_modified = download(item.url)
+            validate_payload(item.url, payload)
+            target = staged_raw / item.file
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(payload)
+            rows.append(
+                manifest_row(
+                    item.file,
+                    stamp,
+                    raw_dir=staged_raw,
+                    url=item.url,
+                    last_modified=last_modified,
+                )
+            )
+
+        pdf = staged_raw / "bls/histreleasedates.pdf"
+        convert_pdf(pdf, staged_raw / HISTORICAL_RELEASE_DATES)
         rows.append(
-            manifest_row(item.file, stamp, url=item.url, last_modified=last_modified)
+            manifest_row(
+                HISTORICAL_RELEASE_DATES,
+                stamp,
+                raw_dir=staged_raw,
+                derived_from="pdftotext -layout bls/histreleasedates.pdf",
+                derived_from_sha256=file_sha256(pdf),
+                tool_version=tool_version,
+            )
         )
-    pdf = RAW_DIR / "bls/histreleasedates.pdf"
-    subprocess.run(
-        ["pdftotext", "-layout", str(pdf), str(RAW_DIR / HISTORICAL_RELEASE_DATES)],
-        check=True,
-    )
-    rows.append(
-        manifest_row(
-            HISTORICAL_RELEASE_DATES,
-            stamp,
-            derived_from="pdftotext -layout bls/histreleasedates.pdf",
-            derived_from_sha256=file_sha256(pdf),
+
+        payload, last_modified = download(WORKBOOK_URL)
+        validate_payload(WORKBOOK_URL, payload)
+        staged_workbook.parent.mkdir(parents=True, exist_ok=True)
+        staged_workbook.write_bytes(payload)
+        archive_inventory.write_csv(
+            staged_raw / VINTAGE_COMMENTS,
+            extract_comments(staged_workbook),
+            COMMENT_COLUMNS,
         )
-    )
-    payload, last_modified = download(WORKBOOK_URL)
-    WORKBOOK_PATH.parent.mkdir(parents=True, exist_ok=True)
-    WORKBOOK_PATH.write_bytes(payload)
-    archive_inventory.write_csv(
-        RAW_DIR / VINTAGE_COMMENTS, extract_comments(WORKBOOK_PATH), COMMENT_COLUMNS
-    )
-    rows.append(
-        manifest_row(
-            VINTAGE_COMMENTS,
-            stamp,
-            last_modified=last_modified,
-            derived_from=f"{WORKBOOK_URL}, sheet {COMMENTS_SHEET}",
-            derived_from_sha256=file_sha256(WORKBOOK_PATH),
+        rows.append(
+            manifest_row(
+                VINTAGE_COMMENTS,
+                stamp,
+                raw_dir=staged_raw,
+                last_modified=last_modified,
+                derived_from=f"{WORKBOOK_URL}, sheet {COMMENTS_SHEET}",
+                derived_from_sha256=file_sha256(staged_workbook),
+            )
         )
-    )
-    index = download(archive_inventory.RELEASE_INDEX_URL)[0].decode("utf-8", "replace")
-    vintages = archive_inventory.select_vintages(
-        archive_inventory.parse_release_index(index), now=now
-    )
-    archive_inventory.write_csv(
-        RAW_DIR / EMPSIT_RELEASES,
-        archive_inventory.vintage_rows(vintages),
-        archive_inventory.VINTAGE_COLUMNS,
-    )
-    rows.append(
-        manifest_row(
-            EMPSIT_RELEASES,
-            stamp,
-            derived_from=archive_inventory.RELEASE_INDEX_URL,
+
+        index_payload, _ = download(archive_inventory.RELEASE_INDEX_URL)
+        validate_payload(archive_inventory.RELEASE_INDEX_URL, index_payload)
+        vintages = archive_inventory.select_vintages(
+            archive_inventory.parse_release_index(
+                index_payload.decode("utf-8", "replace")
+            ),
+            now=now,
         )
-    )
-    rows.append(
-        manifest_row(
-            RESCHEDULES,
-            "",
-            derived_from="hand-keyed from the citation on each row",
+        archive_inventory.write_csv(
+            staged_raw / EMPSIT_RELEASES,
+            archive_inventory.vintage_rows(vintages),
+            archive_inventory.VINTAGE_COLUMNS,
         )
-    )
-    archive_inventory.write_csv(
-        RAW_DIR / MANIFEST, sorted(rows, key=lambda row: row["file"]), MANIFEST_COLUMNS
-    )
+        rows.append(
+            manifest_row(
+                EMPSIT_RELEASES,
+                stamp,
+                raw_dir=staged_raw,
+                derived_from=archive_inventory.RELEASE_INDEX_URL,
+            )
+        )
+
+        manual_source = raw_dir / RESCHEDULES
+        if not manual_source.is_file():
+            raise FileNotFoundError(f"missing hand-maintained source {manual_source}")
+        staged_manual = staged_raw / RESCHEDULES
+        staged_manual.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(manual_source, staged_manual)
+        rows.append(
+            manifest_row(
+                RESCHEDULES,
+                "",
+                raw_dir=staged_raw,
+                derived_from="hand-keyed from the citation on each row",
+            )
+        )
+        archive_inventory.write_csv(
+            staged_raw / MANIFEST,
+            sorted(rows, key=lambda row: row["file"]),
+            MANIFEST_COLUMNS,
+        )
+
+        workbook_path.parent.mkdir(parents=True, exist_ok=True)
+        staged_workbook.replace(workbook_path)
+        promote_tree(staged_raw, raw_dir)
     return 0
 
 

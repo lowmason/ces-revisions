@@ -147,6 +147,42 @@ def test_fetch_stops_before_downloading_without_a_contact_address(monkeypatch, c
     assert "BLS_CONTACT_EMAIL" in capsys.readouterr().err
 
 
+def test_fetch_validates_every_payload_before_replacing_sources(
+    monkeypatch, tmp_path: Path
+):
+    raw_dir = tmp_path / "raw"
+    existing_zip = raw_dir / raw.VINTAGE_FILES
+    existing_zip.parent.mkdir(parents=True)
+    existing_zip.write_bytes(b"old archive")
+    existing_manifest = raw_dir / raw.MANIFEST
+    existing_manifest.write_text("old manifest\n", encoding="utf-8")
+    workbook_path = tmp_path / "cache" / "cesvin00.xlsx"
+    responses = iter(
+        [
+            (b"PK\x03\x04new archive", "Fri, 06 Mar 2026 12:06:34 GMT"),
+            (b"temporarily unavailable", ""),
+        ]
+    )
+
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    monkeypatch.setattr(vintage_sources.shutil, "which", lambda command: "/pdftotext")
+    monkeypatch.setattr(
+        vintage_sources, "pdftotext_version", lambda: "pdftotext version 26.06.0"
+    )
+    monkeypatch.setattr(vintage_sources, "download", lambda url: next(responses))
+
+    with pytest.raises(ValueError, match="HTML signature"):
+        vintage_sources.fetch_sources(
+            datetime(2026, 9, 15, tzinfo=UTC),
+            raw_dir=raw_dir,
+            workbook_path=workbook_path,
+        )
+
+    assert existing_zip.read_bytes() == b"old archive"
+    assert existing_manifest.read_text(encoding="utf-8") == "old manifest\n"
+    assert not workbook_path.exists()
+
+
 def test_the_manifest_lists_every_committed_source_with_its_hash_and_size():
     rows = manifest()
     committed = sorted(
