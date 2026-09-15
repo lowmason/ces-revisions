@@ -2,6 +2,7 @@
 
 import csv
 import urllib.request
+from datetime import UTC, datetime
 
 import pytest
 import vintage_sources
@@ -51,6 +52,23 @@ def test_comment_rows_keep_the_entries_below_the_header():
             "adjustment": "Due to the 2025 lapse in appropriations, no estimates for October",
         },
     ]
+
+
+def test_comment_rows_without_the_header_are_an_error():
+    rows = [("NOTE ON DATA USAGE", None), ("June 2003", "With the release of May 2003")]
+    with pytest.raises(ValueError, match="Publication Date"):
+        vintage_sources.comment_rows(rows)
+
+
+def test_fetch_stops_before_downloading_without_a_contact_address(monkeypatch, capsys):
+    monkeypatch.delenv("BLS_CONTACT_EMAIL", raising=False)
+
+    def refuse(url: str) -> tuple[bytes, str]:
+        raise AssertionError(f"fetched {url} without a contact address")
+
+    monkeypatch.setattr(vintage_sources, "download", refuse)
+    assert vintage_sources.fetch_sources(datetime(2026, 9, 15, tzinfo=UTC)) == 1
+    assert "BLS_CONTACT_EMAIL" in capsys.readouterr().err
 
 
 def test_the_manifest_lists_every_committed_source_with_its_hash_and_size():

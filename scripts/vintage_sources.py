@@ -10,6 +10,7 @@ the gitignored data/cache/; its entries are committed as a CSV beside the workbo
 """
 
 import argparse
+import os
 import shutil
 import subprocess
 import sys
@@ -95,8 +96,10 @@ def download(url: str) -> tuple[bytes, str]:
 def comment_rows(rows: list[tuple[str | None, ...]]) -> list[dict[str, str]]:
     """The entries below the Comments sheet's "Publication Date" header, with sheet rows."""
     header = next(
-        index for index, row in enumerate(rows) if row[0] == "Publication Date"
+        (index for index, row in enumerate(rows) if row[0] == "Publication Date"), None
     )
+    if header is None:
+        raise ValueError(f'the {COMMENTS_SHEET} sheet has no "Publication Date" header')
     return [
         {
             "sheet_row": str(index + 1),
@@ -130,6 +133,12 @@ def manifest_row(file: str, fetched_at: str, **fields: str) -> dict[str, str]:
 
 def fetch_sources(now: datetime) -> int:
     """Network step: refresh every source file, its derived text, and the manifest."""
+    if not os.environ.get("BLS_CONTACT_EMAIL"):
+        print(
+            "set BLS_CONTACT_EMAIL to the contact address BLS asks automated clients for",
+            file=sys.stderr,
+        )
+        return 1
     if shutil.which("pdftotext") is None:
         print("pdftotext (poppler) is required: brew install poppler", file=sys.stderr)
         return 1
