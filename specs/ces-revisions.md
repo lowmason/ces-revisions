@@ -703,3 +703,5 @@ ends the collection window at the release date as a labeled proxy and drops sect
 the first-stage C1 equation; Req 3's sample row, and Req 13 with it, use Table 1's coverage share
 as a labeled proxy for usable linked coverage, with RSE break flags. The roadmap resume
 re-validates Stages 3, 4, and 12 against these amendments.
+
+Stage 3: COMPLETE (2026-09-14) — implemented by plan 5 (specs/plans/completed/5-ces-revisions.md). Next: resume the roadmap.

@@ -1,5 +1,7 @@
 # Stage 3 — Vintage Panel, Stage Labels, and Same-Release Differencing Implementation Plan
 
+**Status: COMPLETE (2026-09-14)** — executed via executing-plans; deferred items in specs/deferred_items.md
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revisions-roadmap.md, Stage 3 — on plan completion, tick the stage and
@@ -11,7 +13,7 @@
 
 **Tech Stack:** Python 3.14; Polars 1.44.2; fastexcel, a new runtime dependency and Polars' calamine Excel engine, whose `cp310-abi3` wheels import on CPython 3.14; the standard library's `zipfile`, `csv`, `html`, `fractions`, and `zoneinfo`; pytest 9.1.1; ruff 0.16.7; and `pdftotext` (poppler), for the fetch step only.
 
-**Source:** [`specs/ces-revisions.md`](../ces-revisions.md) Req 1, Req 2, Req 4, Req 5, Req 9 (the accounting identity), Req 14 (the composite 2003 regime), and Verification bullet 1; [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md) Stage 3; the pre-May-1999 item of [`specs/deferred_items.md`](../deferred_items.md).
+**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 1, Req 2, Req 4, Req 5, Req 9 (the accounting identity), Req 14 (the composite 2003 regime), and Verification bullet 1; [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 3; the pre-May-1999 item of [`specs/deferred_items.md`](../../deferred_items.md).
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 3 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 3: COMPLETE (YYYY-MM-DD) — implemented by plan 5 (specs/plans/completed/5-ces-revisions.md). Next: resume the roadmap.`
@@ -159,7 +161,7 @@ The live `fetch` step was not run, because its output is this stage's committed 
   - `scripts/vintage_sources.py`: `Download(file: str, url: str)`, `DOWNLOADS`, `WORKBOOK_URL`, `WORKBOOK_PATH`, `COMMENTS_SHEET`, `COMMENT_COLUMNS`, `MANIFEST_COLUMNS`, `user_agent_for(url: str) -> str`, `download(url: str) -> tuple[bytes, str]`, `comment_rows(rows: list[tuple[str | None, ...]]) -> list[dict[str, str]]`, `extract_comments(workbook: Path) -> list[dict[str, str]]`, `manifest_row(file: str, fetched_at: str, **fields: str) -> dict[str, str]`, `fetch_sources(now: datetime) -> int`, and `main(argv: list[str] | None = None) -> int`. Task 9 adds the `build` command.
   - The committed CSVs: `manifest.csv` (`file,url,sha256,bytes,last_modified,fetched_at,derived_from,derived_from_sha256`, one row per file under `data/raw/`, sorted by `file`); `bls/cesvin00-comments.csv` (`sheet_row,publication_label,adjustment`); `bls/empsit-releases.csv` (`reference_month,release_date,release_url`, the format of `docs/inventory/es-vintages.csv`); and `manual/es-reschedules.csv` (`reference_month,scheduled_date,release_date,release_time_et,status,published_with,citation,note`).
 
-- [ ] **Step 1: Write the failing import test**
+- [x] **Step 1: Write the failing import test**
 
 In `tests/test_stack.py`, replace the comment above `STACK_MODULES` and the list itself with:
 
@@ -178,17 +180,19 @@ STACK_MODULES = [
 ]
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+> Deviation: executed in the worktree `.claude/worktrees/stage-3-vintage-panel` on `stage-3-vintage-panel`, renamed from the harness's `worktree-stage-3-vintage-panel`; this plan, untracked in the main checkout, was committed first (070dd2e).
+
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv run pytest tests/test_stack.py -q`
 Expected: FAIL. `test_stack_module_imports[fastexcel]` fails with `ModuleNotFoundError: No module named 'fastexcel'`: 1 failed, 8 passed.
 
-- [ ] **Step 3: Add fastexcel**
+- [x] **Step 3: Add fastexcel**
 
 Run: `uv add fastexcel`, then `uv run pytest tests/test_stack.py -q`
 Expected: `pyproject.toml`'s `dependencies` gains a `fastexcel>=` entry (0.21.0 or later), `uv.lock` changes, and the tests PASS: 9 passed.
 
-- [ ] **Step 4: Ignore the rebuilt data**
+- [x] **Step 4: Ignore the rebuilt data**
 
 Append to `.gitignore`, after a blank line:
 
@@ -198,7 +202,9 @@ data/cache/
 data/panel/
 ```
 
-- [ ] **Step 5: Create the subpackage and its data layout**
+> Deviation: after the whole-branch review, `.gitattributes` marks `data/raw/**` as `-text`, so git never converts the bytes `manifest.csv` hashes.
+
+- [x] **Step 5: Create the subpackage and its data layout**
 
 Create `src/ces_revisions/vintages/__init__.py`:
 
@@ -234,7 +240,7 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 ```
 
-- [ ] **Step 6: Key the off-schedule releases by hand**
+- [x] **Step 6: Key the off-schedule releases by hand**
 
 Create `data/raw/manual/es-reschedules.csv`. Each row cites the BLS page its dates come from, and Planning evidence quotes each page:
 
@@ -250,7 +256,7 @@ reference_month,scheduled_date,release_date,release_time_et,status,published_wit
 2026-01,2026-02-06,2026-02-11,08:30,released,,https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm,Rescheduled after the 2026 lapse in appropriations.
 ```
 
-- [ ] **Step 7: Write the failing source tests**
+- [x] **Step 7: Write the failing source tests**
 
 Create `tests/test_vintage_sources.py`:
 
@@ -352,12 +358,12 @@ def test_bls_has_not_refreshed_the_vintage_files_since_the_manifest():
     assert last_modified == rows["bls/cesvinall.zip"]["last_modified"]
 ```
 
-- [ ] **Step 8: Run the tests to verify they fail**
+- [x] **Step 8: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_vintage_sources.py -q -m "not network"`
 Expected: FAIL at collection with `ModuleNotFoundError: No module named 'vintage_sources'`.
 
-- [ ] **Step 9: Write the fetch script**
+- [x] **Step 9: Write the fetch script**
 
 Create `scripts/vintage_sources.py`:
 
@@ -572,12 +578,14 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 10: Run the hermetic tests before fetching**
+> Deviation: after the whole-branch review, `comment_rows` raises a `ValueError` naming the missing "Publication Date" header, and `fetch_sources` returns 1 before any download when `BLS_CONTACT_EMAIL` is unset; staged, type-checked downloads are deferred (user decision), with the reviewer's offline manifest rehash and `pdftotext` version.
+
+- [x] **Step 10: Run the hermetic tests before fetching**
 
 Run: `uv run pytest tests/test_vintage_sources.py -q -m "not network"`
 Expected: 2 failed, 2 passed, 1 deselected. Both helper tests pass, and both manifest tests fail with `FileNotFoundError` for `data/raw/manifest.csv`.
 
-- [ ] **Step 11: Fetch the sources**
+- [x] **Step 11: Fetch the sources**
 
 ```bash
 export BLS_CONTACT_EMAIL="$(grep '^BLS_CONTACT_EMAIL=' .project.env | cut -d= -f2-)"
@@ -595,17 +603,19 @@ Expected:
 - The counts print `9 16`: nine manifest rows, and the 16 Comments entries. Any other number of entries is also a refresh: stop and report.
 - The release list's last line is the latest Employment Situation release, `2026-08,2026-09-04,…` at planning, or a later one.
 
-- [ ] **Step 12: Run the source tests with the refresh canary**
+> Deviation: the worktree session's shell refused `export BLS_CONTACT_EMAIL="$(grep …)"`, so this fetch and every network test run loaded only that key from the main checkout's `.project.env` into `os.environ` in Python, then called `vintage_sources.main(["fetch"])` or `pytest.main` in the same process.
+
+- [x] **Step 12: Run the source tests with the refresh canary**
 
 Run: `uv run pytest tests/test_vintage_sources.py tests/test_stack.py -q`
 Expected: PASS: 14 passed, the network canary included.
 
-- [ ] **Step 13: Check the whole tree**
+- [x] **Step 13: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: both ruff commands are clean, and the fast tier passes: 108 passed, 5 deselected.
 
-- [ ] **Step 14: Commit**
+- [x] **Step 14: Commit**
 
 ```bash
 uv run ruff format scripts src tests
@@ -637,7 +647,7 @@ Expected from `git status`: ten files under `data/raw/` staged, `manifest.csv` a
   - `read_vintage_comments(raw_dir: Path = RAW_DIR) -> pl.DataFrame` and `content_sha256(frame: pl.DataFrame, *, chunk_rows: int = 500_000) -> str`.
 - Test helper: `tests/vintage_data.py` with `raw_values()`, built once per session. Tasks 3 to 8 add builders to it.
 
-- [ ] **Step 1: Record the revision table fixture**
+- [x] **Step 1: Record the revision table fixture**
 
 Create `tests/fixtures/vintages/cesnaicsrev-excerpt.htm`. It keeps the page's markup for both summary tables, four 2025 rows with the lapse markers and that year's averages, and five 2003 rows with the redesign's zeros and that year's averages:
 
@@ -704,7 +714,7 @@ Create `tests/fixtures/vintages/cesnaicsrev-excerpt.htm`. It keeps the page's ma
 </table>
 ```
 
-- [ ] **Step 2: Add the session cache for tests**
+- [x] **Step 2: Add the session cache for tests**
 
 Create `tests/vintage_data.py`:
 
@@ -723,7 +733,7 @@ def raw_values() -> pl.DataFrame:
     return raw.raw_values()
 ```
 
-- [ ] **Step 3: Write the failing tests**
+- [x] **Step 3: Write the failing tests**
 
 Create `tests/test_vintage_raw.py`:
 
@@ -896,12 +906,12 @@ def test_cell_ids_number_the_raw_values_from_zero():
     assert (ids.min(), ids.max(), ids.n_unique()) == (0, ids.len() - 1, ids.len())
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_vintage_raw.py -q`
 Expected: FAIL. All 12 tests fail with `AttributeError`, such as `module 'ces_revisions.vintages.raw' has no attribute 'vintage_file_members'`, and likewise for `triangle_cells`, `revision_table_cells`, `rtdsm_cells`, `content_sha256`, and `raw_values`: 12 failed.
 
-- [ ] **Step 5: Write the raw-value table**
+- [x] **Step 5: Write the raw-value table**
 
 Replace `src/ces_revisions/vintages/raw.py` with:
 
@@ -1124,17 +1134,19 @@ def file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, the `raw_values` docstring says `cell_id` numbers cells in key order and is stable only while the sources are; key-derived ids were declined, since this interface numbers cells from 0.
+
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_vintage_raw.py -q`
 Expected: PASS: 12 passed.
 
-- [ ] **Step 7: Check the whole tree**
+- [x] **Step 7: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 120 passed, 5 deselected.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -1162,7 +1174,7 @@ git commit -m "Read the vintage files, the revision table, and EMPLOY into an im
   - The index: one row per reference month from January 1979 through the latest release in `empsit-releases.csv`, with `reference_month`, `publication`, `scheduled_date`, `release_date` (null for the canceled October 2025 release), `published_date` (the carrying November 2025 release's date for that one, the release date otherwise), `observable_at` (UTC), `status` (`released` or `canceled`), `off_schedule`, `benchmark_release` (null before May 2003, true for the January releases from 2004), and `date_source` (`histreleasedates` through December 2000, `empsit_releases` after).
 - Test helper: `vintage_data.index()`.
 
-- [ ] **Step 1: Record the historical release-dates fixture**
+- [x] **Step 1: Record the historical release-dates fixture**
 
 Create `tests/fixtures/vintages/histreleasedates-excerpt.txt`, lines of `pdftotext -layout` output from BLS's PDF: the Employment Situation table's header, four year rows (1959 with unknown dates, 1995 with a footnote digit after the year, 1998 after the stray footnote-mark line, and 2000), its source notes and footnotes, and the start of the Consumer Price Index table, which the parser must not read:
 
@@ -1193,7 +1205,7 @@ Release dates for the Consumer Price Index, 1953-2000
     1953        February 27       March 26           April 22          May 22           June 23          July 22        August 26      September 23      October 28      November 25 December 23     January 22, 1954
 ```
 
-- [ ] **Step 2: Extend the session cache**
+- [x] **Step 2: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -1220,7 +1232,7 @@ def index() -> pl.DataFrame:
     return release_index.build_release_index()
 ```
 
-- [ ] **Step 3: Write the failing tests**
+- [x] **Step 3: Write the failing tests**
 
 Create `tests/test_release_index.py`:
 
@@ -1408,12 +1420,14 @@ def test_each_rescheduled_release_cites_a_bls_page():
         assert row["status"] in ("released", "canceled"), row
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+> Deviation: after the whole-branch review, the benchmark test became `test_benchmark_releases_are_may_2003_and_the_january_releases_from_2004`, and the `es-vintages.csv` comparison iterates the months both lists hold, so a newer list fails an assert instead of raising `KeyError`.
+
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_release_index.py -q`
 Expected: FAIL. Collection stops with `ImportError: cannot import name 'release_index' from 'ces_revisions.vintages'`, raised through `tests/vintage_data.py`.
 
-- [ ] **Step 5: Write the month helpers**
+- [x] **Step 5: Write the month helpers**
 
 Create `src/ces_revisions/vintages/months.py`:
 
@@ -1453,7 +1467,7 @@ def month_range(first: date, last: date) -> list[date]:
     return months
 ```
 
-- [ ] **Step 6: Write the release-date index**
+- [x] **Step 6: Write the release-date index**
 
 Create `src/ces_revisions/vintages/release_index.py`:
 
@@ -1661,17 +1675,19 @@ def build_release_index(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
     return pl.DataFrame(list(rows.values()), schema=INDEX_SCHEMA)
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, `benchmark_release` is also true for the May 2003 release, which carried the March 2002 benchmark (`LAST_MAY_BENCHMARK`, citing the June 6, 2003 release), and the docstring says an unlisted release is taken to have kept its schedule and its 8:30 a.m. Eastern time.
+
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_release_index.py -q`
 Expected: PASS: 15 passed.
 
-- [ ] **Step 8: Check the whole tree**
+- [x] **Step 8: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 135 passed, 5 deselected.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -1700,7 +1716,7 @@ git commit -m "Date every Employment Situation release from January 1979"
   - `average(values: list[int], kind: str) -> Fraction`, `rounds_to(published: int, exact: Fraction) -> bool`, and `average_checks(raw) -> pl.DataFrame`: `row_key`, `seasonal_status`, `column`, `kind`, `published`, `months`, `exact` (the fraction as text), and `reproduced`.
 - Test helpers: `vintage_data.table_cells()` and `vintage_data.table_estimates()`.
 
-- [ ] **Step 1: Extend the session cache**
+- [x] **Step 1: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -1738,7 +1754,7 @@ def table_estimates() -> pl.DataFrame:
     return revision_table.estimates(table_cells())
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/test_revision_table.py`:
 
@@ -1876,12 +1892,12 @@ def test_markers_sit_only_where_the_page_footnotes_put_them():
     ]
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_revision_table.py -q`
 Expected: FAIL. Collection stops with `ImportError: cannot import name 'revision_table' from 'ces_revisions.vintages'`.
 
-- [ ] **Step 4: Write the revision table module**
+- [x] **Step 4: Write the revision table module**
 
 Create `src/ces_revisions/vintages/revision_table.py`:
 
@@ -2094,17 +2110,17 @@ def average_checks(raw: pl.DataFrame) -> pl.DataFrame:
     return pl.DataFrame(rows)
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_revision_table.py -q`
 Expected: PASS: 22 passed.
 
-- [ ] **Step 6: Check the whole tree**
+- [x] **Step 6: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 157 passed, 5 deselected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -2130,7 +2146,7 @@ git commit -m "Parse the revision table's estimates and reproduce its published 
   - `vintage_file_levels(raw, index)`, `rtdsm_levels(raw, index)`, and `revision_table_changes(raw, index)`, each returning a `pl.DataFrame` with `cell_id`, `source`, `sector`, `reference_month`, `release_month` (the reference month of the Employment Situation release whose values the row holds), `seasonal_status`, `measure` (`level` or `change`), `value_thousands`, `marker`, `transformation`, `release_date` (the index's `published_date`, or for EMPLOY the release's date), `vintage_id` (`cesvinall:YYYY-MM`, `rtdsm:EMPLOYyyMm`, or `cesnaicsrev:YYYY-MM`), and `concept_regime` (`pre_2003_05` or `from_2003_05`); the table's frame also has `release_stage`.
 - Test helpers: `vintage_data.levels()`, `vintage_data.rtdsm()`, and `vintage_data.table_changes()`.
 
-- [ ] **Step 1: Extend the session cache**
+- [x] **Step 1: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -2184,7 +2200,7 @@ def table_changes() -> pl.DataFrame:
     return panel.revision_table_changes(raw_values(), index())
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/test_vintage_panel.py`. Task 6 appends a section for the assembled panel:
 
@@ -2424,12 +2440,12 @@ def test_the_revision_table_and_the_release_index_end_with_the_same_release():
     )
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_vintage_panel.py -q`
 Expected: FAIL. Collection stops with `ImportError: cannot import name 'panel' from 'ces_revisions.vintages'`.
 
-- [ ] **Step 4: Write the transformations and source frames**
+- [x] **Step 4: Write the transformations and source frames**
 
 Create `src/ces_revisions/vintages/panel.py`. Task 6 appends `PANEL_COLUMNS` and `assemble_panel`:
 
@@ -2677,17 +2693,17 @@ def revision_table_changes(raw: pl.DataFrame, index: pl.DataFrame) -> pl.DataFra
     )
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_vintage_panel.py -q`
 Expected: PASS: 12 passed.
 
-- [ ] **Step 6: Check the whole tree**
+- [x] **Step 6: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 169 passed, 5 deselected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -2715,7 +2731,7 @@ git commit -m "Derive the panel's level and change rows through named transforma
   - `ces_revisions.vintages.panel`: `PANEL_COLUMNS` and `assemble_panel(levels, rtdsm, changes, stage_labels) -> pl.DataFrame`, the long panel, whose vintage-file levels carry the stage their vintage serves.
 - Test helpers: `vintage_data.labels()` and `vintage_data.long_panel()`.
 
-- [ ] **Step 1: Extend the session cache**
+- [x] **Step 1: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -2782,7 +2798,7 @@ def long_panel() -> pl.DataFrame:
     return panel.assemble_panel(levels(), rtdsm(), table_changes(), labels())
 ```
 
-- [ ] **Step 2: Write the failing stage-label tests**
+- [x] **Step 2: Write the failing stage-label tests**
 
 Create `tests/test_stage_labels.py`:
 
@@ -2999,7 +3015,9 @@ def test_panel_levels_carry_the_stage_their_vintage_serves():
     assert staged.height == labeled.height
 ```
 
-- [ ] **Step 3: Append the failing assembled-panel test**
+> Deviation: after the whole-branch review, `test_revised_after_m_marks_only_observed_m_rows` became `test_revised_after_m_is_checked_where_a_later_release_exists`, pinning the 288 M rows in the frontier release; the January-pairs test also checks the May 2003 release; and the comment tests expect 14 releases from `comment_release_months` (user decision).
+
+- [x] **Step 3: Append the failing assembled-panel test**
 
 Append to `tests/test_vintage_panel.py`, after two blank lines:
 
@@ -3014,12 +3032,12 @@ def test_the_assembled_panel_holds_every_source_row_once_under_req_1_columns():
     assert frame.height == sum(source.height for source in sources().values())
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_stage_labels.py tests/test_vintage_panel.py -q`
 Expected: FAIL. Collection stops in both modules with `ImportError: cannot import name 'stages' from 'ces_revisions.vintages'`.
 
-- [ ] **Step 5: Write the stage labels**
+- [x] **Step 5: Write the stage labels**
 
 Create `src/ces_revisions/vintages/stages.py`:
 
@@ -3228,7 +3246,9 @@ def build_stage_labels(
     ).sort("source", "sector", "seasonal_status", "reference_month", "release_stage")
 ```
 
-- [ ] **Step 6: Append the panel assembly**
+> Deviation: after the whole-branch review, `revised_after_m` is null where M's release is the frontier, which no later vintage file can revise, and `comment_release_month` became `comment_release_months`, so the lapse entry also flags the November 2025 release that carried October's initial estimates: Deviation 8's 13 releases are 14 (user decision).
+
+- [x] **Step 6: Append the panel assembly**
 
 Append to `src/ces_revisions/vintages/panel.py`, after two blank lines:
 
@@ -3279,17 +3299,17 @@ def assemble_panel(
     ).sort("source", "sector", "seasonal_status", "reference_month", "vintage_id")
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_stage_labels.py tests/test_vintage_panel.py -q`
 Expected: PASS: 32 passed.
 
-- [ ] **Step 8: Check the whole tree**
+- [x] **Step 8: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 189 passed, 5 deselected.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -3317,7 +3337,7 @@ git commit -m "Label each reference month's F, S, T, B, and M vintages and assem
   - `revision_reconciliation(stage_changes, table_cells) -> pl.DataFrame`: `reference_month`, `seasonal_status`, `column`, `panel_thousands`, `table_thousands`, `table_marker`, and `outcome` (`reproduced` or `differs`).
 - Test helper: `vintage_data.stage_changes()`.
 
-- [ ] **Step 1: Extend the session cache**
+- [x] **Step 1: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -3395,7 +3415,7 @@ def stage_changes() -> pl.DataFrame:
     return differencing.stage_changes(within, labels())
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/test_differencing.py`:
 
@@ -3509,12 +3529,14 @@ def test_panel_revisions_reproduce_the_table_revisions_but_three_cells():
     assert frame.filter(pl.col("outcome") == "reproduced").height == 1617
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+> Deviation: after the whole-branch review, `test_reconcile_names_a_value_missing_on_one_side` covers the one-sided outcomes.
+
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_differencing.py -q`
 Expected: FAIL. Collection stops with `ImportError: cannot import name 'differencing' from 'ces_revisions.vintages'`.
 
-- [ ] **Step 4: Write the differencing module**
+- [x] **Step 4: Write the differencing module**
 
 Create `src/ces_revisions/vintages/differencing.py`:
 
@@ -3645,17 +3667,19 @@ def revision_reconciliation(
     )
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, `reconcile` reports a value missing on one side as `missing_in_panel` or `missing_in_table` instead of `differs`; neither occurs in the committed sources.
+
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_differencing.py -q`
 Expected: PASS: 4 passed.
 
-- [ ] **Step 6: Check the whole tree**
+- [x] **Step 6: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 193 passed, 5 deselected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -3682,7 +3706,7 @@ git commit -m "Difference levels within each release and reconcile them with BLS
   - `decomposition(terms) -> pl.DataFrame`: `source`, `sector`, `transition`, `regime`, `months`, `var_revision_sa`, `var_revision_nsa`, `var_adjustment_change`, `cov_revision_nsa_adjustment_change`, and `variance_identity_gap`.
 - Test helper: `vintage_data.identity_terms()`.
 
-- [ ] **Step 1: Extend the session cache**
+- [x] **Step 1: Extend the session cache**
 
 Replace `tests/vintage_data.py` with:
 
@@ -3768,7 +3792,7 @@ def identity_terms() -> pl.DataFrame:
     )
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tests/test_accounting.py`:
 
@@ -3847,12 +3871,14 @@ def test_the_decomposition_covers_every_sector_transition_and_regime():
     ]
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+> Deviation: after the whole-branch review, the helper rows carry release months, and `test_identity_terms_reject_a_stage_whose_values_come_from_two_releases` tests the same-release guard, since the residual is zero by algebra and the planned test could not fail.
+
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_accounting.py -q`
 Expected: FAIL. Collection stops with `ImportError: cannot import name 'accounting' from 'ces_revisions.vintages'`.
 
-- [ ] **Step 4: Write the accounting module**
+- [x] **Step 4: Write the accounting module**
 
 Create `src/ces_revisions/vintages/accounting.py`:
 
@@ -3971,17 +3997,19 @@ def decomposition(terms: pl.DataFrame) -> pl.DataFrame:
     )
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, `accounting_changes` carries `release_month` (the table's from `STAGE_OFFSETS`), `identity_terms` raises when a stage's unadjusted and adjusted changes come from different releases, and a comment records why B→M has no transition.
+
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_accounting.py -q`
 Expected: PASS: 4 passed.
 
-- [ ] **Step 6: Check the whole tree**
+- [x] **Step 6: Check the whole tree**
 
 Run: `uv run ruff format --check . && uv run ruff check && uv run pytest -m "not slow and not network" -q`
 Expected: ruff is clean, and the fast tier passes: 197 passed, 5 deselected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format src tests
@@ -4007,7 +4035,7 @@ git commit -m "Compute the Req 9 accounting identity and its variance decomposit
   - `ces_revisions.vintages.build`: `VintageBuild`, a frozen dataclass of `raw_values`, `transformations`, `release_index`, `panel`, `stage_labels`, `stage_changes`, `reconciliation`, `revision_reconciliation`, `average_checks`, and `accounting_decomposition`, all `pl.DataFrame`; `build(raw_dir: Path = RAW_DIR) -> VintageBuild`; and `write(result: VintageBuild, out_dir: Path = PANEL_DIR) -> dict[str, dict]`, which writes `<field>.parquet` for each frame and a `manifest.json` of row counts and content hashes.
   - `scripts/vintage_sources.py build`, which writes `data/panel/`, and `build_panel() -> int`.
 
-- [ ] **Step 1: Write the failing build test**
+- [x] **Step 1: Write the failing build test**
 
 Create `tests/test_vintage_build.py`:
 
@@ -4037,12 +4065,14 @@ def test_build_writes_every_artifact_and_its_manifest(tmp_path):
         assert written.equals(frame), field.name
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+> Deviation: after the whole-branch review, the build test also checks `source_manifest_sha256`, and `test_build_writes_the_frame_the_fast_tier_checks` compares each built frame with the one `tests/vintage_data.py` composes, one case per frame.
+
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv run pytest tests/test_vintage_build.py -q -m slow`
 Expected: FAIL. Collection stops with `ModuleNotFoundError: No module named 'ces_revisions.vintages.build'`.
 
-- [ ] **Step 3: Write the build**
+- [x] **Step 3: Write the build**
 
 Create `src/ces_revisions/vintages/build.py`:
 
@@ -4132,7 +4162,9 @@ def write(result: VintageBuild, out_dir: Path = raw.PANEL_DIR) -> dict[str, dict
     return manifest
 ```
 
-- [ ] **Step 4: Add the build command**
+> Deviation: after the whole-branch review, `write` takes `raw_dir` and returns `source_manifest_sha256`, the SHA-256 of `data/raw/manifest.csv`, beside `artifacts`, the planned per-frame entries.
+
+- [x] **Step 4: Add the build command**
 
 Replace `scripts/vintage_sources.py` with:
 
@@ -4360,12 +4392,14 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+> Deviation: after the whole-branch review, `build_panel` passes `RAW_DIR` to `write` and prints the rows under the manifest's `artifacts`.
+
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_vintage_build.py tests/test_vintage_sources.py -q -m "not network"`
 Expected: PASS: 5 passed, 1 deselected.
 
-- [ ] **Step 6: Build the panel from the committed sources**
+- [x] **Step 6: Build the panel from the committed sources**
 
 ```bash
 uv run python scripts/vintage_sources.py build
@@ -4378,7 +4412,7 @@ Expected:
 - `data/panel/` holds the ten parquet files and `manifest.json`.
 - `git status` reports `data/cache/` and `data/panel/` as ignored and nothing else under `data/`.
 
-- [ ] **Step 7: Document the layout in CLAUDE.md**
+- [x] **Step 7: Document the layout in CLAUDE.md**
 
 In `CLAUDE.md`, make four edits.
 
@@ -4419,7 +4453,9 @@ In `CLAUDE.md`, make four edits.
    uv run python scripts/vintage_sources.py fetch  # refresh data/raw/ and its manifest (network; BLS_CONTACT_EMAIL, pdftotext)
    ```
 
-- [ ] **Step 8: Update the README**
+> Deviation: after the whole-branch review, the Commands line for `uv run pytest -m slow` also names the Stage 3 build (~30 s); this step had left it describing only the synthetic pilot.
+
+- [x] **Step 8: Update the README**
 
 In `README.md`, make three edits.
 
@@ -4439,7 +4475,9 @@ In `README.md`, make three edits.
 
 3. **Getting started.** After the line `uv run ces-revisions  # run the entry point`, add `uv run python scripts/vintage_sources.py build  # build the vintage panel in data/panel/`, and replace `The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14.` with `The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks.`
 
-- [ ] **Step 9: Run the complete verification**
+> Deviation: Steps 7 and 8 ran together, interleaving the CLAUDE.md and README edits; both files match the steps' text.
+
+- [x] **Step 9: Run the complete verification**
 
 ```bash
 uv run ruff format --check .
@@ -4468,7 +4506,9 @@ Then check the roadmap's Stage 3 exit clause by clause against the tests that ca
 | Live fetches carry the `network` marker, and the default tier passes on fixtures | `test_vintage_sources.py`: `test_bls_has_not_refreshed_the_vintage_files_since_the_manifest`; the fast tier above |
 | The release-date index agrees with `es-vintages.csv` on every release from May 1999 on, and covers the February 1995–April 1999 releases with checked dates | `test_release_index.py`: `test_the_index_agrees_with_es_vintages_except_the_december_1999_repost`, `test_february_1995_to_april_1999_releases_come_from_bls_historical_dates`, and `test_bls_historical_dates_agree_with_the_philadelphia_fed_copy_from_1979`. Deviation 3 records December 1999. |
 
-- [ ] **Step 10: Commit**
+> Deviation: before the review fixes the tiers matched (197 passed, 6 deselected; slow 3 passed); after them the fast tier gives 201 passed, 16 deselected, and the slow tier 13 passed. The network tier gave 2 passed and 1 failed on every run, the last on 2026-09-14: `test_live_cdx_lists_2014_captures_of_the_other_inputs_zip` got HTTP 503 while the Internet Archive's CDX API served "Temporarily Offline"; this branch changes no Stage 2 file.
+
+- [x] **Step 10: Commit**
 
 ```bash
 uv run ruff format src scripts tests CLAUDE.md README.md
