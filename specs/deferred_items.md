@@ -100,7 +100,7 @@
       See `specs/plans/completed/5-ces-revisions.md`. Size: quick-fix. Revisit
       if: `test_bls_has_not_refreshed_the_vintage_files_since_the_manifest`
       fails under `uv run pytest -m network`.
-- [ ] Review Important and Minors: harden `fetch` before the next refresh
+- [x] Review Important and Minors: harden `fetch` before the next refresh → done in plan 7
       (whole-branch review of plan 5; deferred by user decision, 2026-09-14).
       `fetch_sources` in `scripts/vintage_sources.py` overwrites each file in
       `data/raw/` as it downloads and accepts whatever the server returns, so
