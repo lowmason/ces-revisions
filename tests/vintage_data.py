@@ -5,6 +5,7 @@ from functools import cache
 import polars as pl
 
 from ces_revisions.vintages import (
+    panel,
     raw,
     release_index,
     revision_table,
@@ -29,3 +30,18 @@ def table_cells() -> pl.DataFrame:
 @cache
 def table_estimates() -> pl.DataFrame:
     return revision_table.estimates(table_cells())
+
+
+@cache
+def levels() -> pl.DataFrame:
+    return panel.vintage_file_levels(raw_values(), index())
+
+
+@cache
+def rtdsm() -> pl.DataFrame:
+    return panel.rtdsm_levels(raw_values(), index())
+
+
+@cache
+def table_changes() -> pl.DataFrame:
+    return panel.revision_table_changes(raw_values(), index())
