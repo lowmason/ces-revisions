@@ -8,13 +8,15 @@ import jax.numpy as jnp
 import pytest
 
 # One importable module per pinned distribution: runtime jax, numpy, numpyro, arviz,
-# and polars; dynamax from the dev group, as engine-determination evidence only.
+# polars, and fastexcel, the Excel reader behind Stage 3's workbooks; dynamax from the dev
+# group, as engine-determination evidence only.
 STACK_MODULES = [
     "jax",
     "numpy",
     "numpyro",
     "arviz",
     "polars",
+    "fastexcel",
     "dynamax.linear_gaussian_ssm",
 ]
 

@@ -1,0 +1,9 @@
+reference_month,scheduled_date,release_date,release_time_et,status,published_with,citation,note
+1995-12,1996-01-05,1996-01-19,08:30,released,,https://www.bls.gov/bls/histreleasedates.pdf,"Footnote 1: delayed two weeks because many federal agencies, BLS included, were closed for lack of appropriations."
+1998-10,1998-11-06,1998-11-05,13:30,released,,https://www.bls.gov/bls/histreleasedates.pdf,"Footnote 2: some payroll estimates were released prematurely on the Internet, so the report was released officially at 1:30 PM EST a day early."
+2013-09,,2013-10-22,08:30,released,,https://www.bls.gov/news.release/archives/empsit_10222013.htm,"The release says it came about 2 weeks later than originally scheduled because of the partial federal shutdown, without giving the original date."
+2013-10,2013-11-01,2013-11-08,08:30,released,,https://www.bls.gov/news.release/archives/empsit_10222013.htm,"The September 2013 release says the October release was originally scheduled for November 1, 2013."
+2025-09,2025-10-03,2025-11-20,08:30,released,,https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm,Rescheduled after the 2025 lapse in appropriations.
+2025-10,2025-11-07,,,canceled,2025-11,https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm,"Canceled; October's establishment survey data were published with November's."
+2025-11,2025-12-05,2025-12-16,08:30,released,,https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm,Rescheduled after the 2025 lapse in appropriations.
+2026-01,2026-02-06,2026-02-11,08:30,released,,https://www.bls.gov/bls/2025-lapse-revised-release-dates.htm,Rescheduled after the 2026 lapse in appropriations.

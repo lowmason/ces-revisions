@@ -89,7 +89,7 @@ values), resume re-validates Stages 4, 12, and 13 before routing them.
       Exit: the archive inventory lists every vintage May 2003–present with the three file types and unrounded-input status (bullet 4); the data inventory has one row per Req 3 series with a publication-lag column; each ruling has its own cited subsection; `uv run ruff format --check` passes on the document (bullet 13, inventory half).\
       ROUTING: writing-plans
 
-- [ ] Stage 3: Vintage panel, stage labels, and same-release differencing\
+- [x] Stage 3: Vintage panel, stage labels, and same-release differencing\
       Objective: Build the Req 1 raw-value, transformations, and long tables for supersector SA and NSA vintages from May 2003 and the 1979+ total-nonfarm leg, label stages per Req 2, and ship the differencing operator that reproduces the official revision table.\
       Spec: Req 1; Req 2; Req 4; Req 5; Req 9 (identity)\
       Gap closed: Req 1 (vintage sources); Req 2 (data half); Req 4 (data half); Req 5 (data half); Req 9 (accounting identity)\

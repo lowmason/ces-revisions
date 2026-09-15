@@ -38,7 +38,7 @@
       run. See `specs/plans/completed/2-ces-revisions.md`. Size: quick-fix.
       Done when: `captures` records member dates and a test checks every copy
       against them.
-- [ ] Review Minor: releases before May 1999 in `es-vintages.csv` (whole-branch
+- [x] Review Minor: releases before May 1999 in `es-vintages.csv` (whole-branch
       review of plan 2, triaged defer). `parse_release_index` in
       `scripts/archive_inventory.py` reads only links with a four-digit year, so
       the 49 releases from February 1995 to April 1999, whose links use MMDDYY,
@@ -47,7 +47,7 @@
       a file dated 2000-01-19. Stage 2 needs only May 2003 on; Stage 3's
       release-date index owns the earlier years. Size: quick-fix. Done when:
       Stage 3's release-date index covers the 1995–1999 releases with checked
-      dates, or records those years as out of scope.
+      dates, or records those years as out of scope. → done in plan 5
 - [ ] Review Minor: show the copies behind a `conflicting_captures` cell
       (whole-branch review of plan 2, triaged defer). `_status_cell` in
       `scripts/archive_inventory.py` links evidence only for present statuses, so
@@ -83,3 +83,59 @@
       Revisit if: BLS answers; then Stage 12 swaps in first-closing dates,
       Stage 4 swaps in matched-sample counts, and Stage 13 codes any lapse
       values the answer documents.
+
+## 5-ces-revisions — 2026-09-14
+- [ ] BLS's next vintage-file refresh (plan 5, Deviation 1). The committed
+      `data/raw/bls/cesvinall.zip` of 2026-03-06 ends with the January 2026
+      benchmark release, so Stage 3 labels later vintage-file stages
+      `beyond_frontier`, and their estimates reconcile only inside the revision
+      table. BLS refreshes the files about once a year, weeks after the
+      benchmark release. Absorbing a refresh: land the fetch-hardening item
+      below, run `scripts/vintage_sources.py fetch` and `build`, check that
+      every newly held table estimate reproduces, teach
+      `comment_release_months` in `src/ces_revisions/vintages/stages.py` any
+      new Comments wording, and re-pin the frontier, the Comments entries, and
+      the M rows the frontier leaves unchecked in `tests/test_stage_labels.py`
+      and the 1627 and 1617 reproduced counts in `tests/test_differencing.py`.
+      See `specs/plans/completed/5-ces-revisions.md`. Size: quick-fix. Revisit
+      if: `test_bls_has_not_refreshed_the_vintage_files_since_the_manifest`
+      fails under `uv run pytest -m network`.
+- [ ] Review Important and Minors: harden `fetch` before the next refresh
+      (whole-branch review of plan 5; deferred by user decision, 2026-09-14).
+      `fetch_sources` in `scripts/vintage_sources.py` overwrites each file in
+      `data/raw/` as it downloads and accepts whatever the server returns, so
+      a failure partway, or an error page served in a file's place, leaves the
+      committed sources out of step with `data/raw/manifest.csv`; meanwhile,
+      `git checkout -- data/raw` restores them. The work: download into a
+      staging directory, check each payload's file signature (ZIP, PDF, XLS,
+      XLSX, HTML), and move files into `data/raw/` only when all pass; add an
+      offline command that rehashes the manifest, since editing
+      `data/raw/manual/es-reschedules.csv`, the one hand-editable source, fails
+      the manifest test until a full network fetch; and record the `pdftotext`
+      version, since the layout of `bls/histreleasedates.txt` can vary by
+      poppler version. Size: plan. Done when: `fetch` stages and checks its
+      downloads, an offline command rehashes the manifest, and the manifest
+      names the `pdftotext` version.
+- [ ] Review Minor: two EMPLOY vintages map to one release (whole-branch
+      review of plan 5, triaged defer). `rtdsm_levels` in
+      `src/ces_revisions/vintages/panel.py` joins each EMPLOY vintage to the
+      release made in its calendar month or the latest before it. October 2025
+      had no release, so EMPLOY25M10 resolves to release 2025-08 as EMPLOY25M9
+      does, and the panel's `rtdsm_employ` rows hold that release twice under
+      two `vintage_id`s, whose values agree because the October vintage
+      repeats September's. No Stage 3 test differences or pins these levels.
+      Size: quick-fix. Done when: the first stage that reads the
+      `rtdsm_employ` rows (roadmap Stage 6 consumes the 1979 leg) flags or
+      drops the repeat vintage.
+- [ ] Review recommendations: evidence tests for two planning findings
+      (whole-branch review of plan 5, triaged defer). Two findings in plan 5's
+      Planning evidence rest on one-off queries: EMPLOY's same-vintage
+      seasonally adjusted changes differ from the revision table in 10 cells
+      between 1981 and 1996, the reason the 1979 leg's changes come from the
+      table; and between B and M the not seasonally adjusted value moves in
+      1,775 of 1,836 April-to-October unit-months but in 46 of 756
+      January-to-March and 35 of 504 November-to-December, the evidence for
+      Deviation 5's stage rule. Tests reproducing both from
+      `tests/vintage_data.py`'s frames, in `tests/test_vintage_panel.py` and
+      `tests/test_stage_labels.py`, would keep those choices auditable. Size:
+      quick-fix. Done when: tests pin the 10 cells and the three counts.
