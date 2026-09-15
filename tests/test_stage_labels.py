@@ -180,7 +180,14 @@ def test_benchmark_releases_carry_january_first_december_second_november_third()
         & pl.col("release_stage").is_in(list(stages.CLOSING_STAGES))
         & pl.col("benchmark_release")
     )
-    pairs = closing.select(pl.col("reference_month").dt.month(), "release_stage")
+    # The May 2003 release carried the March 2002 benchmark, but as the vintage files' first
+    # row the only closing stage it holds is May 2003's first estimate.
+    may_2003 = closing.filter(pl.col("release_month") == date(2003, 5, 1))
+    assert set(
+        may_2003.select("reference_month", "release_stage").unique().iter_rows()
+    ) == {(date(2003, 5, 1), "F")}
+    januaries = closing.filter(pl.col("release_month") != date(2003, 5, 1))
+    pairs = januaries.select(pl.col("reference_month").dt.month(), "release_stage")
     assert set(pairs.unique().iter_rows()) == {(1, "F"), (12, "S"), (11, "T")}
 
 

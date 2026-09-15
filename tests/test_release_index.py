@@ -160,14 +160,19 @@ def test_observable_at_is_the_release_time_in_eastern_time():
     assert rows[date(2026, 1, 1)] == datetime(2026, 2, 11, 13, 30, tzinfo=UTC)
 
 
-def test_benchmark_releases_are_the_january_releases_from_2004():
+def test_benchmark_releases_are_may_2003_and_the_january_releases_from_2004():
+    """The release of May 2003 estimates carried the March 2002 benchmark; from the March 2003
+    benchmark on, benchmark revisions arrive with January estimates."""
     index = vintage_data.index()
     early = index.filter(pl.col("reference_month") < date(2003, 5, 1))
     assert early["benchmark_release"].null_count() == early.height
     later = index.filter(pl.col("reference_month") >= date(2003, 5, 1))
     assert later["benchmark_release"].null_count() == 0
     flagged = later.filter(pl.col("benchmark_release"))["reference_month"].to_list()
-    assert flagged == [date(year, 1, 1) for year in range(2004, flagged[-1].year + 1)]
+    assert flagged == [
+        date(2003, 5, 1),
+        *(date(year, 1, 1) for year in range(2004, flagged[-1].year + 1)),
+    ]
 
 
 def test_no_calendar_month_holds_two_releases():

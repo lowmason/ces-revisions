@@ -30,6 +30,9 @@ FIRST_REFERENCE_MONTH = date(1979, 1, 1)
 LAST_HISTORICAL_MONTH = date(2000, 12, 1)
 # The May 2003 publication vintage, the first release in the vintage files.
 FIRST_VINTAGE_FILE_MONTH = date(2003, 5, 1)
+# That release carried the March 2002 benchmark, the last to arrive with May estimates:
+# https://www.bls.gov/news.release/archives/empsit_06062003.pdf
+LAST_MAY_BENCHMARK = date(2003, 5, 1)
 # From the March 2003 benchmark on, benchmark revisions arrive with January estimates: every
 # January release from 2004 in the vintage files revises the 21 months through the prior
 # December, and no release from May to December 2003 revises more than two.
@@ -149,7 +152,11 @@ def _optional_date(text: str) -> date | None:
 
 
 def build_release_index(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
-    """One row per reference month from January 1979 through the latest archived release."""
+    """One row per reference month from January 1979 through the latest archived release.
+
+    A release the hand-keyed table does not list is taken to have kept its schedule: its
+    scheduled date is its release date, and it came out at 8:30 a.m. Eastern.
+    """
     historical = read_historical_release_dates(raw_dir)
     archive = read_release_list(raw_dir / EMPSIT_RELEASES)
     moved = read_reschedules(raw_dir)
@@ -186,7 +193,8 @@ def build_release_index(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
             "off_schedule": change is not None,
             "benchmark_release": None
             if month < FIRST_VINTAGE_FILE_MONTH
-            else month.month == 1 and month >= FIRST_JANUARY_BENCHMARK,
+            else month == LAST_MAY_BENCHMARK
+            or (month.month == 1 and month >= FIRST_JANUARY_BENCHMARK),
             "date_source": source,
         }
     for month, row in rows.items():
