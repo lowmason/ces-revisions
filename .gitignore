@@ -18,3 +18,6 @@ wheels/
 # Stage 3 data: data/raw/ is committed; the workbook cache and the built panel are rebuilt
 data/cache/
 data/panel/
+
+# Isolated local development worktrees
+.worktrees/
