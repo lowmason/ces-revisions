@@ -55,7 +55,7 @@
       none of the copies that disagree; no such cell exists today. Size:
       quick-fix. Revisit if: `docs/inventory/archive-inventory.csv` shows a
       `conflicting_captures` status.
-- [ ] Spec-owner finding: usable linked coverage is not published (completion
+- [x] Spec-owner finding: usable linked coverage is not published (completion
       report of plan 2). Req 3 asks for usable linked employment coverage and
       RSE by supersector, harmonized across the organization, UI-account, and
       worksite definition switches. Table 1 of the CES technical notes counts
@@ -71,7 +71,7 @@
       measure Stage 4 builds, and Stage 4's exit flags the RSE measure changes
       and the missing 2012 table. Spec half done 2026-09-14: Req 3 names the
       coverage-share proxy and the RSE break flags (user decision); Stage 4's
-      exit waits for the roadmap resume.
+      exit waits for the roadmap resume. → done in plan 6
 - [ ] BLS request: first-closing dates, matched-sample counts, and lapse
       operations (user decisions of 2026-09-14). Req 3 uses two labeled proxies
       because BLS publishes neither input: the release date ends the collection

@@ -1,0 +1,5080 @@
+<html>
+<head>
+	<title>Technical Notes Tables</title>
+<link href="/blsstyle.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/css/yui/sam/container.css" />
+<link rel="stylesheet" type="text/css" href="/css/yui/sam/button.css" />
+<script type="text/javascript" src="/js/yui/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="/js/yui/container-min.js"></script>
+<script type="text/javascript" src="/js/survey.js"></script>
+<script type="text/javascript">
+	window.onload = show_survey;
+</script>
+<meta name="agency" content="BLS">
+<meta name="audience" content="general">
+	<meta name="subagency" content="BLS: Employment and Unemployment">
+<meta name="program" content="BLS: Employment and Unemployment: Employment, Hours, and Earnings from the Current Employment Statistics survey (National)">
+<meta name="subject" content="Statistics: By geographical coverage: National, Statistics: By Industries, Statistics: Employment and Unemployment, Statistics: Wages and benefits: Hours and earnings">
+	<meta name="date" content="03/20/2008">
+	
+<div align="center">
+<center>
+<!-- BEGIN BANNER, FOLLOWED BY TOP NAV-->
+  <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" VSPACE="0" HSPACE="0"> 
+	<tr>
+	  <!-- ****************************************** Begin ADA SKIP LINKS ********************************************* -->   
+	    <td width="87" align="left" valign="top" nowrap class="hide"><a href="#Content" class="hide" title="This link allows people with disabilities to skip to the main part of the page."><font color="white">Skip Navigation Links</font></a></td>
+	<td align="left" valign="top" nowrap class="hide">&nbsp;</td>
+    <td width="363" align="right" valign="top" nowrap class="hide">&nbsp;</td>
+
+	  <!-- ****************************************** End ADA SKIP LINKS *********************************************** -->        
+	</tr>	
+    <tr> 
+	  <!-- ****************************************** Begin GLOBAL BANNER ********************************************** -->   
+	    <td rowspan="2" width="76"><a href="http://www.dol.gov/" target="new"><img src="/images/seal.gif" width="75" height="75" border="0" alt="DOL Seal - Link to DOL Home Page" hspace="0" vspace="0"></a></td> 
+	  <td valign="middle"><span class="banner-usdol">U.S. Department of Labor</span><br><span class="banner-agency">Bureau of Labor Statistics</span></td> 
+      <td align="right" valign="top"><IMG SRC="/images/header-montage.jpg" ALIGN="RIGHT" WIDTH="356" HEIGHT="60" BORDER="0" HSPACE="0" VSPACE="0" ALT="Photos representing the workforce - Digital Imagery© copyright 2001 PhotoDisc, Inc."></td> 
+	  <!-- ****************************************** End GLOBAL BANNER ************************************************ -->        
+    </tr>
+    <tr> 
+	  <!-- ****************************************** Begin LOCAL BANNER ********************************************** -->   
+      	      <td colspan="2" align="left" valign="top"><span class="banner-tagline">Employment, Hours, and Earnings from the Current Employment Statistics survey (National)</span></td> 
+ 
+	  <!-- ****************************************** End LOCAL BANNER ************************************************ -->   
+    </tr> 
+  </table> 
+  
+  <TABLE CELLPADDING="0" CELLSPACING="0" WIDTH="100%" VSPACE="0" HSPACE="0" BORDER="0"> 
+    <TR> 
+	<!-- ****************************************** Begin SEARCH BAR ************************************************ -->  
+		<td align="left" bgcolor="#ffcc00" width="15" valign="top"><img src="/images/curve-wh-left.gif" align="left" width="15" height="18" border="0" hspace="0" vspace="0" alt=" "></td>
+      <td width="200" align="left" bgcolor="#ffcc00"><span class="agencyurl"><a href="/home.htm" class="agencyurl">www.bls.gov</a></span></td>
+      <td align="right" valign="bottom" bgcolor="#ffcc00" width="15"><img src="/images/curve-bl-bot.gif" align="right" width="15" height="18" border="0" hspace="0" vspace="0" alt=" "></td>
+      <td width="80%" align="right" valign="middle" bgcolor="#003399">
+	  <span class="search-bar"> <font face="verdana, arial, sans-serif, helvetica" size="-1" color="#ffffff">
+	  <a href="/search/search.srch">Advanced Search</a> | <a href="/bls/topicsaz.htm">A-Z Index</a></font></span>
+	  </td>
+      <td bgcolor="#003399" align="right" valign="top" width="15"><img src="/images/curve-wh-right.gif" align="right" width="15" height="18" border="0" hspace="0" vspace="0" alt=" "></td>
+  
+  	<!-- ****************************************** End SEARCH BAR ************************************************** -->   
+	</TR> 
+    <TR> 
+  	<!-- ****************************************** Begin GLOBAL NAV BAR ********************************************** -->  
+		<td height="20" colspan="5" valign="middle" bgcolor="#3366CC" bordercolor="#3366CC">	  	 
+        <DIV CLASS="topnavbar">&nbsp;
+		<a href="/home.htm"><font face="Verdana" size="1" color="#FFFFCC">BLS Home</font></a> | 
+		<a href="/bls/proghome.htm"><font face="Verdana" size="1" color="#FFFFCC">Programs & Surveys</font></a> |
+		<a href="/data/home.htm"><font face="Verdana" size="1" color="#FFFFCC">Get Detailed Statistics</font></a> |
+		<a href="/bls/glossary.htm"><font face="Verdana" size="1" color="#FFFFCC">Glossary</font></a> |
+		<a href="/bls/whatsnew.htm"><font face="Verdana" size="1" color="#FFFFCC">What's New</font></a> |
+		<a href="http://www.dol.gov/dol/findit.htm"><font face="Verdana" size="1" color="#FFFFCC">Find It! In DOL</font></a>				
+		</DIV></td> 
+  
+  	<!-- ****************************************** End GLOBAL NAV BAR ************************************************ -->   
+    </TR> 
+    <TR> 
+      <td height="7px" colspan="5" bgcolor="#FFFFFF" background="/images/shadow-bot-wh.gif"></td> 
+    </TR>
+  	<TR>
+      <td width="100%" height="1" colspan="5 align="RIGHT" bgcolor="#FFFFFF">
+	<!-- *************************************** Begin RELATED LINKS  *************************************** -->		
+				  <FORM METHOD="GET" ACTION="/asp/redirect.asp" class="breadcrumbs">
+		  <DIV ALIGN="RIGHT" CLASS="sub2" STYLE="width: 100%;" height: 20;">			   
+		  <select name="target" size=1 class="dropdown">		   
+		  <option SELECTED value="/ces/home.htm" class="menulabel1">RELATED CES LINKS</option>	
+		  <option value="/ces/home.htm">&nbsp;&nbsp;CES Home Page</option>	  
+		  <option value="/ces/cesprog.htm">&nbsp;&nbsp;General Overview</option>	
+  		  <option value="/ces/cesfaq.htm">&nbsp;&nbsp;Frequently Asked Questions </option>			    		  	  		  			    		  	  			    		  	  		  			    		  	  
+  		  <option value="/ces/cesphone.htm">&nbsp;&nbsp;How to Contact Us</option>		
+		   </select><INPUT TYPE="Image" SRC="/images/go.gif" ALIGN="ABSMIDDLE" BORDER="0" WIDTH="20" HEIGHT="18">
+		  </div>
+		 </FORM>			
+	<!-- *************************************** End RELATED LINKS  ***************************************** -->	
+	</td>
+  </tr>  
+  </TABLE> 
+  
+</div>
+</center>
+<!-- END OF TOP NAV & BANNER -->
+<!-- THIS BEGIN THE MAIN CONTENT TABLE-->
+<div align="center">
+<center>	  
+	<TABLE BORDER="0" WIDTH="95%" CELLPADDING="10" CELLSPACING="0">
+	<TR><TD WIDTH="100%" HEIGHT="5" COLSPAN="3" VALIGN="TOP">
+	<!-- INSERT CONTENT HERE-->	
+	<a name="content"></a>
+	
+</head>
+<h2>Technical Notes Tables</h2>
+	<hr>
+	<p> 
+	<a href="http://www.bls.gov/web/cestntab.htm#tab2a"><u>Table 2-A. 
+  Summary of methods for computing industry statistics on employment, hours 
+  and earnings estimates</u></a></p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2b">Table 2-B. Net Birth/Death Estimates,
+  Post-Benchmark 2007</a></p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2ca">Table 2-Ca. Employment benchmarks and   approximate coverage of BLS employment and payrolls sample, March 2007</a>  </p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2cb">Table 2-Cb. Total private employment by   size of UI, September 2006 UI universe employment</a></p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2cc">Table 2-Cc. Total private CES sample   employment by UI size, September 2006</a> </p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2d"><u>Table 2-D. 
+Errors of preliminary employment estimates</u></a></p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2e">Table 2-E. 
+  Relative Standard Error for Estimates, First Closing Detail</a>&nbsp;&nbsp;</p>
+<p><a href="http://www.bls.gov/web/cestntab.htm#tab2f">Table 2-F.Standard Error for Change in Levels,
+  First
+  Closing Detail</a></p>
+<hr>
+<h4><a name="tab2a">Table 2-A. Summary of methods for computing 
+  industry statistics on employment, hours and earnings estimates</a></h4>
+<table width="1008" border="1" cellpadding="5" cellspacing="0">
+  <tr>
+    <td width="113" height="62"><center>
+        <strong><span style="font-size:12.0pt; ">Employment, hours, and earnings</span></strong>
+    </center></td>
+    <td width="284"><center>
+        <strong>Basic estimating cell (industry, 6-digit    published level)</strong>
+    </center></td>
+    <td width="277"><center>
+        <strong>Aggregate industry level (supersector and,    where stratified, industry) </strong>
+    </center></td>
+    <td width="284" valign="middle"><center>
+        <strong> Annual average data </strong>
+    </center></td>
+  </tr>
+  <tr>
+    <td width="113"><p>All employees</p></td>
+    <td width="284"><p>All-employee    estimate for previous month multiplied by weighted ratio of all employees in    current month to all employees in previous month, for sample establishments    that reported for both months, plus net birth/death model estimate.</p></td>
+    <td width="277"><p>Sum of    all-employee estimates for component cells.</p></td>
+    <td width="284"><p>Sum of monthly    estimates divided by 12.</p></td>
+  </tr>
+  <tr>
+    <td width="113">Production or    nonsupervisory workers, women employees</td>
+    <td width="284"><p>All-employee    estimate for current month multiplied by (1) weighted ratio of production or    nonsupervisory workers to all employees in sample establishments for current    month, or (2) weighted ratio of women employees to all employees.<sup> </sup></p></td>
+    <td width="277"><p>Sum of estimates    of (1) production or nonsupervisory workers, or (2) women employees, for    component cells.</p></td>
+    <td width="284"><p>Sum of monthly    estimates divided by 12.</p></td>
+  </tr>
+  <tr>
+    <td width="113"><p>Average weekly    hours</p></td>
+    <td width="284"><p>Production or    nonsupervisory worker hours divided by number of production or nonsupervisory    workers.</p></td>
+    <td width="277"><p>Average, weighted    by production or nonsupervisory worker employment, of the average weekly    hours for component cells.</p></td>
+    <td width="284" valign="top"><p>Annual total of    aggregate hours (production or nonsupervisory worker employment multiplied by    average weekly hours) divided by annual sum of production worker employment.</p></td>
+  </tr>
+  <tr>
+    <td width="113"><p>Average weekly    overtime hours</p></td>
+    <td width="284"><span style="font-size:12.0pt; ">Production worker    overtime hours divided by number of production workers.</span></td>
+    <td width="277"><p>Average, weighted    by production worker employment, of the average weekly overtime hours for    component cells.</p></td>
+    <td width="284" valign="top"><p>Annual total of    aggregate overtime hours (production worker employment multiplied by average    weekly overtime hours) divided by annual sum of production worker employment.</p></td>
+  </tr>
+  <tr>
+    <td width="113"><p>Average hourly    earnings</p></td>
+    <td width="284"><p>Total production    or nonsupervisory worker payroll divided by total production or    nonsupervisory worker hours.</p></td>
+    <td width="277"><p>Average, weighted    by aggregate hours, of the average hourly earnings for component cells.</p></td>
+    <td width="284" valign="top"><p>Annual total of    aggregate payrolls (production or nonsupervisory worker employment multiplied    by weekly hours and hourly earnings) divided by annual aggregate hours.</p></td>
+  </tr>
+  <tr>
+    <td width="113"><p>Average weekly    earnings</p></td>
+    <td width="284"><p>Product of average    weekly hours and average hourly earnings.</p></td>
+    <td width="277"><p>Product of average    weekly hours and average hourly earnings.</p></td>
+    <td width="284" valign="top"><p>Sum of monthly    aggregate payrolls divided by the sum of monthly production workers.</p></td>
+  </tr>
+</table>
+<p align="right"><a href="#top"><img src="/images/topdoc.gif" alt="Back to Top" width="18" height="18" border="0" align="MIDDLE"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<p><a name="tab2b"><strong>Table 2-B. Net Birth/Death Estimates,
+  Post-Benchmark 2007</strong></a> (In thousands)</p>
+<table border="1" cellspacing="0" cellpadding="2">
+  <col width="64" span="2" style="width:48pt;">
+  <col width="77" span="2" style="width:58pt;">
+  <col width="84" style="width:63pt;">
+  <col width="95" style="width:71pt;">
+  <col width="89" style="width:67pt;">
+  <col width="74" style="width:56pt;">
+  <col width="95" style="width:71pt;">
+  <col width="100" style="width:75pt;">
+  <col width="96" style="width:72pt;">
+  <col width="82" style="width:62pt;">
+  <col width="90" style="width:68pt;">
+  <tr height="108">
+    <td height="108" width="32">&nbsp;</td>
+    <td width="79">&nbsp;</td>
+    <td width="77"><center>
+        <strong> Natural Resources    &amp; Mining </strong>
+    </center></td>
+    <td width="89"><center>
+        <strong> Construction </strong>
+    </center></td>
+    <td width="103"><center>
+        <strong> Manufacturing </strong>
+    </center></td>
+    <td width="87"><center>
+        <strong> Trade,    Transpor-tation, &amp; Utilities </strong>
+    </center></td>
+    <td width="91"><center>
+        <strong> Information </strong>
+    </center></td>
+    <td width="64"><center>
+        <strong> Financial    Activities </strong>
+      </center></td>
+    <td width="84"><center>
+        <strong> Profes-sional    &amp; Business Services </strong>
+      </center></td>
+    <td width="79"><center>
+        <strong> Education &amp;    Health Services </strong>
+      </center></td>
+    <td width="80"><center>
+        <strong> Leisure &amp; Hospitality </strong>
+      </center></td>
+    <td width="66"><center>
+        <strong> Other Services </strong>
+      </center></td>
+    <td width="87"><center>
+        <strong> Monthly Amount    Contributed </strong>
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="216" rowspan="9" valign="top"><strong>2007</strong></td>
+    <td><strong>April</strong></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        37
+      </center></td>
+    <td><center>
+        -14
+      </center></td>
+    <td><center>
+        30
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        48
+      </center></td>
+    <td><center>
+        47
+      </center></td>
+    <td><center>
+        95
+      </center></td>
+    <td><center>
+        14
+      </center></td>
+    <td><center>
+        262
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>May</strong></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        38
+      </center></td>
+    <td><center>
+        5
+      </center></td>
+    <td><center>
+        26
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        5
+      </center></td>
+    <td><center>
+        8
+      </center></td>
+    <td><center>
+        6
+      </center></td>
+    <td><center>
+        76
+      </center></td>
+    <td><center>
+        7
+      </center></td>
+    <td><center>
+        174
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>June</strong></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        26
+      </center></td>
+    <td><center>
+        4
+      </center></td>
+    <td><center>
+        17
+      </center></td>
+    <td><center>
+        -1
+      </center></td>
+    <td><center>
+        5
+      </center></td>
+    <td><center>
+        16
+      </center></td>
+    <td><center>
+        -10
+      </center></td>
+    <td><center>
+        90
+      </center></td>
+    <td><center>
+        6
+      </center></td>
+    <td><center>
+        155
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>July</strong></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        -17
+      </center></td>
+    <td><center>
+        -11
+      </center></td>
+    <td><center>
+        -5
+      </center></td>
+    <td><center>
+        -5
+      </center></td>
+    <td><center>
+        -6
+      </center></td>
+    <td><center>
+        -3
+      </center></td>
+    <td><center>
+        55
+      </center></td>
+    <td><center>
+        -8
+      </center></td>
+    <td><center>
+        3
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>August</strong></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        14
+      </center></td>
+    <td><center>
+        3
+      </center></td>
+    <td><center>
+        16
+      </center></td>
+    <td><center>
+        4
+      </center></td>
+    <td><center>
+        6
+      </center></td>
+    <td><center>
+        17
+      </center></td>
+    <td><center>
+        11
+      </center></td>
+    <td><center>
+        26
+      </center></td>
+    <td><center>
+        4
+      </center></td>
+    <td><center>
+        102
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>September</strong></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        11
+      </center></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        19
+      </center></td>
+    <td><center>
+        0
+      </center></td>
+    <td><center>
+        5
+      </center></td>
+    <td><center>
+        6
+      </center></td>
+    <td><center>
+        14
+      </center></td>
+    <td><center>
+        -30
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        29
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>October</strong></td>
+    <td><center>
+        0
+      </center></td>
+    <td><center>
+        12
+      </center></td>
+    <td><center>
+        -8
+      </center></td>
+    <td><center>
+        22
+      </center></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        11
+      </center></td>
+    <td><center>
+        38
+      </center></td>
+    <td><center>
+        24
+      </center></td>
+    <td><center>
+        -29
+      </center></td>
+    <td><center>
+        0
+      </center></td>
+    <td><center>
+        71
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>November</strong></td>
+    <td><center>
+        0
+      </center></td>
+    <td><center>
+        -6
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        13
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        3
+      </center></td>
+    <td><center>
+        7
+      </center></td>
+    <td><center>
+        7
+      </center></td>
+    <td><center>
+        -11
+      </center></td>
+    <td><center>
+        0
+      </center></td>
+    <td><center>
+        17
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td height="24"><strong>December</strong></td>
+    <td><center>
+        1
+      </center></td>
+    <td><center>
+        -7
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        19
+      </center></td>
+    <td><center>
+        2
+      </center></td>
+    <td><center>
+        17
+      </center></td>
+    <td><center>
+        9
+      </center></td>
+    <td><center>
+        7
+      </center></td>
+    <td><center>
+        16
+      </center></td>
+    <td><center>
+        4
+      </center></td>
+    <td><center>
+        70
+      </center></td>
+  </tr>
+  <tr height="24">
+    <td colspan="2" height="24"><strong>Cumulative Total&nbsp;</strong></td>
+    <td><center>
+        9
+      </center></td>
+    <td><center>
+        127
+      </center></td>
+    <td><center>
+        -22
+      </center></td>
+    <td><center>
+        151
+      </center></td>
+    <td><center>
+        7
+      </center></td>
+    <td><center>
+        48
+      </center></td>
+    <td><center>
+        143
+      </center></td>
+    <td><center>
+        103
+      </center></td>
+    <td><center>
+        288
+      </center></td>
+    <td><center>
+        29
+      </center></td>
+    <td><center>
+        883
+      </center></td>
+  </tr>
+</table>
+<p align="right"><a href="#top"><img src="/images/topdoc.gif" alt="Back to Top" width="18" height="18" border="0" align="MIDDLE"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<h4><a name=tab2ca id="tab2ca">Table 2-Ca.&nbsp; Employment benchmarks and approximate 
+  coverage of BLS employment and payrolls sample,&nbsp;March 2007</a></h4>
+<table cellspacing="0" cellpadding="2" border="1">
+  <col width="342">
+  <col width="249">
+  <col width="228">
+  <col width="163">
+  <col width="140">
+  <col width="252">
+  <tr height="17">
+    <td rowspan="3" height="52" width="229"><center>
+      <strong>Industry</strong>
+    </center>    </td>
+    <td rowspan="3" width="160"><center>
+      <strong>Employment Benchmarks (in thousands)</strong>
+    </center>    </td>
+    <td colspan="4"><center>
+      <strong>Sample Coverage</strong>
+    </center>    </td>
+  </tr>
+  <tr height="17">
+    <td width="161" height="35" rowspan="2"><center>
+      <strong>Unemployment Insurance Counts (UI)<sup>1</sup></strong>
+    </center>    </td>
+    <td width="126" rowspan="2"><center>
+      <strong>Number of    Establishments</strong><span class="style4"><sup>1</sup></span>
+    </center>    </td>
+    <td colspan="2"><center>
+      <strong>Employees</strong>
+    </center>    </td>
+  </tr>
+  <tr height="18">
+    <td width="132" height="18"><center>
+      <strong>Number (in thousands)</strong><sup>2</sup>
+    </center>    </td>
+    <td width="146"><center>
+      <strong>Percent of Benchmark Employment Level</strong>
+    </center>    </td>
+  </tr>
+  <tr height="17">
+    <td height="17">&nbsp;&nbsp;&nbsp;&nbsp;    Total</td>
+    <td align="right"><center>
+      136533
+    </center></td>
+    <td align="right"><center>
+      127722
+    </center></td>
+    <td align="right"><center>
+      340447
+    </center></td>
+    <td align="right"><center>
+      38922
+    </center></td>
+    <td align="right"><center>
+      29
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Natural Resources and Mining</td>
+    <td align="right"><center>
+      701
+    </center></td>
+    <td align="right"><center>
+      1044
+    </center></td>
+    <td align="right"><center>
+      1983
+    </center></td>
+    <td align="right"><center>
+      151
+    </center></td>
+    <td align="right"><center>
+      22
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Construction</td>
+    <td align="right"><center>
+      7353
+    </center></td>
+    <td align="right"><center>
+      11676
+    </center></td>
+    <td align="right"><center>
+      12907
+    </center></td>
+    <td align="right"><center>
+      619
+    </center></td>
+    <td align="right"><center>
+      8
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Manufacturing</td>
+    <td align="right"><center>
+      13887
+    </center></td>
+    <td align="right"><center>
+      10923
+    </center></td>
+    <td align="right"><center>
+      16822
+    </center></td>
+    <td align="right"><center>
+      3497
+    </center></td>
+    <td align="right"><center>
+      25
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Trade, Transportation, and Utilities</td>
+    <td align="right"><center>
+      26292
+    </center></td>
+    <td align="right"><center>
+      217203<sup>3</sup>
+    </center></td>
+    <td align="right"><center>
+      1043993<sup>3</sup>
+    </center></td>
+    <td align="right"><center>
+      6895
+    </center></td>
+    <td align="right"><center>
+      26
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Information</td>
+    <td align="right"><center>
+      3024
+    </center></td>
+    <td align="right"><center>
+      2426
+    </center></td>
+    <td align="right"><center>
+      13425
+    </center></td>
+    <td align="right"><center>
+      754
+    </center></td>
+    <td align="right"><center>
+      25
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Financial Activities</td>
+    <td align="right"><center>
+      8303
+    </center></td>
+    <td align="right"><center>
+      7498
+    </center></td>
+    <td align="right"><center>
+      41917
+    </center></td>
+    <td align="right"><center>
+      1647
+    </center></td>
+    <td align="right"><center>
+      20
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Professional and Business Services</td>
+    <td align="right"><center>
+      17670
+    </center></td>
+    <td align="right"><center>
+      18323
+    </center></td>
+    <td align="right"><center>
+      36904
+    </center></td>
+    <td align="right"><center>
+      3018
+    </center></td>
+    <td align="right"><center>
+      17
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Education and Health Services</td>
+    <td align="right"><center>
+      18300
+    </center></td>
+    <td align="right"><center>
+      13638
+    </center></td>
+    <td align="right"><center>
+      32911
+    </center></td>
+    <td align="right"><center>
+      4692
+    </center></td>
+    <td align="right"><center>
+      26
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Leisure and Hospitality</td>
+    <td align="right"><center>
+      12987
+    </center></td>
+    <td align="right"><center>
+      14077
+    </center></td>
+    <td align="right"><center>
+      33172
+    </center></td>
+    <td align="right"><center>
+      2065
+    </center></td>
+    <td align="right"><center>
+      16
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Other Services</td>
+    <td align="right"><center>
+      5466
+    </center></td>
+    <td align="right"><center>
+      5921
+    </center></td>
+    <td align="right"><center>
+      10059
+    </center></td>
+    <td align="right"><center>
+      302
+    </center></td>
+    <td align="right"><center>
+      6
+    </center></td>
+  </tr>
+  <tr height="17">
+    <td height="17">Government</td>
+    <td align="right"><center>
+      22550
+    </center></td>
+    <td align="right"><center>
+      22543
+    </center></td>
+    <td align="right"><center>
+      35984
+    </center></td>
+    <td align="right"><center>
+      15284
+    </center></td>
+    <td align="right"><center>
+      68
+    </center></td>
+  </tr>
+</table>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="">
+  <tr>
+    <td><p><sup>1</sup>Counts reflect active sample reports. Because not all
+        establishments report payroll and hours information, hours and
+        earnings estimates are based on a smaller sample than are the employment 
+        estimates.</p>
+      <p><sup>2</sup> Employment of reported values for March 2007. </p>
+      <p><sup>3 </sup> The Surface Transportation Board provides a complete count of 
+        employment for Class I railroads plus Amtrak. A small sample is used to 
+        estimate hours and earnings data. </p></td>
+  </tr>
+</table><p align="right"><a href="#top"><img src="/images/topdoc.gif" alt="Back to Top" width="18" height="18" border="0" align="MIDDLE"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<table border="1" cellspacing="0" cellpadding="2" >
+  <caption>
+  <h4 align="left"><span class="tableTitle"><a name="tab2cb">Table 2-Cb. Total private employment by size of UI, September   2006 UI universe employment</a></span></h4>
+  </caption>
+  <thead>
+    <tr>
+      <th width="241" class="stubhead">Size class</th>
+      <th width="205">Percent of all UIs</th>
+      <th width="259">Percent of Employment</th>
+    </tr>
+  </thead>
+  
+  <tr>
+    <th headers=""> <p align="left" class="sub0">1 (0-9 employees)</p></th>
+    <td align="right"><center>
+        73.7
+    </center></td>
+    <td align="right"><center>
+        10.7
+    </center></td>
+  </tr>
+  <tr class="">
+    <th  headers=""> <p align="left" class="sub0">2 (10-19 employees)</p></th>
+    <td align="right"><center>
+        12.5
+    </center></td>
+    <td align="right"><center>
+        8.1
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">3 (20-49 employees)</p></th>
+    <td align="right"><center>
+        8.3
+    </center></td>
+    <td align="right"><center>
+        12.5
+    </center></td>
+  </tr>
+  <tr >
+    <th headers=""> <p align="left" class="sub0">4 (50-99 employees)</p></th>
+    <td align="right"><center>
+        2.9
+    </center></td>
+    <td align="right"><center>
+        10.1
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">5 (100-249 employees)</p></th>
+    <td align="right"><center>
+        1.7
+    </center></td>
+    <td align="right"><center>
+        13.5
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">6 (250-499 employees)</p></th>
+    <td align="right"><center>
+        0.5
+    </center></td>
+    <td align="right"><center>
+        9.6
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">7 (500-999 employees)</p></th>
+    <td align="right"><center>
+        0.2
+    </center></td>
+    <td align="right"><center>
+        8.8
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">8 (1000+ employees)</p></th>
+    <td align="right"><center>
+        0.2
+    </center></td>
+    <td align="right"><center>
+        26.6
+    </center></td>
+  </tr>
+  <tr>
+    <th headers=""> <p align="left" class="sub0">Total</p></th>
+    <td align="right"><center>
+        100
+    </center></td>
+    <td align="right"><center>
+        100
+    </center></td>
+  </tr>
+  
+</table>
+<p align="right"><a href="/web/cestntab.htm#top"><img height="18" alt="Back to Top" src="/images/topdoc.gif" width="18" align="middle" border="0"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<table border="1" cellspacing="0" cellpadding="2" >
+  <caption>
+  <h4 align="left"><span class="tableTitle"><a name="tab2cc">Table 2-Cc. Total private CES sample employment by UI size,   September 2006</a></span></h4>
+  </caption>
+  <thead>
+    <tr>
+      <th width="241" class="stubhead">Size class</th>
+      <th width="206">Percent of all sample UIs</th>
+      <th width="263">Percent of sample employment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">1 (0-9 employees)</p></th>
+      <td align="right"><center>
+        29.0
+      </center></td>
+      <td align="right"><center>
+        0.4
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">2 (10-19 employees)</p></th>
+      <td align="right"><center>
+        14.4
+      </center></td>
+      <td align="right"><center>
+        0.7
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">3 (20-49 employees)</p></th>
+      <td align="right"><center>
+        18.3
+      </center></td>
+      <td align="right"><center>
+        2.1
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" abbr=" "headers=""> <p class="sub0">4 (50-99 employees)</p></th>
+      <td align="right"><center>
+        11.2
+      </center></td>
+      <td align="right"><center>
+        3.0
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">5 (100-249 employees)</p></th>
+      <td align="right"><center>
+        11.3
+      </center></td>
+      <td align="right"><center>
+        6.8
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">6 (250-499 employees)</p></th>
+      <td align="right"><center>
+        5.7
+      </center></td>
+      <td align="right"><center>
+        7.7
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">7 (500-999 employees)</p></th>
+      <td align="right"><center>
+        4.5
+      </center></td>
+      <td align="right"><center>
+        12.6
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">8 (1000+ employees)</p></th>
+      <td align="right"><center>
+        5.8
+      </center></td>
+      <td align="right"><center>
+        66.7
+      </center></td>
+    </tr>
+    <tr>
+      <th align="left" headers=""> <p class="sub0">Total</p></th>
+      <td align="right"><center>
+        100
+      </center></td>
+      <td align="right"><center>
+        100
+      </center></td>
+    </tr>
+  </tbody>
+</table>
+<p align="right"><a href="/web/cestntab.htm#top"><img height="18" alt="Back to Top" src="/images/topdoc.gif" width="18" align="middle" border="0"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<h4><a name="tab2d" id="tab2d">Table 2-D. Errors of preliminary employment estimates</a></h4>
+<table cellspacing="0" cellpadding="2" border="1">
+  <col width="389" style="width:292pt;">
+  <col width="154" style="width:116pt;">
+  <col width="79" span="2" style="width:59pt;">
+  <tr height="52" style="height:39.0pt;">
+    <td rowspan="2" ><center>
+      <strong>      Industry      </strong>
+    </center></td>
+    <td rowspan="2" ><center>
+      <strong>      Root-mean-square error    of monthly level      </strong>
+    </center></td>
+    <td colspan="2" ><center>
+      <strong>      Mean percent revision      </strong>
+    </center></td>
+  </tr>
+  <tr height="33" style="height:24.75pt;">
+    <td ><center>
+      <strong>      Actual      </strong>
+    </center></td>
+    <td><center>
+      <strong>      Absolute      </strong>
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>Total</strong></td>
+    <td><center>
+      67,500
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td ><strong>Total private</strong></td>
+    <td><center>
+      47,200
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>Government</strong></td>
+    <td><center>
+      35,300
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.1
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp; Federal</strong></td>
+    <td><center>
+      6,400
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.2
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; Federal, except U.S. Postal Service</strong></td>
+    <td><center>
+      6,100
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.2
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; U.S. Postal Service</strong></td>
+    <td><center>
+      900
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp; State government</strong></td>
+    <td><center>
+      16,800
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.2
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; State government education</strong></td>
+    <td><center>
+      15,800
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.5
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; State government, excluding education</strong></td>
+    <td><center>
+      6,300
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.2
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp; Local government</strong></td>
+    <td><center>
+      28,500
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.1
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; Local government education</strong></td>
+    <td><center>
+      28,600
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.2
+    </center></td>
+  </tr>
+  <tr height="17" style="height:12.75pt;">
+    <td><strong>&nbsp;&nbsp;&nbsp; Local government, excluding education</strong></td>
+    <td><center>
+      7,100
+    </center></td>
+    <td><center>
+      0
+    </center></td>
+    <td><center>
+      0.1
+    </center></td>
+  </tr>
+</table>
+
+      <table border="0" cellspacing="0" cellpadding="4" bgcolor="">
+        <tr>
+          <td><p>1 The root-mean-square error is the square root of the mean squared error.  The mean squared error is the square of the difference between the final and preliminary estimates averaged across a series of monthly observations.  </p>
+          <p>NOTE: Errors are based on differences from January 2003 through October 2007. </p></td>
+        </tr>
+      </table><p align="right"><a href="#top"><img src="/images/topdoc.gif" alt="Back to Top" width="18" height="18" border="0" align="MIDDLE"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<p align="left"><a id="tab2e" name="tab2e"> <strong>Table 2-E. Relative standard error for estimates in employment, hours, and earnings in   selected industries, <br>
+  first closing detail (in   percent)<sup>(1)</sup></strong></a></p>
+<table>
+  <tbody>
+  </tbody>
+</table>
+<table cellspacing="0" cellpadding="2" border="1">
+  <colgroup>
+  <col style="WIDTH: 216pt" width="288">
+  <col style="WIDTH: 110pt" span="3" width="147">
+  <tbody>
+    <tr height="21">
+      <td width="324" height="42" rowspan="2"><center>
+        <strong>Industry </strong>
+      </center></td>
+      <td colspan="3" height="30"><center>
+        <strong>Relative Standard Error </strong>
+      </center></td>
+    </tr>
+    <tr height="21">
+      <td width="175" height="29"><center>
+        <strong>All Employees </strong>
+      </center></td>
+      <td width="175"><center>
+        <strong>Average weekly hours </strong>
+      </center></td>
+      <td width="175"><center>
+        <strong>Average hourly earnings </strong>
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Total nonfarm</strong></td>
+      <td><center>
+        0.1
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Total private</strong></td>
+      <td><center>
+        0.1
+      </center></td>
+      <td><center>
+        0.1
+      </center></td>
+      <td><center>
+        0.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Goods-producing</strong></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Service-providing</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Private service-providing</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Natural resources and mining</strong></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Logging</strong></td>
+      <td><center>
+        3.6
+      </center></td>
+      <td><center>
+        3.7
+      </center></td>
+      <td><center>
+        3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Mining</strong></td>
+      <td><center>
+        2.5
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Oil and gas extraction</strong></td>
+      <td><center>
+        2.4
+      </center></td>
+      <td><center>
+        3
+      </center></td>
+      <td><center>
+        4.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Mining, except oil and gas</strong></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Coal mining</strong></td>
+      <td><center>
+        2.2
+      </center></td>
+      <td><center>
+        2.5
+      </center></td>
+      <td><center>
+        2.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Support activities for mining</strong></td>
+      <td><center>
+        5.5
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+      <td><center>
+        3.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Construction</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Construction of buildings</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Residential building</strong></td>
+      <td><center>
+        2
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonresidential building</strong></td>
+      <td><center>
+        1.7
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Heavy and civil engineering construction</strong></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Specialty trade contractors</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Residential specialty trade contractors</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonresidential specialty trade contractors</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Manufacturing</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Durable goods</strong></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Wood products</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonmetallic mineral products</strong></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Primary metals</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Fabricated metal products</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Machinery</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Computer and electronic products</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Computer and peripheral equipment</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        3.4
+      </center></td>
+      <td><center>
+        4.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Communications equipment</strong></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+      <td><center>
+        6.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Semiconductors and electronic components</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronic instruments</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        2.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electrical equipment and appliances</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Transportation equipment</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Motor vehicles and parts</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Furniture and related products</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Miscellaneous manufacturing</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nondurable goods</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Food manufacturing</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Beverages and tobacco products</strong></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        2.8
+      </center></td>
+      <td><center>
+        3.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Textile mills</strong></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        1.7
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Textile product mills</strong></td>
+      <td><center>
+        2.5
+      </center></td>
+      <td><center>
+        2.7
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Apparel</strong></td>
+      <td><center>
+        2.6
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Leather and allied products</strong></td>
+      <td><center>
+        3.8
+      </center></td>
+      <td><center>
+        2.9
+      </center></td>
+      <td><center>
+        3.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Paper and paper products</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Printing and related support activities</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Petroleum and coal products</strong></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        2.4
+      </center></td>
+      <td><center>
+        3.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Chemicals</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Plastics and rubber products</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Trade, transportation, and utilities</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Wholesale trade</strong></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Durable goods</strong></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nondurable goods</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronic markets and agents and brokers</strong></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Retail trade</strong></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Motor vehicle and parts dealers</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Automobile dealers</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Furniture and home furnishings stores</strong></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronics and appliance stores</strong></td>
+      <td><center>
+        2
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        4.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Building material and garden supply stores</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Food and beverage stores</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Health and personal care stores</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Gasoline stations</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Clothing and clothing accessories stores</strong></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Sporting goods, hobby, book, and music   stores</strong></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>General merchandise stores</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Department stores</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Miscellaneous store retailers</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonstore retailers</strong></td>
+      <td><center>
+        2.2
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        2.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Transportation and warehousing</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Air transportation</strong></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        2.7
+      </center></td>
+      <td><center>
+        4.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Rail transportation</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        (3)
+      </center></td>
+      <td><center>
+        (3)
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Water transportation</strong></td>
+      <td><center>
+        5.9
+      </center></td>
+      <td><center>
+        4.4
+      </center></td>
+      <td><center>
+        5.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Truck transportation</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Transit and ground passenger transportation</strong></td>
+      <td><center>
+        2.9
+      </center></td>
+      <td><center>
+        2.8
+      </center></td>
+      <td><center>
+        1.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Pipeline transportation</strong></td>
+      <td><center>
+        2.7
+      </center></td>
+      <td><center>
+        3.1
+      </center></td>
+      <td><center>
+        2.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Scenic and sightseeing transportation</strong></td>
+      <td><center>
+        10.1
+      </center></td>
+      <td><center>
+        7.7
+      </center></td>
+      <td><center>
+        6.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Support activities for transportation</strong></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Couriers and messengers</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        6
+      </center></td>
+      <td><center>
+        3.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Warehousing and storage</strong></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Utilities</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Information</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Publishing industries, except Internet</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Motion picture and sound recording   industries</strong></td>
+      <td><center>
+        4.2
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+      <td><center>
+        4.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Broadcasting, except Internet</strong></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        3.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Telecommunications</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        2.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Data processing, hosting, and related   services</strong></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        4.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Other information services</strong></td>
+      <td><center>
+        2.7
+      </center></td>
+      <td><center>
+        5.1
+      </center></td>
+      <td><center>
+        5.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Financial activities</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Finance and insurance</strong></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Monetary authorities - central bank</strong></td>
+      <td><center>
+        3.3
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Credit intermediation and related activities</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Depository credit intermediation</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Commercial banking</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Securities, commodity contracts, investment</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        3.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Insurance carriers and related activities</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Funds, trusts, and other financial vehicles</strong></td>
+      <td><center>
+        2.4
+      </center></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        3.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Real estate and rental and leasing</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Real estate</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Rental and leasing services</strong></td>
+      <td><center>
+        1.8
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Lessors of nonfinancial intangible assets</strong></td>
+      <td><center>
+        6.9
+      </center></td>
+      <td><center>
+        5.3
+      </center></td>
+      <td><center>
+        9.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Professional and business services</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Professional and technical services</strong></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Legal services</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Accounting and bookkeeping services</strong></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Architectural and engineering services</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Computer systems design and related services</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Management and technical consulting services</strong></td>
+      <td><center>
+        2.4
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        2.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Management of companies and enterprises</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        2.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Administrative and waste services</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Administrative and support services</strong></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Employment services</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Temporary help services</strong></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Business support services</strong></td>
+      <td><center>
+        1.8
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        2.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Services to buildings and dwellings</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Waste management and remediation services</strong></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Education and health services</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Educational services</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Health care and social assistance</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Health care</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.3
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Ambulatory health care services</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        1.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Offices of physicians</strong></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        2.1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Outpatient care centers</strong></td>
+      <td><center>
+        1.1
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        2.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Home health care services</strong></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        2.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Hospitals</strong></td>
+      <td><center>
+        0.2
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nursing and residential care facilities</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nursing care facilities</strong></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Social assistance</strong></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.7
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Child day care services</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Leisure and hospitality</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Arts, entertainment, and recreation</strong></td>
+      <td><center>
+        1.9
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Performing arts and spectator sports</strong></td>
+      <td><center>
+        4.4
+      </center></td>
+      <td><center>
+        3.6
+      </center></td>
+      <td><center>
+        5.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Museums, historical sites, zoos, and parks</strong></td>
+      <td><center>
+        2.3
+      </center></td>
+      <td><center>
+        2.9
+      </center></td>
+      <td><center>
+        2.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Amusements, gambling, and recreation</strong></td>
+      <td><center>
+        2.1
+      </center></td>
+      <td><center>
+        1.6
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Accommodation and food services</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.4
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Accommodation</strong></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        0.9
+      </center></td>
+      <td><center>
+        1.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Food services and drinking places</strong></td>
+      <td><center>
+        0.4
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+      <td><center>
+        0.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Other services</strong></td>
+      <td><center>
+        1.5
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+      <td><center>
+        1.3
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Repair and maintenance</strong></td>
+      <td><center>
+        1.2
+      </center></td>
+      <td><center>
+        0.8
+      </center></td>
+      <td><center>
+        1
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Personal and laundry services</strong></td>
+      <td><center>
+        1
+      </center></td>
+      <td><center>
+        1.4
+      </center></td>
+      <td><center>
+        1.5
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Membership associations and organizations</strong></td>
+      <td><center>
+        2.7
+      </center></td>
+      <td><center>
+        2.6
+      </center></td>
+      <td><center>
+        2.4
+      </center></td>
+    </tr>
+  </tbody>
+</table>
+<table cellspacing="0" cellpadding="4" width="100%" border="0">
+  <tbody>
+    <tr>
+      <td><p><sup>(1)</sup>Estimates of variance are not available for government sectors   due to lack of historical probability-based estimates.</p>
+          <p><sup>(2)</sup>Hours and earnings estimates are not published.</p>
+        <p><sup>(3)</sup>Estimates are not available as a result of confidentiality   standards.</p></td>
+    </tr>
+  </tbody>
+</table>
+<p align="right"><a href="#top"><img height="18" alt="Back to Top" src="cestntab_2e2ftab_topdoc.gif" width="18" align="middle" border="0"></a> <a href="http://www.bls.gov/web/cestntab.htm#top">Back to Top</a></p>
+<h4><a id="tab2f" name="tab2f">Table 2-F. Standard error for change in levels   estimates of employment, hours and earnings in selected industries, <br>
+first   closing detail<sup>(1)</sup></a></h4>
+<table cellspacing="0" cellpadding="2" border="1">
+  <colgroup>
+  <col style="WIDTH: 214pt" width="285">
+  <col style="WIDTH: 54pt" width="72">
+  <col style="WIDTH: 48pt" span="2" width="64">
+  <col style="WIDTH: 54pt" width="72">
+  <col style="WIDTH: 48pt" span="2" width="64">
+  <col style="WIDTH: 59pt" width="79">
+  <col style="WIDTH: 48pt" span="2" width="64">
+  <tbody>
+    <tr height="21">
+      <td width="315" height="63" rowspan="3"><center>
+        <strong>Industry</strong>
+      </center></td>
+      <td colspan="3" height="28"><center>
+        <strong>Standard Error </strong>
+      </center></td>
+      <td colspan="3"><center>
+        <strong>Standard Error </strong>
+      </center></td>
+      <td colspan="3"><center>
+        <strong>Standard Error </strong>
+      </center></td>
+    </tr>
+    <tr height="21">
+      <td colspan="3" height="30"><center>
+        <strong>1 Month Change </strong>
+      </center></td>
+      <td colspan="3"><center>
+        <strong>3 Month Change </strong>
+      </center></td>
+      <td colspan="3"><center>
+        <strong>12 Month Change </strong>
+      </center></td>
+    </tr>
+    <tr height="21">
+      <td width="75" height="27"><center>
+        <strong>&nbsp;</strong><strong>AE</strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AWH </strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AHE </strong>
+      </center></td>
+      <td width="75"><center>
+        <strong>&nbsp;</strong><strong>AE</strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AWH </strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AHE </strong>
+      </center></td>
+      <td width="75"><center>
+        <strong>&nbsp;</strong><strong>AE</strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AWH </strong>
+      </center></td>
+      <td width="70"><center>
+        <strong>AHE </strong>
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Total nonfarm</strong></td>
+      <td align="right"><center>
+        65,017
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        94,048
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        153,908
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Total private</strong></td>
+      <td align="right"><center>
+        63,018
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        91,192
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        148,066
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Goods-producing</strong></td>
+      <td align="right"><center>
+        20,484
+      </center></td>
+      <td align="right"><center>
+        0.06
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        31,278
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        54,424
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Service-providing</strong></td>
+      <td align="right"><center>
+        61,568
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        85,745
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        144,510
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Private service-providing</strong></td>
+      <td align="right"><center>
+        59,453
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        82,603
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        138,272
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Natural resources and mining</strong></td>
+      <td align="right"><center>
+        3,317
+      </center></td>
+      <td align="right"><center>
+        0.43
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        7,166
+      </center></td>
+      <td align="right"><center>
+        0.56
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+      <td align="right"><center>
+        14,754
+      </center></td>
+      <td align="right"><center>
+        0.73
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Logging</strong></td>
+      <td align="right"><center>
+        942
+      </center></td>
+      <td align="right"><center>
+        0.99
+      </center></td>
+      <td align="right"><center>
+        0.3
+      </center></td>
+      <td align="right"><center>
+        1,285
+      </center></td>
+      <td align="right"><center>
+        1.27
+      </center></td>
+      <td align="right"><center>
+        0.42
+      </center></td>
+      <td align="right"><center>
+        1,996
+      </center></td>
+      <td align="right"><center>
+        1.8
+      </center></td>
+      <td align="right"><center>
+        0.57
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Mining</strong></td>
+      <td align="right"><center>
+        3,161
+      </center></td>
+      <td align="right"><center>
+        0.46
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        6,982
+      </center></td>
+      <td align="right"><center>
+        0.61
+      </center></td>
+      <td align="right"><center>
+        0.2
+      </center></td>
+      <td align="right"><center>
+        14,532
+      </center></td>
+      <td align="right"><center>
+        0.78
+      </center></td>
+      <td align="right"><center>
+        0.41
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Oil and gas extraction</strong></td>
+      <td align="right"><center>
+        1,054
+      </center></td>
+      <td align="right"><center>
+        0.81
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        1,575
+      </center></td>
+      <td align="right"><center>
+        1.05
+      </center></td>
+      <td align="right"><center>
+        0.46
+      </center></td>
+      <td align="right"><center>
+        2,921
+      </center></td>
+      <td align="right"><center>
+        1.43
+      </center></td>
+      <td align="right"><center>
+        0.98
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Mining, except oil and gas</strong></td>
+      <td align="right"><center>
+        1,133
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        1,722
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        2,530
+      </center></td>
+      <td align="right"><center>
+        0.64
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Coal mining</strong></td>
+      <td align="right"><center>
+        647
+      </center></td>
+      <td align="right"><center>
+        0.7
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        853
+      </center></td>
+      <td align="right"><center>
+        0.96
+      </center></td>
+      <td align="right"><center>
+        0.3
+      </center></td>
+      <td align="right"><center>
+        1,318
+      </center></td>
+      <td align="right"><center>
+        1.22
+      </center></td>
+      <td align="right"><center>
+        0.63
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Support activities for mining</strong></td>
+      <td align="right"><center>
+        2,619
+      </center></td>
+      <td align="right"><center>
+        0.78
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        6,289
+      </center></td>
+      <td align="right"><center>
+        1.12
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+      <td align="right"><center>
+        13,708
+      </center></td>
+      <td align="right"><center>
+        1.43
+      </center></td>
+      <td align="right"><center>
+        0.78
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Construction</strong></td>
+      <td align="right"><center>
+        14,415
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        23,202
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        0.06
+      </center></td>
+      <td align="right"><center>
+        40,565
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Construction of buildings</strong></td>
+      <td align="right"><center>
+        7,015
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        10,846
+      </center></td>
+      <td align="right"><center>
+        0.25
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        19,411
+      </center></td>
+      <td align="right"><center>
+        0.35
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Residential building</strong></td>
+      <td align="right"><center>
+        4,811
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        7,566
+      </center></td>
+      <td align="right"><center>
+        0.32
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        14,731
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonresidential building</strong></td>
+      <td align="right"><center>
+        5,047
+      </center></td>
+      <td align="right"><center>
+        0.33
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        7,934
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+      <td align="right"><center>
+        12,324
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Heavy and civil engineering construction</strong></td>
+      <td align="right"><center>
+        5,717
+      </center></td>
+      <td align="right"><center>
+        0.3
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        9,295
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        13,970
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Specialty trade contractors</strong></td>
+      <td align="right"><center>
+        11,381
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        16,767
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        31,052
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Residential specialty trade contractors</strong></td>
+      <td align="right"><center>
+        8,233
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        11,955
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        21,540
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonresidential specialty trade contractors</strong></td>
+      <td align="right"><center>
+        8,953
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        13,731
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        26,048
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Manufacturing</strong></td>
+      <td align="right"><center>
+        12,951
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        18,003
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        31,460
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Durable goods</strong></td>
+      <td align="right"><center>
+        10,181
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        13,824
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        23,749
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Wood products</strong></td>
+      <td align="right"><center>
+        2,255
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        3,447
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        6,633
+      </center></td>
+      <td align="right"><center>
+        0.47
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonmetallic mineral products</strong></td>
+      <td align="right"><center>
+        2,509
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        3,777
+      </center></td>
+      <td align="right"><center>
+        0.5
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        6,683
+      </center></td>
+      <td align="right"><center>
+        0.63
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Primary metals</strong></td>
+      <td align="right"><center>
+        1,760
+      </center></td>
+      <td align="right"><center>
+        0.34
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        2,361
+      </center></td>
+      <td align="right"><center>
+        0.4
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        4,280
+      </center></td>
+      <td align="right"><center>
+        0.5
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Fabricated metal products</strong></td>
+      <td align="right"><center>
+        3,455
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        0.06
+      </center></td>
+      <td align="right"><center>
+        5,530
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        10,435
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Machinery</strong></td>
+      <td align="right"><center>
+        2,733
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        4,103
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        8,444
+      </center></td>
+      <td align="right"><center>
+        0.36
+      </center></td>
+      <td align="right"><center>
+        0.17
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Computer and electronic products</strong></td>
+      <td align="right"><center>
+        2,413
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        3,958
+      </center></td>
+      <td align="right"><center>
+        0.3
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        7,484
+      </center></td>
+      <td align="right"><center>
+        0.41
+      </center></td>
+      <td align="right"><center>
+        0.34
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Computer and peripheral equipment</strong></td>
+      <td align="right"><center>
+        793
+      </center></td>
+      <td align="right"><center>
+        0.49
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        1,167
+      </center></td>
+      <td align="right"><center>
+        1.04
+      </center></td>
+      <td align="right"><center>
+        0.58
+      </center></td>
+      <td align="right"><center>
+        2,414
+      </center></td>
+      <td align="right"><center>
+        1.6
+      </center></td>
+      <td align="right"><center>
+        1.22
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Communications equipment</strong></td>
+      <td align="right"><center>
+        709
+      </center></td>
+      <td align="right"><center>
+        0.42
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        1,194
+      </center></td>
+      <td align="right"><center>
+        0.68
+      </center></td>
+      <td align="right"><center>
+        0.49
+      </center></td>
+      <td align="right"><center>
+        2,545
+      </center></td>
+      <td align="right"><center>
+        0.96
+      </center></td>
+      <td align="right"><center>
+        1.24
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Semiconductors and electronic components</strong></td>
+      <td align="right"><center>
+        1,488
+      </center></td>
+      <td align="right"><center>
+        0.32
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        2,393
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.2
+      </center></td>
+      <td align="right"><center>
+        4,537
+      </center></td>
+      <td align="right"><center>
+        0.63
+      </center></td>
+      <td align="right"><center>
+        0.42
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronic instruments</strong></td>
+      <td align="right"><center>
+        1,130
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        1,772
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.2
+      </center></td>
+      <td align="right"><center>
+        4,198
+      </center></td>
+      <td align="right"><center>
+        0.45
+      </center></td>
+      <td align="right"><center>
+        0.51
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electrical equipment and appliances</strong></td>
+      <td align="right"><center>
+        1,658
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        2,595
+      </center></td>
+      <td align="right"><center>
+        0.32
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        4,823
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Transportation equipment</strong></td>
+      <td align="right"><center>
+        5,739
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        5,703
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        12,440
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Motor vehicles and parts</strong></td>
+      <td align="right"><center>
+        4,644
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        4,669
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        7,937
+      </center></td>
+      <td align="right"><center>
+        0.48
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Furniture and related products</strong></td>
+      <td align="right"><center>
+        2,183
+      </center></td>
+      <td align="right"><center>
+        0.31
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        3,703
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        5,886
+      </center></td>
+      <td align="right"><center>
+        0.45
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Miscellaneous manufacturing</strong></td>
+      <td align="right"><center>
+        2,586
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        3,590
+      </center></td>
+      <td align="right"><center>
+        0.38
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        6,538
+      </center></td>
+      <td align="right"><center>
+        0.49
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nondurable goods</strong></td>
+      <td align="right"><center>
+        7,481
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        10,532
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        19,780
+      </center></td>
+      <td align="right"><center>
+        0.17
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Food manufacturing</strong></td>
+      <td align="right"><center>
+        4,984
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        6,499
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        12,430
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Beverages and tobacco products</strong></td>
+      <td align="right"><center>
+        1,300
+      </center></td>
+      <td align="right"><center>
+        0.84
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        1,963
+      </center></td>
+      <td align="right"><center>
+        0.93
+      </center></td>
+      <td align="right"><center>
+        0.33
+      </center></td>
+      <td align="right"><center>
+        3,103
+      </center></td>
+      <td align="right"><center>
+        1.3
+      </center></td>
+      <td align="right"><center>
+        0.6
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Textile mills</strong></td>
+      <td align="right"><center>
+        1,182
+      </center></td>
+      <td align="right"><center>
+        0.54
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        1,750
+      </center></td>
+      <td align="right"><center>
+        0.62
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        3,175
+      </center></td>
+      <td align="right"><center>
+        0.74
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Textile product mills</strong></td>
+      <td align="right"><center>
+        1,250
+      </center></td>
+      <td align="right"><center>
+        0.52
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        1,912
+      </center></td>
+      <td align="right"><center>
+        0.81
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        3,693
+      </center></td>
+      <td align="right"><center>
+        1.14
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Apparel</strong></td>
+      <td align="right"><center>
+        2,118
+      </center></td>
+      <td align="right"><center>
+        0.43
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        3,171
+      </center></td>
+      <td align="right"><center>
+        0.57
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        5,675
+      </center></td>
+      <td align="right"><center>
+        0.8
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Leather and allied products</strong></td>
+      <td align="right"><center>
+        431
+      </center></td>
+      <td align="right"><center>
+        0.8
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        716
+      </center></td>
+      <td align="right"><center>
+        0.84
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        1,392
+      </center></td>
+      <td align="right"><center>
+        1.21
+      </center></td>
+      <td align="right"><center>
+        0.41
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Paper and paper products</strong></td>
+      <td align="right"><center>
+        1,604
+      </center></td>
+      <td align="right"><center>
+        0.34
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        2,299
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        4,231
+      </center></td>
+      <td align="right"><center>
+        0.5
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Printing and related support activities</strong></td>
+      <td align="right"><center>
+        2,237
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        3,176
+      </center></td>
+      <td align="right"><center>
+        0.31
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        7,032
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Petroleum and coal products</strong></td>
+      <td align="right"><center>
+        811
+      </center></td>
+      <td align="right"><center>
+        0.84
+      </center></td>
+      <td align="right"><center>
+        0.32
+      </center></td>
+      <td align="right"><center>
+        1,437
+      </center></td>
+      <td align="right"><center>
+        1.07
+      </center></td>
+      <td align="right"><center>
+        0.51
+      </center></td>
+      <td align="right"><center>
+        2,274
+      </center></td>
+      <td align="right"><center>
+        1.16
+      </center></td>
+      <td align="right"><center>
+        0.99
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Chemicals</strong></td>
+      <td align="right"><center>
+        2,363
+      </center></td>
+      <td align="right"><center>
+        0.3
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        3,623
+      </center></td>
+      <td align="right"><center>
+        0.34
+      </center></td>
+      <td align="right"><center>
+        0.18
+      </center></td>
+      <td align="right"><center>
+        6,946
+      </center></td>
+      <td align="right"><center>
+        0.47
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Plastics and rubber products</strong></td>
+      <td align="right"><center>
+        2,446
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        3,779
+      </center></td>
+      <td align="right"><center>
+        0.33
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        6,945
+      </center></td>
+      <td align="right"><center>
+        0.44
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Trade, transportation, and utilities</strong></td>
+      <td align="right"><center>
+        21,613
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        32,038
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        54,961
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Wholesale trade</strong></td>
+      <td align="right"><center>
+        8,833
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        15,450
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        24,671
+      </center></td>
+      <td align="right"><center>
+        0.2
+      </center></td>
+      <td align="right"><center>
+        0.2
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Durable goods</strong></td>
+      <td align="right"><center>
+        5,550
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        8,400
+      </center></td>
+      <td align="right"><center>
+        0.17
+      </center></td>
+      <td align="right"><center>
+        0.17
+      </center></td>
+      <td align="right"><center>
+        14,753
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nondurable goods</strong></td>
+      <td align="right"><center>
+        5,347
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        10,253
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        17,744
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronic markets and agents and brokers</strong></td>
+      <td align="right"><center>
+        3,773
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        5,920
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.4
+      </center></td>
+      <td align="right"><center>
+        10,091
+      </center></td>
+      <td align="right"><center>
+        0.59
+      </center></td>
+      <td align="right"><center>
+        0.67
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Retail trade</strong></td>
+      <td align="right"><center>
+        16,039
+      </center></td>
+      <td align="right"><center>
+        0.06
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        23,437
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        41,557
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Motor vehicle and parts dealers</strong></td>
+      <td align="right"><center>
+        3,927
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        0.13
+      </center></td>
+      <td align="right"><center>
+        5,538
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        9,846
+      </center></td>
+      <td align="right"><center>
+        0.4
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Automobile dealers</strong></td>
+      <td align="right"><center>
+        3,139
+      </center></td>
+      <td align="right"><center>
+        0.25
+      </center></td>
+      <td align="right"><center>
+        0.19
+      </center></td>
+      <td align="right"><center>
+        4,137
+      </center></td>
+      <td align="right"><center>
+        0.33
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        7,238
+      </center></td>
+      <td align="right"><center>
+        0.56
+      </center></td>
+      <td align="right"><center>
+        0.39
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Furniture and home furnishings stores</strong></td>
+      <td align="right"><center>
+        2,842
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+      <td align="right"><center>
+        4,097
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.26
+      </center></td>
+      <td align="right"><center>
+        6,794
+      </center></td>
+      <td align="right"><center>
+        0.65
+      </center></td>
+      <td align="right"><center>
+        0.43
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Electronics and appliance stores</strong></td>
+      <td align="right"><center>
+        3,017
+      </center></td>
+      <td align="right"><center>
+        0.37
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        4,646
+      </center></td>
+      <td align="right"><center>
+        0.51
+      </center></td>
+      <td align="right"><center>
+        0.47
+      </center></td>
+      <td align="right"><center>
+        10,523
+      </center></td>
+      <td align="right"><center>
+        0.67
+      </center></td>
+      <td align="right"><center>
+        0.79
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Building material and garden supply stores</strong></td>
+      <td align="right"><center>
+        4,219
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+      <td align="right"><center>
+        0.08
+      </center></td>
+      <td align="right"><center>
+        6,742
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        10,388
+      </center></td>
+      <td align="right"><center>
+        0.4
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Food and beverage stores</strong></td>
+      <td align="right"><center>
+        5,425
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        0.03
+      </center></td>
+      <td align="right"><center>
+        8,594
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        14,477
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Health and personal care stores</strong></td>
+      <td align="right"><center>
+        3,325
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        4,535
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        0.15
+      </center></td>
+      <td align="right"><center>
+        8,484
+      </center></td>
+      <td align="right"><center>
+        0.42
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Gasoline stations</strong></td>
+      <td align="right"><center>
+        3,393
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+      <td align="right"><center>
+        0.05
+      </center></td>
+      <td align="right"><center>
+        4,621
+      </center></td>
+      <td align="right"><center>
+        0.28
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        8,373
+      </center></td>
+      <td align="right"><center>
+        0.44
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Clothing and clothing accessories stores</strong></td>
+      <td align="right"><center>
+        7,524
+      </center></td>
+      <td align="right"><center>
+        0.24
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+      <td align="right"><center>
+        10,175
+      </center></td>
+      <td align="right"><center>
+        0.33
+      </center></td>
+      <td align="right"><center>
+        0.11
+      </center></td>
+      <td align="right"><center>
+        18,681
+      </center></td>
+      <td align="right"><center>
+        0.51
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Sporting goods, hobby, book, and music   stores</strong></td>
+      <td align="right"><center>
+        4,044
+      </center></td>
+      <td align="right"><center>
+        0.27
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        6,317
+      </center></td>
+      <td align="right"><center>
+        0.34
+      </center></td>
+      <td align="right"><center>
+        0.12
+      </center></td>
+      <td align="right"><center>
+        12,416
+      </center></td>
+      <td align="right"><center>
+        0.56
+      </center></td>
+      <td align="right"><center>
+        0.22
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>General merchandise stores</strong></td>
+      <td align="right"><center>
+        3,406
+      </center></td>
+      <td align="right"><center>
+        0.06
+      </center></td>
+      <td align="right"><center>
+        0.02
+      </center></td>
+      <td align="right"><center>
+        6,155
+      </center></td>
+      <td align="right"><center>
+        0.09
+      </center></td>
+      <td align="right"><center>
+        0.04
+      </center></td>
+      <td align="right"><center>
+        15,715
+      </center></td>
+      <td align="right"><center>
+        0.16
+      </center></td>
+      <td align="right"><center>
+        0.07
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Department stores</strong></td>
+      <td align="right"><center>
+        2,461
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        4,040
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+      <td align="right"><center>
+        14,119
+      </center></td>
+      <td><center>
+        (2)
+      </center></td>
+      <td><center>
+        (2)&nbsp;
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Miscellaneous store retailers</strong></td>
+      <td align="right"><center>
+        4,258
+      </center></td>
+      <td align="right"><center>
+        0.21
+      </center></td>
+      <td align="right"><center>
+        0.1
+      </center></td>
+      <td align="right"><center>
+        5,793
+      </center></td>
+      <td align="right"><center>
+        0.29
+      </center></td>
+      <td align="right"><center>
+        0.14
+      </center></td>
+      <td align="right"><center>
+        11,187
+      </center></td>
+      <td align="right"><center>
+        0.43
+      </center></td>
+      <td align="right"><center>
+        0.23
+      </center></td>
+    </tr>
+    <tr height="17">
+      <td height="17"><strong>Nonstore retailers</strong></td>
+      <td align="right"><center>
+        2,438
+      </center></td>
+      <td align="right"><center>
+        0.32
+      </cente

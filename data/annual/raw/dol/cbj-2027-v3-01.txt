@@ -1,0 +1,3005 @@
+              FY 2027
+
+CONGRESSIONAL BUDGET JUSTIFICATION
+
+    BUREAU OF LABOR STATISTICS
+This page is intentionally left blank.
+                                     BUREAU OF LABOR STATISTICS
+
+
+                                               TABLE OF CONTENTS
+
+Appropriation Language ..................................................................................................... 1
+Amounts Available for Obligation...................................................................................... 2
+Summary of Changes .......................................................................................................... 3
+Summary Budget Authority and FTE by Activity .............................................................. 5
+Budget Authority by Object Class ...................................................................................... 6
+Significant Items in Appropriation Committees’ Reports .................................................. 7
+Authorizing Statutes............................................................................................................ 8
+Appropriation History ......................................................................................................... 9
+Overview ........................................................................................................................... 10
+Cross-Cutting Measures .................................................................................................... 13
+Budget Activities .............................................................................................................. 15
+  Employment and Unemployment Statistics .................................................................. 15
+  Labor Market Information ............................................................................................ 35
+  Prices and Cost of Living.............................................................................................. 39
+  Compensation and Working Conditions ....................................................................... 51
+  Productivity and Technology ........................................................................................ 63
+  Executive Direction and Staff Services ........................................................................ 71
+This page is intentionally left blank.
+                            BUREAU OF LABOR STATISTICS
+
+
+                             APPROPRIATION LANGUAGE
+
+                                SALARIES AND EXPENSES
+
+No appropriations language is proposed with the Department of Labor.
+
+Note.--This account is operating under the Continuing Appropriations Act, 2026 (Division B of
+Public Law 119-75).
+
+
+
+
+                                           BLS - 1
+                                                       BUREAU OF LABOR STATISTICS
+
+
+
+
+                                                AMOUNTS AVAILABLE FOR OBLIGATION
+                                                                  (Dollars in Thousands)
+
+
+                                                                       FY 2025                        FY 2026                  FY 2027
+                                                                       Enacted                        Enacted                  Request
+                                                                        FTE           Amount           FTE         Amount       FTE         Amount
+Budget Authority Before Committee                                           2,019      $703,952            1,773    $708,500        1,754    $667,952
+Unobligated Balances Brought Forward                                            0            $1                0          $0            0          $0
+Unobligated Balances Transferred between Expired/Unexpired accounts              0            $388            0           $0           0           $0
+Recoveries                                                                       0            $148            0           $0           0           $0
+Total Budgetary Resources                                                    2,019         $704,489        1,773    $708,500        1,754    $667,952
+
+
+
+
+                                                                         BLS - 2
+                                                              BUREAU OF LABOR STATISTICS
+
+
+
+
+                                                                  SUMMARY OF CHANGES
+                                                                          (Dollars in Thousands)
+
+                                                                         FY 2026 Enacted                     FY 2027 Request                           Net Change
+
+Budget Authority
+ General Funds                                                                  $640,500                             $599,952                                -$40,548
+ Unemployment Trust Funds                                                        $68,000                              $68,000                                      $0
+Total                                                                           $708,500                             $667,952                                -$40,548
+
+Full Time Equivalents
+ General Funds                                                                      1,773                                   1,754                                 -19
+Total                                                                               1,773                                   1,754                                 -19
+
+
+
+
+                                                                           Explanation of Change
+                                            FY 2026 Enacted                  Trust Funds                    Federal Funds                    FY 2027 Total
+
+                                                       FTE    Amount                FTE            Amount           FTE             Amount           FTE           Amount
+Increases:
+ A. Built-Ins:
+  Total personnel compensation                        1,773   $233,074                 0               $0              0                $0              0               $0
+  Personnel benefits                                      0    $85,488                 0               $0              0                $0              0               $0
+  Benefits for former personnel                          0        $68                  0               $0              0                $0              0               $0
+  Travel and transportation of persons                   0      $3,173                 0               $0              0                $0              0               $0
+  Rental payments to GSA                                 0     $21,397                 0               $0              0                $0              0               $0
+  Rental payments to others                              0         $80                 0               $0              0                $0              0               $0
+  Communications, utilities, and misc.                   0      $2,793                 0               $0              0                $0              0               $0
+  Printing and reproduction                              0      $1,000                 0               $0              0                $0              0               $0
+  Other services from non-Federal sources                0      $9,000                 0               $0              0                $0              0               $0
+  Other goods and svcs. from Fed. sources                0    $131,402                 0               $0              0                $0              0               $0
+  Research and development contracts                     0     $24,000                 0               $0              0                $0              0               $0
+
+
+
+                                                                                  BLS - 3
+                                                     BUREAU OF LABOR STATISTICS
+
+   Operation and maint. of equipment          0      $61,701      0       $0       0         $0     0         $0
+   Supplies and materials                     0        $400       0       $0       0         $0     0         $0
+   Equipment                                  0       $5,000      0       $0       0         $0     0         $0
+   Grants, subsidies, and contributions       0      $82,128      0       $0       0         $0     0         $0
+   Insurance claims and indemnities           0          $45      0       $0       0         $0     0         $0
+   Federal Employees' Compensation Act        0        $275       0       $0       0         $0     0         $0
+   Working Capital Fund                       0      $47,476      0       $0       0         $0     0         $0
+   Built-Ins Subtotal                     +1,773   +$708,500      0       $0       0         $0     0         $0
+
+
+ B. Programs:
+   Programs Subtotal                                              0       $0       0         $0     0         $0
+Total Increase                            +1,773   +$708,500      0       $0       0         $0     0         $0
+
+
+Decreases:
+ A. Built-Ins:
+   Federal Employees' Compensation Act        0          $0       0       $0       0        -$56    0        -$56
+   Working Capital Fund                       0          $0       0       $0       0     -$4,863    0     -$4,863
+   Built-Ins Subtotal                         0          $0       0       $0       0     -$4,919    0     -$4,919
+
+
+ B. Programs:
+   Savings from Staff Attrition and                               0       $0      -19   -$21,129   -19   -$21,129
+Statistical Agency Reorganization
+   Suspension of new NLS cohort                                   0       $0       0    -$14,500    0    -$14,500
+   Programs Subtotal                                              0       $0      -19   -$35,629   -19   -$35,629
+Total Decrease                                0          $0       0       $0      -19   -$40,548   -19   -$40,548
+Total Change                              +1,773   +$708,500      0       $0      -19   -$40,548   -19   -$40,548
+
+
+
+
+                                                               BLS - 4
+                                                 BUREAU OF LABOR STATISTICS
+
+
+
+
+                                            SUMMARY BUDGET AUTHORITY AND FTE BY ACTIVITY
+                                                                 (Dollars in Thousands)
+
+
+                                                                                                                             Diff. FY 2027 Request / FY
+                                                   FY 2025 Enacted           FY 2026 Enacted          FY 2027 Request               2026 Enacted
+                                                  FTE        Amount         FTE        Amount        FTE        Amount           FTE         Amount
+   Employment and Unemployment Statistics              526     $249,150          461     $252,000         455     $230,397              -6     -$21,603
+   General Funds                                       526     $249,150           461     $252,000       455      $230,397             -6      -$21,603
+
+
+   Labor Market Information                              0      $68,000             0      $68,000          0      $68,000              0           $0
+   Unemployment Trust Funds                              0      $68,000             0      $68,000          0      $68,000              0           $0
+
+
+   Prices and Cost of Living                           951     $244,436           859     $248,000       853      $238,263             -6       -$9,737
+   General Funds                                       951     $244,436           859     $248,000       853      $238,263             -6       -$9,737
+
+
+   Compensation and Working Conditions                 336      $92,354           282      $91,500       279       $86,822             -3       -$4,678
+   General Funds                                       336      $92,354           282      $91,500       279       $86,822             -3       -$4,678
+
+
+   Productivity and Technology                          50      $12,360            42      $12,000         41      $10,650             -1       -$1,350
+   General Funds                                        50      $12,360            42      $12,000         41      $10,650             -1       -$1,350
+
+
+   Executive Direction and Staff Services              156      $37,652           129      $37,000       126       $33,820             -3       -$3,180
+   General Funds                                       156      $37,652           129      $37,000       126       $33,820             -3       -$3,180
+
+
+Total                                                2,019     $703,952         1,773     $708,500      1,754     $667,952            -19      -$40,548
+ General Funds                                       2,019     $635,952         1,773     $640,500      1,754     $599,952            -19      -$40,548
+ Unemployment Trust Funds                                0      $68,000             0      $68,000          0      $68,000              0           $0
+      NOTE: FY 2025 reflects actual FTE.
+
+
+
+
+                                                                BLS - 5
+                                  BUREAU OF LABOR STATISTICS
+
+
+
+
+                              BUDGET AUTHORITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                    230,296       212,250        206,057            -6,193
+11.3 Other than full-time permanent                          13,672        13,746         13,746                0
+11.5 Other personnel compensation                              6,857        7,078          6,713              -365
+12.1 Personnel Benefits                                      91,140        85,488         84,066            -1,422
+12.1 FECA                                                       155           275            219               -56
+13.0 Benefits for former personnel                                 61             68             68             0
+21.0 Travel and transportation of persons                      2,600        3,173          3,173                0
+23.1 Rental payments to GSA                                  22,831        21,397         21,397                0
+23.2 Rental payments to others                                     84             80             80             0
+23.3 Communications, utilities, and misc.                      1,865        2,793          2,793                0
+24.0 Printing and reproduction                                 1,017        1,000          1,000                0
+25.2 Other services from non-Federal sources                   6,617        9,000          5,500            -3,500
+25.3 Other goods and svcs. from Fed. sources                117,190       131,402        123,854            -7,548
+25.3 WCF (Non-Add)                                           42,334        47,476         42,613            -4,863
+25.5 Research and development contracts                      25,324        24,000         12,000           -12,000
+25.7 Operation and maint. of equipment                       50,919        61,701         57,100            -4,601
+26.0 Supplies and materials                                     250           400            400                0
+31.0 Equipment                                                 7,600        5,000          5,000                0
+41.0 Grants, subsidies, and contributions                    83,120        82,128         82,128                0
+42.0 Insurance claims and indemnities                              20             45             45             0
+Total                                                       703,952       708,500        667,952           -40,548
+
+
+
+
+                                                     BLS - 6
+                          BUREAU OF LABOR STATISTICS
+
+
+         SIGNIFICANT ITEMS IN APPROPRIATION COMMITTEES’ REPORTS
+
+Survey on Employer Provided Training
+
+House:              The Committee directs BLS to include, as part of the fiscal year 2027
+                    congressional justification, a cost estimate of a survey to better understand
+                    the incidence and nature of training provided to employees by employers.
+
+Response:           The BLS recognizes the importance of understanding the incidence and
+                    nature of training provided to employees by employers. In 2018, the BLS
+                    outlined design options in a report to Congress for a new Survey of
+                    Employer Provided Training (SEPT) that would capture stakeholder needs
+                    at that time. In FY 2027 terms, the cost to develop and annually field the
+                    surveys detailed in that report would be $15 million per year.
+
+                    However, the actual cost might vary due to a variety of factors. Given
+                    significant changes in the landscape since the previous surveys as well as
+                    since the report to Congress was prepared, the BLS would need to spend
+                    time and resources to study and plan the development and implementation
+                    of a new survey. For example, the BLS would convene a technical expert
+                    panel to involve stakeholders in the effort to determine the scope of any
+                    new survey effort, along with the level of detail desired. The results of the
+                    panel would be a series of recommendations that would inform the
+                    potential sample size of the survey, along with development and
+                    operational costs.
+
+                    In addition to research and development of a new survey, the BLS would
+                    also need to consider how the survey design and development would be
+                    impacted by the proposed reorganization of the BLS, the Census Bureau,
+                    and the Bureau of Economic Analysis at the Department of Commerce.
+
+
+
+
+                                           BLS - 7
+                               BUREAU OF LABOR STATISTICS
+
+
+                                    AUTHORIZING STATUTES
+
+                                                              Statute No. /        Expiration
+                      Legislation                               US Code              Date
+An Act to Establish the Bureau of Labor, 1884 (amended     29 U.S.C. 1 et. seq.       n/a
+by Act of 1913 to establish the Department of Labor)
+
+The Wagner-Peyser Act of 1933, as amended                  29 U.S.C. 49 et. seq.      n/a
+
+Veterans’ Employment, Training, and Counseling              38 U.S.C. 4110A           n/a
+Amendments of 1988
+
+Trade Act of 1974                                            19 U.S.C. 2393           n/a
+
+Federal Employees Pay Comparability Act                    5 U.S.C. 5301-5304         n/a
+
+Occupational Safety and Health Act of 1970                    29 U.S.C. 673           n/a
+
+
+
+
+                                                 BLS - 8
+              BUREAU OF LABOR STATISTICS
+
+
+
+
+            APPROPRIATION HISTORY
+                      (Dollars in Thousands)
+
+                             Budget
+                           Estimates to
+                            Congress        Appropriations   FTE
+2017
+ Base Appropriation              $640,943         $609,000         2,185
+2018
+ Base Appropriation              $607,842         $612,000         2,022
+2019
+ Base Appropriation              $609,386         $615,000         2,057
+2020
+ Base Appropriation              $655,000         $655,000         1,961
+2021
+ Base Appropriation              $658,318         $655,000         1,965
+2022
+ Base Appropriation              $700,653         $687,952         1,949
+2023
+ Base Appropriation              $741,744         $697,952         2,023
+2024
+ Base Appropriation              $758,370         $697,952         2,058
+2025
+ Base Appropriation              $712,786         $703,952         2,019
+2026
+ Base Appropriation              $647,952         $708,500         1,773
+2027
+ Base Appropriation              $667,952               $0         1,754
+
+
+
+
+                                 BLS - 9
+                             BUREAU OF LABOR STATISTICS
+
+
+                                          OVERVIEW
+
+The Bureau of Labor Statistics (BLS) is the principal federal statistical agency responsible for
+producing objective, quality measures and analyses of labor market activity, working conditions,
+price changes, and productivity in the United States economy to support public and private
+decision making. The June 27, 1884 Act that established the BLS states, “The general design and
+duties of the Bureau of Labor Statistics shall be to acquire and diffuse among the people of the
+United States useful information on subjects connected with labor, in the most general and
+comprehensive sense of that word, and especially upon its relation to the capital, the hours of
+labor, social, intellectual, and moral prosperity.”
+
+FY 2027 Request Summary
+
+For FY 2027, the BLS requests $667,952,000, which is $40,548,000 below the FY 2026 Enacted
+level. The FY 2027 request is included in the Department’s budget materials, but the Budget
+carries forward the proposal to reorganize the BLS, the Census Bureau, and the Bureau of
+Economic Analysis at the Department of Commerce. This reorganization proposal aims to
+leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden.
+
+The FY 2027 request reflects a savings of $21,129,000 from the FY 2026 Enacted level from
+staff attrition and the statistical agency reorganization by making permanent recent staffing
+reductions and their associated impacts. Additionally, the FY 2027 request proposes to
+suspend activities tied to the new NLSY cohort, resulting in a savings of $14,500,000 from
+the FY 2026 Enacted level to prevent further reductions to BLS’s other programs.
+
+In FY 2027, the BLS will prioritize the most mission critical activities necessary for the
+production of the core data series, focusing efforts on producing data from statistical
+programs that are Principal Federal Economic Indicators (PFEIs), required by statute, or in
+use in current law.
+
+Statistical Work and Uses of BLS Data
+
+Like all federal statistical agencies, the BLS executes its mission with independence from
+partisan interests while protecting the trust of data providers by ensuring the confidentiality and
+exclusive statistical use of responses. The BLS serves the general public, the U.S. Congress,
+federal agencies, state and local governments, and business and labor by providing gold-standard
+statistics and analyses that are accurate, objective, relevant, timely, and accessible. Policies and
+decisions based on BLS data affect virtually all Americans, and the wide range of BLS data
+products provide policymakers and the public with a first look at economic activity each month,
+including measures of employment, unemployment, and inflation in a rapidly-changing
+economy.
+
+The BLS conforms to the conceptual framework of the Interagency Council on Statistical
+Policy’s “Guidelines for Reporting Performance by Statistical Agencies” and the Office of
+
+
+
+
+                                             BLS - 10
+                            BUREAU OF LABOR STATISTICS
+
+
+Management and Budget’s Statistical Policy Directives. BLS data are essential for supporting
+evidence-based decision making and evaluation activities.
+
+The BLS measures the timeliness, accuracy, and relevance of its PFEIs and accessibility of and
+customer satisfaction with its statistical products. These criteria are common among statistical
+agencies because they represent critical aspects of a statistical program’s performance. Using
+these common concepts as a basis for measuring and reporting on statistical agency outcomes
+helps to inform decision-makers more consistently about the performance of statistical agencies.
+Additionally, in support of the Foundations for Evidence-Based Policymaking Act of 2018 (also
+referred to as the Evidence Act), the BLS Commissioner currently is the Designated Statistical
+Official advising on statistical policy, techniques, and procedures for DOL.
+
+Several BLS series are used in the administration of federal programs. For example, the Internal
+Revenue Service (IRS) ties changes in federal income tax brackets to changes in the Chained
+Consumer Price Index (CPI). The IRS also uses the CPI to adjust income eligibility thresholds
+for the Earned Income Tax Credit. In addition, the Social Security Administration uses the CPI
+as an adjustment mechanism for payments to its beneficiaries. Select CPIs and Employment Cost
+Indexes (ECI) also are used in updates to the Medicare Prospective Payment System, and
+Consumer Expenditure (CE) data are used to adjust the U.S. cost of living allowances for U.S.
+military locations. Changes in BLS data have direct effects on overall federal budget
+expenditures, including federal allocations to state and local jurisdictions. Local Area
+Unemployment Statistics (LAUS) data are used to allocate federal funds from assistance
+programs to states and local jurisdictions in such areas as employment, training, public works,
+and welfare assistance. Businesses use BLS data to make employee wage and benefit decisions,
+and private citizens make relocation decisions based on unemployment data for states, metro
+areas, and major cities.
+
+The BLS continues to monitor and assess mission performance, striving to meet the needs of a
+varied set of customers and, where resources allow, employing innovative methods to keep pace
+with the rapidly changing economy. For example, in FY 2026, the CPS program will continue to
+consult with its large community of stakeholders in government, academia, and the private sector
+to receive feedback on how to modernize the survey by developing an internet self-reporting
+system. In FY 2027, the CPI program will begin a transition to the revised area structure, an
+updated geographic sample based on the 2020 Decennial Census. The CPI program also will
+continue planning for the revised item structure, which will include an updated market basket
+classification structure, the first major revision to the item structure since 1998. The BLS will
+continue to be responsive to users’ needs to understand changes in the economy while
+safeguarding respondent confidentiality and strengthening public trust through equal access
+to timely data releases. The BLS is adhering to all protocols to protect respondent identifiable
+information and is ensuring embargoed economic data are released fairly, securely, and timely.
+
+
+
+
+                                            BLS - 11
+                             BUREAU OF LABOR STATISTICS
+
+
+FY 2027 Request by Budget Activity
+
+For FY 2027, the request of $667,952,000 and 1,754 FTE will enable the BLS to continue to
+advance the vision of an efficient, effective, and accountable government, as well as meet its
+responsibilities through its five budget activities:
+
+       (1) Labor Force Statistics (Employment and Unemployment Statistics and
+       Labor Market Information) – The request of $298,397,000 and 455 FTE will
+       provide funds to support the refocused production, analysis, and publication of
+       data on payroll employment and the civilian labor force, employment and
+       unemployment, persons not in the labor force, labor demand and turnover, wages,
+       hours, earnings, occupational employment, and employment projections.
+
+       (2) Prices and Cost of Living – The request of $238,263,000 and 853 FTE will
+       provide funds to support the refocused production, analysis, and publication of a
+       wide variety of information on price changes in the U.S. economy, specifically
+       the CPI, the Producer Price Index (PPI), the U.S. Import and Export Price Indexes
+       from the International Price Program (IPP), and data from the CE program.
+
+       (3) Compensation and Working Conditions – The request of $86,822,000 and
+       279 FTE will provide funds to support the refocused production, analysis, and
+       publication of a varied set of measures of employee compensation; and the
+       compilation of data on work-related injuries, illnesses, and fatalities.
+
+       (4) Productivity and Technology – The request of $10,650,000 and 41 FTE will
+       provide funds to support the refocused production, analysis, and publication of
+       data on productivity trends in the U.S. economy, as well as in major sectors and
+       individual industries; and the examination of the factors underlying productivity
+       growth.
+
+       (5) Executive Direction and Staff Services – The request of $33,820,000 and
+       126 FTE supports refocused agency-wide direction, and centralized program
+       support activities, such as data dissemination, field operations, the Internet Data
+       Collection Facility, and statistical methods and data science research necessary to
+       produce and release statistical and research output in a reliable, secure, timely,
+       and effective manner.
+
+
+
+
+                                            BLS - 12
+                                                              BUREAU OF LABOR STATISTICS
+
+                                                                 BLS CROSS-CUTTING MEASURES
+                                                                                                                        FY 2025               FY 2026       FY 2027
+                                                                                                                        Enacted               Enacted       Request
+                                                                                                                   Target      Result          Target        Target
+BLS 3.4 CCM.01.T         Percentage of timeliness targets achieved for the Principal Federal Economic Indicators
+                         (PFEIs) 1/ 2/                                                                              100%         100%          100%          100%
+BLS 3.4 CCM.02.A         Percentage of accuracy targets achieved for the PFEIs 1/ 3/                                100%          85%          100%          100%
+BLS 3.4 CCM.03.R         Percentage of relevance targets achieved for the PFEIs 1/ 4/                               100%          99%          100%          100%
+BLS 3.4 CCM.04           Percentage of time the BLS public website is available for data dissemination             ≥99.5%        100%         ≥99.5%        ≥99.5%
+BLS 3.4 CCM.05           Customer satisfaction with the BLS website (Mission Achievement)                           68%          68%           65%           65%
+
+1/ PFEI programs are Current Employment Statistics (CES), Current Population Survey (CPS), Consumer Price Index (CPI), Producer Price Index (PPI), International Price
+   Program (IPP), Employment Cost Index (ECI), and Major Sector Productivity (MSP).
+2/ Measure reflects 7 timeliness measures for the PFEI programs.
+3/ Measure reflects 20 accuracy measures for the PFEI programs. FY 2025 results were below target for three underlying PPI measures due to the elimination of selected
+   industries (350 indexes) with the release of July data.
+4/ Measure reflects 7 relevance measures for the PFEI programs. In FY 2025, the BLS substantially achieved its relevancy targets.
+
+
+
+
+                                                                                BLS - 13
+                    EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                        (Dollars in Thousands)
+
+
+
+                                                                                    Diff. FY 2027
+                                             FY 2025        FY 2026     FY 2027     Request / FY
+                                             Enacted        Enacted     Request     2026 Enacted
+Activity Appropriation                         249,150        252,000     230,397           -21,603
+FTE                                                526            461         455                 -6
+NOTE: FY 2025 reflects actual FTE.
+
+Introduction
+
+Labor Force Statistics programs are funded through a combination of Employment and
+Unemployment Statistics and Labor Market Information. These programs produce, analyze, and
+publish data on payroll employment and the civilian labor force, employment and
+unemployment, persons not in the labor force, labor demand and turnover, wages, hours,
+earnings, occupational employment, time use, and employment projections. The programs
+prepare studies that cover a broad range of topics, including annual analyses of labor market
+developments, occupational analyses, characteristics of special worker groups, time-use patterns
+of workers and non-workers, and labor force experiences of displaced workers. In addition, these
+programs develop information about the labor market and project labor force trends 10 years into
+the future. They also make assessments of the effect on employment of specified changes in
+economic conditions and/or changes in federal programs and policies.
+
+Labor Force Statistics programs are authorized by an Act dated July 7, 1930, which provides that
+the BLS shall prepare “...full and complete statistics of the volume of and changes in
+employment...” (29 U.S.C. 1 and 2). Programs in this area help fulfill many requirements of the
+Wagner-Peyser Act as amended by the Workforce Innovation and Opportunity Act (WIOA) of
+2014, including requirements that the Secretary of Labor “...develop and maintain the elements
+of the workforce and labor market information system ...” as well as develop and maintain
+national projections of employment opportunities by occupation and industry. This legislation
+requires the development of information on jobs in demand to support states’ efforts to better
+train for the hiring needs of businesses.
+
+Current Population Survey
+
+The Current Population Survey (CPS), a monthly household survey, provides a comprehensive
+body of information on the employment and unemployment experience of the nation’s
+population, classified by age, sex, race, ethnicity, and a variety of other characteristics. The CPS
+also provides key inputs into the Local Area Unemployment Statistics (LAUS) models for
+estimating employment and unemployment for states and selected local areas.
+
+Labor force statistics from the CPS, together with data from the Current Employment Statistics
+(CES) program, are among the earliest economic indicators available each month and represent
+
+
+                                             BLS - 15
+                  EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+the nation’s most comprehensive measures of national employment and unemployment. The CPS
+is a primary source of data on employment status, characteristics of the labor force, and
+emerging trends and changes in the employment and unemployment status among various groups
+of workers. These BLS data serve as aids in: monitoring the performance of the job market,
+developing more complete data for labor force planning, determining the factors affecting
+changes in the labor force participation of different population groups, and evaluating earnings
+trends for specific demographic groups.
+
+The BLS data available from this program include:
+
+   o Employment status of the working-age population by age, sex, race, ethnicity, marital
+     status, family relationship, educational attainment, professional certification or license
+     attainment, disability status, veteran status, and nativity (i.e., foreign born or native born);
+   o Employed persons by occupation, industry, class of worker, telework status, hours of
+     work, full- and part- time status, and reason for working part time (i.e., economic or
+     noneconomic);
+   o Unemployed persons by occupation, industry, and class of worker; duration of
+     unemployment; reasons for unemployment; and methods used to find employment;
+   o Characteristics and job-seeking intentions of persons not in the labor force, including
+     information on discouraged workers and others of significant public policy interest;
+   o Special topics on particular sub-groups of the population, such as women maintaining
+     families and working women with children, or on particular topics, such as work
+     experience and status of high school graduates and dropouts; and
+   o Information on weekly and hourly earnings by demographic group, full- and part-time
+     employment status, occupation, and industry.
+
+   •   The BLS and the Census Bureau jointly sponsor and oversee the monthly sample survey,
+       with the BLS supporting a sample of about 60,000 households. Households are contacted
+       through in-person and telephone interviews. Data generally relate to the calendar week
+       that includes the 12th day of the month.
+
+Labor Market Information Cooperative Statistical Program
+
+The BLS operates the CES, Quarterly Census of Employment and Wages (QCEW),
+Occupational Employment and Wage Statistics (OEWS), and LAUS programs in cooperation
+with the states and territories. As noted within their respective descriptions, these programs
+compose the BLS Labor Market Information (LMI) Cooperative Statistical Program, which is
+conducted in accordance with the provisions of the Wagner-Peyser Act as amended by WIOA.
+The BLS uses cooperative agreements to fund the states for these programs, with most of the
+funding for these cooperative agreements reflected in Labor Market Information. BLS regional
+staff, under the direction of the Office of Field Operations in the national office, negotiate and
+monitor LMI cooperative agreements.
+
+
+
+
+                                             BLS - 16
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+Current Employment Statistics
+
+The CES program collects information on employment, hours, and earnings from the payroll
+records of employers. The BLS produces national, state, and metropolitan area data. These data
+are released in partnership with the State Workforce Agencies (SWAs), which provide additional
+state analysis and help disseminate the estimates. National data available from the CES program
+include: nonfarm employment for detailed industry classifications; all employee average weekly
+hours and average hourly and weekly earnings; production worker average weekly hours and
+average hourly and weekly earnings; manufacturing worker overtime hours; indexes of aggregate
+hours and payroll; and diffusion indexes of employment change for the nation. Diffusion indexes
+are a measure of the dispersion of employment change, indicating how widespread employment
+increases and decreases are across industries. The program also provides similar data for all
+50 states, the District of Columbia, Puerto Rico, the Virgin Islands, and about 430 metropolitan
+areas and divisions.
+
+The payroll statistics from the CES program, along with data from the CPS, are among the
+earliest economic indicators available each month and measure the health of the U.S. economy in
+terms of job creation, average earnings, and average length of workweek. These data serve as
+direct inputs into other major U.S. economic indicators, including the Index of Leading
+Economic Indicators, the Index of Coincident Economic Indicators, the advance and preliminary
+Personal Income estimates produced by the Bureau of Economic Analysis (BEA), the Industrial
+Production Index, and productivity measures. In addition to their critical use as economic
+indicators, the private sector uses these data in worksite location planning, wage negotiations,
+economic research and planning, regional analysis, and industry studies.
+
+   •   The BLS collects data each month from about 121,000 businesses and government
+       agencies (composed of approximately 631,000 individual worksites) nationwide. The
+       sample is stratified by state, industry, and the employment size of the business.
+       Respondents provide data for the payroll period that includes the 12th day of the month.
+
+Quarterly Census of Employment and Wages
+
+The QCEW program provides national, state, metropolitan and micropolitan statistical area, and
+county data on monthly employment and quarterly total wages and the number of establishments,
+by 6-digit North American Industry Classification System (NAICS) code and size of
+establishment, with a five-month lag after each quarter. These data originate largely from the
+administrative records of the Unemployment Insurance (UI) system in each state. The program
+includes all employees covered by state and federal UI laws, or about 95 percent of total nonfarm
+employment. The workers excluded from the UI files are railroad employees, members of the
+Armed Forces, self-employed persons, unpaid family workers, and some agricultural and private
+household employees.
+
+The BLS uses these data to construct an up-to-date “universe” file, or sample frame, of the
+establishments reporting under the state and federal UI systems, from which it selects samples
+for its establishment-based surveys, such as the CES, OEWS, Job Openings and Labor Turnover
+Survey (JOLTS), Employment Cost Index, Occupational Safety and Health Statistics (OSHS),
+
+
+
+                                           BLS - 17
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+and Producer Price Index. The QCEW program is responsible for maintaining the accuracy of
+each establishment’s industry code, county code, size class, physical location address, mailing
+address, and other information that directly affects the quality of the survey programs' samples.
+
+In addition, the BLS uses data from this program as the annual employment benchmark by
+industry in the CES, OEWS, OSHS, and JOLTS programs. Total wages and salaries from the
+QCEW program compose about 48 percent of Personal Income, as measured by the BEA, for the
+nation, states, and counties. The QCEW wage data are the largest single input to the Personal
+Income component of the National Income and Product Accounts. QCEW data also underlie
+state UI actuarial systems (tax rates, employer contributions, and benefit levels). Other uses
+include state and local labor force information, industry trends, forecasting, transportation
+planning, local economic development planning, and allocation of $692 billion in FY 2021 in
+federal funds under such programs as the State Children’s Health Insurance Program. Economic
+research, regional analysis, marketing studies by private industry, industry analysis, and worksite
+location studies are further uses of data from this program. The rich industry and geographic
+detail—all 6-digit NAICS industries by county—makes these among the most prized data for
+state and local implementation of the statutory requirements. QCEW also shares data with the
+BEA, the Census Bureau, the Employment and Training Administration (ETA), National
+Oceanic and Atmospheric Administration, and other agencies to assist with their ongoing
+production and special studies. For example, each quarter, QCEW provides hundreds of
+thousands of industry codes to the Census Bureau for mostly new and small businesses, which
+improves data quality and decreases respondent burden and costs for the Census Bureau. QCEW
+data also are the basis for the BLS Business Employment Dynamics series. These series cover
+gross job gains and losses, data on establishment age and survival, and firm size. In addition, the
+series include data on establishment births, openings and expansions; and deaths, closings and
+contractions, by major industry and state. QCEW data also are used to prepare maps and
+tabulations of the economic impacts of natural disasters for state and federal officials, and are
+used on an ongoing basis to document recovery efforts in affected areas.
+
+In addition, there is a wide array of uses at the state level. For example, decision-makers use
+QCEW data as an input into the state and local occupational employment projects and for
+revenue projections. Workforce information boards use QCEW data for job training. QCEW data
+also assist local economic developers in identifying occupational needs for attracting businesses.
+States also rely on QCEW data to conduct longitudinal analyses of firms, cluster analysis (e.g.,
+biotech, science, technology, engineering, and mathematics (STEM) jobs, healthcare, tourism,
+and high and low wage industries), and high growth business analyses; plan for local services
+and local transportation; determine wage rates; and define UI extended benefit triggers.
+
+   •   The SWAs, in cooperation with the BLS, collect employment and wage data from an
+       estimated 12 million establishments subject to UI laws. The UI data are supplemented
+       with two BLS collections, the Multiple Worksite Report (MWR) and Annual Refiling
+       Survey (ARS), which are necessary to provide accurate industry and geographical
+       measures at the local level. First, in the MWR, each quarter, over 149,000 multi-unit
+       firms (representing more than 1.9 million worksites and about 42 percent of the
+       employment) report their employment and wages for each establishment, which improves
+       the geographic and industrial accuracy of these key data. Second, in the ARS, the SWAs
+
+
+
+                                             BLS - 18
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+       contact approximately one-third of all establishments in the private sector with more than
+       three employees (about 1.3 million establishments) to maintain the accuracy of their
+       industry coding under the NAICS and to update geographical information, such as
+       addresses, which are integral to its use as a sample frame for other BLS business surveys.
+       While the majority of establishments are contacted on a three-year cycle, some
+       establishments in industries that exhibit lower rates of change are selected for a six-year
+       cycle.
+
+Occupational Employment and Wage Statistics
+
+The OEWS program is the only comprehensive source of regularly produced occupational
+employment and wage rate information for the U.S. economy, as well as states, the District of
+Columbia, Guam, Puerto Rico, the Virgin Islands, metropolitan areas, and balance-of-state areas
+for each state. The OEWS program produces employment and wage estimates by nonfarm
+industry and occupation.
+
+Uses of the data include evaluating employment and wages by industry, occupation, and
+geographic area; updating prevailing wages for foreign labor certification; projecting
+occupational employment for the nation, states, and areas; informing vocational planning;
+estimating social security receipts, as an input to calculating reimbursement rates for Medicare
+and Medicaid providers; calculating occupational injury rates; serving as an input to the
+Employment Cost Index and to the President’s Pay Agent report; and improving sample
+efficiency in the O*NET and Occupational Requirements Survey (ORS) and industry skill and
+technology studies.
+
+The OEWS information available on the BLS public website generates some of the highest levels
+of activity among all program areas. In addition, OEWS data are the foundation of the industry-
+occupation matrix used in the Employment Projections (EP) program to produce national
+occupational projections. These data are a critical input to the states’ production of jobs in
+demand to support WIOA. OEWS employment and wage data are used throughout the
+Occupational Outlook Handbook (OOH) and related career publications, as well as in similar
+products produced by the SWAs for state and local areas.
+
+   •   The SWAs, in cooperation with the BLS, collect employment and wage information from
+       semi-annual sample panels of approximately 187,000 establishments, for a total of
+       374,000 for the year. Respondents provide data for a payroll period that includes the
+       12th day of the survey month.
+
+Local Area Unemployment Statistics
+
+The LAUS program provides timely information on labor force and unemployment trends for
+states and local areas. The LAUS program issues monthly estimates for regions and states two
+weeks after the release of national estimates in The Employment Situation. Metropolitan area
+estimates, as well as all remaining sub-state area estimates, are issued about one-and-a-half
+weeks later. LAUS estimates serve as economic indicators and are a major source of information
+for labor market research, analysis, and planning. In addition to economic analysis, another
+
+
+
+                                            BLS - 19
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+important use of LAUS data is in the allocation of federal funds to states and local jurisdictions
+covered by 27 assistance programs across 9 Departments and independent agencies in areas such
+as employment, training, public works, and welfare assistance.
+
+Using data from the CPS, CES, and state UI programs, the LAUS program uses time-series
+models to produce monthly estimates for all states, the District of Columbia, New York City, the
+Los Angeles-Long Beach-Glendale metropolitan division, and the balances of New York and
+California. Time-series models also are used for the Cleveland, Detroit, and Seattle metropolitan
+areas, the Chicago and Miami metropolitan divisions, and the five respective balance-of-state
+areas. The LAUS program also seasonally adjusts the resultant model-based estimates for these
+areas. Estimates for counties are produced through a building-block approach that also utilizes
+data from several sources, including the CES, QCEW, CPS, and state UI programs, as well as the
+American Community Survey (ACS) and Population Estimates Program of the Census Bureau,
+and are adjusted to statewide measures of employment and unemployment. The remainder of the
+sub-state area estimates are produced using a disaggregation technique.
+
+Each month, the SWAs, in cooperation with the BLS, develop the labor force, employment, and
+unemployment estimates. The LAUS program runs the state model-based estimates. Also, the
+LAUS program is responsible for the concepts, definitions, and technical procedures that the
+SWAs use in the preparation of sub-state labor force and unemployment estimates. Both the
+SWAs and the BLS analyze and publish the LAUS state and sub-state estimates each month.
+
+   •   The BLS publishes monthly estimates of employment and unemployment for
+       approximately 8,300 geographic areas, including all states, labor market areas, counties,
+       and cities with a population of 25,000 or more. The BLS seasonally adjusts estimates for
+       non-modeled metropolitan areas and metropolitan divisions.
+
+National Longitudinal Surveys
+
+The National Longitudinal Surveys (NLS) provide a set of data on the labor force experience
+(current labor force status, employment status, work history, and characteristics of current/last
+job), as well as significant life events, of two randomly sampled groups of the U.S. population,
+with a third cohort under development. These data are essential to understanding changes in
+labor force behavior of groups over time and informing policymakers at all levels of government.
+
+Cross-sectional data, such as those from the CPS, primarily provide snapshots of the labor
+market and are used to track changes in the labor force behavior of groups over time. The NLS
+focuses on capturing changes in individual labor force behavior by re-interviewing the same
+individuals multiple times over extended time periods. Economists, sociologists, and other
+researchers in government, the academic community, and private organizations use NLS data to
+examine and inform policymakers at all levels of government about a variety of issues such as:
+
+   o   Employment and earnings of workers in the labor market;
+   o   Educational experience, achievement, and the transition from school to work;
+   o   The effects of training on future employment and wages;
+   o   The ability to advance out of low-wage jobs;
+
+
+
+                                            BLS - 20
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+   o Relationships between work and various indicators of family well-being;
+   o The long-term effects of unemployment; and
+   o The retirement behavior of older workers and the problems of the elderly.
+
+In 1979, a cohort was fielded to research the “baby boomer” generation, with a sample of over
+12,000 young men and women who were 14-21 years of age as of December 31, 1978. In 1985
+and 1991, oversamples were dropped leaving a total sample of about 10,000 individuals. This
+survey, conducted every year through 1994, is known as the 1979 National Longitudinal Survey
+of Youth (NLSY79). In 1994, the survey began operating on a biennial interview cycle.
+
+In 1997, the BLS began the 1997 National Longitudinal Survey of Youth (NLSY97), a survey
+consisting of 9,000 individuals aged 12-16 as of December 31, 1996. The young age of this
+sample (when compared with past NLS cohorts) reflects the increased emphasis on early labor
+market activity and other aspects of youths’ lives that have an impact on their labor market
+successes and their general success in becoming productive adults. The long-term objectives of
+the study are to relate early development and influences to later-life outcomes. In 2011, the
+NLSY97 survey began operating on a biennial interview cycle.
+
+In 2023, the BLS began work on development activities for a new NLSY cohort. Work on this
+cohort will be suspended at the FY 2027 Request level.
+
+   •   The BLS collects and publishes data for the NLSY79 and NLSY97 cohorts on a recurring
+       basis.
+
+Job Openings and Labor Turnover Survey
+
+The JOLTS program provides monthly national measures on labor demand by broad industry
+groups and by establishment size. These measures complement the unemployment rate, which
+measures labor supply. Data published include the levels and rates for job openings, hires, and
+total separations, as well as three breakouts of separations: quits, layoffs and discharges, and
+other separations. These data items also are provided at the total nonfarm level for four regions.
+JOLTS also publishes state data at the total nonfarm level for all states and the District of
+Columbia. Thus, policymakers and analysts have a better understanding of imbalances between
+the demand for and the supply of labor, and improved tools for assessing the presence of labor
+shortages in the U.S. labor market. JOLTS data are used for labor market analysis, by the Federal
+Reserve in setting monetary policy, and by states in analyzing state labor market dynamics.
+These data also provide evidence of upward pressures on wage rates at the national and state
+levels.
+
+   •   The BLS collects data each month from a sample of approximately 21,000 businesses and
+       derives estimates on levels and rates of job openings, hires, and separations (quits, layoffs
+       and discharges, and other separations) at the national level for major industry groups. At
+       the total nonfarm industry level, the BLS also publishes data at the regional level for total
+       nonfarm employment, size-class estimates at the national level, and annually publishes
+       state data estimates for all 50 states and the District of Columbia.
+
+
+
+
+                                            BLS - 21
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+American Time Use Survey
+
+The American Time Use Survey (ATUS) provides nationally representative estimates of how
+Americans spend their time during an average day, both for weekdays and weekends. Data from
+the ATUS enable researchers to develop broader assessments of national well-being and national
+production than otherwise would be available. The ATUS is the only federal survey that provides
+data on the full range of nonmarket activities, from childcare to volunteering. ATUS data provide
+widely used information about how Americans balance work with family and community
+commitments.
+
+Analysts use these data about time-use, combined with information about respondents’
+demographics, labor force status, and household composition, to examine how much time is
+being invested in childcare and eldercare in the United States; how time-use varies based on
+marital and employment status; and how much time people spend in education, among other
+questions. The availability of national time-use data also facilitates comparisons of time-use
+patterns in the United States with patterns in other countries, including alternative measures of
+Gross Domestic Product (GDP) that include measures of the value of non-market work.
+Depending on sponsor availability, modules periodically are added to the survey. Additional uses
+of ATUS data include supplying information to other BLS programs, including the EP program;
+federal agencies and forums, such as the BEA, and the Federal Interagency Forums on Aging-
+Related and Child and Family Statistics; and international organizations, such as the
+Organization for Economic Cooperation and Development and the United Nations.
+
+   •   The BLS and the Census Bureau survey about 600 individuals ages 15 and older each
+       month, drawn from households that recently have completed the monthly CPS.
+
+Employment Projections
+
+The EP program produces long-term (10-year) projections for the labor force, the overall
+economy, and industry and occupational employment and job openings by occupation. National
+employment projections from the BLS are used by each state to develop state and area
+projections, which are funded by the ETA. Projections are a critical component of workforce
+development systems and serve as the basis for determining jobs in demand. Determining jobs in
+demand helps align education and training programs with the hiring needs of businesses and is a
+key component of WIOA. Projections also are used for individual career decision purposes by
+students, parents, counselors, dislocated workers, jobseekers, and career changers. The program
+relies on a wide variety of data from the OEWS, CES, CPS, and QCEW programs, and from
+other federal agencies, such as the BEA and the Census Bureau.
+
+Labor force and labor force participation rate projections for detailed demographic groups are
+produced using CPS data and Census Bureau population projections. These projections are used
+as an input to the preparation of the overall economic, industry, and occupational projections,
+and to further analyze the demographic characteristics of future workers and future training and
+education needs.
+
+
+
+
+                                            BLS - 22
+                    EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+The overall economic projections include the GDP, the demand and income composition of the
+GDP, and the industrial structure of the U.S. economy. These projections are prepared under
+specific assumptions for government economic policies and for basic economic variables, such
+as exports and imports, unemployment, and productivity. Projections of final demand, industry
+output, and employment, as well as input-output tables, also are produced. These data are the
+basis for evaluating alternative policy options affecting the medium- and long-term outlook,
+developing estimates of occupational requirements by industry, and evaluating the future size
+and composition of the labor force.
+
+Finally, a national industry-occupation employment matrix and the industry projections are used
+to project employment by occupation. EP staff analyze the occupational structure of detailed
+industries and evaluate the expected impact of changes in demographics, technology, product
+mix, business practices, and other factors on the demand for specific occupations. The matrix
+quantifies in detail the distribution of occupational employment by industry for both the current
+and projected years. The 2024-34 matrix, which was released in FY 2025, covered projections
+for 832 detailed occupations in 292 detailed industries. In addition to the projections of openings
+resulting from job growth, the EP program also estimates openings resulting from existing
+workers who separate from their occupation, either by transferring to a new occupation or exiting
+the labor force entirely.
+
+The EP program also produces the OOH. This web-based publication provides information on
+the type of work; education, training, and other qualifications; employment; job outlook; wages;
+similar occupations; and sources of additional information for hundreds of occupations. The
+program also produces Career Outlook, a career information web-based publication that presents
+a wide variety of supplemental information on occupational employment prospects, educational
+requirements, and earnings. Guidance and career counselors across the country use the
+information in these publications to advise students and adults/jobseekers on job training and
+future employment opportunities. Individuals also use these publications for personal career
+planning and development. The most widely used BLS website is the OOH, and the information
+in the OOH is presented in numerous private publications and websites on vocational guidance
+and career planning.
+
+   •   The BLS updates occupational career information, including wage data, in the OOH
+       throughout the year.
+
+Five-Year Budget Activity History
+
+                                          Funding
+          Fiscal Year              (Dollars in Thousands)                 FTE
+             2022                        $228,537                         501
+             2023                        $248,560                         520
+             2024                        $247,952                         542
+             2025                        $249,150                         526
+             2026                        $252,000                         461
+
+
+
+
+                                             BLS - 23
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+Funding Mechanism
+
+As previously discussed, the LMI Cooperative Statistical Program is operated in cooperation
+with the states and territories. Section 14 of the Wagner-Peyser Act (29 U.S.C. 49l-1) authorizes
+the Secretary of Labor to reimburse the states to provide data for national statistical programs.
+Since 1917, the BLS has entered into cooperative arrangements to fund and use employment
+statistics collected by the states and territories.
+
+On an annual basis, the BLS contracts with the Census Bureau to conduct the CPS. Under the
+agreement of November 18, 1959, between the Secretary of Labor and the Secretary of
+Commerce, the BLS obtains budgetary support for this program and annually reimburses the
+Census Bureau for the collection and related support services associated with the monthly CPS
+and selected supplements. The authority for the Census Bureau to enter into this agreement is
+13 U.S.C. 8(b). The authority for the BLS to enter into this agreement is 29 U.S.C. 2.
+
+FY 2027
+
+In FY 2027, the BLS will continue the production of core data series and will undertake the
+following new work in the areas of Labor Force Statistics:
+
+   Contingent on ongoing funding from agency sponsors, the CPS program will publish results
+   from the 2026 Veterans Supplement and field the 2027 Veterans Supplement, as well as
+   publish the results from the 2026 Contingent Worker Supplement. Within existing resources,
+   the BLS will continue limited activities to coordinate with the Census Bureau to start data
+   collection using a new CPS Internet Self Response Option.
+
+   The CES program will collaborate with its Statistical Methods Staff (SMS) to research
+   imputation and nonresponse weighting methods aimed at reducing revisions from late and
+   non-respondents. The CES program will also continue to work with SMS on developing new
+   publication standards for states and areas, including working to refine and improve error
+   measures.
+
+   The QCEW program will implement the 2027 North American Industry Classification System
+   (NAICS).
+
+   The OEWS program, on behalf of OMB, will continue to lead the interagency revision of the
+   Standard Occupation Classification (SOC) system updating the occupational classification
+   system used in OMB Statistical Policy Directive (SPD) 10. This will include the drafting of
+   the final recommendations to OMB on the revised 2028 SOC structure, occupation codes, and
+   titles, which is anticipated to be finalized by OMB through a Federal Register Notice planned
+   for 2027.
+
+   The LAUS program will continue to work with its state partners in evaluating the changes to
+   its substate-area estimates attributable to the redesign activities of FY 2025. For its state
+   models, the program will continue to monitor the effects on the primary household employed
+   and unemployed inputs of the CPS sample redesign for the 2020 Decennial Census. For its
+
+
+
+                                            BLS - 24
+                 EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+  inputs from the Census Bureau’s Population Estimates Program, the LAUS program also will
+  continue to monitor effects of ongoing changes to the blended base for post-censal estimation
+  in the 2020s on labor force data for states and substate areas.
+
+  The NLS program will release data from round 31 of the NLSY79 and begin collection for
+  round 23 of the NLSY97. The FY 2027 request proposes to suspend activities tied to the new
+  NLSY cohort, resulting in a savings of $14,500,000 from the FY 2026 Enacted level, in order
+  to avoid further reductions to other BLS programs.
+
+  The JOLTS program will continue to develop more detailed reliability and response
+  information for posting on bls.gov.
+
+  The ATUS program will continue to research and develop optimal methods for a multi-mode
+  ATUS diary that includes Internet Self Response and CATI-based collection. The ATUS
+  program will work with the Census Bureau to transition the ATUS from the current Blaise
+  CATI instrument to their new in-house software system and enterprise architecture as the
+  Census Bureau moves to modernize all survey data collection.
+
+  The EP program will develop and release the 2026-2036 economic and employment
+  projections and incorporate these projections into the Occupational Outlook Handbook
+  (OOH). Throughout the year, the BLS also will update occupational career information in the
+  OOH.
+
+FY 2026
+
+In FY 2026, the BLS is continuing the production of core data series and is undertaking the
+following new work in the areas of Labor Force Statistics:
+
+  The CPS program will field a 2026 Contingent Work Supplement, with more complete
+  revisions based on 2023 findings, and will publish the results from the 2025 Contingent Work
+  Supplement. The CPS program also will publish results from the 2024 Work Schedules
+  Supplement. Contingent on ongoing funding from agency sponsors, the CPS program will
+  field a Displaced Workers Supplement, and Veterans Supplement, and will publish results
+  from the 2025 Veterans Supplement and the 2026 Displaced Workers Supplement. The CPS
+  program will continue to consult with its large community of stakeholders in government,
+  academia, and the private sector to receive feedback on how to modernize the survey. The
+  BLS will continue to coordinate with the Census Bureau to conduct limited field testing of a
+  new CPS Internet Self Response Option.
+
+  The CES program will collaborate with SMS to develop improved capabilities for identifying
+  time series breaks in national series that would require special reconstructions. This will
+  include research on statistical methods and the development of an interactive application for
+  use by CES benchmark analysts during annual processing. The CES program also will work
+  with SMS to continue developing improved capabilities for predicting employment change
+  from business births and deaths not captured by the CES survey. This includes refining
+  existing research and conducting work necessary to be able to implement the new
+
+
+                                            BLS - 25
+                EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+  methodology. The CES program will work with SMS on developing new publication
+  standards for states and areas, including working to refine and improve error measures.
+
+  The QCEW program will update data processing systems in anticipation of implementing the
+  2027 NAICS. The QCEW program will continue to participate in the Economic Classification
+  Policy Committee and collaborate with Canada and Mexico on the development of the
+  updated classification system.
+
+  The OEWS program will continue to lead, on behalf of OMB, the interagency effort to
+  develop recommendations to OMB for revision of the SOC system updating the occupational
+  classification system used in OMB SPD 10.
+
+  The LAUS program will work with its state partners to evaluate the changes to its substate-
+  area estimates attributable to the redesign activities of FY 2025, including the new OMB
+  geographical basis and the updating of inputs to reflect more recent data from the American
+  Community Survey (ACS). For its state models, the LAUS program will monitor the effects
+  on the primary household employed and unemployed inputs of the CPS sample redesign that
+  is scheduled to be phased in from April 2025 through July 2026. For its inputs from the
+  Census Bureau’s Population Estimates Program, the LAUS program also will monitor effects
+  of ongoing changes to the blended base for post-censal estimation in the 2020s on labor force
+  data for states and substate areas.
+
+  The NLS program will release data from round 21 and perform collection for round 22 of the
+  NLSY97. In addition, the NLS program will conduct a pretest of the fielding of its new
+  cohort.
+
+  The JOLTS program will continue to develop more detailed reliability and response
+  information for posting on bls.gov. The JOLTS program will discontinue monthly production
+  of State JOLTS data after the publication of the December 2025 news release in the second
+  quarter of FY 2026. In late FY 2026, the JOLTS program will transition to an annual
+  publication cycle for State JOLTS data.
+
+  The ATUS program completed fielding a 2025 Leave and Job Flexibilities Module and,
+  contingent on funding from the agency sponsor, will publish the results from the 2024 and
+  2025 Leave and Job Flexibilities Module. Also contingent on funding, the ATUS program
+  will resume research suspended in FY 2025 and develop optimal methods for a multi-mode
+  ATUS diary that includes Internet Self Response and CATI-based collection.
+
+  The EP program will develop and release the 2025-2035 economic and employment
+  projections and incorporate these projections into the OOH. Throughout the year, the BLS
+  also will update occupational career information in the OOH.
+
+FY 2025
+
+In FY 2025, the BLS continued the production of core data series and completed the following
+work in the areas of Labor Force Statistics:
+
+
+                                           BLS - 26
+              EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+
+The CPS program fielded a Contingent Worker Supplement with limited revisions based on
+2023 findings. The CPS fielded a Veterans Supplement and published results from the 2024
+Veterans Supplement. The BLS also published the results of the 2024 Disability Supplement
+in FY 2025. The CPS program continued to consult with its large community of stakeholders
+in government, academia, and the private sector to receive feedback on how to modernize the
+survey. The BLS coordinated with the Census Bureau to conduct limited field testing of a new
+CPS Internet Self Response Option.
+
+The CES program published data for metropolitan areas using the OMB updated geographic
+delineations based on the 2020 Decennial Census. The implementation date was March 2025,
+with the release of January 2025 estimates.
+
+The QCEW program developed a preliminary plan for the implementation of the
+2027 NAICS.
+
+The OEWS program led, on behalf of OMB, the interagency effort to develop
+recommendations for revision of the SOC system, working with other BLS programs and
+other federal statistical agencies. The OEWS program implemented metropolitan area and
+balance-of-state definitions using metropolitan statistical area (MSA) definitions based on the
+2020 Decennial Census.
+
+The LAUS program revised historical series and incorporated substantial geographic changes
+into its estimation for its labor market area geography on the basis of the 2020 Decennial
+Census-based statistical areas from OMB effective with the release of January 2025 estimates
+in March 2025. Also, in conjunction with these historical revisions, the program updated
+estimation inputs for substate areas that are sourced to the ACS. For its state models, the
+LAUS program implemented smoothed intercensal population controls that removed breaks
+around the beginnings of prior decades attributable to the error of closure. In addition, the
+program continued to research enhanced use of ACS data in substate-area employment and
+unemployment.
+
+The NLS program released data from round 30 of the NLSY79. In addition, the NLS program
+completed questionnaire design for its new cohort and continued other development activities
+including preparing systems and staffing for pretest fielding, to be conducted in FY 2026.
+
+The JOLTS program implemented a new microdata and estimate review application based on
+modern software architecture with improved security controls. The JOLTS program also
+developed more detailed reliability and response information for posting on bls.gov.
+
+The ATUS program completed data collection for the 2024 Leave and Job Flexibilities
+Module and began fielding a 2025 Leave and Job Flexibilities Module, that was completed in
+FY 2026.
+
+
+
+
+                                         BLS - 27
+              EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+The EP program developed the 2024-2034 economic and employment projections and
+released these projections on the EP website and through the OOH. Throughout the year, the
+BLS also updated occupational career information, including wage data, in the OOH.
+
+The BLS explored and evaluated existing data sources for the development of the AIPLFR,
+built upon work in FY 2024 to evaluate data from the ACS. In addition, the BLS engaged
+with key stakeholders, including the Census Bureau and other federal agencies, to evaluate
+possible solutions for producing a report within existing resources.
+
+
+
+
+                                        BLS - 28
+                                                  EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+                                                           DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                         FY 2025             FY 2026      FY 2027
+                                                                                                                         Enacted             Enacted      Request
+                                                                                                                Target             Result     Target       Target
+Labor Force Statistics
+
+                         Principal Federal Economic Indicators 1/
+
+                         Current Population Survey
+ BLS 3.4 CPS.01.P        Number of monthly series 2/ 3/                                                         19,900             19,950     18,200       19,900
+ BLS 3.4 CPS.02.P        Number of other series published annually, quarterly, or irregularly 2/ 4/             21,350             21,445     18,720       22,700
+ BLS 3.4 CPS.03.T        Percentage of monthly releases on schedule (12 of 12) 3/ 5/                            100%               100%       100%         100%
+ BLS 3.4 CPS.04.A        Number of months that a change of at least 0.2 percentage points in the monthly
+                         national unemployment rate is statistically significant at the 90% confidence level      12                12          --           --
+                         (for an unemployment rate of 6%) 6/
+ BLS 3.4 CPS.04.A        Number of months that a change of ≥ 0.3 percentage points in the monthly
+                         national unemployment rate is statistically significant at the 90% confidence level      --                 --         10           12
+                         (for an unemployment rate of 6%) 6/
+
+                         Current Employment Statistics
+ BLS 3.4 CES.01.P        Number of national monthly and annual series published 3/ 7/ 8/                        22,900             22,049     21,500       20,700
+ BLS 3.4 CES.02.P        Number of state and local area monthly and annual series published 8/                  23,800             23,876     23,000       23,000
+ BLS 3.4 CES.03.T        Percentage of national monthly releases on schedule (24 out of 24) 3/ 5/               100%               100%       100%         100%
+ BLS 3.4 CES.04.T        Percentage of state and local area monthly releases on schedule (24 out of 24) 5/
+                                                                                                                 100%              100%       100%         100%
+                         9/
+ BLS 3.4 CES.05.A        Mean absolute benchmark revision of total nonfarm employment (averaged
+                                                                                                                <0.4%              0.2%       <0.4%        <0.4%
+                         across five years)
+ BLS 3.4 CES.06.A        Number of not seasonally adjusted 1st - 3rd closing revisions of total nonfarm
+                                                                                                                  ≤2                 1          ≤2           ≤2
+                         employment > 0.1%
+
+                         Other Programs
+
+                         Quarterly Census of Employment and Wages
+ BLS 3.4 QCEW.01.P       Number of employment and wage data series for states and counties at 1-, 2-, 3-,
+                                                                                                               3,600,000      3,650,808     3,000,000    3,000,000
+                         4-, 5-, and 6-digit NAICS industries published quarterly 10/
+ BLS 3.4 QCEW.02.W       Number of establishment records (current and longitudinal) maintained by the
+                                                                                                               11,800,000     12,058,992    12,000,000   12,100,000
+                         Longitudinal Database System 11/
+ BLS 3.4 QCEW.03.P       Number of Business Employment Dynamics (BED) series maintained
+                                                                                                                83,700             83,726     30,000       30,000
+                         on job creation and destruction levels and rates 12/
+ BLS 3.4 QCEW.04.P       Number of quarterly press releases on County Employment and Wages; and
+                                                                                                                   8                 8          8            8
+                         Business Employment Dynamics
+
+
+                                                                                  BLS - 29
+                                                  EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+                                                           DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                          FY 2025                 FY 2026          FY 2027
+                                                                                                                          Enacted                 Enacted          Request
+                                                                                                                 Target             Result         Target           Target
+
+                         Occupational Employment and Wage Statistics
+BLS 3.4 OEWS.01.P        Number of national annual series published                                              140,000         142,380          140,000          140,000
+
+                         Local Area Unemployment Statistics
+BLS 3.4 LAUS.01.P        Number of employment and unemployment estimates for states and local areas
+                                                                                                                 108,600         108,600          100,500          108,800
+                         published monthly and annually 2/ 13/
+BLS 3.4 LAUS.02.T        Percentage of monthly and annual releases on schedule (25 out of 25) 5/ 14/              100%              100%           100%             100%
+BLS 3.4 LAUS.03.A        Percentage of the month-to-month changes in seasonally adjusted state
+                                                                                                                  ≥90%              100%           ≥90%             ≥90%
+                         unemployment rates that are < 0.4 percentage points 15/
+BLS 3.4 LAUS.04.A        Number of states with annual average unemployment rate revisions > 0.5
+                                                                                                                   ≤8                 0             N/A               ≤8
+                         percentage points 2/ 15/
+
+                         National Longitudinal Surveys
+BLS 3.4 NLS.01.O         Number of journal articles published that examine NLS data                                125               153             140             150
+
+                         Job Openings and Labor Turnover Survey
+BLS 3.4 JOLTS.01.P       Number of monthly and annual estimates                                                   2,878             2,878           2,878           2,878
+
+                         American Time Use Survey
+BLS 3.4 ATUS.01.P        Number of annual estimates 16/                                                          11,100             11,877          9,300           11,100
+
+                         Employment Projections
+BLS 3.4 EP.02.A          Percentage of total employment covered by projections                                    100%              100%           100%             100%
+BLS 3.4 EP.03.P          Number of detailed occupations covered in the Occupational Outlook Handbook
+                         17/                                                                                       600               603             603             605
+BLS 3.4 EP.04.A          Percentage of detailed occupations covered by projections                                100%              100%           100%             100%
+
+1/ The two PFEIs produced by the CPS and CES programs are The Employment Situation and Real Earnings.
+2/ The FY 2026 target reflects impacts of the lapse in appropriations in early FY 2026.
+3/ This measure only relates to PFEIs.
+4/ In FY 2026, the CPS plans to add new series for Women’s Earnings. The CPS also will be removing a small number of duplicate series due to telework. As FY 2026 is
+   impacted by the lapse in appropriations, the full year impact of these changes is reflected in FY 2027.
+5/ As a result of the FY 2026 lapse in appropriations, CPS will release a total of 11 monthly releases, CES will release 22 national monthly releases and 23 state and local area
+   monthly releases, and LAUS will release 23 monthly and annual releases in FY 2026.
+
+
+                                                                                   BLS - 30
+                                                  EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+6/ The CPS began phasing-in a redesigned sample in FY 2025. Based on new design requirements for the sample, a difference of 0.3 percentage points (instead of 0.2) over-
+    the-month is statistically significant beginning in FY 2026. Due to the lapse in appropriations in early FY 2026, the October CPS was not collected. Therefore, there are no
+    over-the-month changes in both October and November 2025.
+7/ The FY 2025 result and FY 2026 through FY 2027 targets reflect an anticipated loss of series that no longer meet minimum publication standards.
+8/ FY 2026 and FY 2027 targets reflect the impacts of reduced staffing.
+9/ This measure includes two monthly news releases: State Employment and Unemployment and Metropolitan Area Employment and Unemployment. Due to the schedule of
+    the Metropolitan Area Employment and Unemployment release, the number of annual releases may fluctuate from the average of 24.
+10/ Beginning with second quarter 2025 data released in FY 2026, the QCEW will only publish MSA employment and wages at the Total Covered level. In FY 2026, the
+    QCEW will only publish MSA employment and wages at the Total Covered level.
+11/ This measure is a workload estimate.
+12/ The FY 2026 and FY 2027 targets reflect the redirection of resources to improving seasonal adjustment models of high value series.
+13/ The number of estimates typically increases over time as cities that newly exceed the LAUS population threshold of 25,000 are added annually.
+14/ The LAUS program publishes two monthly news releases, State Employment and Unemployment and Metropolitan Area Employment and Unemployment, and one annual
+    release, Regional and State Unemployment. Due to the scheduling of the Metropolitan Area Employment and Unemployment release, the number of releases issued
+    annually may fluctuate from the average of 25.
+15/ These measures also include Los Angeles County, New York City, and the District of Columbia.
+16/ The FY 2025 result and FY 2027 target reflect estimates from the biennial eldercare news release. The FY 2026 target also reflects an expected decrease as publication
+    standards might require additional suppression if response rates fall.
+17/ Content is updated on a continual or rolling basis throughout the year. The target progression reflects long-term plans to increase coverage in the OOH.
+
+
+
+
+                                                                                  BLS - 31
+                       EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+Workload and Performance Narrative
+
+The BLS seeks to transform how it collects, analyzes, and delivers its data by increasing its use of
+technology and identifying efficiencies to improve data accuracy, lower respondent burden, and
+increase survey responses, while providing policymakers and the public with a first look at economic
+activity each month. Labor Force Statistics programs produce, analyze, and publish data on payroll
+employment and the civilian labor force, employment and unemployment, persons not in the labor
+force, labor demand and turnover, wages, hours, earnings, occupational employment, and employment
+projections. On an annual basis, the BLS identifies individual improvements that can be made by each
+Budget Activity. For example, in FY 2027, the OEWS program, on behalf of OMB, will continue to
+lead the interagency revision of the Standard Occupation Classification (SOC) system updating the
+occupational classification system used in OMB Statistical Policy Directive (SPD) 10. This will
+include the drafting of the final recommendations to OMB on the revised 2028 SOC structure,
+occupation codes and titles, which is anticipated to be finalized by OMB through a Federal Register
+Notice planned for 2027.
+
+In FY 2027, the Budget carries forward the proposal to reorganize the BLS, the Census Bureau, and
+the Bureau of Economic Analysis at the Department of Commerce. This reorganization proposal aims
+to leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden. In addition, the FY 2027 request proposes to suspend activities tied to
+the new NLSY cohort, resulting in a savings of $14,500,000 from the FY 2026 Enacted level to
+prevent further reductions to BLS’s other programs.
+
+
+
+
+                                                 BLS - 32
+                    EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+
+                              BUDGET ACTIVITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                     68,392        62,287         60,935            -1,352
+11.3 Other than full-time permanent                             444           282            282                0
+11.5 Other personnel compensation                             2,081         2,073          1,941              -132
+12.1 Personnel Benefits                                      25,725        23,725         23,477              -248
+13.0 Benefits for former personnel                                 55             20             20             0
+21.0 Travel and transportation of persons                       535           500            500                0
+23.1 Rental payments to GSA                                   5,332         5,163          5,163                0
+23.2 Rental payments to others                                     43             40             40             0
+23.3 Communications, utilities, and misc.                     1,243         1,861          1,861                0
+24.0 Printing and reproduction                                  717           705            705                0
+25.2 Other services from non-Federal sources                  2,240         1,288          1,288                0
+25.3 Other goods and svcs. from Fed. sources                 71,550        79,376         75,094            -4,282
+25.3 WCF (Non-Add)                                           10,368        10,628          9,539            -1,089
+25.5 Research and development contracts                      25,324        24,000         12,000           -12,000
+25.7 Operation and maint. of equipment                       24,947        31,740         29,240            -2,500
+26.0 Supplies and materials                                        71         114            114                0
+31.0 Equipment                                                2,769         1,871          1,871                0
+41.0 Grants, subsidies, and contributions                     7,311         6,320          6,320                0
+42.0 Insurance claims and indemnities                              3              7              7              0
+Total                                                       249,150       252,000        230,397           -21,603
+
+
+
+
+                                                    BLS - 33
+                  EMPLOYMENT AND UNEMPLOYMENT STATISTICS
+
+
+
+
+                                 CHANGES IN FY 2027
+                                   (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Total personnel compensation                                    $0
+  Working Capital Fund                                       -$1,089
+  Built-Ins Subtotal                                         -$1,089
+
+
+Base                                                        $252,000   461
+ Program Decreases                                          -$20,514    -6
+Net Program Subtotal                                        -$20,514    -6
+Total Activity Appropriation                                $230,397   455
+
+
+
+                                                             Amount    FTE
+Base                                                        $252,000    461
+Program Increases                                                 $0      0
+Program Decreases                                           -$20,514     -6
+
+
+
+
+                                  BLS - 34
+                                     LABOR MARKET INFORMATION
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                           (Dollars in Thousands)
+
+
+
+                                                                                         Diff. FY 2027
+                                                FY 2025        FY 2026      FY 2027      Request / FY
+                                                Enacted        Enacted      Request      2026 Enacted
+Activity Appropriation                              68,000         68,000       68,000                   0
+FTE                                                      0              0            0                   0
+NOTE: FY 2025 reflects actual FTE.
+
+The Labor Market Information programs receiving funding from the Unemployment Trust Fund
+are described under Employment and Unemployment Statistics heading.
+
+
+
+
+                                                BLS - 35
+                                  LABOR MARKET INFORMATION
+
+
+
+
+                             BUDGET ACTIVITY BY OBJECT CLASS
+                                            (Dollars in Thousands)
+
+
+                                                                                                Diff. FY
+                                                                                             2027 Request
+                                                      FY 2025        FY 2026     FY 2027       / FY 2026
+                                                      Enacted        Enacted     Request        Enacted
+41.0 Grants, subsidies, and contributions                 68,000        68,000      68,000             0
+Total                                                     68,000        68,000      68,000             0
+
+
+
+
+                                                 BLS - 36
+                               LABOR MARKET INFORMATION
+
+
+
+                                       CHANGES IN FY 2027
+                                         (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Built-Ins Subtotal                                                   $0
+
+
+Base                                                              $68,000     0
+Net Program Subtotal                                                   $0     0
+Total Activity Appropriation                                      $68,000     0
+
+
+
+                                                                  Amount    FTE
+Base                                                              $68,000     0
+Program Increases                                                      $0     0
+Program Decreases                                                      $0     0
+
+
+
+
+                                        BLS - 37
+                                     PRICES AND COST OF LIVING
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                          (Dollars in Thousands)
+
+
+
+                                                                                      Diff. FY 2027
+                                               FY 2025        FY 2026     FY 2027     Request / FY
+                                               Enacted        Enacted     Request     2026 Enacted
+Activity Appropriation                           244,436        248,000     238,263             -9,737
+FTE                                                  951            859         853                 -6
+NOTE: FY 2025 reflects actual FTE.
+
+Introduction
+
+Prices and Cost of Living programs collect, compile, and disseminate a wide variety of
+information on price change in the U.S. economy, and conduct research and analysis to improve
+the economic statistics produced. The programs include Consumer Prices and Price Indexes
+(CPI), Producer Prices and Price Indexes (PPI), the International Price Program (IPP), and the
+Consumer Expenditure (CE) Survey. In addition to meeting general statutory responsibilities
+assigned to the BLS (29 U.S.C. 1 and 2), these programs produce data that form the basis for
+adjusting or setting payments, benefits, or other income as required by many laws and private
+sector contracts.
+
+Consumer Prices and Price Indexes
+
+The CPI program, the nation’s principal gauge of inflation, provides measures of price change
+for all urban areas, four Census regions, nine Census divisions, and 23 core-based- statistical-
+areas (CBSAs). Indexes are produced for two population groups: all urban consumers, and urban
+wage earners and clerical workers. For the population of all urban consumers, there are two
+indexes: the traditional index (CPI-U) and the superlative index, also known as the chained-CPI
+(C-CPI-U). The C-CPI-U reflects the effect of substitutions that consumers make across item
+categories in response to changes in relative prices. The indexes for all urban consumers cover
+over 90 percent of the U.S. population. The index for the urban wage-earner population group,
+the CPI-W, covers nearly 30 percent of the U.S. population. The CPI is based on a market basket
+representing all goods and services that consumers purchase for everyday living. Published
+measures include various monthly, bi-monthly, and semi-annual and annual average indexes; and
+monthly average retail prices for selected items.
+
+The numerous uses of the CPI data include: primary measure of price change at the consumer
+level; indicator of inflationary or deflationary trends in the economy; measure of the purchasing
+power of the consumer dollar; aid in formulation and evaluation of economic policy; adjustment
+mechanism for payments under many government programs, including payments to Social
+Security beneficiaries, retired military and federal civil service employees and survivors;
+adjustments to the official U.S. poverty thresholds, rental/lease agreements, and payments from
+trust funds and wills; deflator of earnings to provide a measure of real earnings; factor in
+
+
+                                               BLS - 39
+                               PRICES AND COST OF LIVING
+
+
+collective bargaining and wage and pension adjustments; and adjustment factor for the income
+tax structure, including standard deductions and brackets. These last adjustments are intended to
+prevent inflation from automatically generating tax rate increases.
+
+Through personal visits, telephone interviews, and selected data accessed from the internet or
+other sources, the program collects prices for food, rent, utilities, and a few other items monthly
+in all areas, and most other commodities and services monthly in the three largest areas, and bi-
+monthly in other areas.
+
+   •   The BLS collects approximately 80,000 commodity and service prices (monthly) and
+       111,000 Rent/Rental equivalence prices (annually).
+
+Producer Prices and Price Indexes
+
+The PPI program measures average changes in prices received by domestic producers for their
+output. It is an industry-based survey that provides monthly price indexes for virtually all
+agricultural, mining, and manufacturing industries, for selected construction industries, and for a
+number of service industries. Indexes are available for two different product classification
+systems. The commodity classification system organizes products by similarity of end use or
+material composition and features comprehensive intermediate demand and final demand
+indexes that are designed to facilitate the analysis of the transmission of inflation through the
+economy. The industry classification system organizes products by industry of origin.
+
+Indexes from the PPI program are used extensively as: major indicators of inflationary trends in
+the economy; deflators of nominal dollar values over time; escalators of long-term contracts;
+market research tools; inventory valuation measures; and major inputs to the evaluation and
+formulation of economic policy. Net inputs to industry indexes, produced by PPI but also using
+import data from IPP, provide information on the average change in prices for domestic and
+imported inputs consumed by selected industries and industry groups.
+
+   •   The BLS collects approximately 52,000 price quotations monthly.
+
+International Price Program
+
+The IPP produces the Import and Export Price Indexes (MXPI), which measure price change of
+merchandise goods in U.S. foreign trade classified by BEA end use, NAICS, and Harmonized
+classification systems. The MXPI also cover a limited number of international services, as well
+as goods-industry competitiveness measures that are country-specific, including U.S. import
+prices by locality of origin, U.S. export prices by locality of destination, and terms of trade.
+
+Various uses of IPP data include: deflation of the Foreign Trade sector of the National Accounts;
+assessment of effects of import and export price changes on the U.S. economy; exchange rate
+analysis; analysis of price behavior in international markets, including assessing U.S.
+competitiveness, calculating changes in the volume of net exports; and analysis and formulation
+of economic policy.
+
+
+
+
+                                             BLS - 40
+                              PRICES AND COST OF LIVING
+
+
+   •   The BLS collects approximately 9,200 survey-collected prices monthly.
+
+Consumer Expenditure Survey
+
+The CE program provides information on consumers’ expenditures and income. Detailed data
+from this program are published as comprehensive, annual expenditure estimates for a large
+number of demographic characteristics, such as income, consumer unit size, and region.
+
+These estimates are used for a variety of purposes, including revisions of weights and item
+samples of the CPI, economic policy analysis of segments of the population, market research,
+and economic research and analysis. The CE program also collects data on where consumers
+shop, which the CPI program uses to revise retail outlet samples for pricing.
+
+The CE program is composed of two surveys: an interview and a diary. The quarterly Interview
+Survey is designed to collect data on major expenditures that respondents can recall for three
+months. The weekly Diary Survey is designed to obtain expenditure data on small, frequently-
+purchased items.
+
+   •   The Census Bureau collects for the BLS 12,100 weekly expenditure diaries and
+       17,900 quarterly interviews in 91 geographic areas of the United States.
+
+Five-Year Budget Activity History
+
+                                          Funding
+          Fiscal Year              (Dollars in Thousands)                FTE
+             2022                        $228,906                         942
+             2023                        $240,868                         969
+             2024                        $241,000                         981
+             2025                        $244,436                         954
+             2026                        $248,000                         859
+
+FY 2027
+
+In FY 2027, the BLS will continue the production of core data series and undertake the following
+new work in the areas of Prices and Cost of Living:
+
+  The CPI program will begin executing its plan to transition to the revised area structure, an
+  updated geographic sample based on the 2020 Decennial Census. The CPI program will
+  continue planning for the revised item structure, which will include an updated market basket
+  classification structure, the first major revision to the item structure since 1998. In FY 2027,
+  the program will continue development work on the systems modifications required to
+  support the revisions. New samples in Housing and Commodities and Services (C&S) for
+  Wave 1 primary sampling units (PSUs) may be initiated, contingent on budget and hiring
+  restrictions. Definition of the revised item-area structure for use in calculation will also
+  continue.
+
+
+
+
+                                             BLS - 41
+                              PRICES AND COST OF LIVING
+
+
+  The PPI program will work towards updating its value weights to more accurately reflect
+  recent production and marketing patterns. The updated weights will be constructed using the
+  2022 value of shipments and revenue data from the Economic Census. Since January 2023,
+  PPI weights have been based on 2017 North American Industry Classification System
+  (NAICS) shipment and revenue values. All PPIs will be affected by this weight update,
+  including industry net output indexes, commodity indexes, Final Demand-Intermediate
+  Demand (FD-ID) indexes, and inputs to industry indexes.
+
+  The PPI program will deploy to production a new PPI Sampling System in FY 2027,
+  replacing a legacy system that runs on obsolete and unsupported software. This modernized
+  sampling system will provide essential functionality for PPI users to load and refine sample
+  frames, set up sampling parameters, and select samples.
+
+  The IPP Sampling Systems will continue conversion of Import and Export Price Index
+  (MXPI) sample production jobs in SAS to a long-term supported software package.
+
+  The CE program will finalize requirements to implement the second and final phase of a new
+  geographic sample design based on the 2020 Decennial Census. To reflect the latest
+  geographic shifts in the U.S. population, every ten years the CE and CPI programs update
+  their sample of PSUs based on the latest Decennial Census.
+
+FY 2026
+
+In FY 2026, the BLS is continuing the production of core data series and is undertaking the
+following new work in the areas of Prices and Cost of Living:
+
+  The CPI program will continue transition planning to revise its item-area structure, which will
+  include an updated market basket classification structure, the first major revision to the item
+  structure since 1998, and an updated geographic sample based on the 2020 Decennial Census.
+  In FY 2026, the CPI program will select Housing and C&S samples for the first wave of new
+  PSUs to rotate in, and will continue development work on systems modifications required to
+  support the item structure revision.
+
+  The PPI program will update the weight allocations used to calculate its FD–ID indexes. PPI
+  weights are based on values from the 2017 Economic Census. To more accurately reflect
+  recent sales patterns, the PPI will update the proportion of these weights allocated to the
+  various FD–ID categories to base them on data published in the 2017 Input–Output (I–O)
+  Accounts from the Bureau of Economic Analysis (BEA). This update will affect all portions
+  of the PPI FD-ID system: final demand, intermediate demand by commodity type, and
+  intermediate demand by production flow indexes.
+
+  The PPI program will integrate non-traditionally collected data into index calculations as part
+  of a continuous process to increase data quality while reducing costs and respondent burden.
+  The PPI program will augment or replace directly collected survey data with secondary source
+  or administrative data for at least one industry and will continue efforts to identify additional
+  alternative data sources and evaluate their fitness for use. The PPI program will increase
+
+
+
+                                            BLS - 42
+                              PRICES AND COST OF LIVING
+
+
+  collaboration and information sharing with international statistical organizations by presenting
+  the newly developed indexes for post-secondary education (calculated solely with
+  administrative data) to the Voorburg Group on Services Statistics.
+
+  The Industrial Price programs (IPP and PPI) will update the IPS Initiation System to replace
+  legacy systems for the IPP that run on obsolete and unsupported software. The FY 2026
+  iteration of the IPS Initiation System will implement all IPP-related functionality to initiate
+  MXPI survey respondents and will retire obsolete software.
+
+  The IPP Sampling Systems will develop new functionality to address the new sample strategy
+  based on the administrative data to improve efficiency of sampling procedures and to move
+  MXPI sample production jobs in SAS to a long-term supported software package.
+
+  The CE program will advise the development of new Census data collection instruments
+  for the CE surveys. In support of new Interview and Diary survey data collection
+  instruments being developed for the BLS by the Census Bureau as part of its Data
+  Ingest & Collection for the Enterprise (DICE) project, CE staff will develop
+  requirements for all datasets, evaluate system specifications and prototypes, extensively
+  test the instrument, and provide feedback during all stages of development.
+
+FY 2025
+
+In FY 2025, the BLS continued the production of core data series and completed the following
+work in the areas of Prices and Cost of Living:
+
+  The CPI program continued transition planning to revise its item-area structure, which
+  includes an updated market basket classification structure, the first major revision to the item
+  structure since 1998, and an updated geographic sample based on the 2020 Decennial Census.
+  In support of the structure revisions, in FY 2025, the program completed improvements to the
+  Expenditure Weights Pre-Processor System and integration with Sampling and Estimation
+  systems to accommodate changes in the definition of items, areas, population, and time
+  periods underlying weight products.
+
+  The CPI program continued to update systems to support the program goal of expanding
+  alternative types and sources of data in indexes. The CPI program incorporated purchased
+  medical claims data to supplement the traditionally collected sample for physician services
+  and outpatient hospital services. In addition, the CPI program incorporated purchased data for
+  leased vehicles and wireless telephone services. The CPI program deferred consolidating pre-
+  existing alternative sources into the MERCURY system; hosting and managing data
+  processing scripts; and managing quote-level data. The program initiated development on
+  analysis and research tools.
+
+  The CPI program completed final development and testing activities and transitioned the
+  Housing Collection web application to Operations in August.
+
+
+
+
+                                            BLS - 43
+                            PRICES AND COST OF LIVING
+
+
+The PPI program completed a data user survey to solicit feedback from academia,
+government agencies, businesses, and public users to determine the PPI information they find
+most useful and to gather input on suggested improvements or additions to existing data.
+
+Based on results from a data collection pilot, the PPI program implemented standardized
+procedures for the collection of large datasets from a limited number of corporate
+respondents. Collection of large price datasets is an option that the PPI utilizes in certain
+circumstances to reduce respondent burden and increase the number of sampled products
+included in the PPI survey. This method of data collection targets retail trade industries to
+better represent surveyed units that provide retailing services for a wide variety of different
+products.
+
+The PPI program continued the development of a new PPI Sampling System, replacing a
+legacy system that runs on obsolete and unsupported software. The FY 2025 iteration of the
+PPI Sampling System included test versions of frame and sample refinement.
+
+The Industrial Price programs continued to develop the shared IPS Initiation System to
+replace legacy systems that run on obsolete and unsupported software. The FY 2025 iteration
+of the IPS Initiation System completed the beta test and began building the candidate release
+to initiate survey units for the MXPI survey.
+
+The IPP Sampling Systems implemented changes to account for the inclusion of Census
+Bureau administrative trade data in lieu of directly-collected data for one third of the sample,
+and will continue to develop functionality to improve efficiency of sampling procedures.
+
+The IPP finalized the test processing and beginning in March 2025, the IPP integrated Census
+Bureau administrative trade data in the monthly U.S. import and export price index news
+release. This innovation expanded the number of published price indexes and replaced
+directly collected prices with administrative transaction prices for one third of the current
+MXPI sample. This major change in data source eliminated the backlog of survey units that
+accumulated in the field due to COVID, and is expected to improve the turnover rate of
+fielded survey units, which ultimately improves index quality. The administrative trade data
+source simultaneously increased the number of price indexes for homogeneous product areas
+by 500 and, by addressing the historic imbalance in field collection, maintain the number of
+prices in heterogeneous product areas.
+
+The CE program finalized requirements to implement a new geographic sample design based
+on the 2020 Decennial Census. To reflect the latest geographic shifts in the U.S. population,
+every ten years the CE and CPI programs update their sample of PSUs based on the latest
+Decennial Census.
+
+
+
+
+                                          BLS - 44
+                                                               PRICES AND COST OF LIVING
+
+                                                         DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                      FY 2025            FY 2026   FY 2027
+                                                                                                                      Enacted            Enacted   Request
+                                                                                                             Target             Result    Target    Target
+Prices and Cost of Living
+
+                        Principal Federal Economic Indicators
+
+                        Consumer Prices and Price Indexes
+ BLS 3.4 CPI.01.W       Number of price quotations collected/processed monthly 1/ 2/                         100,000         83,136      70,000     80,000
+ BLS 3.4 CPI.02.W       Number of rent/Rental equivalence price quotations for annual collection 1/ 2/       125,500        116,371      97,000    111,000
+ BLS 3.4 CPI.03.P       Number of indexes published monthly 1/ 3/                                             8,400          8,068       7,400      7,900
+ BLS 3.4 CPI.04.T       Percentage of monthly releases on schedule (12 out of 12) 4/                          100%           100%        100%       100%
+ BLS 3.4 CPI.05.A       Number of months that the standard error on the 12-month change in the U.S. City
+                                                                                                               12                12        12        12
+                        Average All Items CPI-U Index is < 0.25 percentage points
+
+                        Producer Prices and Price Indexes
+ BLS 3.4 PPI.01.W       Number of price quotations collected/processed monthly 5/                            52,000             56,500   52,000    52,000
+ BLS 3.4 PPI.02.P       Number of indexes published monthly 5/ 6/                                            10,500             10,652   10,200    10,200
+ BLS 3.4 PPI.03.A       Percentage of industry product line indexes published monthly 5/                      78%                79%      78%       78%
+ BLS 3.4 PPI.04.T       Percentage of monthly releases on schedule (12 out of 12) 4/                          100%              100%     100%      100%
+                        Percentage of domestic output, within the scope of the PPI, which the PPI covers:
+ BLS 3.4 PPI.05.A       Goods produced 6/                                                                    98.2%              97.0%     97.0%     97.0%
+ BLS 3.4 PPI.06.A       Construction                                                                         16.9%              16.9%     16.9%     16.9%
+ BLS 3.4 PPI.07.A       Services produced 6/                                                                 68.8%              68.4%     68.4%     68.4%
+ BLS 3.4 PPI.08.A       Total production 6/                                                                  72.5%              72.0%     72.0%     72.0%
+ BLS 3.4 PPI.09.A       Number of revisions of the one-month percentage change between the first and
+                        final release of the Final Demand Index (not seasonally adjusted) > 0.4 percentage     ≤2                 1        ≤2        ≤2
+                        points
+
+                        International Price Program
+ BLS 3.4 IPP.01.W       Number of price quotations collected/processed monthly 7/ 8/                          9,900             12,256    9,200     9,200
+ BLS 3.4 IPP.02.P       Number of indexes published monthly 1/ 7/                                             1,390              1,390    1,525     1,525
+ BLS 3.4 IPP.03.T       Percentage of monthly releases on schedule (12 out of 12) 4/                          100%              100%      100%      100%
+                        Percentage of U.S. foreign trade imports covered by the IPP:
+ BLS 3.4 IPP.04.A       Goods in trade 9/                                                                     100%              100%      100%      100%
+ BLS 3.4 IPP.05.A       Services in trade 9/                                                                   8%                8%       10%       10%
+ BLS 4.1 IPP.06.A       Total in trade 9/                                                                     84%               84%       82%       82%
+
+
+
+
+                                                                                BLS - 45
+                                                                 PRICES AND COST OF LIVING
+
+                                                           DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                         FY 2025                FY 2026          FY 2027
+                                                                                                                         Enacted                Enacted          Request
+                                                                                                                Target             Result        Target           Target
+                         Percentage of U.S. foreign trade exports covered by the IPP:
+BLS 4.1 IPP.07.A         Goods in trade 9/                                                                      100%               100%           100%             100%
+BLS 4.1 IPP.08.A         Services in trade 9/                                                                    6%                 6%             5%               5%
+BLS 4.1 IPP.09.A         Total in trade 9/                                                                      71%                71%             66%             66%
+BLS 4.1 IPP.10.A         Number of revisions of the one-month percentage change between the first and
+                                                                                                                  ≤2                 0             ≤2               ≤2
+                         final release of the Import Price Index > 0.5 percentage points
+BLS 4.1 IPP.11.A         Number of revisions of the one-month percentage change between the first and
+                                                                                                                  ≤2                 1             ≤2               ≤2
+                         final release of the Export Price Index > 0.5 percentage points
+
+                         Other Programs
+
+                         Consumer Expenditure Surveys
+BLS 4.1 CE.01.W          Complete Weekly Expenditure Diaries:
+                         Number collected from Consumer Units 1/                                                11,400             12,543         9,400           12,100
+BLS 4.1 CE.02.W          Complete Quarterly Interviews:
+                                                                                                                16,900             17,953        14,100           17,900
+                         Number of Consumer Unit Interviews 1/
+
+1/ The FY 2026 target reflects impacts of the lapse in appropriations in early FY 2026.
+2/ The FY 2025 result and outyear targets reflect suspended data collection in Lincoln, NE, Provo, UT and Buffalo, NY.
+3/ The FY 2025 result and the FY 2026 and FY 2027 targets reflect the reduction in electricity and natural gas series that occurred in January 2025.
+4/ As a result of the FY 2026 lapse in appropriations, CPI, PPI, and IPP will release a total of 11 monthly releases in FY 2026.
+5/ The FY 2026 and FY 2027 targets reflect expected decline due to data collection issues and continued difficulties in gaining and maintaining respondent cooperation.
+6/ With the July 2025 PPI release, the BLS ended calculation and publication of approximately 350 indexes. As a result, 34 industries were eliminated, which impacted the
+   scope of the PPI.
+7/ The changes in targets beginning in FY 2025 reflect the expanded use of alternatively-sourced price quotations from Census administrative trade data, which decreases the
+   number of price quotations directly collected and processed from the survey but increases the number of indexes published starting with the February 2025 published
+   indexes.
+8/ The FY 2025 result reflects better than expected retention of respondents.
+9/ The FY 2025 results are based on official international trade measures for 2022. The FY 2026 and FY 2027 targets are based on 2023 measures. The service areas covered
+   did not change, but their share of total trade may fluctuate due to economic trade patterns.
+
+
+
+
+                                                                                 BLS - 46
+                                    PRICES AND COST OF LIVING
+
+
+Workload and Performance Narrative
+
+The BLS seeks to transform how it collects, analyzes, and delivers its data by increasing its use of
+technology and identifying efficiencies to improve data accuracy, lower respondent burden, and
+increase survey responses, while providing policymakers and the public with a first look at economic
+activity each month. The Prices and Cost of Living programs collect, compile, and disseminate a wide
+variety of information on price change in the U.S. economy, and conduct research and analysis to
+improve the economic statistics produced. On an annual basis, the BLS identifies individual
+improvements that can be made by each Budget Activity. For example, in FY 2027, the CPI program
+will begin a transition to the revised area structure, an updated geographic sample based on the 2020
+Decennial Census. The CPI program also will continue planning for the revised item structure, which
+will include an updated market basket classification structure, the first major revision to the item
+structure since 1998.
+
+In FY 2027, the Budget carries forward the proposal to reorganize the BLS, the Census Bureau, and
+the Bureau of Economic Analysis at the Department of Commerce. This reorganization proposal aims
+to leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden.
+
+
+
+
+                                                 BLS - 47
+                                     PRICES AND COST OF LIVING
+
+
+
+
+                              BUDGET ACTIVITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                     91,994        85,401         83,704            -1,697
+11.3 Other than full-time permanent                          13,074        13,412         13,412                0
+11.5 Other personnel compensation                             2,643         2,755          2,692               -63
+12.1 Personnel Benefits                                      39,274        37,485         37,084              -401
+13.0 Benefits for former personnel                                 6              45             45             0
+21.0 Travel and transportation of persons                     1,621         2,270          2,270                0
+23.1 Rental payments to GSA                                   9,576         8,809          8,809                0
+23.2 Rental payments to others                                     20             19             19             0
+23.3 Communications, utilities, and misc.                       278           417            417                0
+24.0 Printing and reproduction                                     37             37             37             0
+25.2 Other services from non-Federal sources                  3,637         5,910          3,410            -2,500
+25.3 Other goods and svcs. from Fed. sources                 43,002        46,521         44,814            -1,707
+25.3 WCF (Non-Add)                                           19,073        22,141         19,873            -2,268
+25.7 Operation and maint. of equipment                       17,238        20,821         19,720            -1,101
+26.0 Supplies and materials                                        97         156            156                0
+31.0 Equipment                                                2,864         1,797          1,797                0
+42.0 Insurance claims and indemnities                              2              4              4              0
+Total                                                       244,436       248,000        238,263            -9,737
+
+
+
+
+                                                    BLS - 48
+                                 PRICES AND COST OF LIVING
+
+
+
+
+                                        CHANGES IN FY 2027
+                                           (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Total personnel compensation                                            $0
+  Working Capital Fund                                               -$2,268
+  Built-Ins Subtotal                                                 -$2,268
+
+
+Base                                                                $248,000   859
+ Program Decreases                                                   -$7,469    -6
+Net Program Subtotal                                                 -$7,469    -6
+Total Activity Appropriation                                        $238,263   853
+
+
+
+                                                                     Amount    FTE
+Base                                                                $248,000    859
+Program Increases                                                         $0      0
+Program Decreases                                                    -$7,469     -6
+
+
+
+
+                                          BLS - 49
+                        COMPENSATION AND WORKING CONDITIONS
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                      (Dollars in Thousands)
+
+
+
+                                                                                    Diff. FY 2027
+                                           FY 2025        FY 2026      FY 2027      Request / FY
+                                           Enacted        Enacted      Request      2026 Enacted
+Activity Appropriation                         92,354         91,500       86,822             -4,678
+FTE                                               336            282          279                 -3
+NOTE: FY 2025 reflects actual FTE.
+
+Introduction
+
+Compensation and Working Conditions programs produce a diverse set of measures of employee
+compensation; compile work stoppages statistics; compile data on work-related injuries,
+illnesses, and fatalities; and conduct research to improve the measurement process. The programs
+fall into two major categories: Compensation Levels and Trends, and Occupational Safety and
+Health Statistics (OSHS).
+
+COMPENSATION LEVELS AND TRENDS
+
+Compensation Levels and Trends programs include the National Compensation Survey (NCS)
+and Work Stoppages Statistics (WSS). NCS outputs include the Employment Cost Index (ECI),
+Employer Costs for Employee Compensation (ECEC), and the Employee Benefits Survey (EBS).
+The ECI is a measure of wage-push inflation used by economists, businesses, and policymakers,
+and is published quarterly. The ECEC provides costs levels by compensation component and as a
+percentage of total compensation. The EBS provides incidence, provisions, and features of
+employer-sponsored retirement, insurances (including health care), and paid leave. EBS data are
+frequently used to establish benchmarks when considering changes to national benefits policies.
+Together, these program outputs along with information on work stoppages meet general
+statutory requirements assigned to the BLS (29 U.S.C. 1, 2, and 4) and specific legal
+requirements, including the requirements of the Federal Employees’ Pay Comparability Act of
+1990 (FEPCA) [5 U.S.C. 5301-5304].
+
+The program also produces the Occupational Requirements Survey (ORS), funded by the Social
+Security Administration (SSA). The ORS provides job-related information regarding physical
+demands; environmental conditions; education, training, and experience; as well as cognitive and
+mental requirements in the U.S. economy.
+
+NATIONAL COMPENSATION SURVEY
+
+The NCS provides comprehensive measures of occupational earnings (computed in conjunction
+with the Occupational Employment and Wage Statistics (OEWS) program), compensation cost
+levels and trends, and benefit incidence and provisions. The NCS coverage includes private
+
+
+
+                                           BLS - 51
+                    COMPENSATION AND WORKING CONDITIONS
+
+
+industry, and state and local government workers; and excludes the federal government,
+agricultural sector, as well as household, self-employed, and unpaid family workers.
+
+   •   The BLS collects data from a sample of about 17,200 private industry and state and local
+       government establishments, providing both wage and benefit information. The BLS
+       collects data from a sample of occupations within establishments through a combination
+       of personal visits, mail, telephone, and electronic contacts.
+
+Employment Cost Index
+
+The ECI measures changes in total compensation (wages and salaries, and employer costs for
+employee benefits) for the civilian economy and is published quarterly. Indexes for
+compensation, wages and salaries, and benefit costs are available for selected industry and
+occupational groups and for workers in private industry by bargaining status and geographic
+area. In addition, the ECEC publication provides estimates of compensation costs per hour
+worked for those same categories as well as by establishment employment size, and full- and
+part-time employment status.
+
+The ECI provides the estimate for the national pay adjustment for federal General Schedule (GS)
+workers in compliance with the FEPCA and information from the NCS is used in combination
+with data from the OEWS program to provide estimates of pay by area, occupational groups, and
+work level that are used to recommend the locality pay adjustments required under FEPCA. The
+ECI also provides the basis for pay adjustments for Congress, federal judges, and top
+government officials specified in the Ethics Reform Act, as well as the basis for pay adjustments
+for the military. The Centers for Medicare and Medicaid Services uses the ECI to determine
+allowable increases in Medicare reimbursements for hospital and physician charges. In addition,
+the Wage and Hour Division uses the ECEC to set benefit costs required by the Service Contract
+Act. Other uses of ECI data include: setting and evaluating monetary policy; macro-economic
+forecasting; collective bargaining and other pay determinations; estimating compensation in the
+National Income and Product Accounts; contract cost escalation; minimum wage escalation; and
+studies on the structure of employee compensation.
+
+   •   The BLS publishes 278 indexes and 331 levels quarterly from a sample of approximately
+       17,200 establishments.
+
+Employee Benefits Survey
+
+The EBS provides comprehensive data on the incidence and provisions of employee benefit
+plans in private industry and state and local governments. The benefits measured evolve to keep
+pace with changes in labor market practices. Examples of benefits included are: vacation and
+sick leave; long-term disability; health and life insurance; and retirement plans. Incidence
+measures include the percentage of workers with access to and participating in employer-
+provided benefit plans, as well as take-up rates (an estimate of the percentage of workers with
+access to a plan who also participate in the plan).
+
+
+
+
+                                            BLS - 52
+                    COMPENSATION AND WORKING CONDITIONS
+
+
+The BLS provides data on benefit incidence and provisions by work status (full- and part-time),
+bargaining status (union and nonunion), wage intervals, goods-producing and service-producing
+industries, establishment employment size, and by Census regions and divisions. The BLS also
+provides statistics on both the employee and employer contributions to medical plan premiums.
+Benefits data are published separately for occupational groups in private industry and state and
+local governments representing the civilian economy.
+
+The varied uses of these data include: benefit administration and program development in public
+and private sectors; collective bargaining; conciliation and arbitration in the public and private
+sectors; and Congress and the President’s consideration of legislation affecting the welfare of
+workers, including changes to retirement benefit plans, especially among small employers, and
+expanded sick leave policies. EBS data are used in studies that provide more details on health
+care services and limitations applicable to covered Americans. This information is essential to
+policymakers because employer-provided benefits are a primary source of health, disability, and
+retirement plans for American workers.
+
+   •   The BLS collects data on benefit incidence and provisions from a sample of
+       approximately 17,200 establishments.
+
+WORK STOPPAGES STATISTICS
+
+The BLS compiles data on Work Stoppages to meet general statutory requirements assigned to
+the BLS (29 U.S.C. 4) “to investigate the causes of, and facts relating to, all controversies and
+disputes between employers and employees.” The program produces monthly and annual data on
+major strikes and lockouts. The BLS collects from secondary sources the number of work
+stoppages, workers involved, and days idle.
+
+OCCUPATIONAL SAFETY AND HEALTH STATISTICS
+
+OSHS assists employers and policymakers in focusing their safety and health efforts, and allows
+workers to be better informed about workplace hazards by providing relevant data on injuries,
+illnesses, and fatalities that affect America’s workers. It includes the Survey of Occupational
+Injuries and Illnesses (SOII) and the Census of Fatal Occupational Injuries (CFOI). The
+Occupational Safety and Health Act of 1970 (29 U.S.C. 673) requires the Secretary of Labor
+(who, in turn, authorizes the BLS) to compile statistics and to “promote, encourage, or directly
+engage in programs of studies, information, and communication concerning occupational safety
+and health statistics and make grants to states or political subdivisions thereof to assist them in
+developing and administering programs dealing with occupational safety and health statistics.”
+The survey of non-fatal injuries and illnesses and the fatal injury census serve as the nation’s
+primary public health surveillance system for job-related injuries and illnesses.
+
+The BLS conducts the SOII to estimate the incidence rate and number of workplace injuries and
+illnesses and to gather information on the more seriously injured and ill workers and the
+circumstances of their injuries and illnesses. In 2022, the BLS expanded collection of these
+characteristics to include cases resulting in job transfer or restriction nationwide in addition to
+the previously collected cases that require days away from work. The BLS also conducts an
+
+
+
+                                             BLS - 53
+                    COMPENSATION AND WORKING CONDITIONS
+
+
+annual fatal injury census that compiles a complete roster of job-related fatal injuries and
+provides detailed information on fatally injured workers and the circumstances of the injuries
+leading to their deaths. These data include the events or exposures incurred by the worker, and
+the nature and source of the injury or illness.
+
+OSHS produces a variety of articles and papers highlighting specific aspects of the safety and
+health of the nation’s workplaces and workers. In recent years, these have included new insights
+concerning occupational injuries, illnesses, and fatalities to specific groups, in a specific
+industry, and details of selected types of injuries and illnesses. Other areas of research have
+focused on injuries and illnesses that have led to job transfer or restriction, and the expanded use
+of computer-assisted coding to review or assign codes for injury and illness circumstances.
+
+Survey of Occupational Injuries and Illnesses
+
+The SOII provides injury and illness information by industry, worker characteristics, and the
+circumstances of the injury or illness. The survey estimates injury and illness incidence rates
+by nature of injury and event, industry, occupation, sex, and age for the nation and
+participating states. These estimates cover private industry and state and local government
+workers.
+
+Government agencies, and industry, insurance, academic, public health, labor union, and
+private researchers analyze trends in these data. They also study the detailed circumstances of
+the injuries and illnesses to assess the overall occupational safety and health of workers and to
+identify ways to reduce injuries and illnesses, including potential changes in safety and health
+regulations or programs. Individual establishments compare their rates to those of their
+industry to benchmark their worker safety and health performance. Other researchers analyze
+the data to identify particular risks by occupation or event.
+
+   •   The BLS conducts the annual survey in a 50/50 cost-sharing partnership with 42 states,
+       the District of Columbia, and 3 territories, and collects the injury and illness data in
+       nonparticipating states through its regional offices to produce national data. The BLS
+       collects information, which is based on the records of job-related injuries and illnesses
+       that the Occupational Safety and Health Administration (OSHA) requires many
+       employers to keep and report to its employees annually, from a sample of approximately
+       228,000 establishments. Additionally, the survey collects nationwide detailed information
+       on case circumstances and worker characteristics for approximately 562,000 injury or
+       illness cases over a two year period that required days away from work, job transfer, or
+       restriction to recuperate.
+
+Census of Fatal Occupational Injuries
+
+The CFOI provides detailed information on fatally injured workers by industry and state,
+characteristics of workers, and the circumstances leading to their deaths. The program collects
+data from a wide variety of documents, such as death certificates, medical examiner records,
+media reports, and reports of fatalities submitted to federal and state workers’ compensation and
+regulatory agencies. These diverse data sources allow the BLS and its state partners to compile a
+
+
+
+                                             BLS - 54
+                        COMPENSATION AND WORKING CONDITIONS
+
+
+complete roster of fatal occupational injuries to workers in private and public sector
+establishments and to the self-employed.
+
+The program provides a comprehensive count of work-related fatal injuries at the national and
+state level, by industry, and by occupation, as well as detailed information about the fatal
+incident. The detailed data include information on the characteristics of the fatally injured
+workers (age, sex, race and ethnicity, and occupation), the nature and sources of the injury and
+the circumstances leading to the fatality. Providing these details allows the BLS and other
+researchers to produce special analyses on specific types of work-related fatal injuries, such as
+those associated with mine cave-ins, crane collapses, and explosions, and allows government,
+business, labor, and researchers to design strategies to reduce fatalities.
+
+   •   The BLS conducts the fatal injury census in a 50/50 cost-sharing partnership with
+       46 states, the District of Columbia, 3 territories, and 1 city. The BLS collects fatal injury
+       reports for the nonparticipating states and publishes data for the nation.
+
+Five-Year Budget Activity History
+
+                                            Funding
+          Fiscal Year                (Dollars in Thousands)                 FTE
+             2022                           $87,309                         314
+             2023                           $91,000                         325
+             2024                           $91,000                         326
+             2025                           $92,354                         328
+             2026                           $91,500                         282
+
+FY 2027
+
+In FY 2027, the BLS will continue the production of core data series and will undertake the
+following new work in the areas of Compensation and Working Conditions:
+
+   The NCS will reweight the ECI to incorporate occupational employment weighted based on
+   the North American Industry Classification System (NAICS) 2022 and current area
+   redefinitions post-COVID-19. The March 2027 Employee Benefits in the United States
+   publication will incorporate the streamlined collection, review, and estimation of employer-
+   sponsored benefits changes implemented in FY 2026.
+
+   With funding from the SSA, the ORS will publish the results from the third sample in the
+   third wave. Collection of the fourth sample in the third wave, will start in the last quarter of
+   FY 2026, and will continue through FY 2027.
+
+   The OSHS will publish SOII industry estimates data that reflect the 2022 NAICS Revision.
+
+FY 2026
+
+In FY 2026, the BLS is continuing the production of core data series and will undertake the
+
+
+
+                                               BLS - 55
+                   COMPENSATION AND WORKING CONDITIONS
+
+
+following new work in the areas of Compensation and Working Conditions:
+
+  The NCS will streamline the collection, review, and estimation of employer-sponsored
+  benefits. These changes will be reflected with the December 2026 ECI/ECEC and March
+  2027 Employee Benefits in the United States publications. The NCS will publish findings
+  from research on non-response.
+
+  With funding from the SSA, the ORS published the results from the second sample in the
+  third wave. Collection of the third sample in the third wave, started in the last quarter of
+  FY 2025, will continue through FY 2026.
+
+  The OSHS published biennial nationwide estimates for case circumstances and worker
+  characteristics from cases resulting in days away from work, job transfer, or restriction that
+  reflects the new Occupational Injury and Illness Classification System (OIICS).
+
+FY 2025
+
+In FY 2025, the BLS continued the production of core data series and completed the following
+work in the areas of Compensation and Working Conditions:
+
+  The NCS published detailed information on the provisions of health care plans provided to
+  private sector workers. The NCS continues to evaluate the impact of non-response on
+  published estimates.
+
+  With funding from the SSA, the ORS validated the results from the second sample in the third
+  wave. Results include new and modified job requirements. Collection of the third sample in
+  the third wave, started in the last quarter of FY 2025.
+
+  The OSHS published Census of Fatal Occupational Injuries data that reflects the new
+  Occupational Injury and Illness Classification System (OIICS) and the 2022 NAICS revision.
+
+  The OSHS evaluated options for integrating OSHA-Injury Tracking Application (ITA)
+  administrative case data in SOII data collection.
+
+
+
+
+                                            BLS - 56
+                                                  COMPENSATION AND WORKING CONDITIONS
+
+                                                       DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                               FY 2025            FY 2026     FY 2027
+                                                                                                               Enacted            Enacted     Request
+                                                                                                      Target             Result    Target      Target
+Compensation and Working Conditions
+
+                     Principal Federal Economic Indicator
+
+                     Employment Cost Index
+ BLS 3.4 ECI.01.W    Number of establishments 1/                                                      14,800             14,800    16,400     17,200
+ BLS 3.4 ECI.02.T    Percentage of quarterly releases on schedule (4 out of 4)                        100%               100%      100%       100%
+ BLS 3.4 ECI.03.A    Number of quarters that the standard error for the percentage change in the 3-
+                                                                                                        4                  4         4           4
+                     month civilian compensation less incentive paid occupations index is < 0.3
+ BLS 3.4 ECI.04.P    Number of indexes published quarterly (not seasonally adjusted)                   278                278       278         278
+ BLS 3.4 ECI.05.P    Number of levels published quarterly                                              331                331       331         331
+
+                     Other Programs
+
+                     Employee Benefits Survey
+ BLS 3.4 EBS.01.W    Number of establishments (benefit incidence) 1/                                  14,800             14,800    16,400     17,200
+ BLS 3.4 EBS.02.P    Number of annual releases 2/                                                        3                  3        1          1
+ BLS 3.4 EBS.03.W    Number of establishments (detailed provisions) 3/                                 4,917              4,917      --         --
+
+                     Work Stoppages Statistics
+ BLS 3.4 WSS.01.P    Number of monthly and annual releases                                              13                13         13         13
+
+                     Survey of Occupational Injuries and Illnesses 4/
+ BLS 3.4 SOII.01.W   Number of participating states, territories, and cities 5/                         46             46           46          46
+ BLS 3.4 SOII.02.W   Number of establishments surveyed 6/                                             228,191        228,191      228,000     226,000
+ BLS 3.4 SOII.03.W   Number of cases for which case circumstances and worker characteristics are
+                                                                                                        --                 --     562,000       --
+                     collected and coded (biennial)
+ BLS 3.4 SOII.04.P   Number of national industry estimates produced                                   21,684             21,684    21,600     21,600
+ BLS 3.4 SOII.05.P   Number of national estimates produced on worker characteristics and injury or
+                                                                                                        --                 --     6,200,000     --
+                     illness circumstances (biennial)
+
+
+
+
+                                                                               BLS - 57
+                                                      COMPENSATION AND WORKING CONDITIONS
+
+                                                          DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                         FY 2025               FY 2026          FY 2027
+                                                                                                                         Enacted               Enacted          Request
+                                                                                                                Target             Result       Target           Target
+                        Percentage of employment for which national estimates are produced:
+BLS 3.4 SOII.06.A       Private Sector 7/                                                                        93%                93%           93%             93%
+BLS 3.4 SOII.07.A       Public Sector                                                                            87%                87%           87%             87%
+BLS 3.4 SOII.08.A       Margin of error on the annual estimate of the national incidence rate for total job-
+                                                                                                               <±0.10               0.02        <±0.10           <±0.10
+                        related injuries and illnesses at the 95% confidence level (calendar year data)
+
+                        Census of Fatal Occupational Injuries 8/
+BLS 3.4 CFOI.01.W       Number of participating states, territories, and cities 9/                                 51               51             51              51
+BLS 3.4 CFOI.02.W       Number of source documents per fatal injury                                               ≥4.5              4.7           ≥4.5            ≥4.5
+BLS 3.4 CFOI.03.A       Percentage of employment covered by fatal occupational injury statistics                 100%              100%          100%            100%
+
+1/ The FY 2026 and FY 2027 targets reflect the increased private industry sample size used to mitigate the impact of declining response rates. The FY 2027 target includes
+   aircraft manufacturing and government sample.
+2/ Beginning in FY 2026, the BLS will not publish a detailed provisions publication, and the Employee Benefits in the United States News Release and supplemental tables
+   will be considered as one release.
+3/ Beginning FY 2026, detailed provisions for health or retirement benefit plans will not be published.
+4/ The BLS reported results for the 2023 SOII in FY 2025. The BLS will report results for the 2024 SOII in FY 2026 and the 2025 SOII in FY 2027.
+5/ The BLS collects data for states not participating in the Federal/State Cooperative program to produce nationwide estimates of nonfatal occupational injuries and illnesses.
+   The FY 2025 through FY 2027 targets reflect 42 states, the District of Columbia, and 3 territories.
+6/ The FY 2027 target reflects an optimized sample for non-participating states, resulting in a lower total sample size.
+7/ The SOII does not collect data on several groups of private industry employees, including self-employed nonagricultural workers; self-employed agricultural workers; wage
+   and salary agricultural workers at establishments with 10 or fewer employees; railroad workers; mine workers outside of oil and gas extraction; domestic workers; and
+   unpaid family workers.
+8/ The BLS reported results for the 2023 CFOI in FY 2025. The BLS will report results for the 2024 CFOI in FY 2026 and the 2025 CFOI in FY 2027.
+9/ The BLS collects data for states not participating in the Federal/State Cooperative program to produce nationwide counts of fatal work injuries. The FY 2025 through
+   FY 2027 figures reflect 46 states, the District of Columbia, 3 territories, and 1 city.
+
+
+
+
+                                                                                   BLS - 58
+                         COMPENSATION AND WORKING CONDITIONS
+
+
+Workload and Performance Narrative
+
+The BLS seeks to transform how it collects, analyzes, and delivers its data by increasing its use of
+technology and identifying efficiencies to improve data accuracy, lower respondent burden, and
+increase survey responses, while providing policymakers and the public with a first look at economic
+activity each month. The Compensation and Working Conditions programs produce a diverse set of
+measures of employee compensation and compile data on work-related injuries, illnesses, and
+fatalities. On an annual basis, the BLS identifies individual improvements that can be made by each
+Budget Activity. For example, in FY 2027, the OSHS will publish Survey of Occupational Injuries and
+Illnesses (SOII) industry estimates data that reflect the 2022 NAICS Revision.
+
+In FY 2027, the Budget carries forward the proposal to reorganize the BLS, the Census Bureau, and
+the Bureau of Economic Analysis at the Department of Commerce. This reorganization proposal aims
+to leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden.
+
+
+
+
+                                                 BLS - 59
+                       COMPENSATION AND WORKING CONDITIONS
+
+
+
+                              BUDGET ACTIVITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                     41,113        39,329         36,997            -2,332
+11.3 Other than full-time permanent                                72             52             52             0
+11.5 Other personnel compensation                             1,115         1,196          1,078              -118
+12.1 Personnel Benefits                                      15,349        14,714         14,100              -614
+21.0 Travel and transportation of persons                       200           271            271                0
+23.1 Rental payments to GSA                                   6,200         5,811          5,811                0
+23.2 Rental payments to others                                     5              5              5              0
+23.3 Communications, utilities, and misc.                       280           420            420                0
+24.0 Printing and reproduction                                  254           249            249                0
+25.2 Other services from non-Federal sources                    342           317            317                0
+25.3 Other goods and svcs. from Fed. sources                  1,932         3,465          2,965              -500
+25.3 WCF (Non-Add)                                            9,697        10,875          9,761            -1,114
+25.7 Operation and maint. of equipment                        6,610         6,009          6,009                0
+26.0 Supplies and materials                                        29             46             46             0
+31.0 Equipment                                                1,333           901            901                0
+41.0 Grants, subsidies, and contributions                     7,809         7,808          7,808                0
+42.0 Insurance claims and indemnities                              14             32             32             0
+Total                                                        92,354        91,500         86,822            -4,678
+
+
+
+
+                                                    BLS - 60
+                     COMPENSATION AND WORKING CONDITIONS
+
+
+
+
+                                  CHANGES IN FY 2027
+                                    (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Total personnel compensation                                    $0
+  Working Capital Fund                                       -$1,114
+  Built-Ins Subtotal                                         -$1,114
+
+
+Base                                                         $91,500   282
+ Program Decreases                                           -$3,564    -3
+Net Program Subtotal                                         -$3,564    -3
+Total Activity Appropriation                                 $86,822   279
+
+
+
+                                                             Amount    FTE
+Base                                                         $91,500    282
+Program Increases                                                 $0      0
+Program Decreases                                            -$3,564     -3
+
+
+
+
+                                   BLS - 61
+                               PRODUCTIVITY AND TECHNOLOGY
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                       (Dollars in Thousands)
+
+
+
+                                                                                     Diff. FY 2027
+                                            FY 2025        FY 2026      FY 2027      Request / FY
+                                            Enacted        Enacted      Request      2026 Enacted
+Activity Appropriation                          12,360         12,000       10,650             -1,350
+FTE                                                 50             42           41                 -1
+NOTE: FY 2025 reflects actual FTE.
+
+Introduction
+
+Productivity and Technology programs meet several major needs for economic statistics. Data
+from these programs measure productivity trends in the U.S. economy, as well as in major
+sectors, individual industries, and states. These programs also analyze trends in order to examine
+the factors underlying productivity change and growth in the economy. Data produced by the
+Productivity and Technology programs aid economic policymakers, business leaders, and
+researchers in analyzing current economic activity. In addition, these data are used as economic
+indicators; in studies of relationships between productivity, wages, capital, prices, profits, and
+employment; and as an aid in understanding sources of economic growth. The productivity
+measurement programs are authorized by an act dated June 7, 1940 (29 U.S.C. 2b), which directs
+that the BLS “make continuing studies of productivity and labor costs in the manufacturing,
+mining, transportation, distribution, and other industries.” In addition, the productivity
+measurement program supports the original directive of BLS (29 U.S.C 1) to “acquire and
+diffuse[…] useful information on subjects connected with labor[…] and especially upon its
+relation to capital, the hours of labor, the earnings of laboring men and women.” The BLS carries
+out its mandate to produce impartial and objective economic data for the nation in the area of
+productivity as described below for each program.
+
+Major Sector Productivity
+
+The BLS develops quarterly and annual measures of labor productivity for sectors of the
+economy: business, nonfarm business, manufacturing, and nonfinancial corporations. These data
+are used to analyze current economic activity; study the relationships between productivity,
+wages, prices, profits, and employment; and to aid in understanding sources of economic growth.
+Labor hours worked data from this program are used by the Congressional Budget Office to
+estimate economic growth for the nation. Data available include indexes and percentage changes
+for labor productivity, hours worked, unit labor costs, and real and current dollar hourly
+compensation.
+
+In addition, the BLS develops annual indexes and percentage changes of total factor
+productivity, also known as multifactor productivity. These data measure output per combined
+inputs of capital and labor, for the private business and private nonfarm business sectors.
+The BLS also develops annual total factor productivity measures for all subsectors of the
+
+
+                                            BLS - 63
+                           PRODUCTIVITY AND TECHNOLOGY
+
+
+economy that are constructed as output per combined inputs of labor, capital, energy, materials,
+and purchased services. The total factor productivity data help explain growth in output and
+labor productivity through industry’s use of capital and labor. These data also form a basis for
+research on the sources of economic advancement and identify the subsectors within the
+economy that contribute to growth. The total factor productivity data from the BLS continue to
+be used to set the payment schedule of physicians treating patients under the Medicare program.
+The BLS uses data from its own programs, and obtains data from the BEA, the Census Bureau,
+and other federal and private sources, to calculate productivity and related measures for all
+sectors of the U.S. economy.
+
+Industry Productivity Studies
+
+The BLS develops annual measures of labor productivity and total factor productivity for many
+detailed industries and annual measures of labor productivity by state. These productivity
+measures are used to compare trends in efficiency across industries and states, to analyze and
+compare trends in production costs, to examine the effects of technological improvements, and to
+understand the sources of aggregate productivity growth.
+
+The BLS develops labor productivity measures for 3- and 4-digit NAICS mining, manufacturing,
+trade, and food services industries and an extensive selection of other service-providing
+industries. The BLS also develops labor productivity measures for 50 states and the District of
+Columbia at the private nonfarm sector level. Measures include productivity, unit labor costs,
+and related indexes; rates of change; and levels of employment, hours worked, value of
+production, and labor compensation.
+
+The BLS develops total factor productivity measures relating output to the combined inputs of
+capital, labor, and intermediate purchases (energy, materials, and purchased services) for 4-digit
+NAICS manufacturing industries, as well as for air transportation and the line-haul railroads
+industry.
+
+The BLS uses data from its own programs, the Census Bureau, the BEA, and other sources to
+calculate productivity and related measures for detailed industries.
+
+
+Five-Year Budget Activity History
+
+                                           Funding
+          Fiscal Year               (Dollars in Thousands)                FTE
+             2022                          $11,730                         50
+             2023                          $12,524                         52
+             2024                          $12,500                         50
+             2025                          $12,360                         52
+             2026                          $12,000                         42
+
+
+
+
+                                              BLS - 64
+                          PRODUCTIVITY AND TECHNOLOGY
+
+
+FY 2027
+
+In FY 2027, the BLS will continue the production of core data series and will undertake the
+following new work in the areas of Productivity and Technology:
+
+       Major Sector productivity (MSP) will parallel test the new Python production system and
+       implement the system when it successfully updates all quarters.
+
+       Industry Productivity Studies (IPS) will develop an implementation plan for converting
+       productivity measures to the 2022 NAICS classification system.
+
+FY 2026
+
+In FY 2026, the BLS is continuing the production of core data series and will undertake the
+following new work in the areas of Productivity and Technology:
+
+       MSP is continuing to implement its software conversion plan by production testing the
+       new Python production system.
+
+       IPS is incorporating detailed data from the 2022 Economic Census into measures of labor
+       productivity and total factor productivity.
+
+FY 2025
+
+In FY 2025, the BLS continued the production of core data series and is undertaking the
+following new work in the areas of Productivity and Technology:
+
+       MSP continued to implement its software conversion plan converting legacy labor
+       productivity sub-systems.
+
+
+
+
+                                           BLS - 65
+                                                             PRODUCTIVITY AND TECHNOLOGY
+
+                                                          DETAILED WORKLOAD AND PERFORMANCE
+                                                                                                                        FY 2025                 FY 2026         FY 2027
+                                                                                                                        Enacted                 Enacted         Request
+                                                                                                               Target             Result         Target          Target
+Productivity and Technology
+
+                         Principal Federal Economic Indicator
+
+                         Major Sector Productivity
+ BLS 3.4 MSP.01.P        Number of series updated                                                                 44               44              44               44
+ BLS 3.4 MSP.02.T        Percentage of initial and revised quarterly Productivity and Costs releases on
+                         schedule (8 out of 8)                                                                  100%              100%           100%             100%
+ BLS 3.4 MSP.03.A        Percentage of business sector output covered by published quarterly labor
+                         productivity measures                                                                  100%              100%           100%             100%
+
+                         Other Programs
+
+                         Industry Productivity Studies
+ BLS 3.4 IPS.01.P        Number of series updated 1/ 2/                                                         3,972             3,972          3,876            3,876
+ BLS 3.4 IPS.02.A        Percentage of industries covered by labor productivity measures 2/ 3/                  64.4%             64.4%          61.6%            61.6%
+
+                         Other Output Measures
+ BLS 3.4 OPT.01.P        Number of industries and sectors with total factor productivity measures 4/             171               171            164              164
+ BLS 3.4 OPT.02.P        Number of major studies, articles, technical papers, and special reports 5/              17                17             14               14
+ BLS 3.4 OPT.03.P        Number of state and region productivity series updated                                  165               165            165              165
+
+1/ The number of labor productivity series updated is based on coverage of NAICS 2-, 3-, 4-, and 5-digit industries, and not 6-digit NAICS industries, because the availability
+   of source data at the 6-digit level is subject to frequent changes.
+2/ In FY 2026, the number of series is reduced by 96 due to the discontinuation of source data for manufacturing and impacts of eliminated PPI indexes beginning in July
+   2025, which also impacts the percentage of industries covered by labor productivity measures.
+3/ The percentage of industries covered by labor productivity measures is based on the coverage of NAICS 4-digit industries.
+4/ In FY 2026, the reduced target reflects the impact of eliminated PPI indexes beginning in July 2025.
+5/ In FY 2026, the reduced target reflects the impacts of reduced staffing.
+
+
+
+
+                                                                                  BLS - 66
+                                PRODUCTIVITY AND TECHNOLOGY
+
+
+Workload and Performance Narrative
+
+The BLS seeks to transform how it collects, analyzes, and delivers its data by increasing its use of
+technology and identifying efficiencies to improve data accuracy, lower respondent burden, and
+increase survey responses, while providing policymakers and the public with a first look at economic
+activity each month. The Productivity and Technology programs produce data on productivity trends
+in the U.S. economy, as well as in major sectors and individual industries, and examine the factors
+underlying productivity change. On an annual basis, the BLS identifies individual improvements that
+can be made by each Budget Activity. For example, in FY 2027, Major Sector productivity (MSP) will
+parallel test the new Python production system and implement the system when it successfully updates
+all quarters.
+
+In FY 2027, the Budget carries forward the proposal to reorganize the BLS, the Census Bureau, and
+the Bureau of Economic Analysis at the Department of Commerce. This reorganization proposal aims
+to leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden.
+
+
+
+
+                                                 BLS - 67
+                               PRODUCTIVITY AND TECHNOLOGY
+
+
+
+
+                              BUDGET ACTIVITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                      7,042         5,774          5,635              -139
+11.5 Other personnel compensation                               202           202            188               -14
+12.1 Personnel Benefits                                       2,628         2,184          2,159               -25
+21.0 Travel and transportation of persons                          26             30             30             0
+23.1 Rental payments to GSA                                     525           492            492                0
+23.3 Communications, utilities, and misc.                          5              7              7              0
+25.2 Other services from non-Federal sources                       44         569                69           -500
+25.3 Other goods and svcs. from Fed. sources                    161           327            302               -25
+25.3 WCF (Non-Add)                                            1,285         1,441          1,294              -147
+25.7 Operation and maint. of equipment                          311           879            379              -500
+26.0 Supplies and materials                                        8              12             12             0
+31.0 Equipment                                                  123               83             83             0
+Total                                                        12,360        12,000         10,650            -1,350
+
+
+
+
+                                                    BLS - 68
+                               PRODUCTIVITY AND TECHNOLOGY
+
+
+
+
+                                        CHANGES IN FY 2027
+                                          (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Total personnel compensation                                          $0
+  Working Capital Fund                                               -$147
+  Built-Ins Subtotal                                                 -$147
+
+
+Base                                                               $12,000    42
+ Program Decreases                                                 -$1,203    -1
+Net Program Subtotal                                               -$1,203    -1
+Total Activity Appropriation                                       $10,650    41
+
+
+
+                                                                   Amount    FTE
+Base                                                               $12,000     42
+Program Increases                                                       $0      0
+Program Decreases                                                  -$1,203     -1
+
+
+
+
+                                         BLS - 69
+                       EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+
+
+                      BUDGET AUTHORITY BEFORE THE COMMITTEE
+                                      (Dollars in Thousands)
+
+
+
+                                                                                    Diff. FY 2027
+                                           FY 2025        FY 2026      FY 2027      Request / FY
+                                           Enacted        Enacted      Request      2026 Enacted
+Activity Appropriation                         37,652         37,000       33,820             -3,180
+FTE                                               156            129          126                 -3
+NOTE: FY 2025 reflects actual FTE.
+
+Introduction
+
+Executive Direction and Staff Services provide agency-wide policy and management direction,
+and centralized program support activities. Major goals of these programs are the development
+and improvement of economic and statistical programs, efficient management of ongoing
+programs, and provision of the technical, administrative, information technology, dissemination,
+and publication services necessary to produce and release statistical and research output in a
+reliable, secure, timely, and effective manner.
+
+Office of the Commissioner
+
+The Commissioner and Deputy Commissioner, in cooperation with program and support offices,
+plan, direct, and manage all the BLS activities. In support of the Foundations for Evidence-
+Based Policymaking Act of 2018 (also referred to as the Evidence Act), the Commissioner is the
+designated statistical official for DOL. The Commissioner and the Deputy Commissioner also
+represent the agency in both national and international forums, including those with the U.S.
+Congress, the Administration, and economic and statistical organizations.
+
+Administration
+
+The Administrative programs are responsible for planning, executing, and evaluating a broad and
+responsive management and administrative program that supports the programmatic and
+technical responsibilities of the BLS. Major functions of this program include budget
+formulation and execution, accounting and financial management, grants management,
+procurement liaison, travel program management, organizational performance management and
+reporting, workforce management, emergency management, specialized training, space
+management, building operations, property management, facility security, administrative
+information applications, records management, Bureau-wide quality reviews of programs,
+statistical confidentiality (Confidential Information Protection and Statistical Efficiency Act
+(CIPSEA)) and security policy (Federal Information Security Modernization Act), and
+management control functions.
+
+
+
+
+                                           BLS - 71
+                    EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+Technology and Survey Processing
+
+The Technology and Survey Processing program provides overall planning and execution of
+information technology (IT) activities integral to the production of accurate, objective, relevant,
+timely, and accessible economic data in accordance with CIPSEA and OMB Statistical Policy
+Directives. This includes the development, maintenance, and operation of systems that are used
+for sampling, data collection (including the Internet Data Collection Facility), estimation to
+produce the Principal Federal Economic Indicators (PFEIs) and other statistical measures, and
+dissemination of BLS data to the public. The program is responsible for maintaining and
+managing the BLS IT infrastructure and ensuring the security of BLS IT systems and data, as
+well as adherence to the Federal Information Technology Acquisition Reform Act (FITARA)
+and all other federal laws, Executive Orders, and congressional mandates. The program
+researches and evaluates new IT tools, technologies, and software for use in the BLS IT
+infrastructure and ensures that IT activities in the BLS are conducted in accordance with the
+applicable statutes and regulations governing federal IT activities.
+
+Publications
+
+The Publications program provides overall direction and coordination of the entire range of
+publications, information dissemination, and communications activities of the BLS. Using
+current technology to improve efficiency and customer service, this program makes the statistical
+materials and research findings of the agency available to the public and responds to inquiries
+from the public and the media on a timely basis. Information is available to the public 24 hours a
+day via the BLS website. Information specialists are available during business hours to answer
+requests submitted by e-mail, telephone, mail, or social media. Data and analyses are reviewed,
+edited, cleared, and made available online as news releases, periodicals, bulletins, reports,
+brochures, and flyers. Publications developed or coordinated within this program, including the
+Monthly Labor Review, The Economics Daily, the BLS Handbook of Methods, and the Customer
+Service Guide, provide a general overview of the work of the BLS, technical information about
+its many programs, and comprehensive analyses across all programs.
+
+Survey Methods Research
+
+The Survey Methods Research program evaluates the effectiveness and soundness of the survey
+methods currently used by BLS programs, investigates alternative methods to determine their
+appropriateness for BLS programs, and develops new methods for improving the efficiency and
+quality of BLS programs. It also conducts research on cross-program issues, consults with
+program offices on an ongoing basis, and supports improvement activities for the major
+statistical programs.
+
+The program consists of three parts: the Behavioral Science Research Center, the Mathematical
+Statistics Research Center, and the Data Science Research Center. Research conducted by the
+Behavioral Science Research Center concentrates on the measurement and reduction of non-
+sampling error through, for example, questionnaire design studies, investigations into
+respondent-interviewer interactions, usability studies of computer-assisted data collection
+systems, the development of response-level data quality measures, analysis of survey
+
+
+
+                                             BLS - 72
+                    EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+nonresponse and paradata (data collected about the survey process, such as contact history or
+interview time), the use of focus groups, and surveys of key stakeholders for BLS statistical
+programs. The Mathematical Statistics Research Center focuses on estimating and increasing the
+efficiency of sample designs and estimators to improve BLS data and statistics, and on formal
+disclosure limitation methods to protect the confidentiality of BLS respondents. This includes the
+development of computationally intensive methods for analyzing complex survey data,
+integrating alternative data sources, developing better seasonal adjustment methods, and
+handling missing data. The Data Science Research Center provides cross-office support and
+coordination for data science activities, such as staff training and technology improvements. This
+includes direct support for projects that involve unstructured text data, machine learning, and
+data visualization. The Survey Methods Research program also supports BLS programs through
+research activities that address the areas of human-computer interaction, information seeking and
+retrieval, knowledge management, and data that describe other data (i.e., metadata).
+
+Field Operations
+
+The Field Operations program consists of a national office component and six regional offices.
+The national office provides overall operations planning and allocates workload and resources to
+regional offices. It monitors and evaluates national operation performance, provides technical
+direction and training, and provides collection expertise to other programs as they plan their
+survey approaches. The regional offices manage their workload and resources as assigned to
+complete various tasks, such as collecting survey data, providing and administering federal/state
+grants, monitoring and evaluating state work on BLS grants, disseminating region-specific data
+and information, and providing outreach to local and national audiences. These functions of the
+Field Operations program directly support survey response rates, which impact the quality of
+data received and produced by the BLS.
+
+Five-Year Budget Activity History
+
+                                           Funding
+          Fiscal Year               (Dollars in Thousands)                FTE
+             2022                          $35,000                        142
+             2023                          $37,000                        157
+             2024                          $37,500                        159
+             2025                          $37,652                        159
+             2026                          $37,000                        129
+
+FY 2026-2027
+
+In FYs 2026 - 2027, the Executive Direction and Staff Services programs will continue to
+provide agency-wide policy and management direction as described above, including all
+centralized support services in the administrative, publications, information technology, field
+operations, survey and statistical methods, and data science research areas.
+
+FY 2025
+
+In FY 2025, the Executive Direction and Staff Services programs provided agency-wide policy
+
+
+                                              BLS - 73
+               EXECUTIVE DIRECTION AND STAFF SERVICES
+
+and management direction as described above, including all centralized support services in the
+administrative, publications, information technology, field operations, survey and statistical
+methods, and data science research areas.
+
+
+
+
+                                           BLS - 74
+                                                  EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+                                                       DETAILED WORKLOAD AND PERFORMANCE
+                                                                                           FY 2025          FY 2026   FY 2027
+                                                                                           Enacted          Enacted   Request
+                                                                                    Target         Result    Target    Target
+Executive Direction and Staff Services
+
+ BLS 3.4 ED.01         Number of financial audit findings                                 ≤3          0       ≤3        ≤3
+
+
+
+
+                                                                       BLS - 75
+                         EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+Workload and Performance Narrative
+
+The BLS seeks to transform how it collects, analyzes, and delivers its data by increasing its use of
+technology and identifying efficiencies to improve data accuracy, lower respondent burden, and
+increase survey responses, while providing policymakers and the public with a first look at economic
+activity each month. On an annual basis, the BLS identifies individual improvements each Budget
+Activity can make. For example, in FY 2027, the Office of Technology and Survey Processing, within
+Executive Direction and Staff Services, will continue to maximize the amount of time in which Local
+Area Network Infrastructure is available to support the production of economic labor statistics
+
+In FY 2027, the Budget carries forward the proposal to reorganize the BLS, the Census Bureau, and
+the Bureau of Economic Analysis at the Department of Commerce. This reorganization proposal aims
+to leverage data collection and analysis synergies, increase cost-effectiveness, improve data quality,
+and reduce respondent burden.
+
+
+
+
+                                                 BLS - 76
+                       EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+
+                              BUDGET ACTIVITY BY OBJECT CLASS
+                                               (Dollars in Thousands)
+
+
+                                                                                                         Diff. FY
+                                                                                                      2027 Request
+                                                         FY 2025        FY 2026        FY 2027          / FY 2026
+                                                         Enacted        Enacted        Request           Enacted
+11.1 Full-time permanent                                     21,755        19,459         18,786              -673
+11.3 Other than full-time permanent                                82             0              0              0
+11.5 Other personnel compensation                               816           852            814               -38
+12.1 Personnel Benefits                                       8,164         7,380          7,246              -134
+12.1 FECA                                                       155           275            219               -56
+13.0 Benefits for former personnel                                 0              3              3              0
+21.0 Travel and transportation of persons                       218           102            102                0
+23.1 Rental payments to GSA                                   1,198         1,122          1,122                0
+23.2 Rental payments to others                                     16             16             16             0
+23.3 Communications, utilities, and misc.                          59             88             88             0
+24.0 Printing and reproduction                                     9              9              9              0
+25.2 Other services from non-Federal sources                    354           916            416              -500
+25.3 Other goods and svcs. from Fed. sources                    545         1,713            679            -1,034
+25.3 WCF (Non-Add)                                            1,911         2,391          2,146              -245
+25.7 Operation and maint. of equipment                        1,813         2,252          1,752              -500
+26.0 Supplies and materials                                        45             72             72             0
+31.0 Equipment                                                  511           348            348                0
+42.0 Insurance claims and indemnities                              1              2              2              0
+Total                                                        37,652        37,000         33,820            -3,180
+
+
+
+
+                                                    BLS - 77
+                     EXECUTIVE DIRECTION AND STAFF SERVICES
+
+
+
+
+                                        CHANGES IN FY 2027
+                                          (Dollars in Thousands)
+
+Activity Changes
+ Built-Ins
+  Total personnel compensation                                          $0
+  Federal Employees' Compensation Act                                 -$56
+  Working Capital Fund                                               -$245
+  Built-Ins Subtotal                                                 -$301
+
+Base                                                               $37,000   129
+ Program Decreases                                                 -$2,879    -3
+Net Program Subtotal                                               -$2,879    -3
+Total Activity Appropriation                                       $33,820   126
+
+
+
+                                                                   Amount    FTE
+Base                                                               $37,000    129
+Program Increases                                                       $0      0
+Program Decreases                                                  -$2,879     -3
+
+
+
+
+                                         BLS - 78
+

@@ -705,3 +705,5 @@ as a labeled proxy for usable linked coverage, with RSE break flags. The roadmap
 re-validates Stages 3, 4, and 12 against these amendments.
 
 Stage 3: COMPLETE (2026-09-14) — implemented by plan 5 (specs/plans/completed/5-ces-revisions.md). Next: resume the roadmap.
+
+Stage 4: COMPLETE (2026-09-15) — implemented by plan 6 (specs/plans/completed/6-ces-revisions.md). Next: resume the roadmap.

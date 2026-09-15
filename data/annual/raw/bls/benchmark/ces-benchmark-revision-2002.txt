@@ -1,0 +1,1155 @@
+Revisions to the Current Employment Statistics
+National Estimates Effective May 2003
+
+
+Sharon Strifas
+
+
+
+
+W
+          ith the release of estimates for May 2003, national            Bureau) have further aggregated industry classifications into
+           employment, hours, and earnings data produced                 11 supersectors . Above the supersectors, are two more
+           from the Current Employment Statistics (CES)                  aggregations, the commonly known domains of goods-
+program incorporate several important changes that affect                producing and service-providing.
+data analysis and comparison. These changes include:                         The numbering system differs in NAICS from that of the
+                                                                         SIC, to allow finer detail. The greatest detail is at the six-
+    •    Conversion to the 2002 North American Industry                  digit level, and the highest level of detail is the above-
+         Classification System (NAICS),                                  mentioned supersector level, as seen in the example
+    •    Completion of the CES sample redesign to a                      presented in exhibit 1. The five-digit detail, or the NAICS
+         probability-based sample,                                       industry detail, allows for international comparison with
+    •    Incorporation of March 2002 benchmarks, and                     the NAFTA partners. Further national detail is allowed at
+    •    Introduction of concurrent seasonal adjustment.                 the six-digit level.
+                                                                             With the implementation of NAICS came several notable
+Conversion to the 2002 NAICS                                             classification changes that affect the CES. First, auxiliary
+With the release of the May 2003 data, all CES national                  establishments, which are engaged primarily in performing
+series have been converted from industry coding based on                 management or support activities for other establishments
+the 1987 Standard Industrial Classification (SIC) system to              of the “parent” company are now given an industry code
+industry coding based on the 2002 version of the North                   denoting their main activity, without regard to the code
+American Industry Classification System (NAICS). The SIC                 assigned to the parent company. Auxiliary establishments
+code structure was first developed in the 1930s, when the                are now classified within sector 55, management of
+economy was dominated by the manufacturing sector.                       companies and enterprises, which is part of the professional
+Through the years there was little change to the original                and business services supersector.
+structure, and there was a mixture of ways to categorize the                 Second, although the logging industry was reclassified
+economic activity of establishments. Some establishments                 from the SIC manufacturing sector to the NAICS agriculture,
+were categorized into industries based on demand groupings               forestry, fishing and hunting sector, the CES program will
+and others were categorized based on supply groupings.                   continue to treat it as part of the nonfarm sector. To keep the
+   NAICS classifies establishments into industries based                 logging industry in scope, the CES program will include it
+solely on their supply function. That is, establishments are             in the natural resources and mining supersector.
+classified based on the activity in which they are primarily                 Third, NAICS manufacturing recognizes some new high-
+engaged. NAICS was developed in cooperation with the                     tech industries, such as semiconductor machinery
+United States’ North American Free Trade Agreement                       manufacturing and fiber optic cable manufacturing; there is
+(NAFTA) partners, Canada and Mexico, in an effort to                     also a new subsector for computer and electronic product
+standardize their economic data series. NAICS was first
+released in 1997 and will be reviewed and updated every                  Exhibit 1. An example of the NAICS numbering hierarchy
+five years by all three North American countries. This CES               used by the Current Employment Statistics program
+benchmark release is based on the 2002 version of NAICS.                                                              Hierarchy for NAICS
+                                                                                        Level
+   NAICS doubles the amount of top-level industry                                                                       code 31-334511
+groupings, known as sectors. There are 20 broad sectors,                 Supersector .........................   31 (Manufacturing)
+compared with only 10 major industry divisions under SIC.
+                                                                         Sector (two-digit) .................    33 (Durable goods manufacturing)
+In addition to these sectors, BLS and its U.S. NAICS partners
+(the Bureau of Economic Analysis and the U.S. Census                     Subsector (three-digit) ........        334 (Computer and electronic
+                                                                                                                  products)
+                                                                         Industry group (four-digit) ...         3345 (Electronic instruments)
+ Sharon Strifas is an economist in the Division of Current Employ-       NAICS industry (five-digit) ..          33451 (Electronic instruments)
+ment Statistics, Office of Employment and Unemployment Statistics,
+Bureau of Labor Statistics. Telephone: (202) 691-6555; e-mail:           U.S. industry (six-digit) .......       334511 (Search, detection, and
+CESInfo@bls.gov.                                                                                                  navigation instruments)
+
+
+                                                                     3
+manufacturing. Also, the publishing industry has been                   records to derive macro totals by industry and geographic
+moved out of manufacturing and into the new information                 area. This procedure is computationally simple and uses
+sector. The new information sector, also a BLS supersector,             actual firm-level data that capture real economic trends (to
+is composed of seven subsectors, containing 34 industries               the extent that firms did not change their industry
+that produce, disseminate, or process information and                   classification over time). On the other hand, the LDB has
+cultural products. Twenty of these industries are new,                  not been edited or maintained as a macro series, unlike
+including Internet service providers, sound recording                   published CES totals. Nor has it ever accepted corrections
+studios, and cable program distributors.                                that are made to the data submitted to the ES-202 reports.
+    Fourth, NAICS 2002 includes two new industries in                   Nevertheless, for a small number of series, this method
+wholesale trade: business to business electronic markets                proved to be the most accurate one. Both methods have
+and wholesale trade agents and brokers.                                 their basis in the single quarter of UI microdata that was
+    In order to avoid time series breaks, all national CES              dual coded with both SIC and NAICS.
+series were reconstructed back to at least 1990. At the
+supersector and higher levels, the reconstruction extends               Changes in CES scope. The industry support activities for
+back to 1939, the previously existing start date of total               animal production or NAICS 11-1152 (previously part of
+nonfarm and most major industry division level series. For              animal services, except veterinary or SIC 075) is no longer
+finer levels of detail, the series that are nearly identical            considered in-scope for the CES program. As indicated
+between SIC and NAICS were reconstructed back to the                    earlier, logging, or NAICS 11-113310, is now within the
+previously existing start dates. For each NAICS series that             natural resources and mining supersector; under the SIC
+is not closely related to one SIC series, the start date is 1990.       system, this industry was within manufacturing. These
+    The reconstruction methodology is based on the first                changes along with some in the Federal Government series,
+quarter 2001 unemployment insurance (UI) microdata, which               as described below, slightly affect the total nonfarm
+were coded on both an SIC and NAICS basis. SIC-to-NAICS                 employment level. There will be no series breaks as a result
+ratios were established from this dual coded file; the ratios           of the changes, as the entire total nonfarm history has been
+were used to map employment from the SIC series to the                  reconstructed.
+corresponding NAICS counterparts. For example, the March
+2001 employment ratios for NAICS subsector 325 indicate                 Publishing industries. The publishing industries have
+that 95 percent of it is formed from SIC 28, 3 percent of it            moved from the manufacturing division under SIC to the
+comes from SIC 30, and 2 percent is from SIC 38. These                  information supersector under NAICS. Therefore, the CES
+ratios were applied to the SIC series and the results summed            program no longer collects payroll and hours of production
+to derive the NAICS series. The supersector employ-                     workers in these industries, but rather the payroll and hours
+ment interchangeability, or distribution of employment                  of nonsupervisory workers. Because of this change, data
+between SIC divisions and NAICS supersectors, can be seen               series for nonsupervisory workers, average weekly hours,
+in exhibit 2.                                                           and average hourly earnings for the following industries
+    A comparable procedure is used for the hours and earnings           begin publication in January 2003: Publishing industries,
+series. Those NAICS series are produced from a weighted                 except Internet (NAICS 50-511000); newspaper, book, and
+average of the SIC component series, the weights being the              directory publishers (NAICS 50-511100); newspaper
+NAICS/SIC ratios. An example of the hours and earnings                  publishers (NAICS 50-511110); periodical publishers
+reconstruction is illustrated in exhibit 3.                             (NAICS 50-511120); book publishers (NAICS 50-511130);
+    New hours and earnings levels were recomputed using                 and directory and mailing list publishers (NAICS 50-
+data from the NAICS-based probability sample. The new                   511140).
+levels for average weekly hours and average hourly earnings
+series were computed from the new probability sample                    Changes to Federal Government series
+averages for March 2001-02. The over-the-month changes                  The CES series for Federal Government employment has
+computed using the reconstruction methodology were then                 been revised slightly in scope and definition due to a change
+applied. With this methodology, the overall CES seasonal                in source data and estimation methods. The former national
+patterns are preserved, as are the CES time series properties.          series was an end-of-month count of Federal employees
+In other words, there are no outliers or level shifts.                  produced by the U.S. Office of Personnel Management, and
+    While this ratio method was the basic technique used in             it excluded some workers, mostly employees of U.S.
+the reconstruction, another method was tested and used for              Department of Defense-owned establishments such as
+a small number of series as well. This alternative method               military base commissaries. Beginning with the collection
+uses a longitudinal UI database (LDB) which stores firm-                of data for May 2003, however, the CES national series will
+level information on business births, deaths, and                       include these workers, and the series employment level will
+employment levels over a 10-year time span. The LDB                     shift upward as a consequence. Additionally, Federal
+aggregation method takes the 1990-2000 LDB file that has                Government employment will now be estimated from a
+been recoded for NAICS and aggregates the micro-level                   sample of Federal establishments, will be benchmarked
+
+                                                                    4
+Exhibit 2. SIC-to-NAICS employment ratios 1
+
+(Numbers in thousands)
+
+                                                                                        SIC division
+
+       NAICS                                                                               Trans-                                    Finance,
+     supersector          Category                                         Manu-          portation     Wholesale                   insurance,
+                                            Mining Construction           facturing      and public      trade    Retail trade         and           Services
+                                                                                           utilities                                real estate
+
+Natural                 Employment ..        515.9                ( 2)      75,136               ( 2)          ( 2)          ( 2)           ( 2)               ( 2)
+ resources              Percent .........     87.3                            12.7
+ and mining
+Construction            Employment ..         16.9         6,288.7               ( 2)            ( 2)          ( 2)          ( 2)         86.3            78.9
+                        Percent .........       .3            97.2                                                                         1.3             1.2
+
+Manufacturing           Employment ..           ( 2)              ( 2)    16,502.5               ( 2)        31.4         147.9             ( 2)         128.7
+                        Percent .........                                     98.2                            0.2           0.9                             .8
+
+Trade,           Employment ..                  ( 2)              1.0          70.8        4,360.0        6,592.5     14,381.3              ( 2)         125.3
+ transportation, Percent .........                                 .0            .3           17.1           25.8         56.3                              .5
+ and utilities
+Information             Employment ..           ( 2)              ( 2)       751.9         1,670.3             ( 2)          1.2           9.2         1,262.7
+                        Percent .........                                     20.3            45.2                            .0            .2            34.2
+
+Financial               Employment ..           ( 2)              ( 2)           ( 2)          37.9            ( 2)         25.1       6,881.8           671.4
+ activities             Percent .........                                                        .5                           .3          90.4             8.8
+Professional            Employment ..         15.7            66.3           613.0            657.8         155.5         373.5          431.6        14,172.8
+ and business           Percent .........       .1              .4             3.7              4.0            .9           2.3            2.6            86.0
+ services
+
+Education and           Employment ..           ( 2)              ( 2)          4.4           101.2            ( 2)          ( 2)           ( 2)      14,602.0
+ health                 Percent .........                                        .0              .7                                                       99.3
+ services
+
+Leisure and             Employment ..           ( 2)              ( 2)           ( 2)          24.1            ( 2)      8,147.2           8.4         3,402.2
+ hospitality            Percent .........                                                        .2                         70.3            .1            29.4
+Other services          Employment ..           ( 2)              ( 2)         12.8             5.1            ( 2)          6.2         103.3         3,614.0
+                        Percent .........                                        .3              .1                           .2           2.8            96.5
+
+ 1
+     Data are derived from March 2001 unemployment insurance data.
+ 2
+     Less than 1,000.
+
+
+
+
+Exhibit 3. Hours and earnings reconstruction example using NAICS code 31-333414—HVAC and commercial
+refrigration equipment 1
+
+                                            1987 SIC structure                                                        2002 NAICS structure
+
+                                                       Production        Aggregate        Aggregate         Production       Aggregate             Aggregate
+      1987 SIC code               Ratio 2
+                                                        workers            hours           payrolls          workers           hours                payrolls
+
+3433 ........................       0.22                 12,453            537,969        $5,379,690          2,740            118,353         $1,183,532
+3569 ........................        .75                 65,891          2,754,230        34,427,875         49,418          2,065,673         25,820,906
+3634 ........................        .13                 12,365            580,292         9,864,964          1,607             75,438          1,282,445
+
+                                                                                                Sum 3        53,765          2,259,464         28,286,883
+
+ 1
+    Data are derived from March 2001 unemployment insurance                             Production workers = sum of production workers = 53,765
+data.                                                                                   Average weekly hours = aggregate hours/production workers
+  2
+    The ratio represents the percent of employment in the SIC                                                  = 2,259,464/53,765 = 42.0
+industry that went into a specific NAICS industry.                                      Average hourly earnings = aggregate payrolls/aggregate hours
+  3
+    New NAICS data where:                                                                                       = $28,286,883/2,259,464 = $12.52
+
+
+
+
+                                                                                   5
+annually to counts from UI tax records, and will reflect                 The sampling frame and the CES sample are updated
+employee counts as of the pay period including the 12th of           twice a year with new quarters of UI-based universe data.
+the month, consistent with other CES industry series. The            This frame maintenance helps to keep the sample up to date
+historical time series for Federal Government employment             by adding new firm births and deleting business deaths. In
+has been revised to reflect these changes.                           addition, the new design specifies an annual update process
+                                                                     that includes sampling frame maintenance and the redrawing
+Completion of the CES sample redesign                                of the entire sample for the first quarter of each year. Frame
+Beginning with benchmark revisions in March 2000, BLS                maintenance provides for the updating of industry, size class,
+has been phasing in a probability-based sample design to             and metropolitan area designations and for the merging of
+replace an older quota-based sample design. The CES                  semiannual birth samples into the overall frame. A high
+estimates had been based on a quota sample since the                 degree of overlap is expected at each annual update because
+inception of the program over 70 years ago. Although quota           each UI account is ordered on the frame with a permanent
+samples are known to be at risk for potentially significant          random number (PRN). This technique assigns random
+biases, the large sample size and annual benchmarking to             numbers to all UI accounts on the universe frame at the time
+full population counts made the risk of bias less severe.            they first appear and then orders the frame by PRN. The
+However, following a review by the American Statistical              allocation for each sampling cell is fulfilled by working
+Association in 1995, BLS embarked on a sample redesign               down the ordered PRN list until the full complement of
+effort to convert to a probability sample for the CES program.       needed units is drawn. Because the random numbers are
+Probability sampling is the internationally recognized               permanent, and thus remain in essentially the same order
+standard for sample surveys. Unlike quota sampling,                  on the frame, this technique minimizes cancellation of
+probability sampling ensures a proper representation of the          existing sample units and the need to solicit replacement
+universe of nonfarm business establishments through                  units.
+randomized selection techniques.
+                                                                     Estimation formulas. An improved estimator also has been
+The new CES sample design. The new design is a stratified,           developed for the CES survey to support the new sample
+simple random sample of worksites, clustered by UI account           design. The primary difference from the former CES
+number. The UI account number is a major identifier on the           estimator is the application of a weight to each sample unit
+previously discussed BLS LDB file, which serves as both              in the estimation process. The weights are derived from
+the sample frame and the benchmark source for the CES                population sampling fractions and are a standard feature of
+employment estimates. The sample strata, or subpopulations,          probability sample estimators. A sampled unit’s weight is
+are defined by State, industry, and establishment                    the inverse of its probability of selection. The new estimator
+employment size, yielding a State-based design. The                  for the all-employee series is a ratio estimator, known as the
+sampling rate for each stratum is determined through a method        weighted link relative.
+known as optimum allocation, which distributes a fixed                  In order to prevent series breaks in the hours and earnings
+number of sample units across a set of strata to minimize the        estimates during the redesign phase-in, the initial
+overall variance, or sampling error, on the primary estimate         implementation of the redesign utilized the weighted link
+of interest. The total nonfarm employment level is the primary       relative estimator for these data types, and the first month’s
+estimate of interest, and the new design gives top priority to       redesign estimate linked from the final month’s estimate
+measuring it as precisely as possible, or, in other words,           produced under the quota-sample design. That was different
+minimizing the statistical error around the statewide total          from the usual CES procedure of initializing new hours and
+nonfarm employment estimates.                                        earnings series with the sample average value for the first
+    For the CES redesign, the number of sample units drawn           month and then applying a ‘‘link and taper’’ methodology.
+initially was fixed at the approximate size of the existing          That methodology accounts for the over-the-month change
+CES sample for each State—the sample size assumed to be              in the sampled units, but also includes a tapering feature
+supportable by current program resources. However, after a           used to keep the estimates close to the overall sample
+few years of experience, BLS recognized that the sample              average over time. The taper is considered to be a level
+size needed to be reduced to support the more costly data            correction. However, following this procedure could have
+collection and followup techniques needed to sustain viable          resulted in series breaks in hours and earnings series for
+response ratios. Therefore, the overall sample size was              each major industry division as it was introduced, and at
+reduced by approximately 20 percent with the March 2001              the total private level as well. With the completion of the
+sample update. Even with the sample size reduction, the              CES shift to NAICS, hours and earnings are again estimated
+CES program can support the publication of considerable              by the ‘‘link and taper’’ methodology.
+industry and geographic detail within a State, and provide              Another methodological change introduced with the
+highly reliable national CES estimates at the total nonfarm          sample redesign is a net birth/death model used to estimate
+and detailed industry levels.                                        the residual portion of birth employment not accounted for
+
+
+
+                                                                 6
+through improved sampling techniques. Net birth/death                               2002 to March 2003, the cumulative net birth/death model
+modeling replaces bias adjustment. Net birth/death modeling                         added 469,000.
+is more fully described later in this article. Finally, it is now
+possible to publish sampling errors and confidence intervals,                       Why benchmarks differ from estimates
+standard survey accuracy measures that were not directly                            A benchmark revision is the difference between the
+applicable to the nonprobability design used in prior years.                        benchmark level for a given March and its corresponding
+The overall accuracy of the employment estimates is still                           sample-based estimate. The overall accuracy of the
+best measured by the annual benchmark revisions, because                            establishment survey is usually gauged by the size of this
+those revisions cover the total estimation error associated                         difference. The benchmark revision often is regarded as a
+with the CES employment series.                                                     proxy for total survey error, but this does not take into
+   NAICS probability-based estimation began in April 2001                           account error in the universe data. The employment counts
+for all but four supersectors. The NAICS probability-based                          obtained from quarterly unemployment insurance tax forms
+estimates began in April 2002 for professional and business                         are administrative data that reflect employer recordkeeping
+services, education and health services, leisure and                                practices and differing State laws and procedures. The
+hospitality, and other services.                                                    benchmark revision can be more precisely interpreted as
+                                                                                    the difference between two independently derived
+Summary of the benchmark revisions                                                  employment counts, each subject to its own error sources.
+The March 2002 benchmark level for total nonfarm                                       Like all sample surveys, the establishment survey is
+employment is 129,672,000; this figure is 203,000 below                             susceptible to two sources of error, sampling error and
+the NAICS sample-based estimate for March 2002, an                                  nonsampling error. Sampling error is present any time a
+adjustment of 0.2 percent. The published over-the-year                              sample is used to make inferences about a population. The
+change for March 2001 to March 2002 has been revised                                magnitude of the sampling error, or variance, relates directly
+downward by 313,000 or 0.2 percent. The difference                                  to sample size and the percentage of the universe covered
+between these two measures is accounted for by the                                  by that sample. The CES monthly survey captures slightly
+previously mentioned changes in the scope of the CES series                         under one-third of the universe, exceptionally high by usual
+for Federal Government and the animal services industry                             sampling standards. This coverage insures a small sampling
+under SIC. Table 1 shows the total nonfarm percent                                  error at the total nonfarm employment level.
+differences of benchmark revisions for the past ten years.                             Both the universe counts and the establishment survey
+Table 2 shows the nonfarm employment benchmarks by                                  estimates are subject to nonsampling errors common to all
+industry for March 2002.                                                            surveys—coverage, response, and processing errors. The
+                                                                                    error structures for both the CES monthly survey and the UI
+Revisions in the post-benchmark period                                              universe are complex. Still, the two programs generally
+Post-benchmark period estimates from April 2002 to March                            produce consistent total employment figures, each
+2003 were calculated for each month based on new                                    validating the other. Over the last decade, annual benchmark
+benchmark levels, new net birth/death figures, and a slightly                       revisions at the total nonfarm level have averaged 0.3
+new sample composition resulting from the annual sample                             percent, with an absolute range from less than 0.05 percent
+update (beginning with October). The post-benchmark                                 to 0.7 percent.
+period estimates for this benchmark year, due to the NAICS
+conversion, are first-time NAICS probability estimates on                           Benchmark revisions effects for other series
+the new benchmark level rather than recomputed estimates.                           The routine benchmarking process results in revisions in
+(See table 3.)                                                                      the series on women workers and production or non-
+   Text table A shows the net birth/death model figures for                         supervisory workers. There are no benchmark employment
+the supersectors over the post-benchmark period. From April                         levels for these series; they are revised by preserving ratios
+
+
+
+Table 1. Percent differences between nonfarm employment benchmarks and estimates, March 1993-2002 1
+
+                     Industry                            1993    1994   1995        1996      1997     1998      1999      2000      2001     2002 2
+
+    Total nonfarm ...............................          0.2    0.7     0.5          ( 3)     0.4       ( 3)     0.2       0.4      -0.1     -0.2
+Total private ........................................      .3     .7      .5         0.1        .5      0.1        .2        .3       -.2      -.4
+
+ 1
+   Differences are based on comparisons of final published March                    included. In addition, Federal employment is estimated using a
+estimates and benchmark levels, as originally published.                            sample and benchmarked annually to ES-202 universe counts,
+ 2
+   Beginning with the March 2002 benchmark, there is a small                        rather than relying on monthly U.S. Office of Personnel Management
+change in the scope of the CES survey. Employment in support                        employment counts.
+                                                                                      3
+activities for animal production, or NAICS 11-1152, is no longer                        Less than 0.05 percent.
+
+
+
+                                                                                7
+Table 2. Nonfarm employment benchmarks by industry sector and selected industry detail, March 2002
+(In thousands)
+
+                                                                         Industry                                                                                Benchmark
+
+                 Total nonfarm ...........................................................................................................................         129,672
+              Total private .................................................................................................................................      107,836
+          Goods-producing ............................................................................................................................              22,365
+Natural resources and mining ...................................................................................................................                      574
+      Logging ............................................................................................................................................             67
+ Mining ......................................................................................................................................................        507
+    Oil and gas extraction ........................................................................................................................                   122
+    Mining, except oil and gas ..................................................................................................................                     209
+      Coal mining ......................................................................................................................................               76
+    Support activities for mining ...............................................................................................................                     176
+Construction ...............................................................................................................................................         6,416
+   Construction of buildings ....................................................................................................................                    1,519
+   Heavy and civil engineering construction ..........................................................................................                                 862
+   Specialty trade contractors ................................................................................................................                      4,036
+Manufacturing .............................................................................................................................................         15,375
+   Durable goods ........................................................................................................................................            9,585
+     Wood products ...................................................................................................................................                 551
+     Nonmetallic mineral products .............................................................................................................                        511
+     Primary metals ....................................................................................................................................               514
+     Fabricated metal products ..................................................................................................................                    1,557
+     Machinery ...........................................................................................................................................           1,253
+     Computer and electronic products ....................................................................................................                           1,553
+       Computer and peripheral equipment ..............................................................................................                                258
+       Communications equipment ...........................................................................................................                            197
+       Semiconductors and electronic components ................................................................................                                       544
+       Electronic instruments ....................................................................................................................                     456
+     Electrical equipment and appliances ..................................................................................................                            507
+     Transportation equipment ...................................................................................................................                    1,840
+     Furniture and related products ...........................................................................................................                        610
+     Miscellaneous manufacturing .............................................................................................................                         690
+   Nondurable goods ..................................................................................................................................               5,790
+    Food manufacturing ............................................................................................................................                  1,510
+    Beverages and tobacco products ......................................................................................................                              204
+    Textile mills ..........................................................................................................................................           297
+    Textile product mills ............................................................................................................................                 195
+    Apparel ................................................................................................................................................           366
+    Leather and allied products ................................................................................................................                        51
+    Paper and paper products .................................................................................................................                         550
+    Printing and related support activities ................................................................................................                           718
+    Petroleum and coal products ..............................................................................................................                         116
+    Chemicals ...........................................................................................................................................              933
+    Plastics and rubber products .............................................................................................................                         852
+          Service-providing ............................................................................................................................           107,307
+              Private service-providing ............................................................................................................                85,471
+Trade, transportation, and utilities .............................................................................................................                  25,219
+   Wholesale trade ......................................................................................................................................            5,634
+    Electronic markets and agents and brokers .....................................................................................                                    620
+   Retail trade ..............................................................................................................................................      14,810
+     Motor vehicle and parts dealers ........................................................................................................                        1,860
+       Automobile dealers ..........................................................................................................................                 1,246
+     Furniture and home furnishings stores ..............................................................................................                              530
+     Electronics and appliance stores .......................................................................................................                          529
+     Building material and garden supply stores .......................................................................................                              1,143
+     Food and beverage stores .................................................................................................................                      2,862
+     Health and personal care stores .......................................................................................................                           935
+     Gasoline stations ................................................................................................................................                894
+     Clothing and clothing accessories stores .........................................................................................                              1,273
+     Sporting goods , hobby, book, and music stores ...............................................................................                                    651
+     General merchandise stores .............................................................................................................                        2,745
+       Department stores ..........................................................................................................................                  1,658
+     Miscellaneous store retailers .............................................................................................................                       945
+     Nonstore retailers ...............................................................................................................................                444
+
+
+                                                                                                        8
+Table 2. Nonfarm employment benchmarks by industry sector and selected industry detail, March 2002—Continued
+(In thousands)
+
+                                                                           Industry                                                                                  Benchmark
+
+
+   Transportation and warehousing ...........................................................................................................                            4,178
+     Air transportation ................................................................................................................................                   553
+     Rail transportation ...............................................................................................................................                   220
+     Water transportation ...........................................................................................................................                       52
+     Truck transportation ...........................................................................................................................                    1,319
+     Transit and ground passenger transportation ...................................................................................                                       391
+     Pipeline transportation ........................................................................................................................                       42
+     Scenic and sightseeing transportation ...............................................................................................                                  21
+     Support activities for transportation ...................................................................................................                             517
+     Couriers and messengers .................................................................................................................                             558
+     Warehousing and storage ..................................................................................................................                            506
+
+   Utilities .....................................................................................................................................................        597
+
+Information ..................................................................................................................................................           3,448
+     Publishing industries, except Internet ................................................................................................                               972
+     Motion picture and sound recording industries .................................................................................                                       384
+     Broadcasting, except Internet ............................................................................................................                            336
+     Internet publishing and broadcasting .................................................................................................                                 35
+     Telecommunications ...........................................................................................................................                      1,221
+     ISPs, search portals, and data processing .......................................................................................                                     454
+     Other information services .................................................................................................................                           47
+
+Financial activities ......................................................................................................................................              7,793
+
+   Finance and insurance ...........................................................................................................................                     5,794
+     Monetary authorities - central bank ...................................................................................................                                23
+     Credit intermediation and related activities ........................................................................................                               2,657
+       Depository credit intermediation .....................................................................................................                            1,727
+         Commercial banking ....................................................................................................................                         1,276
+     Securities, commodity contracts, investments .................................................................................                                        799
+     Insurance carriers and related activities ...........................................................................................                               2,229
+     Funds, trusts, and other financial vehicles ........................................................................................                                   87
+
+   Real estate and rental and leasing ........................................................................................................                           1,999
+    Real estate ..........................................................................................................................................               1,331
+    Rental and leasing services ...............................................................................................................                            640
+    Lessors of nonfinancial intangible assets ..........................................................................................                                    27
+
+Professional and business services .........................................................................................................                            15,845
+  Professional and technical services ......................................................................................................                             6,755
+      Legal services .................................................................................................................................                   1,101
+      Accounting and bookkeeping services ..........................................................................................                                       955
+      Architectural and engineering services ..........................................................................................                                  1,233
+      Computer systems design and related services ...........................................................................                                           1,167
+      Management and technical consulting services ............................................................................                                            723
+  Management of companies and enterprises .........................................................................................                                      1,708
+  Administrative and waste services ........................................................................................................                             7,381
+    Administrative and support services .................................................................................................                                7,068
+      Employment services .....................................................................................................................                          3,125
+         Temporary help services ............................................................................................................                            2,096
+      Business support services .............................................................................................................                              775
+      Services to buildings and dwellings ................................................................................................                               1,503
+    Waste management and remediation services .................................................................................                                            314
+
+Education and health services ..................................................................................................................                        16,197
+  Educational services ..............................................................................................................................                    2,758
+  Health care and social assistance ........................................................................................................                            13,439
+    Ambulatory health care services .......................................................................................................                              4,579
+      Offices of physicians ......................................................................................................................                       1,956
+      Outpatient care centers ..................................................................................................................                           409
+      Home health care services ............................................................................................................                               663
+    Hospitals .............................................................................................................................................              4,121
+    Nursing and residential care facilities ................................................................................................                             2,727
+      Nursing care facilities .....................................................................................................................                      1,567
+    Social assistance ................................................................................................................................                   2,012
+      Child day care services ..................................................................................................................                           748
+
+
+
+                                                                                                          9
+Table 2. Nonfarm employment benchmarks by industry sector and selected industry detail, March 2002—Continued
+(In thousands)
+
+                                                                         Industry                                                                                 Benchmark
+
+
+Leisure and hospitality ...............................................................................................................................                11,622
+  Arts, entertainment, and recreation .......................................................................................................                           1,652
+    Perfo rming arts and spectator sports ................................................................................................                                352
+    Museums, historical sites, zoos, and parks ......................................................................................                                     109
+    Amusements, gambling, and recreation ............................................................................................                                   1,191
+  Accommodations and food services .....................................................................................................                                9,970
+    Accommodations ................................................................................................................................                     1,717
+    Food services and drinking places ....................................................................................................                              8,254
+
+Other services ...........................................................................................................................................              5,347
+    Repair and maintenance ....................................................................................................................                         1,245
+    Personal and laundry ser vices ...........................................................................................................                          1,247
+    Membership associations and organizations ....................................................................................                                      2,855
+
+Government ...............................................................................................................................................             21,836
+ Federal government ...............................................................................................................................                     2,738
+   Federal government, except U.S. Postal Service ..............................................................................                                        1,887
+   U.S. Postal Service .............................................................................................................................                      851
+ State government ...................................................................................................................................                   5,147
+   State government education ..............................................................................................................                            2,364
+   State government, excluding education .............................................................................................                                  2,784
+ Local government ...................................................................................................................................                  13,951
+   Local government education ..............................................................................................................                            7,987
+   Local government, excluding education ............................................................................................                                   5,964
+
+
+
+
+Table 3. Revisions in nonfarm employment, seasonally adjusted, January 2002-April 2003
+(In thousands)
+                                                                                                    Levels                                           Over-the-month changes
+
+                             Year and month                                               As                                              As
+                                                                                                                  As                   previously              As
+                                                                                      previously                                                                            Difference
+                                                                                                                revised                published             revised
+                                                                                      published
+2002:
+  January ...............................................................               130,871                 130,578                     -19                -83               -64
+  February .............................................................                130,706                 130,510                    -165                -68                97
+  March ..................................................................              130,701                 130,481                      -5                -29               -24
+  April .....................................................................           130,680                 130,415                     -21                -66               -45
+  May .....................................................................             130,702                 130,411                      22                 -4               -26
+  June ....................................................................             130,736                 130,383                      34                -28               -62
+  July ......................................................................           130,790                 130,204                      54               -179              -233
+  August .................................................................              130,913                 130,224                     123                 20              -103
+  September ...........................................................                 130,829                 130,289                     -84                 65               149
+  October ...............................................................               130,898                 130,408                      69                119                50
+  November ...........................................................                  130,817                 130,409                     -81                  1                82
+  December ...........................................................                  130,670                 130,198                    -147               -211               -64
+2003:
+  January ...............................................................               130,873                 130,356                     203                158              -45
+  February .............................................................                130,520                 130,235                    -353               -121              232
+  March ..................................................................              130,396                 130,084                    -124               -151              -27
+       p
+  April ...................................................................             130,348                 130,084                     -48                  0               48
+
+   p=preliminary.
+
+
+
+
+                                                                                                    10
+Text table A. Net birth/death estimates for private nonfarm industries, post-benchmark 2002
+(In thousands)
+
+                                          Natural                     Trade,                       Profes-                           Total
+                                            re-                       trans-                        sional Educa- Leisure          monthly
+         Year and month                   sources Con-       Manu- portation, Infor- Financial       and   tion and  and     Other amount
+                                            and   struction facturing   and     mation activities business health    hos- services con-
+                                           mining                     utilities                   services services pitality       tributed
+
+2002:
+  April ...............................      -1      22        -2      -31          0       0        20        6       29        1       44
+  May ...............................         1      37         6       21          4       6        23        5       67        6      176
+  June ..............................         1      29         5       20          2       5        17       -6       78        5      156
+  July ................................       0      -6       -22      -24         -1      -5       -16      -13       37      -11      -61
+  August ...........................          0      15         6       21          4       6        22       10       18        4      106
+  September ....................              0      11         3       18          1       3         8       13      -36        2       23
+  October .........................           1       9        -3       30          5      11        19       29      -34        1       68
+  November .....................              0      -7         3       24          4       5         7        8      -20        1       25
+  December .....................             -1      -9         3       23          2      12         6        6        8        3       53
+
+2003:
+  January .........................          -4      -77      -29      -95         -3      -25    -107       -7       -32      -12      -391
+  February .......................            0       11        6        6          6       10      33       14        28        5       119
+  March ............................          0       29        8       25          2        7      31        6        37        6       151
+
+Cumulative total ............                -3      64       -16      38         26       35       63       71      180        11      469
+
+
+
+of employment for the particular series to all employees                          by 14 cents from the previously published levels. These
+prior to benchmarking, and then applying these ratios to the                      changes are primarily the result of computing new sample
+revised all-employee figures. These figures are calculated                        average levels from the probability sample.
+at the basic cell level and then aggregated to produce the
+summary estimates.                                                                Methods
+   Average weekly hours and average hourly earnings are                           Benchmark adjustment procedure. Establishment survey
+not benchmarked; they are estimated solely from reports                           benchmarking is done on an annual basis to a population
+supplied by survey respondents at the basic estimating cell                       derived primarily from the administrative file of employees
+level. With the completion of the redesign and the NAICS                          covered by unemployment insurance (UI). The time required
+conversion, the levels were recomputed from the NAICS                             to complete the revision process—from the full collection
+probability sample averages for March 2001 to 2002. The                           of the UI population data to publication of the revised
+sample-based over-the-month changes were then applied to                          industry estimates—is about 15 months. The benchmark
+this new level to bring it forward.                                               adjustment procedure replaces the March sample-based
+   The aggregate industry levels of the hours and earnings                        employment estimates with UI-based population counts for
+series are derived as weighted averages. The production or                        March. The benchmark therefore determines the final
+nonsupervisory worker employment estimates for the basic                          employment levels, while sample movements capture
+cells are used as weights for the hours and earnings estimates                    month-to-month trends.
+for broader industry groupings. Adjustments of the all-                              Benchmarks are established for each basic estimating
+employee estimates to new benchmarks may alter the                                cell and are aggregated to develop published levels. On a
+weights, which, in turn, may change the estimates for hours                       not seasonally adjusted basis, the sample-based estimates
+and earnings of production or nonsupervisory workers at                           for the year preceding and the year following the benchmark
+higher levels of aggregation.                                                     also are then subject to revision. Employment estimates for
+   Generally, new employment benchmarks have little effect                        the months between the most recent March benchmark and
+on hours and earnings estimates for major groupings. To                           the previous year’s benchmark are adjusted using a “wedge-
+influence the hours and earnings estimates of a broader                           back” procedure. In this process, the difference between
+group, employment revisions have to be relatively large                           the benchmark level and the previously published March
+and must affect industries that have hours or earnings                            estimate for each estimating cell is computed. This
+averages that are substantially different from those of other                     difference, or error, is distributed linearly across the 11
+industries in their group. Table 4 gives information on the                       months of estimates subsequent to the previous benchmark;
+levels of specific hours and earnings series resulting from                       eleven-twelfths of the March difference is added to February
+the March 2002 benchmark and the NAICS/sample redesign                            estimates, ten-twelfths to January estimates, and so on,
+introduction. At the total private level, average weekly hours                    ending with the previous April estimates, which receive
+decreased by 0.3 hour and average hourly earnings increased                       one-twelfth of the March difference. The wedge procedure
+
+                                                                             11
+Table 4. Hours and earnings estimates, selected industries, March 2002
+
+                                               Industry                                                      Average weekly hours   Average hourly earnings
+
+             Total private ...........................................................................               33.6                 $14.81
+
+Goods-producing .................................................................................                    39.7                  16.10
+
+   Natural resources and mining ..........................................................                           43.0                  17.19
+
+   Construction .....................................................................................                37.8                   18.26
+
+   Manufacturing ...................................................................................                 40.4                   15.14
+
+      Durable goods ..............................................................................                   40.8                  15.86
+        Wood products ..........................................................................                     39.6                  12.21
+        Nonmetallic mineral products ...................................................                             41.3                  15.20
+        Primary metals ..........................................................................                    42.4                  17.37
+        Fabricated metal products ........................................................                           40.6                  14.55
+        Machinery ..................................................................................                 40.6                  15.85
+        Computer and electronic products ...........................................                                 39.8                  16.08
+        Electrical equipment and appliances ........................................                                 39.9                  13.99
+        Transportation equipment .........................................................                           42.8                  20.38
+        Furniture and related products .................................................                             39.5                  12.43
+        Miscellaneous manufacturing ...................................................                              38.6                  12.77
+
+      Nondurable goods ........................................................................                      40.0                  13.99
+       Food manufacturing ..................................................................                         39.2                  12.36
+       Beverages and tobacco products ............................................                                   39.2                  17.69
+       Textile mills ................................................................................                41.4                  11.67
+       Textile product mills ..................................................................                      39.6                  10.81
+       Apparel ......................................................................................                36.7                   9.04
+       Leather and allied products ......................................................                            37.1                  10.83
+       Paper and paper products ........................................................                             41.7                  16.58
+       Printing and related support activities ......................................                                38.5                  14.78
+       Petroleum and coal products ....................................................                              42.5                  23.04
+       Chemicals ..................................................................................                  41.9                  17.82
+       Plastics and rubber products ...................................................                              40.6                  13.42
+
+Private service-providing .....................................................................                      32.2                   14.45
+
+   Trade, transportation, and utilities ....................................................                         33.3                  13.97
+     Wholesale trade ............................................................................                    37.7                  16.83
+     Retail trade ....................................................................................               30.5                  11.64
+     Transportation and warehousing ..................................................                               36.5                  15.62
+     Utilities ...........................................................................................           40.4                  23.85
+
+   Information ........................................................................................              36.3                  19.90
+
+   Financial activities ............................................................................                 35.3                   15.86
+
+   Professional and business services ...............................................                                34.0                   16.66
+
+   Education and health services .........................................................                           32.2                   15.02
+
+   Leisure and hospitality .....................................................................                     25.5                    8.50
+
+   Other services .................................................................................                  31.9                   13.60
+
+
+
+
+                                                                                                       12
+assumes that the total estimation error accumulated at a               other firms in the sample. The second component is an ARIMA
+steady rate since the last benchmark. Applying previously              (Auto-Regressive Integrated Moving Average) time series
+derived over-the-month sample changes to the revised                   model designed to estimate the residual net birth/death
+March level yields revised estimates for the months                    employment not accounted for by the imputations. The
+following the March benchmark. New net birth/death model               historical time series used to create and test the ARIMA model
+levels also are calculated and applied during post-                    was derived from the UI universe micro-level database, and
+benchmark estimation and new sample is introduced from                 reflects the actual residual net of births and deaths over the
+the annual update.                                                     past 5 years. The ARIMA model component is reviewed on a
+                                                                       quarterly basis. The net birth/death model component figures
+Benchmark source material. The principal source of                     are unique to each month and include negative adjustments
+benchmark data for private industries is the ES-202 report.            in some months. Furthermore, these figures may exhibit a
+This report contains employment data provided to State                 seasonal pattern observed in the historical UI universe data
+employment security agencies by employers covered by                   series.
+State UI laws. BLS uses several other sources to establish                The most significant potential drawback to this or any
+benchmarks for the remaining industries partially covered              model-based approach is that time series modeling assumes
+or exempt from mandatory UI coverage, accounting for 3                 a predictable continuation of historical patterns and
+percent of the nonfarm employment total.                               relationships and therefore is likely to have some difficulty
+    Data on employees covered under Social Security laws,              producing reliable estimates at economic turning points or
+published by the U.S. Census Bureau in County Business                 during periods when there are sudden changes in trend. BLS
+Patterns, are used to augment UI data for nonoffice insur-             will continue researching alternative model-based
+ance sales workers, child day care workers, religious                  techniques for the net birth/death component; it is likely to
+organizations, and private schools and hospitals. Bench-               remain as the most problematic part of the estimation process.
+marks for State and local government hospitals and
+educational institutions are based on the Annual Census of             Availability of revised data
+Governments conducted by the Census Bureau. Benchmark                  LABSTAT, the BLS public database on the Internet, contains
+data from these sources are available only on a 1- or 2-year           all historical employment, hours, and earnings data revised
+lagged basis. Extrapolation to a current level is ac-                  as a result of this benchmark, both unadjusted and seasonally
+complished by assuming and applying the employment                     adjusted data. The data can be accessed at http://
+trends from the UI-covered part of the population in these             www.bls.gov/ces/, the Current Employment Statistics
+industries to the noncovered part. Universe data for interstate        homepage. The series code under NAICS for CES to be used
+railroads are obtained from the Railroad Retirement Board.             in the LABSTAT database queries is slightly different. The
+                                                                       prefix for the NAICS series will be “CE” and the industry
+Business birth and death estimation. Regular updating of               code will expand by two digits to accommodate the longer
+the CES sample frame, with information from the UI universe            NAICS code. The old SIC database with the prefix "EE" will
+files helps to keep the CES survey current with respect to             be available indefinitely with data ending with April 2003
+employment from business births and business deaths. The               and will not be updated. Employment, hours, and earnings
+timeliest UI universe files available, however, always will            estimates are published monthly in Employment and
+be a minimum of 9 months out of date. The CES survey                   Earnings.
+thus can not rely on regular frame maintenance alone to
+provide estimates for business birth and death employment              Seasonal adjustment procedure
+contributions. BLS has researched both sample-based and                BLS uses X-12 ARIMA software developed by the U.S.
+model-based approaches to measuring birth units that have              Census Bureau to seasonally adjust national employment,
+not yet appeared on the UI universe frame. The research                hours, and earnings series derived from the CES program.
+demonstrated that sampling for births was not feasible in              Individual series are seasonally adjusted using either a
+the very short CES production timeframes. Therefore BLS                multiplicative or an additive model. For employment,
+is utilizing a model-based approach for this component.                seasonal adjustment factors are directly applied to the
+    Earlier research indicated that, while both the business           component levels. Individual 3-digit NAICS levels are
+birth and death portions of total employment are generally             seasonally adjusted, and higher-level aggregates are formed
+significant, the net contribution is relatively small and              by the summation of these components. Seasonally adjusted
+stable. To account for this net birth/death portion of total           totals for hours and earnings are obtained by taking weighted
+employment, BLS is utilizing an estimation procedure with              averages of the seasonally adjusted data for the component
+two components. The first component uses business deaths               series.
+to impute employment for business births. This is                         Beginning in June 2003 with the May first preliminary
+incorporated into the sample-based link relative estimate              estimates, BLS will compute seasonal factors concurrently
+procedure by simply not reflecting sample units going out              with the monthly estimate production. Previously, the factors
+of business, but imputing to them the same trend as the                were forecasted twice a year. Concurrent seasonal adjustment
+
+                                                                  13
+is expected to provide a more accurate seasonal adjustment,           and the lengths of the survey intervals for those months.
+and smaller revisions from the first preliminary estimates to         The REGARIMA models evaluate the variation in
+the final benchmarked estimates, than the semiannual                  employment levels attributable to 11 separate survey interval
+updates. As a result of the adoption of concurrent seasonal           variables, one specified for each month, except March.
+adjustment, the CES program has discontinued the                      March is excluded because there is almost always 4 weeks
+publication of projected seasonal factors.                            between the February and March surveys. Models for
+                                                                      individual basic series were fitted with the most recent 10
+Special model adjustments
+                                                                      years of data available, the standard time span used for CES
+Variable survey intervals. Beginning with the release of              seasonal adjustment.
+the 1995 benchmark, BLS refined the seasonal adjustment                  The REGARIMA procedure yielded regression
+procedures to control for survey interval variations,                 coefficients for each of the 11 months specified in the model.
+sometimes referred to as the 4- versus 5-week effect.                 These coefficients provide estimates of the strength of the
+Although the CES survey is referenced to a consistent                 relationship between employment levels and the number of
+concept—the pay period including the 12th of each                     weeks between surveys for the 11 modeled months. The
+month—inconsistencies arise because there are sometimes               X-12 ARIMA software also produces diagnostic statistics
+4 and sometimes 5 weeks between the week including the                that permit the assessment of the statistical significance of
+12th in a given pair of months. In highly seasonal industries,        the regression coefficients, and all series are reviewed for
+these variations can be an important determinant of the               model adequacy.
+magnitude of seasonal hires or layoffs that have occurred at             Because the 11 coefficients derived from the REGARIMA
+the time the survey is taken, thereby complicating seasonal           models provide an estimate of the magnitude of variation
+adjustment.                                                           in employment levels associated with the length of the
+   Standard seasonal adjustment methodology relies heavily            survey interval, these coefficients were used to adjust the
+on the experience of the most recent 3 years to determine             CES data to remove the calendar effect. These “filtered”
+the expected seasonal change in employment for each month             series then were seasonally adjusted using the standard
+of the current year. Prior to the implementation of the               X-12 ARIMA software previously used.
+adjustment, the procedure did not distinguish between 4-                 For a few series, REGARIMA models did not fit well;
+and 5-week survey intervals and the accuracy of the seasonal          these series were seasonally adjusted with the X-12 software
+expectation depended in large measure on how well the                 but without the interval-effect adjustment. For all
+current year’s survey interval corresponded with those from           employees, the series are transportation equipment, transit
+the previous 3 years. All else being the same, the greatest           and ground passenger transportation, social assistance, and
+potential for distortion occurred when the current month              membership associations and organizations. The series for
+being estimated had a 5-week interval but the 3 years                 women workers, production and nonsupervisory workers,
+preceding it were all 4-week intervals, or, conversely, when          average weekly hours, average weekly overtime hours, and
+the current month had a 4-week interval but the 3 years               average hourly earnings also are adjusted with X-12 ARIMA
+preceding it were all 5-week intervals.                               including interval-effect modeling. As with the all-
+   BLS has adopted REGARIMA (regression with auto-                    employee data, there were a few series which could not
+correlated errors) modeling to identify the estimated size            successfully be fitted to ARIMA/REGARIMA models and
+and significance of the calendar effect for each published            these do not include the interval-effect adjustment. These
+series. REGARIMA combines standard regression analysis,               series are transportation equipment for women workers;
+which measures correlation among two or more variables,               wholesale trade, retail trade, transportation and
+with ARIMA modeling, which describes and predicts the                 warehousing, information, financial activities, professional
+behavior of a data series based on its own past history. For          and business services, education and health services, leisure
+many economic time series, including nonfarm payroll                  and hospitality, and other services for average weekly hours;
+employment, observations are autocorrelated over time.                and wholesale trade, financial activities, professional and
+That is, each month’s value is significantly dependent on             business services, and other services for average hourly
+the observations that precede it; these series, thus, usually         earnings. All production or nonsupervisory worker and
+can be successfully fit using ARIMA models. If                        average overtime hours series were successfully fitted to
+autocorrelated time series are modeled through regression             the models and include the interval-effect adjustment.
+analysis alone, the measured relationships among other
+variables of interest may be distorted due to the influence of        Construction series. BLS also continues its special
+the autocorrelation. Thus, the REGARIMA technique is                  treatment in seasonally adjusting the construction industry
+appropriate to measuring relationships among variables of             series, which began with the 1996 benchmark revision. In
+interest in series that exhibit autocorrelation, such as              the application of the interval-effect modeling process to
+nonfarm payroll employment.                                           the construction series, there initially was difficulty in
+   In this application, the correlations of interest are those        accurately identifying and measuring the effect because of
+between employment levels in individual calendar months               the strong influence of variable weather patterns on
+
+                                                                 14
+employment movements in the industry. Further research                      The processing error occurs when respondents with
+allowed BLS to incorporate interval-effect modeling for the             salaried workers report hours correctly (vary them according
+construction industry by disaggregating the construction                to the length of the month), which dictates that different
+series into its finer industry and geographic estimating cells          conversion factors be applied to payroll and hours. The
+and tightening outlier designation parameters. This allowed             CES processing system uses the hours conversion factor for
+a more precise identification of weather-related outliers that          both fields, resulting in peaks in the AHE series in short
+had masked the interval effect and clouded the seasonal                 months and reversals in long months. Currently, the CES
+adjustment patterns in general. With these outliers removed,            processing system can accommodate only one conversion
+interval-effect modeling became feasible. The result is a               factor per reporter.
+seasonally adjusted series for construction that is improved                REGARIMA modeling is used to identify, measure, and
+because it is controlled for two potential distortions, unusual         remove the length-of-pay-period effect for seasonally
+weather events and the 4- versus 5-week effect.                         adjusted average weekly hours and average hourly earnings
+                                                                        series. The length-of-pay-period variable proves significant
+Floating holidays. BLS is continuing the practice of making             for explaining AWH movements in all the service-providing
+special adjustments for average weekly hours and average                industries, except retail trade. For AHE, the length-of-pay-
+weekly overtime series to account for the presence or absence           period variable is significant for wholesale trade; financial
+of religious holidays in the April survey reference period              activities; professional and business services; and other
+and the occurrence of Labor Day in the September reference              services. All AWH series in the service-providing industries,
+period back to 1939, or when the series begins.                         except retail trade, have been adjusted from January 1990
+                                                                        forward. The AHE series for wholesale trade; financial
+Local government series. A special adjustment also is made
+                                                                        activities; professional and business services; and other
+in November each year for poll workers in the local
+                                                                        services have been adjusted from January 1990 forward, as
+government, excluding education series; this adjustment is
+                                                                        well. For this reason, calculations of over-the-year change
+incorporated as part of the X-12 modeling process from 1988
+                                                                        in the establishment hours and earnings series should use
+forward. An X-11 ARIMA-based procedure is used for earlier
+                                                                        seasonally adjusted data.
+years.
+                                                                            The series to which the length-of-pay-period adjustment
+Refinements in hours and earnings seasonal adjustment.                  is applied are not subject to the 4- versus 5-week adjustment,
+With the release of the 1997 benchmark, BLS implemented                 because the modeling cannot support the number of
+refinements to the seasonal adjustment process for the hours            variables that would be required in the regression equation
+and earnings series to correct for distortions related to the           to make both adjustments. Because the 4- versus 5-week
+method of accounting for the varying length of payroll                  model shows only marginal significance in the service-
+periods across months. There is a significant correlation               providing industries, its replacement with the length-of-pay-
+between over-the-month changes in both the average weekly               period adjustment in those industries, with the exception of
+hours (AWH) and the average hourly earnings (AHE) series                retail trade, is a viable tradeoff. The 4- versus 5-week
+and the number of weekdays in a month, resulting in                     adjustment is most significant in manufacturing hours and
+noneconomic fluctuations in these two series. Both AWH                  earnings series; it will continue to be applied there and in
+and AHE show more growth in “short” months (20 or 21                    other divisions not affected by the length-of-pay-period
+weekdays) than in “long” months (22 or 23 weekdays). Much               variable.
+of the previously unexplained volatility in these series is
+attributable to this calendar effect. The effect is stronger for        Additive and multiplicative models. Prior to this benchmark
+the AWH than for the AHE series.                                        release, all CES series were adjusted using multiplicative
+   The calendar effect is traceable to response and processing          seasonal adjustment models. Although the X-12 ARIMA
+errors associated with converting payroll and hours                     seasonal adjustment program provides for either an additive
+information from sample respondents with semimonthly or                 or a multiplicative adjustment depending on which model
+monthly pay periods to a weekly equivalent. The response                best fits the individual series, the previous CES processing
+error comes from sample respondents reporting a fixed                   system was unable to utilize additive seasonal adjustments.
+number of total hours for workers regardless of the length of           A new processing system, being introduced simultaneously
+the reference month, while the CES conversion process                   with the conversion to NAICS, is able to utilize both additive
+assumes that the hours reporting will be variable. A constant           and multiplicative adjustments. See exhibit 4 for a list
+level of hours reporting most likely occurs when employees              of which series are adjusted with additive seasonal
+are salaried rather than paid by the hour, as employers are             adjustment models and which series are adjusted with
+less likely to keep actual detailed hours records for such              multiplicative models. Exhibit 4 also designates which
+employees. This causes artificial peaks in the AWH series in            series are subject to the calendar-effects modeling described
+shorter months that are reversed in longer months.                      earlier.
+
+
+
+
+                                                                   15
+Exhibit 4. Mode of adjustment used for seasonal adjustment of nonfarm payroll series
+
+                                                                                                                        Special adjustments
+                                                                                         Mode of
+                                     Industry                                           adjustment                      10/11       Easter/
+                                                                                                         4/5 week                              Other
+                                                                                                                         day      Labor Day
+
+                                                                                                                All employees
+
+Logging .............................................................................   Multiplicative      X
+Oil and gas extraction ......................................................           Multiplicative      X
+Mining, except oil and gas ...............................................              Multiplicative      X
+Coal mining .......................................................................     Multiplicative      X
+Support activities for mining .............................................             Multiplicative      X
+Construction of buildings .................................................                   -             X                                 Indirect 1
+Heavy and civil engineering construction .......................                         Additive           X
+Specialty trade contractors .............................................                     -             X                                 Indirect 1
+Wood products .................................................................          Additive           X
+Nonmetallic mineral products ..........................................                  Additive           X
+
+Primary metals .................................................................        Multiplicative      X
+Fabricated metal products ...............................................               Multiplicative      X
+Machinery .........................................................................     Multiplicative      X
+Computer and electronic products ..................................                     Multiplicative      X
+Computer and peripheral equipment ...............................                        Additive           X
+Communications equipment ............................................                    Additive           X
+Semiconductors and electronic components ..................                             Multiplicative      X
+Electronic instruments .....................................................            Multiplicative      X
+Electrical equipment and appliances ...............................                     Multiplicative      X
+Transportation equipment ................................................               Multiplicative
+Furniture and related products ........................................                  Additive           X
+Miscellaneous manufacturing ..........................................                  Multiplicative      X
+Food manufacturing .........................................................            Multiplicative      X
+Beverages and tobacco products ...................................                      Multiplicative      X
+Textile mills .......................................................................    Additive           X
+Textile product mills ..........................................................         Additive           X
+Apparel .............................................................................   Multiplicative      X
+Leather and allied products .............................................               Multiplicative      X
+Paper and paper products ...............................................                Multiplicative      X
+Printing and related support activities .............................                    Additive           X
+
+Petroleum and coal products ...........................................                  Additive           X
+Chemicals .........................................................................     Multiplicative      X
+Plastics and rubber products ..........................................                 Multiplicative      X
+Wholesale trade, durable goods ......................................                   Multiplicative      X
+Wholesale trade, nondurable goods ................................                      Multiplicative      X
+Electronic markets and agents and brokers ...................                           Multiplicative      X
+Motor vehicle and parts dealers ......................................                  Multiplicative      X
+Automobile dealers ...........................................................           Additive           X
+Furniture and home furnishings stores ...........................                       Multiplicative      X
+Electronics and appliance stores ....................................                   Multiplicative      X
+
+Building material and garden supply stores ....................                         Multiplicative      X
+Food and beverage stores ..............................................                 Multiplicative      X
+Health and personal care stores .....................................                   Multiplicative      X
+Gasoline stations .............................................................         Multiplicative      X
+Clothing and clothing accessories stores .......................                        Multiplicative      X
+Sporting goods, hobby, book, and music stores ...........                               Multiplicative      X
+General merchandise stores ...........................................                  Multiplicative      X
+Department stores ...........................................................           Multiplicative      X
+Miscellaneous store retailers ...........................................                Additive           X
+Nonstore retailers ............................................................         Multiplicative      X
+Air transportation ..............................................................       Multiplicative      X
+Rail transportation ............................................................        Multiplicative      X
+Water transportation ........................................................           Multiplicative      X
+Truck transportation .........................................................           Additive           X
+Transit and ground passenger transportation ................                             Additive
+Pipeline transportation ......................................................           Additive           X
+Scenic and sightseeing transportation ............................                      Multiplicative      X
+Support activities for transportation ................................                   Additive           X
+Couriers and messengers ...............................................                 Multiplicative      X
+Warehousing and storage ................................................                Multiplicative      X
+
+    See footnotes at end of exhibit.
+
+                                                                                         16
+Exhibit 4. Mode of adjustment used for seasonal adjustment of nonfarm payroll series—Continued
+
+                                                                                                                          Special adjustments
+                                                                                            Mode of
+                                      Industry                                             adjustment                      10/11     Easter/
+                                                                                                            4/5 week                              Other
+                                                                                                                            day     Labor Day
+
+                                                                                                                   All employees
+
+Utilities ..............................................................................   Multiplicative      X
+Publishing industries, except Internet .............................                       Multiplicative      X
+Motion picture and sound recording industries ...............                              Multiplicative      X
+Broadcasting, except Internet .........................................                    Multiplicative      X
+Internet publishing and broadcasting ..............................                        Multiplicative      X
+Telecommunications ........................................................                Multiplicative      X
+ISPs, search portals, and data processing .....................                            Multiplicative      X
+Other information services ..............................................                   Additive           X
+Monetary authorities – central bank ................................                        Additive           X
+Credit intermediation and related activities .....................                         Multiplicative      X
+
+Depository credit intermediation ......................................                    Multiplicative      X
+Commercial banking ........................................................                Multiplicative      X
+Securities, commodity contracts, investments ...............                               Multiplicative      X
+Insurance carriers and related activities .........................                        Multiplicative      X
+Funds, trusts, and other financial vehicles .....................                          Multiplicative      X
+Real estate .......................................................................        Multiplicative      X
+Rental and leasing services ............................................                   Multiplicative      X
+Lessors of nonfinancial intangible assets .......................                          Multiplicative      X
+Professional and technical services ...............................                        Multiplicative      X
+Legal services ..................................................................          Multiplicative      X
+
+Accounting and bookkeeping services ...........................                            Multiplicative      X
+Architectural and engineering services ...........................                         Multiplicative      X
+Computer systems design and related services ............                                  Multiplicative      X
+Management and technical consulting services .............                                 Multiplicative      X
+Management of companies and enterprises ...................                                Multiplicative      X
+Administrative and support services ...............................                        Multiplicative      X
+Employment services ......................................................                 Multiplicative      X
+Temporary help services .................................................                  Multiplicative      X
+Business support services ..............................................                   Multiplicative      X
+Services to buildings and dwellings .................................                      Multiplicative      X
+
+Waste management and remediation services ...............                                  Multiplicative      X
+Educational services ........................................................               Additive           X
+Ambulatory health care services .....................................                       Additive           X
+Offices of physicians .......................................................               Additive           X
+Outpatient care centers ...................................................                 Additive           X
+Home health care services .............................................                     Additive           X
+Hospitals ...........................................................................       Additive           X
+Nursing and residential care facilities ..............................                      Additive           X
+Nursing care facilities .......................................................             Additive           X
+Social assistance .............................................................            Multiplicative
+
+Child day care services ...................................................                Multiplicative      X
+Performing arts and spectator sports .............................                         Multiplicative      X
+Museums, historical sites, zoos, and parks ...................                             Multiplicative      X
+Amusements, gambling, and recreation ..........................                            Multiplicative      X
+Accommodations ..............................................................              Multiplicative      X
+Food services and drinking places .................................                         Additive           X
+Repair and maintenance ..................................................                   Additive           X
+Personal and laundry services ........................................                     Multiplicative      X
+Membership associations and organizations ..................                                Additive
+
+Federal Government, except U.S. Postal Service ..........                                  Multiplicative      X
+U.S. Postal Service...........................................................             Multiplicative      X
+State government education ............................................                     Additive           X
+State government, excluding education ..........................                           Multiplicative      X
+Local government education ...........................................                      Additive           X
+Local government, excluding education ..........................                            Additive           X                                Election 2
+
+
+     See footnotes at end of exhibit.
+
+
+                                                                                            17
+Exhibit 4. Mode of adjustment used for seasonal adjustment of nonfarm payroll series—Continued
+
+                                                                                                                             Special adjustments
+                                                                                            Mode of
+                                                                                           adjustment                         10/11       Easter/
+                                      Industry                                                                  4/5 week                              Other
+                                                                                                                               day       Labor Day
+
+                                                                                                                     Women workers
+
+Natural resources and mining .........................................                      Additive                X
+Mining ...............................................................................      Additive                X
+Construction .....................................................................         Multiplicative           X
+Manufacturing, durable goods .........................................                     Multiplicative           X
+Manufacturing, nondurable goods ...................................                        Multiplicative           X
+Wholesale trade ...............................................................            Multiplicative           X
+Retail trade .......................................................................       Multiplicative           X
+Transportation and warehousing .....................................                       Multiplicative           X
+Utilities ..............................................................................   Multiplicative           X
+Information ........................................................................       Multiplicative           X
+Finance and insurance ....................................................                 Multiplicative           X
+Real estate and rental and leasing ..................................                       Additive                X
+Professional and technical services ...............................                        Multiplicative           X
+Management of companies and enterprises ...................                                Multiplicative           X
+Administrative and waste services .................................                        Multiplicative           X
+Educational services ........................................................              Multiplicative           X
+Health care and social assistance ..................................                       Multiplicative           X
+Arts, entertainment, and recreation .................................                      Multiplicative           X
+Accommodations and food services ...............................                           Multiplicative           X
+Other services .................................................................           Multiplicative           X
+
+Federal Government ........................................................                 Additive                X
+State government .............................................................             Multiplicative           X
+Local government ............................................................              Multiplicative           X                                Election 2
+
+                                                                                                        Production or nonsupervisory workers 3
+
+Natural resources and mining .........................................                     Multiplicative           X
+Construction .....................................................................          Additive                X
+Wood products .................................................................             Additive                X
+Nonmetallic mineral products ..........................................                     Additive                X
+Primary metals .................................................................           Multiplicative           X
+Fabricated metal products ...............................................                  Multiplicative           X
+Machinery .........................................................................         Additive                X
+Computer and electronic products ..................................                        Multiplicative           X
+Electrical equipment and appliances ...............................                        Multiplicative           X
+Transportation equipment ................................................                  Multiplicative           X
+
+Furniture and related products ........................................                     Additive                X
+Miscellaneous manufacturing ..........................................                     Multiplicative           X
+Food manufacturing .........................................................               Multiplicative           X
+Beverages and tobacco products ...................................                          Additive                X
+Textile mills .......................................................................       Additive                X
+Textile product mills ..........................................................            Additive                X
+Apparel .............................................................................       Additive                X
+Leather and allied products .............................................                  Multiplicative           X
+Paper and paper products ...............................................                    Additive                X
+Printing and related support activities .............................                       Additive                X
+
+Petroleum and coal products ...........................................                     Additive                X
+Chemicals .........................................................................         Additive                X
+Plastics and rubber products ..........................................                    Multiplicative           X
+Wholesale trade ...............................................................            Multiplicative           X
+Retail trade .......................................................................       Multiplicative           X
+Transportation and warehousing .....................................                        Additive                X
+Utilities ..............................................................................   Multiplicative           X
+Information ........................................................................       Multiplicative           X
+Financial activities ............................................................           Additive                X
+Professional and business services ...............................                         Multiplicative           X
+Education and health services ........................................                     Multiplicative           X
+Leisure and hospitality .....................................................              Multiplicative           X
+Other services .................................................................            Additive                X
+
+    See footnotes at end of exhibit.
+
+
+                                                                                            18
+Exhibit 4. Mode of adjustment used for seasonal adjustment of nonfarm payroll series—Continued
+
+                                                                                                                             Special adjustments
+                                                                                            Mode of
+                                                                                           adjustment                        10/11        Easter/
+                                      Industry                                                                 4/5 week                                Other
+                                                                                                                              day        Labor Day
+
+                                                                                                                Average weekly hours 3
+
+Natural resources and mining .........................................                     Multiplicative          X                        X
+Construction .....................................................................          Additive               X                        X
+Wood products .................................................................             Additive               X                        X
+Nonmetallic mineral products ..........................................                     Additive               X                        X
+Primary metals .................................................................           Multiplicative          X                        X
+Fabricated metal products ...............................................                  Multiplicative          X                        X
+Machinery .........................................................................        Multiplicative          X                        X
+Computer and electronic products ..................................                        Multiplicative          X                        X
+Electrical equipment and appliances ...............................                        Multiplicative          X                        X
+Transportation equipment ................................................                  Multiplicative          X                        X
+
+Furniture and related products ........................................                     Additive               X                        X
+Miscellaneous manufacturing ..........................................                      Additive               X                        X
+Food manufacturing .........................................................                Additive               X                        X
+Beverages and tobacco products ...................................                         Multiplicative          X                        X
+Textile mills .......................................................................       Additive               X                        X
+Textile product mills ..........................................................            Additive               X                        X
+Apparel .............................................................................       Additive               X                        X
+Leather and allied products .............................................                   Additive               X                        X
+Paper and paper products ...............................................                   Multiplicative          X                        X
+Printing and related support activities .............................                       Additive               X                        X
+Petroleum and coal products ...........................................                    Multiplicative          X                        X
+Chemicals .........................................................................        Multiplicative          X
+Plastics and rubber products ..........................................                    Multiplicative          X                        X
+Wholesale trade ...............................................................            Multiplicative                      X            X
+Retail trade .......................................................................       Multiplicative                      X
+Transportation and warehousing .....................................                       Multiplicative                      X            X
+Utilities ..............................................................................   Multiplicative          X
+Information ........................................................................       Multiplicative                      X
+Financial activities ............................................................          Multiplicative                      X
+Professional and business services ...............................                         Multiplicative                      X            X
+
+Education and health services ........................................                     Multiplicative                      X
+Leisure and hospitality .....................................................               Additive                           X
+Other services .................................................................           Multiplicative                      X            X
+
+                                                                                                             Average overtime hours 4
+
+Manufacturing, durable goods .........................................                       Additive              X                        X
+Manufacturing, nondurable goods ...................................                          Additive              X                        X
+
+                                                                                                             Average hourly earnings 3
+
+Natural resources and mining .........................................                      Additive               X
+Construction .....................................................................          Additive               X
+Manufacturing, durable goods .........................................                      Additive               X
+Manufacturing, nondurable goods ...................................                        Multiplicative          X
+Wholesale trade ...............................................................            Multiplicative                      X
+Retail trade .......................................................................       Multiplicative          X
+Transportation and warehousing .....................................                        Additive               X
+Utilities ..............................................................................   Multiplicative          X
+Information ........................................................................       Multiplicative          X
+Financial activities ............................................................          Multiplicative                      X
+Professional and business services ...............................                         Multiplicative                      X
+
+Education and health services ........................................                     Multiplicative          X
+Leisure and hospitality .....................................................               Additive               X
+Other services .................................................................           Multiplicative                      X
+  1
+    Seasonal adjustment occurs at the finest industry detail available.                          mining and manufacturing; construction workers in construction;
+  2
+    Special adjustment for the presence/absence of poll workers in                               and nonsupervisory workers in private service-providing
+local government.                                                                                industries.
+  3                                                                                                4
+    Data relate to production workers in natural resources and                                       Data relate to production workers in manufacturing.
+
+
+                                                                                            19
+

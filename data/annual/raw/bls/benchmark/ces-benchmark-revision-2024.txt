@@ -1,0 +1,1411 @@
+CES National Benchmark Article
+BLS Establishment Survey National Estimates Revised to Incorporate
+March 2024 Benchmarks
+
+
+
+
+Authors: Alyssa Bernal and Rokeya Khan
+
+About the authors:
+Alyssa Bernal and Rokeya Khan are economists in the Division of Current Employment
+Statistics–National, Office of Employment and Unemployment Statistics, Bureau of Labor
+Statistics.
+
+Telephone: (202) 691-6555
+Email: Contact CES
+
+
+
+
+                                                                                  Page 1 of 35
+                                                                                  Back to Top
+Table of Contents
+Summary of the revisions ............................................................................................................... 3
+Overview ......................................................................................................................................... 4
+Seasonally adjusted estimates ......................................................................................................... 4
+Not seasonally adjusted estimates................................................................................................... 5
+  Not seasonally adjusted revisions ............................................................................................... 5
+  Benchmark revision effects for other data types ...................................................................... 10
+Net birth-death revisions ............................................................................................................... 14
+  Forecasted vs. actual net birth-death......................................................................................... 15
+  Net birth-death adjustments to the post-benchmark period ...................................................... 15
+Reconstructions ............................................................................................................................. 18
+  Computer and peripheral equipment manufacturing reconstruction ........................................ 18
+  Historical reconstructions ......................................................................................................... 19
+     General medical and surgical hospitals reconstruction ......................................................... 19
+       Electric power generation reconstruction ............................................................................. 20
+Changes to the CES published series ............................................................................................ 22
+Availability of revised data ........................................................................................................... 34
+Table of figures ............................................................................................................................. 35
+
+
+
+
+                                                                                                                                    Page 2 of 35
+                                                                                                                                    Back to Top
+Summary of the revisions
+With the release of January 2025 data on February 7, 2025, the Bureau of Labor Statistics (BLS)
+introduced its annual revision to national estimates of employment, hours, and earnings from the
+Current Employment Statistics (CES) monthly survey of nonfarm establishments.
+
+The March 2024 benchmarked, seasonally adjusted employment level for total nonfarm
+employment is 157,517,000. The not seasonally adjusted benchmarked employment level is
+156,612,000.
+
+Compared with the sample-based, seasonally adjusted published estimate for March 2024, total
+nonfarm employment had a revision of -589,000 or -0.4 percent. The not seasonally adjusted
+total nonfarm employment estimate was revised by -598,000 or -0.4 percent.
+
+Table 1 presents revised total nonfarm employment data on a seasonally adjusted basis for
+January 2024 through December 2024. The revised data for April 2024 forward incorporate the
+effect of applying the rate of change measured by the sample to the new benchmark employment
+level, as well as updated net birth-death model forecasts and new seasonal adjustment factors.
+Revisions to November and December also reflect the incorporation of additional sample
+receipts. For more information about the methodology of benchmarking in the CES program, see
+Benchmark in the Calculations section of the CES Handbook of Methods.
+
+Table 1. Differences in seasonally adjusted levels and over-the-month changes, total
+nonfarm employment, January to December 2024 (in thousands)
+                                     Levels                        Over-the-month Changes
+                      As          As Previously                  As      As Previously
+    2024            Revised        Published      Difference   Revised    Published       Difference
+  January           157,049          157,560          -511      119          256             -137
+  February          157,271          157,796          -525      222          236              -14
+   March            157,517          158,106          -589      246          310              -64
+    April           157,635          158,214          -579      118          108               10
+    May             157,828          158,430          -602      193          216              -23
+    June            157,915          158,548          -633       87          118              -31
+    July            158,003          158,692          -689       88          144              -56
+   August           158,074          158,770          -696       71           78               -7
+ September          158,314          159,025          -711      240          255              -15
+  October           158,358          159,068          -710       44           43                1
+ November           158,619          159,280          -661      261          212               49
+ December(p)        158,926          159,536          -610      307          256               51
+Footnotes
+(p)
+      Preliminary
+                                                                                    To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                            Page 3 of 35
+                                                                                           Back to Top
+Overview
+Establishment survey benchmarking is done each year to align employment estimates from the
+survey with employment counts derived primarily from the administrative file of employees
+covered by Unemployment Insurance (UI). All employers covered by UI laws are required to
+report employment and wage information to the appropriate state UI agency four times per year.
+The UI data are obtained and edited by each state’s Labor Market Information agency. They are
+tabulated and published through the BLS Quarterly Census of Employment and Wages (QCEW)
+program. Both the QCEW and CES categorize their data using the North American Industry
+Classification System (NAICS). About 97 percent of total nonfarm employment within the scope
+of the establishment survey is covered by UI and is available to the CES program via QCEW
+records.
+
+An employment count for the remaining 3 percent is constructed from other sources, primarily
+records from the Railroad Retirement Board and U.S. Census Bureau data from County Business
+Patterns and the Annual Survey of Public Employment and Payroll. This 3 percent is referred to
+as noncovered employment. The combination of QCEW and noncovered employment data make
+up the benchmark level. The full benchmark employment level developed for March replaces the
+March sample-based estimate for each basic cell.
+
+The total annual revision is the difference between the benchmark level for a given March and
+the published March sample-based employment estimate. The overall accuracy of the
+establishment survey is usually gauged by the size of the benchmark revision, which is often
+regarded as a proxy for total survey error. Typically, the total revision is equal to the benchmark
+revision. However, in years with historical reconstructions, affected CES series are re-estimated
+prior to benchmarking. The benchmark revision, in these cases, is the difference between the
+benchmark level and the newly reconstructed sample-based estimate. The benchmark revision is
+the difference between two independently derived employment counts, each subject to its own
+error sources.
+
+To create a continuous time series between the new March benchmark level and historical
+sample-based data from the prior March benchmark level, employment estimates for the months
+between the most recent March benchmark and the previous year's benchmark are adjusted using
+a linear "wedge-back" procedure. This procedure assumes that the total estimation error
+accumulated at a steady rate since the last benchmark. For the 9 months following the March
+benchmark (also called the post-benchmark period), BLS applies previously derived over-the-
+month sample changes to the revised March level to get the revised estimates. New net birth-
+death model forecasts are also calculated and applied during post-benchmark estimation. More
+information on benchmarks in the CES program is available in Benchmark in the Calculation
+section of the CES Handbook of Methods.
+Seasonally adjusted estimates
+BLS seasonally adjusts 5 years of CES data with each annual benchmark for all industries and
+directly estimated data types. However, reconstructed series are seasonally adjusted over their
+revised time spans if the revised timespan is greater than 5 years. More information about
+seasonal adjustment of CES series is available on the CES Seasonal Adjustment webpage.
+
+U.S. Bureau of Labor Statistics                                                          Page 4 of 35
+                                                                                         Back to Top
+Table 2 presents revised employment data on a seasonally adjusted basis for March 2024 by
+major industry sector. The revision to seasonally adjusted total nonfarm employment is -589,000.
+
+Table 2. Seasonally adjusted employment revisions for major industry sectors, March
+2024 (in thousands)
+                                                                            As          Differences
+ CES Industry                                                           Previously
+     Code                   CES Industry Title             As Revised   Published    Amount      Percent
+ 00-000000          Total nonfarm                             157,517      158,106      -589         -0.4
+ 05-000000          Total private                             134,216      134,837      -621         -0.5
+ 06-000000          Goods-producing                            21,645       21,801      -156         -0.7
+ 07-000000          Service-providing                         135,872      136,305      -433         -0.3
+ 08-000000          Private service-providing                 112,571      113,036      -465         -0.4
+ 10-000000          Mining and logging                            637          643        -6         -0.9
+ 20-000000          Construction                                8,170        8,207       -37         -0.5
+ 30-000000          Manufacturing                              12,838       12,951      -113         -0.9
+ 31-000000          Durable goods                               7,994        8,140      -146         -1.8
+ 32-000000          Nondurable goods                            4,844        4,811        33          0.7
+ 40-000000          Trade, transportation, and utilities       28,891       28,962       -71         -0.2
+ 41-420000          Wholesale trade                          6,130.20     6,158.90     -28.7         -0.5
+ 42-000000          Retail trade                            15,545.30    15,662.00    -116.7         -0.8
+ 43-000000          Transportation and warehousing           6,626.10     6,553.40      72.7          1.1
+ 44-220000          Utilities                                     589        587.4       1.6          0.3
+ 50-000000          Information                                 2,959        3,019       -60           -2
+ 55-000000          Financial activities                        9,152        9,226       -74         -0.8
+ 60-000000          Professional and business services         22,637       22,953      -316         -1.4
+ 65-000000          Private education and health               26,214       26,087       127          0.5
+                    services
+ 70-000000          Leisure and hospitality                    16,772       16,893      -121          -0.7
+ 80-000000          Other services                              5,946        5,896        50           0.8
+ 90-000000          Government                                 23,301       23,269        32           0.1
+                                                                                       To Table of Figures
+
+
+
+Not seasonally adjusted estimates
+Benchmark employment levels for March are compared to CES estimates that have not been
+seasonally adjusted to calculate the new March employment level. Twenty-one months of not
+seasonally adjusted CES estimates for all data types are revised based on this new March level,
+prior to seasonal adjustment. Revisions to not seasonally adjusted CES estimates are described
+below.
+Not seasonally adjusted revisions
+Table 3 presents the not seasonally adjusted employment benchmarks for March 2024 by major
+industry sector. The total revision to not seasonally adjusted total nonfarm employment is
+-598,000.
+U.S. Bureau of Labor Statistics                                                                Page 5 of 35
+                                                                                               Back to Top
+Table 3. Not seasonally adjusted employment benchmarks for major industry sectors,
+March 2024 (in thousands)
+    CES                                                                                      Differences
+  Industry         CES Industry
+    Code                 Title             Benchmark              Estimate(1)          Amount           Percent
+ 00-000000      Total nonfarm                   156,612                157,210             -598              -0.4
+ 05-000000      Total private                   132,995                133,630             -635              -0.5
+ 06-000000      Goods-producing                  21,359                 21,466             -107              -0.5
+ 07-000000      Service-providing               135,253                135,744             -491              -0.4
+                Private service-
+ 08-000000      providing                           111,636             112,164               -528             -0.5
+                Mining and
+ 10-000000      logging                                 630                 640                 -10            -1.6
+ 20-000000      Construction                          7,939               7,971                 -32            -0.4
+ 30-000000      Manufacturing                        12,790              12,855                 -65            -0.5
+ 31-000000      Durable goods                         7,971               8,070                 -99            -1.2
+ 32-000000      Nondurable goods                      4,819               4,785                  34             0.7
+                Trade,
+                transportation, and
+ 40-000000      utilities                           28,614              28,702                 -88             -0.3
+ 41-420000      Wholesale trade                   6,105.20                6,134              -28.8             -0.5
+ 42-000000      Retail trade                     15,366.80             15,492.5             -125.7             -0.8
+                Transportation and
+ 43-000000      warehousing                        6,553.80                6,489               64.8               1
+ 44-220000      Utilities                             587.9                586.6                1.3             0.2
+ 50-000000      Information                           2,940                3,003                -63            -2.1
+ 55-000000      Financial activities                  9,094                9,170                -76            -0.8
+                Professional and
+ 60-000000      business services                    22,396              22,776               -380             -1.7
+                Private education
+ 65-000000      and health services                  26,325              26,182                143              0.5
+                Leisure and
+ 70-000000      hospitality                          16,362              16,478               -116             -0.7
+ 80-000000      Other services                        5,905               5,853                 52              0.9
+ 90-000000      Government                           23,617              23,580                 37              0.2
+Footnotes
+(1)
+    With the 2024 benchmark, CES reconstructed several national employment series. A recoding of establishments
+    in the QCEW resulted in about 50,000 in employment in computer and peripheral equipment manufacturing (31-
+    334100) being moved into corporate, subsidiary, and regional managing offices (60-551114). Affected series were
+    reconstructed for their history going back to January 2005. For more information, see the Reconstructions section
+    in the 2024 CES Benchmark Article.
+                                                                                                  To Table of Figures
+
+Benchmarks for more detailed industries are available on the CES detailed industry tables webpage.
+
+Table 4 below shows the recent history of not seasonally adjusted total nonfarm percent and
+level benchmark revisions. Over the prior 10 years, the annual benchmark revision at the total
+
+
+
+U.S. Bureau of Labor Statistics                                                                        Page 6 of 35
+                                                                                                       Back to Top
+nonfarm level has averaged 0.1 percent (in absolute terms), with a range of less than 0.05 percent
+to 0.3 percent.
+
+The differences listed in table 4 and beyond reflect the error due to normal benchmarking
+procedures after the incorporation of reconstructions. Those years are footnoted.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                       Page 7 of 35
+                                                                                      Back to Top
+Table 4. Percent and level differences between nonfarm employment benchmarks and estimates by industry supersector, March 2014
+to 2024 (in thousands)
+ CES Industry
+    Code                 CES Industry Title        Type     2014      2015(1)    2016       2017(2)    2018(3)     2019(4)   2020       2021     2022(5)   2023       2024(6)
+                                                  Percent       (7)
+                                                                         -0.1       -0.1        0.1         (7)
+                                                                                                                    -0.3        -0.1       (7)
+                                                                                                                                                     0.3      -0.1       -0.4
+ 00-000000             Total nonfarm
+                                                  Level         67      -172         -81       135          -16    -489        -121         -7      506      -187       -598
+                                                  Percent      0.1       -0.2       -0.1        0.1        -0.1     -0.4        -0.1      -0.2       0.5      -0.2       -0.5
+ 05-000000             Total private
+                                                  Level       105       -232       -151        133        -104     -505        -184      -256       607      -249       -635
+                                                  Percent     -1.8       -2.2       -3.2       -4.6        -1.1     -2.1          -4    -11.5       -3.1        (7)
+                                                                                                                                                                         -1.6
+ 10-000000             Mining and logging
+                                                  Level        -16        -19        -22        -30          -8      -15         -27       -63       -18        (7)
+                                                                                                                                                                          -10
+                                                  Percent      1.6        0.6        0.7        0.8         0.6     -0.1          (7)
+                                                                                                                                          -0.6       0.9      0.6        -0.4
+ 20-000000             Construction
+                                                  Level         90         39         47         52          44       -4          2        -41        70       44         -32
+                                                  Percent      0.4       -0.1        0.5        0.1        -0.1       (7)
+                                                                                                                               -0.6       -0.3       0.2     -0.3        -0.5
+ 30-000000             Manufacturing
+                                                  Level         43        -12         58         15         -18        -4       -75        -42        22      -44         -65
+                       Trade, transportation,     Percent     -0.1         (7)
+                                                                                    -0.4        0.3        -0.3      -0.4       0.1        1.1       0.1     -0.1        -0.3
+ 40-000000
+                       and utilities              Level        -31        -5       -110          75         -77     -117         24       307         32      -35         -88
+                                                  Percent     -0.8      -0.7        -1.1       -0.4        -0.9      -0.7      -0.8       -0.4       1.7      0.8        -0.5
+   41-420000   (8)
+                          Wholesale trade
+                                                  Level      -45.4     -41.3      -66.6       -21.2      -54.4     -38.6        -48     -23.6     101.1      49.8       -28.8
+                                                  Percent       (7)
+                                                                        -0.2        -0.8        0.1        -0.6        -1      -0.5        0.4      -1.6      0.3        -0.8
+   42-000000   (8)
+                          Retail trade
+                                                  Level        5.5     -23.5     -118.2       15.4       -96.4    -150.8      -78.3      57.9    -252.2      42.6     -125.7
+                          Transportation and      Percent      0.2        1.4       1.7         1.6        1.4        1.4        2.6       4.5       2.6      -2.2          1
+   43-000000(8)
+                          warehousing             Level        9.7      65.3       83.5       79.8        72.7      75.8      148.9     270.1     170.1    -145.1      64.8
+                                                  Percent     -0.1       -0.8      -1.6         0.2        0.3       -0.7        0.2       0.5       2.4       3.1        0.2
+   44-220000(8)           Utilities
+                                                  Level       -0.6       -4.7      -8.7           1        1.8       -4.1        1.1       2.8     13.3      17.5         1.3
+                                                  Percent      2.4       -1.6      -0.1         2.5        2.1        1.2        0.5         3       2.7      -1.2       -2.1
+ 50-000000             Information
+                                                  Level         66        -44        -2         70          59         35         14        84        80       -36        -63
+                                                  Percent      0.2       -0.1         (7)
+                                                                                                0.1       -0.1        0.8        0.3      -0.7       1.1       0.6       -0.8
+ 55-000000             Financial activities
+                                                  Level         19         -9         -4          7        -12         68         25       -64        94        55        -76
+                       Professional and           Percent     -0.8       -0.6       -0.6       -1.3       -0.4       -0.8       -0.6         1         1      -0.5       -1.7
+ 60-000000
+                       business services          Level      -147       -110       -125       -270         -72      -159       -123       218       230      -113       -380
+                       Private education and      Percent     -0.1         (7)
+                                                                                    -0.4        0.3         (7)
+                                                                                                                     -0.4       -0.2       0.5      -0.3      -0.2        0.5
+ 65-000000
+                       health services            Level        -16         -7        -83        70           5        -95        -47      125        -69       -46       143
+                                                  Percent      0.3       -0.3        0.7        0.8         (7)
+                                                                                                                     -1.1        0.2      -4.4       1.1      -0.2       -0.7
+ 70-000000             Leisure and hospitality
+                                                  Level         38        -45       102        126          -4      -170          31     -572       161        -29      -116
+                                                  Percent      1.1       -0.4       -0.2        0.3       -0.4       -0.8       -0.1      -3.9       0.1      -0.8        0.9
+ 80-000000             Other services
+                                                  Level         59        -20        -12        18         -21        -44         -8     -208          5       -45         52
+                                                  Percent     -0.2        0.3        0.3         (7)
+                                                                                                           0.4        0.1        0.3       1.1      -0.5       0.3        0.2
+ 90-000000             Government
+                                                  Level        -38         60         70          2         88         16         63      249      -101         62         37
+
+                     U.S. Bureau of Labor Statistics                                                                                                             Page 8 of 35
+                                                                                                                                                                 Back to Top
+Footnotes
+(1) With the 2015 benchmark, CES reconstructed the national employment series 65-624120, services for the elderly and persons
+
+    with disabilities back to January 2000. CES previously reconstructed this series with the 2013 benchmark; however, between
+    the 2013 and 2015 benchmark, a better source of information for the employment within NAICS 62412 for the state of
+    California was found. The inclusion of the reconstructed series resulted in total nonfarm and total private employment that was
+    27,000 less than the originally published March 2015 estimate level. The difference between the benchmarked and originally
+    published March 2015 estimate level is -199,000 or -0.1 percent. This table displays March 2015 data after accounting for the
+    decrease of 27,000 from the reconstructed series. Similarly, for the private education and health services supersector, this table
+    displays March 2015 data after incorporating the reconstructed series. For more information about this reconstruction, see the
+    Reconstruction section of the 2015 CES Benchmark Article.
+(2) With the 2017 benchmark, CES reconstructed the national employment series 60-561613, security guards and patrols and
+
+    armored car services back to October 2016 to correct a microdata error. The inclusion of the reconstructed series resulted in
+    total nonfarm and total private employment that was 3,000 more than the originally published March 2017 estimate level. The
+    difference between the benchmarked and originally published March 2017 estimate level is 138,000 or 0.1 percent. This table
+    displays March 2017 data after accounting for the increase of 3,000 from the reconstructed series. Similarly, for the
+    professional and business services supersector, this table displays March 2017 data after incorporating the reconstructed series.
+    For more information, see the Reconstructions section in the 2017 CES Benchmark Article.
+(3) With the 2018 benchmark, CES reconstructed several national employment series. A recoding effort in the QCEW resulted in
+
+    about 336,000 in employment in wholesale trade agents and brokers (41-425120) moved into other series within the wholesale
+    trade, retail trade, transportation and warehousing, and professional and business services major industry sectors. Affected
+    basic-level series were reconstructed for their entire history, generally back to January 1990. Additionally, a reclassification of
+    a state employer to private ownership caused a shift of about 17,000 in employment from the CES series other state
+    government (90-922999) into services for the elderly and persons with disabilities (65-624120). Affected basic-level series
+    were reconstructed from March 2018 back to January 2018. For more information about this reconstruction, see the
+    Reconstruction section in the 2018 CES Benchmark Article.
+(4) With the 2019 benchmark, BLS reconstructed some national employment series in transportation to correct an error in rail
+
+    transportation (43-482000), which had resulted in 16,000 in employment being double counted. The reconstruction removed
+    the double-counted employment and affected aggregates of rail transportation, up to and including total nonfarm, back to
+    January 1990. While the difference between the benchmarked and originally published March 2019 estimate level is -505,000,
+    or -0.3 percent, this table displays March 2019 data after accounting for the removal of 16,000 from the published series. For
+    more information, see the Reconstructions section in the 2019 CES Benchmark Article.
+(5) With the 2022 benchmark, BLS reconstructed several national employment series. A recoding effort in the QCEW resulted in
+
+    about 68,000 in employment in electronic shopping and mail-order houses (42-454100) being moved into corporate,
+    subsidiary, and regional managing offices (60-551114). Affected series were reconstructed for their entire history going back
+    to January 1990. Additionally, the CES program found that some QCEW employment microdata submitted for services for the
+    elderly and persons with disabilities (NAICS 624120) was erroneously reported for the first quarter of 2022. CES imputed the
+    March 2022 level for this industry, and the new level was approximately 83,000 greater than the originally reported QCEW
+    level. For more information, see the Reconstructions and Adjustments to population data sections in the 2022 CES Benchmark
+    Article.
+(6) With the 2024 benchmark, CES reconstructed several national employment series. A recoding of establishments in the QCEW
+
+    resulted in about 50,000 in employment in computer and peripheral equipment manufacturing (31-334100) being moved into
+    corporate, subsidiary, and regional managing offices (60-551114). Affected series were reconstructed for their history going
+    back to January 2005. For more information, see the Reconstructions section in the 2024 CES Benchmark Article.
+(7) Absolute revision is less than 0.05 percent or fewer than 500 employees.
+(8) Indented industries are part of trade, transportation, and utilities.
+
+                                                                                                                To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                         Page 9 of 35
+                                                                                                                        Back to Top
+Benchmark revision effects for other data types
+Benchmarking also affects the series for production and nonsupervisory employees (PE) and
+women employees (WE). There are no benchmark employment levels for these series; they are
+revised by preserving ratios of employment for the particular data type to the all employee (AE)
+level prior to benchmarking, and then applying these ratios to the revised all employee level.
+These figures are calculated at the basic cell level and then aggregated to produce the summary
+estimates. Average weekly hours (AWH), average hourly earnings (AHE), and, in manufacturing
+industries, average weekly overtime hours (AWOH) are not benchmarked; they are estimated
+solely from reports supplied by survey respondents at the basic estimating cell level. New
+employment benchmarks can additionally affect indirectly estimated data types. For more
+information on indirectly estimated data types, see Derivative data in the Calculations section of
+the CES Handbook of Methods.
+
+Table 5 lists directly estimated data types and their common abbreviations. Directly estimated
+data types except for AE are collectively called non-AE data types.
+
+Table 5. Directly estimated data types
+                                   Data Type                                        Abbreviation
+ All employees                                                                   AE
+ Production and nonsupervisory employees                                         PE
+ Women employees                                                                 WE
+ Average weekly hours of all employees                                           AE AWH
+ Average hourly earnings of all employees                                        AE AHE
+ Average weekly overtime hours of all employees                                  AE AWOH
+ Average weekly hours of production and nonsupervisory employees                 PE AWH
+ Average hourly earnings of production and nonsupervisory employees              PE AHE
+ Average weekly overtime hours of production and nonsupervisory employees        PE AWOH
+                                                                                   To Table of Figures
+
+The aggregate industry levels of the hours and earnings series are derived as a weighted average.
+AE and PE estimates for basic cells act as weights for their respective hours and earnings
+estimates for broader industry groupings. Adjustments of AE estimates to new benchmarks may
+alter the implicit weights used for both AE and PE hours and earnings, which, in turn, may
+change the estimates for both AE and PE hours and earnings at higher levels of aggregation.
+
+Generally, new employment benchmarks have little effect on hours and earnings estimates for
+major industry groupings. To influence the hours and earnings estimates of a broader industry
+group, employment revisions must be relatively large and must affect industries that have hours
+or earnings averages that are substantially different from those of other industries in their broader
+group.
+
+Table 6 and table 7 provide information on the not seasonally adjusted levels of major industry
+sector hours and earnings series resulting from the March 2024 benchmark. At the total private
+level, there was no change in average weekly hours estimates for AE and PE from the previously
+
+U.S. Bureau of Labor Statistics                                                          Page 10 of
+                                                                                         35
+                                                                                         Back to Top
+published level. Total private average hourly earnings increased by 2 cents for AE and PE from
+the previously published level.
+
+Benchmark effects on hours and earnings for more detailed industries are available on the CES
+detailed industry tables webpage.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                     Page 11 of 35
+                                                                                     Back to Top
+Table 6. Effect of March 2024 benchmark revisions to all employees average weekly hours and average hourly earnings
+estimates, major industry sectors
+  CES Industry                                          Average Weekly Hours                  Average Hourly Earnings
+       Code               CES Industry Title      Estimated     Revised    Difference   Estimated      Revised    Difference
+ 05-000000              Total private                  34.2        34.2          0         $34.63       $34.65           $0.02
+ 06-000000              Goods-producing                39.8        39.8          0          35.21        35.21               0
+                        Private service-               33.1        33.1          0           34.5        34.52            0.02
+ 08-000000
+                        providing
+ 10-000000              Mining and logging             45.2        45.1        -0.1        39.13          39.18                0.05
+ 20-000000              Construction                    39          39            0        37.68          37.66               -0.02
+ 30-000000              Manufacturing                  40.1        40.1           0        33.51           33.5               -0.01
+ 31-000000              Durable goods                  40.7        40.7           0        35.36          35.41                0.05
+ 32-000000              Nondurable goods               39.1        39.1           0        30.25          30.23               -0.02
+                        Trade, transportation,         33.6        33.6           0        29.77          29.78                0.01
+ 40-000000
+                        and utilities
+ 41-420000              Wholesale trade                38.9        38.9           0        37.36          37.33               -0.03
+ 42-000000              Retail trade                   29.4        29.4           0        24.29           24.3                0.01
+                        Transportation and             37.8        37.7        -0.1        30.41          30.41                   0
+ 43-000000
+                        warehousing
+ 44-220000              Utilities                       42          42           0         51.12          51.11               -0.01
+ 50-000000              Information                    36.2        36.3        0.1         49.09          49.13                0.04
+ 55-000000              Financial activities           37.3        37.4        0.1            45          45.04                0.04
+                        Professional and               36.3        36.3          0         41.63          41.62               -0.01
+ 60-000000
+                        business services
+                        Private education and          33.1        33.1          0         33.79          33.93                0.14
+ 65-000000
+                        health services
+ 70-000000              Leisure and hospitality        25.5        25.5           0         21.9          21.87               -0.03
+ 80-000000              Other services                 32.3        32.2        -0.1        31.29          31.66                0.37
+                                                                                                                  To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                        Page 12 of 35
+                                                                                                                        Back to Top
+Table 7. Effect of March 2024 benchmark revisions to production and nonsupervisory employee average weekly hours
+and average hourly earnings estimates, major industry sectors
+  CES Industry                                               Average Weekly Hours             Average Hourly Earnings
+      Code                     CES Industry Title       Estimated Revised Difference     Estimated       Revised     Difference
+ 05-000000             Total private                          33.6     33.6          0          $29.76       $29.78       $0.02
+ 06-000000             Goods-producing                        40.5     40.4       -0.1            30.62       30.62            0
+ 08-000000             Private service-providing              32.5     32.5          0            29.58       29.61         0.03
+ 10-000000             Mining and logging                     47.7     47.5       -0.2            36.19       36.23         0.04
+ 20-000000             Construction                           39.5     39.5          0            35.16       35.15        -0.01
+ 30-000000             Manufacturing                          40.7     40.6       -0.1            27.42       27.41        -0.01
+ 31-000000             Durable goods                          41.1       41       -0.1            28.85       28.88         0.03
+ 32-000000             Nondurable goods                         40       40          0            25.08       25.07        -0.01
+                       Trade, transportation, and             33.6     33.6          0            25.87        25.9         0.03
+ 40-000000
+                       utilities
+ 41-420000             Wholesale trade                        38.9     38.9          0           31.01         30.98         -0.03
+ 42-000000             Retail trade                           29.9      30         0.1           20.81         20.84          0.03
+ 43-000000             Transportation and warehousing         36.9     36.9          0           28.99            29          0.01
+ 44-220000             Utilities                              42.3     42.3          0           45.21         45.23          0.02
+ 50-000000             Information                            35.6     35.7        0.1           40.51         40.57          0.06
+ 55-000000             Financial activities                   36.7     36.7          0           35.46         35.47          0.01
+                       Professional and business              36.1     36.1          0           35.06         35.02         -0.04
+ 60-000000
+                       services
+                       Private education and health           32.3     32.2       -0.1           30.89         31.02          0.13
+ 65-000000
+                       services
+ 70-000000             Leisure and hospitality                24.2     24.2         0            19.42         19.39         -0.03
+ 80-000000             Other services                         31.3     31.3         0            27.02         27.38          0.36
+                                                                                                                 To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                        Page 13 of 35
+                                                                                                                        Back to Top
+Net birth-death revisions
+The difference between CES estimates and the population employment results from various
+sources. Disaggregating it into its components is complex. Both data sources are subject to
+nonresponse error and reporting error. Additionally, the CES estimates are subject to sampling
+error and business birth and death modeling error.
+
+The CES sample alone is not sufficient for estimating the total nonfarm employment level
+because each month, new establishments generate employment that cannot be captured through
+the sample. There is an unavoidable lag between an establishment opening for business and its
+appearance on the CES sample frame. The sample frame is built from UI quarterly tax records.
+These records cover virtually all U.S. employers and include business births, but they only
+become available for updating the CES sampling frame 7 to 9 months after the reference month.
+After the births appear on the frame, there is also time required for sampling, contacting, and
+soliciting cooperation from the establishments, and verifying the initial data provided. In
+practice, BLS cannot sample and begin to collect data from new establishments until they are at
+least a year old.
+
+BLS has researched both sample-based and model-based approaches to measuring employment
+from business births and deaths that have not yet appeared on the UI universe frame. The
+research demonstrated that sampling for births was not feasible in the very short CES production
+timeframes, so BLS uses a model-based approach to account for this employment. This model
+incorporates two components. The first component is an indirect imputation for business deaths.
+The second component is an autoregressive integrated moving average (ARIMA) time series
+model designed to estimate the net birth-death employment not accounted for by the imputation
+from the first component. More information on the CES birth-death model is available in
+Business births and deaths in the Calculation section of the CES Handbook of Methods.
+
+An analysis of error in the birth-death model and the effect of those errors on CES estimation
+follows.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                       Page 14 of 35
+                                                                                       Back to Top
+Forecasted vs. actual net birth-death
+Only error from the model-based component of CES estimation is directly measurable. Error from this component is measured by
+comparing the actual net of births and deaths with the model-based forecast that was used in the CES sample-based estimates during
+the previous benchmark year. Most recently, the data from April 2023 to March 2024 can be measured. As table 8 shows, the actual
+net birth-death from April 2023 to March 2024 was approximately 256,000 below the forecast used in the CES monthly estimates for
+the same period.
+
+
+Table 8. Differences between forecasted and actual net birth-death, total private employment, April 2023 to March 2024
+(in thousands)
+  Benchmark                                          2023                                                  2024
+      2024            Apr         May   Jun   Jul     Aug      Sep      Oct     Nov      Dec      Jan      Feb     Mar        Total
+ Actual Net           389         208    41   217      74      -105      335     -9       -42       -10       88    -77        1,109
+ Birth-Death
+ Forecast Net          368        244   81    295     110      -117      425      7        -57     -121     151       -21      1,365
+ Birth-Death
+ Difference            21         -36   -40    -78     -36      12        -90    -16        15      111      -63      -56       -256
+ Cumulative            21         -15   -55   -133    -169     -157      -247   -263      -248     -137     -200     -256
+ Difference
+                                                                                                                    To Table of Figures
+
+
+Net birth-death adjustments to the post-benchmark period
+From April 2024 to December 2024, also called the post-benchmark period, CES estimates were recalculated for each month based
+primarily on new benchmark levels and new net birth-death forecasts. Net birth-death forecasts were revised to incorporate
+information from the most recent year of universe employment counts. Table 9 shows the net birth-death values for the supersectors
+over the post-benchmark period. From April 2024 to December 2024, the net birth-death model cumulatively added 1,104,000 jobs,
+compared with 1,356,000 in the previously published April 2024 to December 2024 employment estimates.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                          Page 15 of 35
+                                                                                                                          Back to Top
+Table 9. Net birth-death forecasts by industry supersector, April to December 2024 (in thousands)
+                                                                                                                                     Cumulative
+  CES Industry Code                 CES Industry Title                      Apr   May    Jun   Jul   Aug   Sep    Oct   Nov    Dec     Total
+ 10-000000               Mining and logging                                   0      0     0     0     0      0     1      0     0              1
+ 20-000000               Construction                                        48     31    15    11     7     -1    25    -10   -15            111
+ 30-000000               Manufacturing                                        6      6     2     1     1      1     5      2     2             26
+ 40-000000               Trade, transportation, and utilities                19     15     0    22    13     -4    53     12     7            137
+  41-420000(1)             Wholesale trade                                    3     -1    -6     5     1     -7    14      1     1             11
+  42-000000  (1)
+                           Retail trade                                      12     13     7    11    10      3    23      2     0             81
+  43-000000(1)             Transportation and warehousing                     4      3    -1     6     2      0    15      9     6             44
+  44-220000(1)             Utilities                                          0      0     0     0     0      0     1      0     0              1
+ 41-000000               Information                                         10      5    -1     6     3     -4    11      4     2             36
+ 55-000000               Financial activities                                 7      6    -4    11     2     -9    32      2     8             55
+ 60-000000               Professional and business services                 132     31   -39    76    10    -37   117      7   -26            271
+ 65-000000               Private education and health services               51      9   -27    49    11    -22    75     12   -16            142
+ 70-000000               Leisure and hospitality                             89     84    72    64    22    -47    13    -18    -3            276
+ 80-000000               Other services                                      22      2     8     9     1     -6    17      1    -5             49
+ Total private net birth-death forecast                                     384    189    26   249    70   -129   349     12   -46          1,104
+Footnotes
+(1)
+    Indented industries are part of trade, transportation, and utilities.
+                                                                                                                                To Table of Figures
+
+Effective with the release of preliminary January 2025 employment estimates in February 2025, BLS modified the ARIMA-based
+component of the birth-death model by incorporating current sample information to inform the forecasts. This modification was only
+applied to re-calculated months from April to October, known as the post-benchmark period. November, December, and January, as
+well as future monthly estimates, use birth-death components calculated without this modification. More information about this
+adjustment is available on the CES birth-death frequently asked questions page.
+
+The sum of net birth-death forecasts for the 7-month post-benchmark period is 101,000 lower than the forecasts used in monthly
+estimation for the same period. It is 228,000 lower than it would have been had this adjustment not been used. See table 10 below for
+effects of this birth-death modification on major industry sectors.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                                       Page 16 of 35
+                                                                                                                                       Back to Top
+Table 10. Comparison of cumulative preliminary, usual post-benchmark, and modified post-benchmark net birth-death
+         forecasts for April to October of 2024 (in thousands)
+                                                                                   Forecast                                    Differences
+     CES                                                                                          Modified                      Modified
+   Industry                                                                       Usual Post-       Post-      Usual Minus       Minus           Modified
+     Code             CES Industry Title                      Preliminary         Benchmark      Benchmark     Preliminary     Preliminary      Minus Usual
+ 10-000000      Mining and logging                                            3              3            1                0              -2              -2
+ 20-000000      Construction                                                142            139          136              -3               -6              -3
+ 30-000000      Manufacturing                                                28             34           22                6              -6             -12
+ 40-000000      Trade, transportation, and                                  153            176          118              23              -35             -58
+                utilities
+ 41-420000(1) Wholesale trade                                                13             14            9               1               -4               -5
+ 42-000000(1) Retail trade                                                   91            108           79              17              -12              -29
+ 43-000000(1) Transportation and                                             48             53           29               5              -19              -24
+                warehousing
+ 44-220000(1) Utilities                                                       1              1            1               0                0                0
+ 50-000000      Information                                                  31             36           30               5               -1               -6
+ 55-000000      Financial activities                                         50             58           45               8               -5              -13
+ 60-000000      Professional and business                                   314            337          290              23              -24              -47
+                services
+ 65-000000      Private education and health                                151            186          146              35               -5              -40
+                services
+ 70-000000      Leisure and hospitality                                   321              345           297             24              -24              -48
+ 80-000000      Other services                                             46               52            53              6                7                1
+ Total private net birth-death forecast                                 1,239            1,366         1,138            127             -101             -228
+Footnotes
+(1)
+    Indented industries are part of trade, transportation, and utilities.
+                                                                                                                                   To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                                                                         Page 17 of 35
+                                                                                                                                         Back to Top
+Reconstructions
+Computer and peripheral equipment manufacturing reconstruction
+QCEW’s Annual Refiling Survey identified incorrectly coded establishments for the first quarter
+of 2024, moving a significant amount of employment out of computer and peripheral equipment
+manufacturing (31-334100) into corporate, subsidiary, and regional managing offices (60-
+551114) for March 2024.
+
+Due to the magnitude of the change, the employment and its associated hours and earnings were
+moved out of 31-334100 and into 60-551114 before benchmarking. For CES purposes, this
+resulted in about 50,000 in employment in 31-334100 moving into 60-551114 for March 2024.
+Both industries and their summary series up to the major industry sector were reconstructed for
+all employees (AE), production and nonsupervisory employees (PE), women employees (WE),
+and AE and PE hours, earnings, and overtime.
+
+The detailed industries and their summary series begin in 1990 for most data types, except AE-
+AWH, AE-AHE, and AE-AOH, which begin in 2006. Research showed the incorrect coding
+began in the first quarter of 2005. Therefore, the series were reconstructed from 2005 forward.
+
+Basic-level reconstruction methods
+
+A part of the CES industry 31-334100 in the durable goods industry sector was redistributed into
+60-551114 in the professional and business services major industry sector.
+
+A ratio of employment moving out of computer and electronic product manufacturing (31-
+334000) amounting to 4.5 percent was calculated from QCEW data for March 2024. Note that
+for 31-334100 only AE is published. All other datatypes are published at the level 31-334000.
+Only a ratio at the 31-334000 level was calculated. It was applied to AE at the 31-334000 level,
+as well as all the non-AE data types, and that same amount of AE was taken out of 31-334100.
+
+The ratio was applied to the March 2024 CES AE, PE, and WE estimates for computer and
+electronic product manufacturing to determine the amount of employment to wedge from March
+2024 for the history of the series back to 2005, or 231 months. The amount of employment
+moving out of computer and electronic product manufacturing in March 2024 was spread back
+across those 231 months linearly; 1/231 of the March difference is subtracted from the January
+2005 estimate, 2/231 from the February 2005 estimate, and so on, until the full amount is
+subtracted from the March 2024 estimate. These employment amounts were then added to the
+employment of corporate, subsidiary, and regional managing offices to get the new totals.
+
+Average hours and average earnings for corporate, subsidiary, and regional managing offices
+was affected back to 2005. The amount of total hours to move into corporate, subsidiary, and
+regional managing offices was calculated by multiplying the amount of employment moving out
+of computer and electronic product manufacturing by the AWH for that industry. Total earnings
+to move out of computer and electronic product manufacturing was calculated by multiplying the
+total hours moving to corporate, subsidiary, and regional managing offices by AHE for computer
+and electronic product manufacturing. These formulas apply to both AE and PE hours and
+
+U.S. Bureau of Labor Statistics                                                       Page 18 of 35
+                                                                                       Back to Top
+earnings. The parts of total hours and total earnings moved were summed with the original total
+hours and total earnings for corporate, subsidiary, and regional managing offices. Those new
+total hours and total earnings were then averaged using the new employment levels for corporate,
+subsidiary, and regional managing offices. The AWH and AHE for corporate, subsidiary, and
+regional managing offices, therefore, did change due to the reconstruction. More information
+about the calculation of CES employment, hours, and earnings estimates is available in the
+Handbook of Methods under Monthly Estimation.
+
+Aggregate-level reconstruction effects
+
+Reconstructed basic series from the computer and electronic product manufacturing and
+corporate, subsidiary, and regional managing offices reconstruction were summed to aggregate
+levels using the normal CES aggregation methods (see the Aggregation procedures section in the
+CES Handbook of Methods), and, consequently, unadjusted aggregate employment series are
+subject to change from the detailed aggregate series to summary level aggregates within each of
+the major industry sectors. Additionally, the reconstruction affected major industry sector level
+employment for manufacturing, durable goods, and professional and business services.
+Employment, hours, and earnings series are subject to change from summary levels to major
+industry sector levels for private service-providing, service-providing, goods-producing, total
+private, and total nonfarm. Average weekly overtime hours in manufacturing industries and their
+aggregates are also subject to change. Differences for not seasonally adjusted employment for
+manufacturing, durable goods, and professional and business services are minor, ranging
+from -2,000 to 3,000.
+
+
+Historical reconstructions
+The following reconstructions to the historical CES series did not affect the benchmark.
+
+
+General medical and surgical hospitals reconstruction
+
+With the 2010 benchmark, a large amount of employment was reclassified and moved out of
+general medical and surgical hospitals (65-622100) and into HMO medical centers (65-621491).
+The reclassification was not addressed at the time, leading to a break in the time series for these
+industries from April 2009 to March 2010. Addressing the break involved moving employment,
+hours, and earnings from 65-622100 and its summary level 65-622000 into 65-621491 and its
+summary levels 65-621490, 65-621400, and 65-621000.
+
+Once the un-benchmarked data was reconstructed, April 2009 to March 2010 was wedged to the
+benchmark 2010 levels. This brought the entire reconstructed series in line with the already
+benchmarked series from March 2010 to March 2024.
+
+The detailed industries and their summary series go back to 1990 for most industries and data
+types. For AE-AWH and AE-AHE, data go back to 2006. For 65-622100, AE goes back to 1958;
+WE goes back to 1960; and PE, PE AWH, and PE AHE go back to 1968. Each industry was
+reconstructed from the beginning of its history to March 2010, when the break occurred.
+
+
+U.S. Bureau of Labor Statistics                                                         Page 19 of 35
+                                                                                         Back to Top
+Subsequent reconstruction to HMO medical centers during the 2016 benchmark
+During the 2016 benchmark, it was found that a portion of employment in 65-621111 should
+have been in 65-621491. The 2010 reconstruction was constructed using data that predated the
+2016 reconstruction. Therefore, after the 2010 reconstruction was complete, a second
+reconstruction using the amounts moved into 65-621491 from 1990 to 2010 was required to fully
+adjust the series. The same amounts were applied to its aggregate series, including 65-621490
+and 65-621400, but not including 65-621000 because that level of aggregation was unaffected by
+the 2016 reconstruction.
+
+Reconstruction methods
+
+A part of the CES industry 65-622100 was redistributed into 65-621491 and its summary levels:
+65-621000, 65-621400, and 65-6214900.
+
+A ratio of employment moving out of general medical and surgical hospitals amounting to 0.7
+percent was calculated from QCEW data for March 2010. That ratio was applied to the un-
+benchmarked history of 65-622100 from March 2010 back to the beginning of its history. The
+ratio was applied to AE, PE, and WE, as well as total hours and total earnings for AE and PE to
+determine the amounts to move into 65-621491 for AE and 65-6214900 for all other data types.
+
+To align the reconstructed series with the currently published data, AE was wedged from April
+2009 to March 2010 using March 2010 population numbers. The wedge amount is the difference
+between the reconstructed March 2010 value and the March 2010 benchmark level. This
+difference was wedged back to April 2009. Other data types were adjusted for the wedge of AE
+data in accordance with normal benchmarking procedures.
+
+Once the wedge process was complete, amounts for the 2016 reconstruction were added to the
+reconstructed and wedged series for 65-621491, 65-621490, and 65-621400 from January 1990
+to March 2010. Neither 65-622100 nor 65-622000 were affected by the 2016 reconstruction.
+
+Finally, the reconstructed, wedged, and 2016 reconstructed data were appended to the current
+data from March 2010 to March 2024, resulting in final continuous series for all data types for
+these industries.
+
+Electric power generation reconstruction
+
+With the 2010 benchmark, a large amount of employment was reclassified and moved out of
+fossil fuel electric power generation (44-221112) and hydroelectric and nuclear, solar, wind,
+geothermal, biomass, and other electric power generation (44-22111800) and into electric power
+distribution (44-221122). At the same time, some employment was moved between 44-221112
+and 44-221118. The reclassification was not addressed at the time, leading to a break in all three
+industries from April 2009 to March 2010. The correction involved moving employment, hours,
+and earnings from 44-221112 into 44-221118 and 44-221122 and from 44-221118 into 44-
+221112 and 44-221122. No employment, hours, or earnings were moved out of 44-221122.
+
+U.S. Bureau of Labor Statistics                                                        Page 20 of 35
+                                                                                        Back to Top
+Once the un-benchmarked data was reconstructed, April 2009 to March 2010 was wedged to the
+benchmark 2010 levels. This brought the entire reconstructed series in line with the already post-
+benchmarked series from March 2010 to March 2024.
+
+The detailed industries and their summary series go back to 1990 for most data types. For AE-
+AWH and AE-AHE, data go back to 2006. Each industry was reconstructed from the beginning
+of its history to March 2010, when the break occurred.
+
+
+Important NAICS update since 2010
+In the 2012 NAICS conversion, NAICS 221119 became 221118. Along with the new 221118,
+NAICS 221111 makes up the current CES industry 44-221118. For simplicity, the CES industry
+code 44-221118 will be used to mean the group of NAICS 221111 and 221119 from the 2010
+QCEW data.
+
+Reconstruction methods
+
+Part of 44-221112 in the electric power generation industry was redistributed into 44-221118 and
+44221122. Also, part of 44-221118 was redistributed into 44-221112 and 44-22112200.
+
+Two ratios of employment moving out of 44-221112 were calculated from QCEW data for
+March 2010, amounting to 2.2 percent moving to 44-221118 and 31.8 percent moving to 44-
+221122. Also, two ratios of employment moving out of 44-221118 were calculated from QCEW
+data for March 2010, amounting to 10.9 percent moving to 44-221112 and 27 percent moving to
+44-221122.
+
+These ratios were applied to each industry from March 2010 back to January 1990 for AE, PE,
+WE, PE total hours, and PE total earnings series and back to April 2006 for AE total hours and
+AE total earnings series. The ratios were applied to the basic level industries 44-221112 and 44-
+221118 for all data types. For 44-221118, non-AE data types were backed out of the aggregate
+industry 44-221110 for non-AE series by subtracting the 44-221112 non-AE series. Ratios could
+then be applied at the 44-221118 level for all data types. Ratios were applied directly to 44-
+221112 and 44-221118 for all months from March 2010 back to the beginning of each series.
+
+To align the reconstructed series with the currently published data, AE was wedged from April
+2009 to March 2010 using March 2010 population numbers. The wedge amount is the difference
+between the reconstructed March 2010 value and the March 2010 benchmark level. This
+difference was wedged back to April 2009. Other data types were adjusted for the wedge of AE
+data in accordance with normal benchmarking procedures.
+
+Finally, the reconstructed and wedged data were appended to the current data from March 2010
+to March 2024, resulting in final continuous series for all data types for these industries.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                       Page 21 of 35
+                                                                                       Back to Top
+Changes to the CES published series
+With the release of the January 2025 first preliminary estimates on February 7, 2025, BLS
+incorporated series changes related to annual sample adequacy and disclosure review.
+
+All CES series are evaluated annually for sample size, coverage, and response rates. The
+following changes result from a re-evaluation of the sample and universe coverage for CES
+industries, which are based on NAICS 2022. Some industries no longer have sufficient sample to
+be estimated and published separately and were discontinued or combined with other similar
+industries for estimation and publication purposes. This information is also available on the
+Notice of Publication Changes webpage.
+
+In addition to the annual sample review, CES series are sometimes reconstructed to avoid series
+breaks and to provide users with comparable time series suitable for economic analysis.
+Reconstructed basic series are summed to aggregate levels using the normal CES aggregation
+methods (see the Aggregation procedures section in the CES Handbook of Methods), and,
+consequently, unadjusted aggregate employment series are subject to change from the detailed
+aggregate series to summary level aggregates within each the major industry sector. Hours and
+earnings series are subject to change from summary levels to major industry sector levels.
+Aggregate industries as well as component series used in indirect seasonal adjustment are also
+subject to change.
+
+A list of currently published CES series is available on the CES Published Series webpage.
+
+Table 11. Series with CES industry code or title changes
+                                       Previous                                    New
+                            CES                                       CES
+                          Industry                                  Industry
+   NAICS Code               Code        CES Industry Title            Code       CES Industry Title
+ 334412,8                      31-    Bare printed circuit board         31-    Bare printed circuit board
+                            334412               manufacturing        334418       and printed electronic
+ 334412,8                      31-     Printed electronic circuit                        circuit assembly
+                            334418     assembly manufacturing                              manufacturing
+
+ 33592,3,9                     31-                Wiring device         31-                Wiring device,
+                            335930               manufacturing       335990          communication and
+ 33592,3,9                     31-         Communication and                   energy wire and cable, and
+                            335990   energy wire and cable and                         all other electrical
+                                             all other electrical              equipment and component
+                                     equipment and component                               manufacturing
+                                                 manufacturing
+ 33633,4,6,9                   31-   Motor vehicle steering and         31-    Motor vehicle steering and
+                            336330     suspension components,        336390     suspension components,
+                                                  except spring,                     except spring; brake
+                                                 manufacturing                   system, seating, interior
+
+U.S. Bureau of Labor Statistics                                                                Page 22 of 35
+                                                                                                Back to Top
+                                     Previous                                New
+                            CES                                 CES
+                          Industry                            Industry
+   NAICS Code               Code      CES Industry Title        Code        CES Industry Title
+ 33633,4,6,9                   31-         Motor vehicle brake               trim, and other motor
+                            336390    system, seating, interior                       vehicle parts
+                                         trim, and other motor                      manufacturing
+                                                  vehicle parts
+                                                manufacturing
+ 323111,17,20                  32-      Commercial and book 32-          Commercial and book
+                            323117    printing (except screen) 323117    printing (except screen)
+                                                                         and support activities for
+                                                                         printing
+ 56145,9                       60-   Credit bureaus and other 60-        Repossession, court
+                            561490   business support services 561490    reporting, stenotype, and
+                                                                         other business support
+                                                                         services and credit bureaus
+                                                                                   To Table of Figures
+
+To identify affected series more easily and because AE series are published at a more detailed
+industry level than non-AE series, series changes are shown separately for AE and non-AE data
+types. The first three tables in this section reference discontinued, collapsed, and new series for
+AE only. The fourth table references discontinued series for all non-AE data types. Discontinued
+series tables (table 12 and table 15) display series for which the data types noted are no longer
+published. The collapsed series table (table 13) displays series for which the data types noted are
+published at a more aggregate level because the more detailed industry no longer has sufficient
+sample to be estimated and published separately. Affected industries have been combined with
+other similar industries for estimation and publication purposes. The new series table (table 14)
+shows series that are newly published for AE after passing tests for adequate sample and
+confidentiality of reported data. Historical data for the collapsed and newly published series were
+reconstructed to provide consistent time series. Industries that are no longer published for AE
+will also no longer be published for other directly estimated data types or derivative series.
+Industries with newly published AE will be evaluated to determine if non-AE data for those
+industries is also publishable. If so, non-AE data for those industries will be released with the
+next benchmark.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                         Page 23 of 35
+                                                                                         Back to Top
+Table 12. Discontinued AE series
+   NAICS         CES Industry                                             Next Highest Published
+    Code            Code                 CES Industry Title                       Industry
+ 332912             31-332912     Fluid power valve and hose fitting    Metal valve manufacturing (31-
+                                                       manufacturing                          332910)
+ 332911,3,9           31-332919   Industrial valve, plumbing fixture    Metal valve manufacturing (31-
+                                    fitting and trim, and other metal                         332910)
+                                               valve and pipe fitting
+                                                       manufacturing
+ 31121,2              32-311220      Flour milling, malt, starch, and    Grain and oilseed milling (32-
+                                              vegetable fats and oils                          311200)
+                                                       manufacturing
+ 31123                32-311230      Breakfast cereal manufacturing      Grain and oilseed milling (32-
+                                                                                                311200)
+ 31491                32-314910        Textile bag and canvas mills     Other textile product mills (32-
+                                                                                                314900)
+ 31499                32-314990       All other textile product mills   Other textile product mills (32-
+                                                                                                314900)
+ 455211               42-455211   Warehouse clubs and supercenters      Warehouse clubs, supercenters,
+                                                                        and other general merchandise
+                                                                                  retailers (42-455200)
+ 455219               42-455219       All other general merchandise     Warehouse clubs, supercenters,
+                                                            retailers   and other general merchandise
+                                                                                  retailers (42-455200)
+                                                                                      To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                             Page 24 of 35
+                                                                                             Back to Top
+Table 13. Collapsed AE series
+                        Previous                                                New
+                      CES                                                    CES
+   NAICS            Industry       CES Industry               NAICS        Industry      CES Industry
+    Code              Code              Title                  Code          Code             Title
+ 334412            31-334412      Bare printed circuit         334412,8    31-334418          Bare printed
+                                 board manufacturing                                     circuit board and
+ 334418            31-334418        Printed electronic                                  printed electronic
+                                     circuit assembly                                     circuit assembly
+                                       manufacturing                                        manufacturing
+
+ 33593             31-335930               Wiring device      33592,3,9    31-335990       Wiring device,
+                                          manufacturing                                   communication
+ 33592,9           31-335990        Communication and                                    and energy wire
+                                  energy wire and cable                                 and cable, and all
+                                  and all other electrical                                 other electrical
+                                          equipment and                                    equipment and
+                                              component                                        component
+                                          manufacturing                                    manufacturing
+
+ 33633             31-336330      Motor vehicle steering     33633,4,6,9   31-336390       Motor vehicle
+                                          and suspension                                      steering and
+                                     components, except                                        suspension
+                                   spring, manufacturing                                     components,
+ 33634,6,9         31-336390         Motor vehicle brake                                   except spring;
+                                         system, seating,                                  brake system,
+                                  interior trim, and other                               seating, interior
+                                      motor vehicle parts                                 trim, and other
+                                           manufacturing                                   motor vehicle
+                                                                                                      parts
+                                                                                          manufacturing
+
+                                                                                       To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                               Page 25 of 35
+                                                                                               Back to Top
+Table 14. New AE series
+                  CES
+   NAICS        Industry
+    Code          Code                                       CES Industry Title
+ 21222               10-                                                     Gold ore and silver ore mining
+                  212220
+ 21221,3,9           10-                       Iron ore, copper, nickel, lead, zinc, and other metal ore mining
+                  212290
+ 213111              10-                                                             Drilling oil and gas wells
+                  213111
+ 213113,4,5          10-                   Support activities for coal, metal, and nonmetallic minerals mining
+                  213115
+ 334111              31-                                                   Electronic computer manufacturing
+                  334111
+ 334112,8            31-                   Computer storage device, terminal, and other peripheral equipment
+                  334118                                                                      manufacturing
+ 323113              32-                                                         Commercial screen printing
+                  323113
+ 323111,17,          32-             Commercial and book printing (except screen) and support activities for
+ 20               323117                                                                           printing
+ 42431,4             41-           Footwear, piece goods, notions, and other dry goods merchant wholesalers
+                  424340
+ 42442               41-                                          Packaged frozen food merchant wholesalers
+                  424420
+ 42445               41-                                                  Confectionery merchant wholesalers
+                  424450
+ 42443,4,6,          41-          Dairy product (except dried or canned), poultry product, fish, seafood, meat,
+ 7                424470                                              and meat product merchant wholesalers
+ 42449               41-
+                  424490                             Other grocery and related products merchant wholesalers
+
+ 445291,2            42-                                         Baked goods, confectionery, and nut retailers
+                  445292
+ 445298              42-                                                      All other specialty food retailers
+                  445298
+ 561499              60-                                                   All other business support services
+                  561499
+ 562111              60-                                                                Solid waste collection
+                  562111
+ 562112,9            60-                                                 Hazardous and other waste collection
+                  562119
+
+
+
+U.S. Bureau of Labor Statistics                                                                     Page 26 of 35
+                                                                                                     Back to Top
+                  CES
+   NAICS        Industry
+    Code          Code                              CES Industry Title
+ 611512              65-                                                       Private flight training
+                  611512
+ 611511,3            65-          Private cosmetology and barber schools and apprenticeship training
+                  611513
+ 611519              65-                                    Other private technical and trade schools
+                  611519
+ 611691              65-                                       Private exam preparation and tutoring
+                  611691
+ 611699              65-                               Private miscellaneous schools and instruction
+                  611699
+                                                                                    To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                          Page 27 of 35
+                                                                                          Back to Top
+Table 15. Discontinued non-AE series
+                   CES
+   NAICS         Industry                                   Discontinued    Next Highest Published
+    Code           Code           CES Industry Title      From Publication         Industry
+ 2121                 10-                Coal mining          AE AWH, AE Mining (except oil and gas) (10-
+                   212100                                             AHE                        212000)
+ 2122                 10-            Metal ore mining         AE AWH, AE Mining (except oil and gas) (10-
+                   212200                                             AHE                        212000)
+ 23817                20-           Siding contractors        AE AWH, AE      Foundation, structure, and
+                   238170                                             AHE   building exterior contractors
+                                                                                             (20-238100)
+ 23819                20-           Other foundation,         AE AWH, AE      Foundation, structure, and
+                   238190               structure, and                AHE   building exterior contractors
+                                     building exterior                                       (20-238100)
+                                           contractors
+ 23833                20-         Flooring contractors     PE, PE AWH, PE      Building finishing contractors
+                   238330                                            AHE                        (20-238300)
+ 32191                31-                    Millwork            PE AWOH       Wood product manufacturing
+                   321910                                                                       (31-321000)
+ 32192                31-         Wood container and            AE AWOH                  Other wood product
+                   321920         pallet manufacturing                          manufacturing (31-321900)
+ 32199                31-               All other wood          AE AWOH                  Other wood product
+                   321990                      product                          manufacturing (31-321900)
+                                         manufacturing
+ 3272                 31-               Glass and glass                WE       Nonmetallic mineral product
+                   327200                      product                           manufacturing (31-327000)
+                                         manufacturing
+ 32732                31-         Ready-mix concrete      PE, PE AWH, PE       Cement and concrete product
+                   327320                manufacturing    AHE, AE AWOH,         manufacturing (31-327300)
+                                                                PE AWOH
+ 32731,3,9            31-         Cement and concrete     PE, PE AWH, PE       Cement and concrete product
+                   327390           pipe, brick, block,   AHE, AE AWOH,         manufacturing (31-327300)
+                                    and other concrete          PE AWOH
+                                               product
+                                        manufacturing
+ 3274,9               31-          Lime, gypsum, and            AE AWOH         Nonmetallic mineral product
+                   327900            other nonmetallic                           manufacturing (31-327000)
+                                       mineral product
+                                        manufacturing
+ 33271                31-              Machine shops       PE, PE AWH, PE    Machine shops; turned product;
+                   332710                                  AHE, AE AWOH            and screw, nut, and bolt
+                                                                                manufacturing (31-332700)
+
+
+
+U.S. Bureau of Labor Statistics                                                                Page 28 of 35
+                                                                                                Back to Top
+                   CES
+   NAICS         Industry                                    Discontinued       Next Highest Published
+    Code           Code           CES Industry Title       From Publication             Industry
+ 33272                31-          Turned product and       PE, PE AWH, PE    Machine shops; turned product;
+                   332720          screw, nut, and bolt     AHE, AE AWOH             and screw, nut, and bolt
+                                         manufacturing                           manufacturing (31-332700)
+ 332811,2             31-          Metal heat treating,          AE AWOH            Coating, engraving, heat
+                   332812           coating, engraving                          treating, and allied activities
+                                   (except jewelry and                                           (31-332800)
+                                       silverware), and
+                                      allied services to
+                                         manufacturers
+ 332813               31-                Electroplating,         AE AWOH             Coating, engraving, heat
+                   332813            plating, polishing,                         treating, and allied activities
+                                         anodizing, and                                           (31-332800)
+                                               coloring
+ 33291                31-                   Metal valve        AE AWH, AE         Cutlery, handtool, and other
+                   332910                manufacturing               AHE             fabricated metal product
+                                                                                  manufacturing (31-332900)
+ 33299                31-           Cutlery, handtool,         AE AWH, AE         Cutlery, handtool, and other
+                   332990                 and all other              AHE             fabricated metal product
+                                      fabricated metal                            manufacturing (31-332900)
+                                               product
+                                        manufacturing
+ 333248               31-          All other industrial          PE AWOH                Industrial machinery
+                   333248                    machinery                            manufacturing (31-333200)
+                                        manufacturing
+ 3353                 31-         Electrical equipment           PE AWOH      Electrical equipment, appliance,
+                   335300               manufacturing                          and component manufacturing
+                                                                                                 (31-335000)
+ 3359                 31-              Other electrical          PE AWOH      Electrical equipment, appliance,
+                   335900               equipment and                          and component manufacturing
+                                           component                                             (31-335000)
+                                        manufacturing
+ 3362                 31-          Motor vehicle body       PE, PE AWH, PE         Transportation equipment
+                   336200                   and trailer     AHE, PE AWOH          manufacturing (31-336000)
+                                        manufacturing
+ 336411               31-                     Aircraft      PE, PE AWH, PE      Aerospace product and parts
+                   336411               manufacturing                 AHE        manufacturing (31-336400)
+ 33995                31-          Sign manufacturing             PE AWOH              Other miscellaneous
+                   339950                                                        manufacturing (31-339900)
+ 313                  32-                 Textile mills     PE, PE AWH, PE    Nondurable goods (32-000000)
+                   313000                                            AHE
+
+
+U.S. Bureau of Labor Statistics                                                                  Page 29 of 35
+                                                                                                  Back to Top
+                   CES
+   NAICS         Industry                                   Discontinued       Next Highest Published
+    Code           Code           CES Industry Title      From Publication            Industry
+ 314                  32-         Textile product mills          PE AWOH     Nondurable goods (32-000000)
+                   314000
+ 315                  32-                      Apparel     PE, PE AWH, PE    Nondurable goods (32-000000)
+                   315000               manufacturing                AHE
+ 32221                32-         Paperboard container     PE, PE AWH, PE         Paper manufacturing (32-
+                   322210               manufacturing                AHE                            322000)
+ 3261                 32-              Plastics product       AE AWH, AE        Plastics and rubber products
+                   326100               manufacturing          AHE, PE, PE      manufacturing (32-326000)
+                                                            AWH, PE AHE,
+                                                                AE AWOH
+ 3262                 32-              Rubber product         AE AWH, AE        Plastics and rubber products
+                   326200               manufacturing          AHE, PE, PE      manufacturing (32-326000)
+                                                            AWH, PE AHE,
+                                                                AE AWOH
+ 42435                41-     Clothing and clothing        PE, PE AWH, PE          Apparel, piece goods, and
+                   424350     accessories merchant                   AHE       notions merchant wholesalers
+                                        wholesalers                                             (41-424300)
+ 42448                41-            Fresh fruit and       PE, PE AWH, PE       Grocery and related product
+                   424480       vegetable merchant                  AHE           merchant wholesalers (41-
+                                        wholesalers                                                 424400)
+ 42493                41-           Flower, nursery           AE AWH, AE          Miscellaneous nondurable
+                   424930        stock, and florists'               AHE         goods merchant wholesalers
+                                 supplies merchant                                              (41-424900)
+                                        wholesalers
+ 44423                42-           Outdoor power             AE AWH, AE        Lawn and garden equipment
+                   444230       equipment retailers                 AHE           and supplies retailers (42-
+                                                                                                    444200)
+ 44424                42-         Nursery, garden             AE AWH, AE        Lawn and garden equipment
+                   444240         center, and farm                  AHE           and supplies retailers (42-
+                                   supply retailers                                                 444200)
+ 445131               42-     Convenience retailers                   WE          Convenience retailers and
+                   445131                                                    vending machine operators (42-
+                                                                                                    445130)
+ 445132               42-            Vending machine                  WE          Convenience retailers and
+                   445132                   operators                        vending machine operators (42-
+                                                                                                    445130)
+ 44524,5              42-              Meat, fish, and     PE, PE AWH, PE       Specialty food retailers (42-
+                   445250             seafood retailers             AHE                             445200)
+ 4571                 42-             Gasoline stations    PE, PE AWH, PE         Gasoline stations and fuel
+                   457100                                           AHE                 dealers (42-457000)
+
+
+U.S. Bureau of Labor Statistics                                                                Page 30 of 35
+                                                                                                Back to Top
+                   CES
+   NAICS         Industry                                      Discontinued        Next Highest Published
+    Code           Code           CES Industry Title         From Publication            Industry
+ 45711                42-           Gasoline stations         PE, PE AWH, PE         Gasoline stations and fuel
+                   457110           with convenience                     AHE              dealers (42-457000)
+                                                stores
+ 45712                42-              Other gasoline         PE, PE AWH, PE          Gasoline stations and fuel
+                   457120                     stations                 AHE                  dealers (42-457000)
+ 4572                 42-                Fuel dealers         PE, PE AWH, PE          Gasoline stations and fuel
+                   457200                                              AHE                  dealers (42-457000)
+ 4582                 42-                 Shoe retailers      PE, PE AWH, PE     Clothing, clothing accessories,
+                   458200                                              AHE      shoe, and jewelry retailers (42-
+                                                                                                        458000)
+ 4583                 42- Jewelry, luggage, and               PE, PE AWH, PE     Clothing, clothing accessories,
+                   458300 leather goods retailers                      AHE      shoe, and jewelry retailers (42-
+                                                                                                        458000)
+ 4592                 42-           Book retailers and        PE, PE AWH, PE    Sporting goods, hobby, musical
+                   459200               news dealers                   AHE                instrument, book, and
+                                                                                    miscellaneous retailers (42-
+                                                                                                        459000)
+ 4593                 42-                        Florists     PE, PE AWH, PE    Sporting goods, hobby, musical
+                   459300                                              AHE                instrument, book, and
+                                                                                    miscellaneous retailers (42-
+                                                                                                        459000)
+ 45991                42-          Pet and pet supplies       PE, PE AWH, PE      Other miscellaneous retailers
+                   459910                        retailers             AHE                          (42-459900)
+ 48421                43-         Used household and          PE, PE AWH, PE       Specialized freight trucking
+                   484210         office goods moving                  AHE                          (43-484200)
+ 48423                43-           Specialized freight       PE, PE AWH, PE       Specialized freight trucking
+                   484230          (except used goods)                 AHE                          (43-484200)
+                                         trucking, long-
+                                                 distance
+ 2212                 44-                    Natural gas      PE, PE AWH, PE              Utilities (44-220000)
+                   221200                    distribution              AHE
+ 2213                 44-           Water, sewage, and        PE, PE AWH, PE              Utilities (44-220000)
+                   221300                  other systems               AHE
+ 51711                50-           Wired and wireless        PE, PE AWH, PE                Wired and wireless
+                   517110         telecommunications                   AHE         telecommunications (except
+                                        carriers (except                                 satellite) (50-517100)
+                                                satellite)
+ 517111               50-                          Wired      PE, PE AWH, PE                Wired and wireless
+                   517111         telecommunications                   AHE         telecommunications (except
+                                                  carriers                               satellite) (50-517100)
+
+
+U.S. Bureau of Labor Statistics                                                                   Page 31 of 35
+                                                                                                   Back to Top
+                   CES
+   NAICS         Industry                                     Discontinued        Next Highest Published
+    Code           Code           CES Industry Title        From Publication             Industry
+ 517112               50-                      Wireless      PE, PE AWH, PE                Wired and wireless
+                   517112          telecommunications                   AHE       telecommunications (except
+                                        carriers (except                                satellite) (50-517100)
+                                               satellite)
+ 51712                50-         Telecommunications         PE, PE AWH, PE                 Wired and wireless
+                   517120                       resellers             AHE          telecommunications (except
+                                                                                         satellite) (50-517100)
+ 52411                55-            Direct life, health,      AE AWH, AE       Insurance carriers (55-524100)
+                   524110                  and medical          AHE, PE, PE
+                                     insurance carriers       AWH, PE AHE,
+                                                                       WE
+ 52413                55-          Reinsurance carriers        AE AWH, AE       Insurance carriers (55-524100)
+                   524130                                       AHE, PE, PE
+                                                              AWH, PE AHE,
+                                                                       WE
+ 5322                 55-             Consumer goods                   WE      Rental and leasing services (55-
+                   532200                       rental                                                532000)
+ 532283               55-                 Home health          AE AWH, AE      Rental and leasing services (55-
+                   532283             equipment rental          AHE, PE, PE                           532000)
+                                                              AWH, PE AHE,
+                                                                       WE
+ 5323                 55-     General rental centers                   WE      Rental and leasing services (55-
+                   532300                                                                             532000)
+ 54192                60-     Photographic services             AE AWH, AE       Other professional, scientific,
+                   541920                                             AHE          and technical services (60-
+                                                                                                      541900)
+ 54193,9              60-                   Translation,        AE AWH, AE       Other professional, scientific,
+                   541990         interpretation, and all             AHE          and technical services (60-
+                                     other professional,                                              541900)
+                                          scientific, and
+                                      technical services
+ 56143                60-              Business service      PE, PE AWH, PE     Business support services (60-
+                   561430                         centers             AHE                            561400)
+ 6222                 65-                Psychiatric and               WE              Hospitals (65-622000)
+                   622200               substance abuse
+                                               hospitals
+ 6223                 65-              Specialty, except                WE              Hospitals (65-622000)
+                   622300                psychiatric and
+                                       substance abuse,
+                                               hospitals
+
+
+U.S. Bureau of Labor Statistics                                                                  Page 32 of 35
+                                                                                                  Back to Top
+                   CES
+   NAICS         Industry                                     Discontinued     Next Highest Published
+    Code           Code           CES Industry Title        From Publication           Industry
+ 7113,4               70-               Arts and sports      PE, PE AWH, PE      Performing arts, spectator
+                   711300         promoters and agents                  AHE    sports, and related industries
+                                      and managers for                                          (70-711000)
+                                         public figures
+ 7115                 70-           Independent artists,     PE, PE AWH, PE      Performing arts, spectator
+                   711500                   writers, and              AHE      sports, and related industries
+                                             performers                                         (70-711000)
+ 722514               70-               Cafeterias, grill    PE, PE AWH, PE    Restaurants and other eating
+                   722514           buffets, and buffets              AHE                places (70-722500)
+ 722515               70-                     Snack and      PE, PE AWH, PE    Restaurants and other eating
+                   722515                 nonalcoholic                AHE                places (70-722500)
+                                         beverage bars
+ 811111               80-          General automotive        PE, PE AWH, PE    Automotive mechanical and
+                   811111                         repair              AHE               electrical repair and
+                                                                                 maintenance (80-811110)
+ 811114               80-                 Specialized        PE, PE AWH, PE    Automotive mechanical and
+                   811114            automotive repair                AHE               electrical repair and
+                                                                                 maintenance (80-811110)
+ 8112                 80-                Electronic and      PE, PE AWH, PE    Repair and maintenance (80-
+                   811200          precision equipment                AHE                            811000)
+                                             repair and
+                                           maintenance
+ 8114                 80-                  Personal and      PE, PE AWH, PE    Repair and maintenance (80-
+                   811400             household goods                 AHE                         811000)
+                                             repair and
+                                           maintenance
+                                                                                           To Table of Figures
+
+
+
+
+U.S. Bureau of Labor Statistics                                                               Page 33 of 35
+                                                                                               Back to Top
+Availability of revised data
+LABSTAT, the BLS public database, contains all historical employment, hours, and earnings
+data revised as a result of this benchmark, including both not seasonally adjusted and seasonally
+adjusted data. The data can be accessed from the CES National Databases webpage.
+
+Previously published data are available on both a not seasonally adjusted and seasonally adjusted
+basis for all CES industries down to the 3-digit level from the CES Vintage Data Information
+webpage. CES vintage data are typically updated in early March following the annual benchmark
+revision.
+
+Benchmarks for detailed industries can be found at the CES detailed industry tables webpage.
+
+
+
+
+U.S. Bureau of Labor Statistics                                                       Page 34 of 35
+                                                                                       Back to Top
+Table of figures
+Table 1. Differences in seasonally adjusted levels and over-the-month changes, total
+    nonfarm employment, January to December 2024 (in thousands) .................................. 3
+Table 2. Seasonally adjusted employment revisions for major industry sectors, March 2024
+    (in thousands) ........................................................................................................................ 5
+Table 3. Not seasonally adjusted employment benchmarks for major industry sectors,
+    March 2024 (in thousands)................................................................................................... 6
+Table 4. Percent and level differences between nonfarm employment benchmarks and
+    estimates by industry supersector, March 2014 to 2024 (in thousands) .......................... 8
+Table 5. Directly estimated data types ...................................................................................... 10
+Table 6. Effect of March 2024 benchmark revisions to all employees average weekly hours
+    and average hourly earnings estimates, major industry sectors .................................... 12
+Table 7. Effect of March 2024 benchmark revisions to production and nonsupervisory
+    employee average weekly hours and average hourly earnings estimates, major
+    industry sectors ................................................................................................................... 13
+Table 8. Differences between forecasted and actual net birth-death, total private
+    employment, April 2023 to March 2024 (in thousands) .................................................. 15
+Table 9. Net birth-death forecasts by industry supersector, April to December 2024 (in
+    thousands) ............................................................................................................................ 16
+Table 10. Comparison of cumulative preliminary, usual post-benchmark, and modified
+    post-benchmark net birth-death forecasts for April to October of 2024 (in thousands)
+    ............................................................................................................................................... 17
+Table 11. Series with CES industry code or title changes ....................................................... 22
+Table 12. Discontinued AE series .............................................................................................. 24
+Table 13. Collapsed AE series .................................................................................................... 25
+Table 14. New AE series ............................................................................................................. 26
+Table 15. Discontinued non-AE series ...................................................................................... 28
+
+
+
+
+Last Modified Date: February 7, 2025
+
+
+                           Alyssa Bernal and Rokeya Khan, Economists
+        U.S. Bureau of Labor Statistics | Division of Current Employment Statistics – National
+                          PSB Suite 4175, 2 Massachusetts Avenue, NE Washington, DC 20212-0001
+                             www.bls.gov/CES |Telephone: 1-202-691-6555 | Email: Contact CES
+
+
+U.S. Bureau of Labor Statistics                                                                                                     Page 35 of 35
+                                                                                                                                     Back to Top
+

@@ -1,0 +1,1111 @@
+Benchmark Article
+BLS Establishment Estimates Revised to Incorporate March 2008 Benchmarks
+
+   •   Introduction
+   •   Summary of the benchmark revisions
+   •   Revisions in the post-benchmark period
+   •   Why benchmarks differ from estimates
+   •   Benchmark revisions for other data types
+   •   Methods
+   •   Availability of revised data
+   •   Changes to the CES published series
+   •   Small domain model
+   •   Seasonal adjustment procedure
+   •   Special model adjustments
+
+Introduction
+
+Steven Kroll
+
+Steven Kroll is an economist in the Division of Current Employment Statistics, Office of Employment and Unemployment Statistics,
+Bureau of Labor Statistics. Telephone: (202) 691-6555; e-mail: CESInfo@bls.gov
+
+With the release of data for January 2009, the Bureau of Labor Statistics (BLS) introduced its annual revision of national estimates of
+employment, hours, and earnings from the Current Employment Statistics (CES) monthly survey of nonfarm establishments. Each
+year, the CES survey realigns its sample-based estimates to incorporate universe counts of employment—a process known as
+benchmarking. Comprehensive counts of employment, or benchmarks, are derived primarily from unemployment insurance (UI) tax
+reports that nearly all employers are required to file with State Workforce Agencies.
+
+Summary of the benchmark revisions
+
+The March 2008 benchmark level for total nonfarm employment is 136,944,000; this figure is 89,000 below the sample-based
+estimate for March 2008, an adjustment of -0.1 percent. Table 1 shows the total nonfarm percentage benchmark revisions for the past
+ten years.
+Table 2 shows the nonfarm employment benchmarks for March 2008, not seasonally adjusted, by industry. As is usually the case,
+benchmark revisions at many industry levels were larger in percentage terms than at total nonfarm, but were offsetting. Five
+supersectors had downward revisions. The largest downward revision occurred in leisure and hospitality with a revision of -151,000,
+or -1.1 percent. The revision is concentrated in limited-service restaurants, revised by -94,100 or -2.7 percent, full-service restaurants,
+revised by -48,100 or -1.1 percent, and drinking places, alcoholic beverages, revised by -16,100 or -4.6 percent.
+
+Professional and business services was revised -63,000, or -0.4 percent, while financial activities was revised -23,000, or -0.3 percent.
+Within professional and business services, temporary help services was revised downwards by 24,800, or 1.0 percent. Within financial
+activities, mortgage and nonmortgage loan brokers revised downwards by 23,200, or 26.3 percent.
+
+Manufacturing and education and health services each had a revision of -17,000, or -0.1 percent. Most of the revision in
+manufacturing was driven by heavy duty trucks, which was revised down by 10,400, or 34.6 percent. Within education and health
+services, offices of dentists was the largest downward revision of 15,400, or 1.9 percent.
+
+Six supersectors had upward revisions. Trade, transportation, and utilities was revised upward by 65,000, or 0.2 percent. Within the
+supersector, retail trade dominated with a revision of 92,800, or 0.6 percent. Also contributing was an upward revision in
+transportation and warehousing of 15,000, or 0.3 percent, while wholesale trade was revised downwards by 43,100, or 0.7 percent.
+Other significant upward revisions occurred in construction (49,000 or 0.7 percent) and government (48,000 or 0.2 percent). The other
+supersectors with upward revisions were other services (revised up 9,000 or 0.2 percent), information (8,000 or 0.3 percent), and
+mining and logging (3,000 or 0.4 percent).
+
+Revisions in the post-benchmark period
+
+Post-benchmark period estimates from April 2008 to December 2008 were calculated for each month based on new benchmark levels.
+Also, beginning in April, model-based estimates for the net of birth/death employment were revised to incorporate information from
+the most recent year of universe employment counts. Text table A shows the net birth/death model figures for the supersectors over
+the post-benchmark period. From April 2008 to December 2008, the cumulative net birth/death model added 825,000, compared with
+1,005,000 in the previously published April to December estimates.
+Text table A. Net Birth/Death Estimates, Post-Benchmark 2008
+
+                Mining                             Trade,                             Professional Education                       Monthly
+                                                                           Financial                         Leisure & Other
+                  & Construction Manufacturing Transportation, Information            & Business & Health                          Amount
+                                                                           Activities                        Hospitality Services
+                Logging                          & Utilities                            Services Services                         Contributed
+
+2008 April         1         45             -16              17              3          -8         36          31          57        10         176
+    May            1         40              4               24              3          3          12           7          75         7         176
+    June           2         27              5               17              1          5          18           -8         91         7         165
+    July           0          0             -13              -6             -3          -5          -1          4          55        -6         25
+    August         1         11              3               14              4          2          20          10          24         3         92
+    September      1          9              1               17              1          2           2          14         -32         3         18
+    October        1          8              -7              25              2          13         50          27         -26         1         94
+    November       0          -7             2               12              2          3          10           8         -11         0         19
+    December       0         -10             1               18              3          14          7           7          15         5         60
+Cumulative
+                   7         123            -20              138            16          29         154         100        248        30         825
+Total
+
+                                                                                                                                     back up
+
+        Revisions to November and December also reflect incorporation of the annual CES sample update and the routine inclusion of
+        additional sample units not available for the respective months' preliminary estimates.
+
+        Why benchmarks differ from estimates
+
+        A benchmark revision is the difference between the benchmark employment level for a given March and its corresponding sample-
+        based estimate. The overall accuracy of the establishment survey is usually gauged by the size of this difference. The benchmark
+        revision often is regarded as a proxy for total survey error, but this does not take into account error in the universe data. The
+        employment counts obtained from quarterly unemployment insurance tax forms are administrative data that reflect employer record-
+        keeping practices and differing State laws and procedures. The benchmark revision can be more precisely interpreted as the difference
+        between two independently derived employment counts, each subject to its own error sources.
+
+        Like all sample surveys, the establishment survey is susceptible to two sources of error: sampling error and nonsampling error.
+        Sampling error is present any time a sample is used to make inferences about a population. The magnitude of the sampling error, or
+variance, relates directly to sample size and the percentage of the universe covered by that sample. The CES monthly survey captures
+slightly under one-third of the universe, exceptionally high by usual sampling standards. This coverage insures a small sampling error
+at the total nonfarm employment level.
+
+Both the universe counts and the establishment survey estimates are subject to nonsampling errors common to all surveys—coverage,
+response, and processing errors. The error structures for both the CES monthly survey and the UI universe are complex. Still, the two
+programs generally produce consistent total employment figures, each validating the other. Over the last decade, annual benchmark
+revisions at the total nonfarm level have averaged 0.2 percent, with an absolute range of 0.1 percent to 0.6 percent.
+
+Benchmark revision effects for other data types
+
+The routine benchmarking process results in revisions to the series for production and nonsupervisory workers. There are no
+benchmark employment levels for these series; they are revised by preserving ratios of employment for the particular data type to all
+employees employment prior to benchmarking, and then applying these ratios to the revised all-employee figures. These figures are
+calculated at the basic cell level and then aggregated to produce the summary estimates.
+
+Average weekly hours and average hourly earnings are not benchmarked; they are estimated solely from reports supplied by survey
+respondents at the basic estimating cell level.
+
+The aggregate industry level of the hours and earnings series are derived as a weighted average. The production or nonsupervisory
+worker employment estimates for the basic cells are used as weights for the hours and earnings estimates for broader industry
+groupings. Adjustments of the all employee estimates to new benchmarks may alter the weights, which, in turn, may change the
+estimates for hours and earnings of production or nonsupervisory workers at higher levels of aggregation.
+
+Generally, new employment benchmarks have little effect on hours and earnings estimates for major groupings. To influence the
+hours and earnings estimates of a broader group, employment revisions have to be relatively large and must affect industries that have
+hours or earnings averages that are substantially different from those of other industries in their group. Table 4 gives information on
+the levels of specific hours and earnings series resulting from the March 2008 benchmark. At the total private level, there was no
+change in average weekly hours from the previously published level, while average hourly earnings was increased from the previously
+published level by 5 cents.
+
+Methods
+
+Benchmark adjustment procedure. Establishment survey benchmarking is done on an annual basis to a population derived primarily
+from the administrative file of employees covered by unemployment insurance (UI). The time required to complete the revision
+process--from the full collection of the UI population data to publication of the revised industry estimates--is about 10 months. The
+benchmark adjustment procedure replaces the March sample-based employment estimates with UI-based population counts for
+March. The benchmark therefore determines the final employment levels, while sample movements capture month-to-month trends.
+
+Benchmarks are established for each basic estimating cell and are aggregated to develop published levels. On a not seasonally
+adjusted basis, the sample-based estimates for the year preceding and the year following the benchmark also are then subject to
+revision. Employment estimates for the months between the most recent March benchmark and the previous year's benchmark are
+adjusted using a "wedge-back" procedure. In this process, the difference between the benchmark level and the previously published
+March estimate for each estimating cell is computed. This difference, or error, is linearly distributed across the 11 months of estimates
+subsequent to the previous benchmark; eleven-twelfths of the March difference is added to February estimates, ten-twelfths to January
+estimates, and so on, ending with the previous April estimates, which receive one-twelfth of the March difference. The wedge
+procedure assumes that the total estimation error accumulated at a steady rate since the last benchmark. Applying previously derived
+over-the-month sample changes to the revised March level yields revised estimates for the months following the March benchmark.
+New net birth/death model estimates also are calculated and applied during post-benchmark estimation, and new sample is introduced
+from the annual update.
+
+Benchmark source material. The principal source of benchmark data for private industries is the Quarterly Census of Employment
+and Wages (QCEW). These employment data are provided to State Employment Security Agencies by employers covered by State UI
+laws. BLS uses several other sources to establish benchmarks for the remaining industries partially covered or exempt from
+mandatory UI coverage, accounting for nearly 3 percent of the nonfarm employment total.
+
+Data on employees covered under Social Security laws, published by the U.S. Census Bureau in County Business Patterns, are used to
+augment UI data for industries not fully covered by the UI scope, such as nonoffice insurance sales workers, child daycare workers,
+religious organizations, and private schools and hospitals. Benchmarks for State and local government hospitals and educational
+institutions are based on the Annual Census of Governments conducted by the Census Bureau. Benchmark data from these sources
+are available only on a lagged basis. Extrapolation to a current level is accomplished by applying the employment trends from the UI-
+covered part of the population in these industries to the noncovered part. Universe data for interstate railroads are obtained from the
+Railroad Retirement Board.
+
+Business birth and death estimation. Regular updating of the CES sample frame with information from the UI universe files helps to
+keep the CES survey current with respect to employment from business births and business deaths. The timeliest UI universe files
+available, however, always will be a minimum of 9 months out of date. The CES survey thus can not rely on regular frame
+maintenance alone to provide estimates for business birth and death employment contributions. BLS has researched both sample-
+based and model-based approaches to measuring birth units that have not yet appeared on the UI universe frame. Since the research
+demonstrated that sampling for births was not feasible in the very short CES production timeframes, the Bureau is utilizing a model-
+based approach for this component.
+Earlier research indicated that while both the business birth and death portions of total employment are generally significant, the net
+contribution is relatively small and stable. To account for this net birth/death portion of total employment, BLS is utilizing an
+estimation procedure with two components. The first component uses business deaths to impute employment for business births. This
+is incorporated into the sample-based link relative estimate procedure by simply not reflecting sample units going out of business, but
+imputing to them the same trend as the other firms in the sample. The second component is an ARIMA time series model designed to
+estimate the residual net birth/death employment not accounted for by the imputation. The historical time series used to create and test
+the ARIMA model was derived from the UI universe micro level database, and reflects the actual residual net of births and deaths over
+the past five years. The net birth/death model component figures are unique to each month and include negative adjustments in some
+months. Furthermore, these figures exhibit a seasonal pattern similar to the seasonal patterns of the continuing businesses.
+
+Availability of revised data
+
+LABSTAT, the BLS public database on the Internet, contains all historical employment, hours, and earnings data revised as a result of
+this benchmark, including both unadjusted and seasonally adjusted data. The data can be accessed at https://www.bls.gov/ces/, the
+Current Employment Statistics homepage.
+
+
+Changes to the CES published series
+
+All CES series are evaluated annually for sample size, coverage, and response rates. The following series changes result from a re-
+evaluation of the sample and universe coverage for NAICS industries. Some series proved to have sufficient sample to be broken into
+more detail. Other small industries no longer have sufficient sample to be estimated and published separately and have been combined
+with other similar industries for estimation and publication purposes, as shown below. Most of the collapsed and deleted series are in
+the manufacturing sector where employment has been declining over a number of years. Historical data for the series with changed
+scope were reconstructed to provide consistent time series.
+
+Exhibit 1. Newly published series effective with the March 2008 benchmark revisions
+                               NAICS CES industry
+        Industry title                                                                 New industry
+                                code         code
+                                                      Biotechnology research was broken out from Research and development in
+  Biotechnology research 541711 60541711
+                                                      the physical, engineering, and life sciences (NAICS 541710).
+ Physical, engineering, and                           Physical, engineering, and life sciences was broken out from Research and
+                             541712 60541712
+   life sciences research                             development in the physical, engineering, and life sciences (NAICS 541710).
+
+                                                                                                                                back up
+Exhibit 2. Series with changed scope
+                                  CES
+  Industry title NAICS code industry                                        Industries collapsed
+                                  code
+      All other
+                                        Engineered wood members and trusses (NAICS 321213,4) is collapsed with Reconstituted
+  plywood and
+                 321213,4,9    31321214 wood products (NAICS 321219). The collapsed series is renamed All other plywood and
+    engineered
+                                        engineered wood products.
+wood products
+        Glass
+containers and                          Glass containers (NAICS 327213) is collapsed into Glass products made of purchased
+products made 327213,5         31327215 glass (NAICS 327215). The collapsed series is renamed Glass containers and products
+  of purchased                          made of purchased glass.
+        glass
+ Miscellaneous
+                                        Irradiation apparatus (NAICS 334517) is collapsed into Miscellaneous electronic
+     electronic 334514,6,7,8,9 31334519
+                                        instruments (NAICS 334519).
+   instruments
+      All other
+      electrical                        Communication and energy wires and cables (NAICS 33592) is collapsed into All other
+                 33592,9       3133599
+equipment and                           electrical equipment and components (NAICS 33599).
+   components
+      All other
+                                        Dolls, toys, and games (NAICS 33993) is collapsed into All other miscellaneous
+  miscellaneous 33993,9        3133999
+                                        manufacturing (NAICS 33999).
+manufacturing
+  Women's and
+                                        Women's cut and sew apparel (NAICS 31523) is collapsed into Other cut and sew apparel
+   all other cut
+                 31523,9       3231529 (NAICS 31529). The collapsed series is renamed Women's and all other cut and sew
+       and sew
+                                        apparel.
+       apparel
+Petrochemicals,
+     industrial                         Petrochemicals and industrial gases (NAICS 32511,2) is collapsed into Synthetic dyes and
+gases, synthetic 32511,2,3     3232513 pigments (NAICS 32513). The collapsed series is renamed Petrochemicals, industrial
+     dyes, and                          gases, synthetic dyes, and pigments.
+      pigments
+  Urban transit
+   systems and                          Urban transit systems (NAICS 4851) is collapsed into Interurban and rural bus
+interurban and 4851,2          434852   transportation (NAICS 4852). The collapsed series is renamed Urban transit systems and
+     rural bus                          interurban and rural transportation.
+ transportation
+Exhibit 2. Series with changed scope
+                                 CES
+ Industry title NAICS code industry                                         Industries collapsed
+                                 code
+     Support
+  activities for
+                                        Port and harbor operations (NAICS 48831) is collapsed into Navigational services and
+      water
+                  48831,3,9   4348839 other water transportation support activities (NAICS 48833,9). The collapsed series is
+transportation,
+                                        renamed Support activities for water transportation, except marine cargo handling.
+ except marine
+cargo handling
+Historical sites,
+zoos, botanical
+                                        Historical sites (NAICS 71212) is collapsed into Zoos, botanical gardens, nature parks,
+gardens, nature
+                  71212,3,9   707121219 and similar institutions (NAICS 71213,9). The collapsed series is renamed Historical
+   parks, and
+                                        sites, zoos, botanical gardens, nature parks, and similar institutions.
+     similar
+   institutions
+
+                                                                                                                            back up
+
+Exhibit 3. Discontinued all employee series
+                                                                CES
+                                                  NAICS
+                 Industry title                               industry                 Next highest published level
+                                                   code
+                                                                code
+   Pottery, ceramics, and plumbing fixtures 32711           3132711      Clay products and refractories (NAICS 3271)
+   Clay building materials and refractories     32712       3132712      Clay products and refractories (NAICS 3271)
+                 Glass containers               327213      31327213     Glass and glass products (NAICS 3272)
+Iron, steel pipe, and tube from purchased steel 33121       3133121      Steel products from purchased steel (NAICS 3312)
+    Rolling and drawing of purchased steel      33122       3133122      Steel products from purchased steel (NAICS 3312)
+                Rolled steel shapes             331221      31331221     Steel products from purchased steel (NAICS 3312)
+Nonferrous metal, except CU and AL, shaping 33149           3133149      Other nonferrous metal production (NAICS 3314)
+                 Steel foundries                331512,3    31331513     Ferrous metal foundries (NAICS 33151)
+            Air and gas compressors             333912      31333912     Pumps and compressors (NAICS 33391)
+  Pumps and pumping equipment, including
+                                                333911,3    31333913     Pumps and compressors (NAICS 33391)
+           measuring and dispensing
+              Irradiation apparatus             334517      31334517     Electronic Instruments (NAICS 3345)
+          Small electronic appliances           33521       3133521      Household appliances (NAICS 3352)
+Exhibit 3. Discontinued all employee series
+                                                            CES
+                                               NAICS
+                Industry title                            industry                 Next highest published level
+                                                code
+                                                            code
+                Major appliances              33522     3133522      Household appliances (NAICS 3352)
+ Communication and energy wires and cables 33592        3133592      Other electrical equipment and components (NAICS 3359)
+             Dolls, toys, and games           33993     3133993      Other miscellaneous manufacturing (NAICS 3399)
+                      Sugar                   31131     3231131      Sugar and confectionary products (NAICS 3113)
+         Women's cut and sew apparel          31523     3231523      Cut and sew apparel (NAICS 3152)
+ Leather and hide tanning and finishing and
+                                              3161,9    323169       Leather and allied products (NAICS 316)
+            other leather products
+      Petrochemicals and industrial gases     32511,2   3232512      Basic chemicals (NAICS 3251)
+          Resin and synthetic rubber          32521     3232521      Resin, rubber, and artificial fibers (NAICS 3252)
+                Synthetic rubber              325212    32325212     Resin, rubber, and artificial fibers (NAICS 3252)
+      Unlaminated plastics profile shapes     326121    32326121     Plastics pipe, fittings, and profile shapes (NAICS 32612)
+         Plastics pipe and pipe fittings      326122    32326122     Plastics pipe, fittings, and profile shapes (NAICS 32612)
+                Other chemicals               42469     4142469      Chemicals (NAICS 4246)
+ Sea, coastal, and Great Lakes transportation 4831      434831       Water transportation (NAICS 483)
+             Urban transit systems            4851      434851       Transit and ground passenger transportation (NAICS 485)
+          Port and harbor operations          48831     4348831      Support activities for water transportation (NAICS 4883)
+                 Historical sites             71212     7071212      Museums, historical sites, zoos, and parks (NAICS 7121)
+         Amusement and theme parks            71311     7071311      Amusement parks and arcades (NAICS 7131)
+              Amusement arcades               71312     7071312      Amusement parks and arcades (NAICS 7131)
+
+                                                                                                                       back up
+Exhibit 4. Discontinued production worker, hours, and earnings series
+              Industry title           NAICS code CES industry code
+     Office supplies, except paper    33994         3133994
+            Paperboard mills          32213         3232213
+  Manifold business forms printing 323116           32323116
+      Dried and dehydrated food       311423        32311423
+
+                                                                                                                       back up
+Exhibit 5. Discontinued average overtime series
+         Industry title            NAICS code                 CES industry code
+ Office supplies, except paper 33994                    3133994
+       Paperboard mills        32213                    3232213
+
+                                                                                                                                 back up
+
+Exhibit 6. Change in title
+CES industry code          Original industry title             New industry title
+    10000000       Natural resources and mining           Mining and logging
+
+                                                                                                                                 back up
+
+
+
+Small domain model
+
+The employment estimator for lessors of nonfinancial intangible assets (CES industry code 555330000) has been changed from the
+standard CES weighted-link-relative technique to the CES Small Domain Model (SDM). The SDM is used for industries where the
+sample alone is insufficient for reliable estimates. The CES SDM is a Weighted Least Squares model with two employment inputs: (1)
+an estimate based on available CES sample for that series, and (2) an ARIMA projection based on 10 years of historical QCEW data.
+Further background on the SDM is provided in the CES technical notes.
+
+This brings the number of industries estimated by using SDM to six. The other industries are direct health and medical insurance
+carriers, tax preparation services, other technical consulting services, remediation services, and recreational and vacation camps.
+
+Seasonal adjustment procedure
+
+BLS uses X-12 ARIMA software developed by the U.S. Census Bureau to seasonally adjust national employment, hours, and earnings
+series derived from the CES program. Individual series are seasonally adjusted using either a multiplicative or an additive model
+(Exhibit 7), and seasonal adjustment factors are directly applied to the component levels. For employment, individual 3-digit NAICS
+levels are seasonally adjusted, and higher level aggregates are formed summing these components. Seasonally adjusted totals for
+hours and earnings are obtained by taking weighted averages of the seasonally adjusted data for the component series.
+Special model adjustments
+
+Variable survey intervals. Beginning with the release of the 1995 benchmark, BLS refined the seasonal adjustment procedures to
+control for survey interval variations, sometimes referred to as the 4- versus 5-week effect. Although the CES survey is referenced to
+a consistent concept - the pay period including the 12th of each month - inconsistencies arise because there are sometimes 4 and
+sometimes 5 weeks between the week including the 12th in a given pair of months. In highly seasonal industries, these variations can
+be an important determinant of the magnitude of seasonal hires or layoffs that have occurred at the time the survey is taken, thereby
+complicating seasonal adjustment.
+
+Standard seasonal adjustment methodology relies heavily on the experience of the most recent 3 years to determine the expected
+seasonal change in employment for each month of the current year. Prior to the implementation of the adjustment, the procedure did
+not distinguish between 4- and 5-week survey intervals, and the accuracy of the seasonal expectation depended in large measure on
+how well the current year’s survey interval corresponded with those of the previous 3 years. All else the same, the greatest potential
+for distortion occurred when the current month being estimated had a 5-week interval but the 3 years preceding it were all 4-week
+intervals, or conversely when the current month had a 4-week interval but the 3 years preceding it were all 5-week intervals.
+
+BLS adopted REGARIMA (regression with auto-correlated errors) modeling to identify the estimated size and significance of the
+calendar effect for each published series. REGARIMA combines standard regression analysis, which measures correlation among two
+or more variables, with ARIMA modeling, which describes and predicts the behavior of data series based on its own past history. For
+many economic time series, including nonfarm payroll employment, observations are auto-correlated over time; that is, each month’s
+value is significantly dependent on the observations that precede it. These series, therefore, usually can be successfully fit using
+ARIMA models. If auto-correlated time series are modeled through regression analysis alone, the measured relationships among other
+variables of interest may be distorted due to the influence of the auto-correlation. Thus, the REGARIMA technique is appropriate for
+measuring relationships among variables of interest in series that exhibit auto-correlation, such as nonfarm payroll employment.
+
+In this application, the correlations of interest are those between employment levels in individual calendar months and the lengths of
+the survey intervals for those months. The REGARIMA models evaluate the variation in employment levels attributable to 11
+separate survey interval variables, one specified for each month, except March. March is excluded because there are almost always 4
+weeks between the February and March surveys. Models for individual basic series are fit with the most recent 10 years of data
+available, the standard time span used for CES seasonal adjustment.
+
+The REGARIMA procedure yields regression coefficients for each of the 11 months specified in the model. These coefficients
+provide estimates of the strength of the relationship between employment levels and the number of weeks between surveys for the 11
+modeled months. The X-12 ARIMA software also produces diagnostic statistics that permit the assessment of the statistical
+significance of the regression coefficients, and all series are reviewed for model adequacy.
+Because the 11 coefficients derived from the REGARIMA models provide an estimate of the magnitude of variation in employment
+levels associated with the length of the survey interval, these coefficients are used to adjust the CES data to remove the calendar
+effect. These "filtered" series then are seasonally adjusted using the standard X-12 ARIMA software.
+
+For a few series, REGARIMA models do not fit well; these series are seasonally adjusted with the X-12 software but without the
+interval effect adjustment. There are several additional special effects modeled through the REGARIMA process; they are described
+below.
+
+Construction series. Beginning with the 1996 benchmark revision, BLS utilized special treatment to adjust construction industry
+series. In the application of the interval effect modeling process to the construction series, there initially was difficulty in accurately
+identifying and measuring the effect because of the strong influence of variable weather patterns on employment movements in the
+industry. Further research allowed BLS to incorporate interval effect modeling for the construction industry by disaggregating the
+construction series into its finer industry and geographic estimating cells and tightening outlier designation parameters. This allowed
+a more precise identification of weather-related outliers that had masked the interval effect and clouded the seasonal adjustment
+patterns in general. With these outliers removed, interval effect modeling became feasible. The result is a seasonally adjusted series
+for construction that is improved because it is controlled for two potential distortions: unusual weather events and the 4- versus 5-
+week effect.
+
+Floating holidays. BLS is continuing the practice of making special adjustments for average weekly hours and average weekly
+overtime series to account for the presence or absence of religious holidays in the April survey reference period and the occurrence of
+Labor Day in the September reference period, back to the start date of each series.
+
+Local government series. A special adjustment also is made in November each year to account for variations in employment due to
+the presence or absence of poll workers in the local government, excluding educational services series.
+
+Refinements in hours and earnings seasonal adjustment. With the release of the 1997 benchmark, BLS implemented refinements to
+the seasonal adjustment process for the hours and earnings series to correct for distortions related to the method of accounting for the
+varying length of payroll periods across months. There is a significant correlation between over-the-month changes in both the
+average weekly hour (AWH) and the average hourly earnings (AHE) series and the number of weekdays in a month, resulting in
+noneconomic fluctuations in these two series. Both AWH and AHE show more growth in "short" months (20 or 21 weekdays) than in
+"long" months (22 or 23 weekdays). The effect is stronger for the AWH than for the AHE series.
+
+The calendar effect is traceable to response and processing errors associated with converting payroll and hours information from
+sample respondents with semi-monthly or monthly pay periods to a weekly equivalent. The response error comes from sample
+respondents reporting a fixed number of total hours for workers regardless of the length of the reference month, while the CES
+conversion process assumes that the hours reporting will be variable. A constant level of hours reporting most likely occurs when
+employees are salaried rather than paid by the hour, as employers are less likely to keep actual detailed hours records for such
+employees. This causes artificial peaks in the AWH series in shorter months that are reversed in longer months.
+
+The processing error occurs when respondents with salaried workers report hours correctly (vary them according to the length of the
+month), which dictates that different conversion factors be applied to payroll and hours. The CES processing system uses the hours
+conversion factor for both fields, resulting in peaks in the AHE series in short months and reversals in long months.
+
+REGARIMA modeling is used to identify, measure, and remove the length-of-pay-period effect for seasonally adjusted average
+weekly hours and average hourly earnings series. The length-of-pay-period variable proves significant for explaining AWH
+movements in all the service-providing industries except utilities. For AHE, the length-of-pay-period variable is significant for
+wholesale trade, retail trade, information, financial activities, professional and business services, and other services. All AWH series
+in the service-providing industries except utilities have been adjusted from January 1990 forward. The AHE series for wholesale
+trade, retail trade, information, financial activities, professional and business services, and other services have been adjusted from
+January 1990 forward as well. For this reason, calculations of over-the-year change in the establishment hours and earnings series
+should use seasonally adjusted data.
+
+The series to which the length-of-pay-period adjustment is applied are not subject to the 4- versus 5-week adjustment, as the modeling
+cannot support the number of variables that would be required in the regression equation to make both adjustments. See Exhibit 7 for
+series that have the calendar effects modeling described above.
+
+Exhibit 7. Model specifications
+                                        Seasonal Adjustment - AE
+NAICS Tabcode                      Tabcode title                   Mode 4/5 week adj         Other adj
+1011331000        Logging                                         MULT          X
+1021100000        Oil and gas extraction                          MULT          X
+1021200000        Mining, except oil and gas                        -           X             Indirect1
+1021210000        Coal mining                                     MULT          X
+1021300000        Support activities for mining                   ADD           X
+2023610000        Residential building                              -           X             Indirect
+2023620000        Nonresidential building                           -           X             Indirect
+2023700000        Heavy and civil engineering construction        ADD           X
+2023800000        Specialty trade contractors                       -           X             Indirect
+2023800100        Residential specialty trade contractors         MULT          X             Raked2
+2023800200        Nonresidential specialty trade contractors      ADD           X              Raked
+3132100000        Wood products                                   ADD           X
+Exhibit 7. Model specifications
+                                      Seasonal Adjustment - AE
+NAICS Tabcode                     Tabcode title              Mode 4/5 week adj   Other adj
+3132700000       Nonmetallic mineral products                ADD       X
+3133100000       Primary metals                              MULT      X
+3133200000       Fabricated metal products                   MULT      X
+3133300000       Machinery                                   MULT      X
+3133400000       Computer and electronic products              -       X          Indirect
+3133410000       Computer and peripheral equipment           MULT      X
+3133420000       Communications equipment                    MULT      X
+3133440000       Semiconductors and electronic components    MULT      X
+3133450000       Electronic instruments                      MULT      X
+3133500000       Electrical equipment and appliances         MULT      X
+3133600000       Transportation equipment                    ADD
+3133600100       Motor vehicles and parts                    ADD
+3133700000       Furniture and related products              ADD       X
+3133900000       Miscellaneous manufacturing                 MULT      X
+3231100000       Food manufacturing                          MULT      X
+3231200000       Beverages and tobacco products              MULT      X
+3231300000       Textile mills                               MULT      X
+3231400000       Textile product mills                       MULT      X
+3231500000       Apparel                                     MULT      X
+3231600000       Leather and allied products                 MULT      X
+3232200000       Paper and paper products                    MULT      X
+3232300000       Printing and related support activities     MULT      X
+3232400000       Petroleum and coal products                 MULT      X
+3232500000       Chemicals                                   MULT      X
+3232600000       Plastics and rubber products                MULT      X
+4142300000       Durable goods                               MULT      X
+4142400000       Nondurable goods                            MULT      X
+4142500000       Electronic markets and agents and brokers   MULT      X
+4244100000       Motor vehicle and parts dealers               -       X          Indirect
+4244110000       Automobile dealers                          ADD       X
+4244200000       Furniture and home furnishings stores       MULT      X
+Exhibit 7. Model specifications
+                                      Seasonal Adjustment - AE
+NAICS Tabcode                     Tabcode title              Mode 4/5 week adj   Other adj
+4244300000       Electronics and appliance stores               MULT   X
+4244400000       Building material and garden supply stores     MULT   X
+4244500000       Food and beverage stores                       MULT   X
+4244600000       Health and personal care stores                MULT   X
+4244700000       Gasoline stations                              MULT   X
+4244800000       Clothing and clothing accessories stores       MULT   X
+                 Sporting goods, hobby, book, and music
+4245100000                                                      MULT   X
+                 stores
+4245200000       General merchandise stores                       -    X          Indirect
+4245210000       Department stores                              MULT   X
+4245300000       Miscellaneous store retailers                  MULT   X
+4245400000       Nonstore retailers                             MULT   X
+4348100000       Air transportation                             MULT   X
+4348200000       Rail transportation                            MULT   X
+4348300000       Water transportation                           MULT   X
+4348400000       Truck transportation                           ADD    X
+4348500000       Transit and ground passenger transportation    ADD
+4348600000       Pipeline transportation                        MULT   X
+4348700000       Scenic and sightseeing transportation          ADD    X
+4348800000       Support activities for transportation          ADD    X
+4349200000       Couriers and messengers                        MULT   X
+4349300000       Warehousing and storage                        ADD    X
+4422100000       Utilities                                      MULT   X
+5051100000       Publishing industries, except Internet         MULT   X
+5051200000       Motion picture and sound recording industries MULT    X
+5051500000       Broadcasting, except Internet                  MULT   X
+5051700000       Telecommunications                             MULT   X
+5051800000       Data processing, hosting, and related services MULT   X
+5051900000       Other information services                     MULT   X
+5552100000       Monetary authorities-central bank              MULT   X
+5552200000       Credit intermediation and related activities     -    X          Indirect
+Exhibit 7. Model specifications
+                                      Seasonal Adjustment - AE
+NAICS Tabcode                     Tabcode title             Mode 4/5 week adj   Other adj
+5552210000       Depository credit intermediation             MULT    X
+5552211000       Commercial banking                           MULT    X
+5552300000       Securities, commodity contracts, investments MULT    X
+5552400000       Insurance carriers and related activities    MULT    X
+5552500000       Funds, trusts, and other financial vehicles  MULT    X
+5553100000       Real estate                                  MULT    X
+5553200000       Rental and leasing services                  MULT    X
+5553300000       Lessors of nonfinancial intangible assets    MULT    X
+6054100000       Professional and technical services            -     X          Indirect
+6054110000       Legal services                               MULT    X
+6054120000       Accounting and bookkeeping services          ADD     X
+6054130000       Architectural and engineering services       ADD     X
+6054150000       Computer systems design and related services ADD     X
+6054160000       Management and technical consulting services MULT    X
+6055100000       Management of companies and enterprises      MULT    X
+6056100000       Administrative and support services            -     X          Indirect
+6056130000       Employment services                          MULT    X
+6056132000       Temporary help services                      MULT    X
+6056140000       Business support services                    ADD     X
+6056170000       Services to buildings and dwellings          MULT    X
+6056200000       Waste management and remediation services ADD        X
+6561100000       Educational services                         ADD     X
+6562100000       Ambulatory health care services                -     X          Indirect
+6562110000       Offices of physicians                        MULT    X
+6562140000       Outpatient care centers                      MULT    X
+6562160000       Home health care services                    ADD     X
+6562200000       Hospitals                                    MULT    X
+6562300000       Nursing and residential care facilities        -     X          Indirect
+6562310000       Nursing care facilities                      MULT    X
+6562400000       Social assistance                              -     X          Indirect
+6562440000       Child day care services                      ADD     X
+Exhibit 7. Model specifications
+                                      Seasonal Adjustment - AE
+NAICS Tabcode                     Tabcode title               Mode 4/5 week adj       Other adj
+7071100000       Performing arts and spectator sports         MULT      X
+7071200000       Museums, historical sites, zoos, and parks   MULT      X
+7071300000       Amusements, gambling, and recreation         ADD       X
+7072100000       Accommodation                                MULT      X
+7072200000       Food services and drinking places            ADD       X
+8081100000       Repair and maintenance                       MULT      X
+8081200000       Personal and laundry services                MULT      X
+8081300000       Membership associations and organizations    ADD
+9091100000       Federal, except U.S. Postal Service          ADD       X
+9091912000       U.S. Postal Service                          MULT      X
+9092161100       State government education                   ADD       X
+9092200000       State government, excluding education        MULT      X
+9093161100       Local government education                   ADD       X
+9093200000       Local government, excluding education        ADD       X         Election adjustment3
+
+
+
+                                       Seasonal Adjustment - WW
+ NAICS Tabcode           Tabcode title            Mode          4/5 week adj              Other adj
+1000000000          Mining and Logging           MULT                X
+1021000000          Mining                       MULT                X
+2000000000          Construction                 MULT                X
+3100000000          Durable goods                MULT                X
+3200000000          Nondurable goods             MULT                X
+4142000000          Wholesale trade              MULT                X
+4200000000          Retail trade                 MULT                X
+                    Transportation and
+4300000000                                       MULT                X
+                    warehousing
+4422000000          Utilities                    MULT                X
+5000000000          Information                  MULT                X
+5552000000          Finance and insurance        MULT                X
+                                      Seasonal Adjustment - WW
+ NAICS Tabcode        Tabcode title              Mode          4/5 week adj        Other adj
+                 Real estate and rental
+5553000000                                      MULT                X
+                 and leasing
+                 Professional and
+6054000000                                       ADD                X
+                 technical services
+                 Management of
+6055000000       companies and                  MULT                X
+                 enterprises
+                 Administrative and
+6056000000                                      MULT                X
+                 waste services
+6561000000       Educational services            ADD                X
+                 Health care and social
+6562000000                                       ADD                X
+                 assistance
+                 Arts, entertainment,
+7071000000                                       ADD                X
+                 and recreation
+                 Accommodation and
+7072000000                                       ADD                X
+                 food services
+8000000000       Other services                  ADD                X
+9091000000       Federal                        MULT                X
+9092000000       State government                ADD                X
+9093000000       Local government               MULT                X       Election adjustment3
+
+
+
+                                  Seasonal Adjustment - PW
+ NAICS Tabcode         Tabcode title                Mode                4/5 week adj Other adj
+
+1000000000       Mining and Logging                   MULT                    X
+2000000000       Construction                         ADD                     X
+3132100000       Wood products                        ADD                     X
+                 Nonmetallic mineral
+3132700000                                            ADD                     X
+                 products
+3133100000       Primary metals                       MULT                    X
+3133200000       Fabricated metal products            MULT                    X
+                                    Seasonal Adjustment - PW
+ NAICS Tabcode         Tabcode title                  Mode     4/5 week adj Other adj
+3133300000     Machinery                              MULT          X
+               Computer and electronic
+3133400000                                            MULT         X
+               products
+               Electrical equipment and
+3133500000                                            MULT         X
+               appliances
+3133600000     Transportation equipment                ADD
+3133600100     Motor vehicles and parts                ADD
+               Furniture and related
+3133700000                                            MULT         X
+               products
+               Miscellaneous
+3133900000                                            MULT         X
+               manufacturing
+3231100000     Food manufacturing                     MULT         X
+               Beverages and tobacco
+3231200000                                             ADD         X
+               products
+3231300000     Textile mills                          MULT         X
+3231400000     Textile product mills                  MULT         X
+3231500000     Apparel                                MULT         X
+3231600000     Leather and allied products            MULT         X
+3232200000     Paper and paper products               MULT         X
+               Printing and related support
+3232300000                                            MULT         X
+               activities
+               Petroleum and coal
+3232400000                                            MULT         X
+               products
+3232500000     Chemicals                               ADD         X
+3232600000     Plastics and rubber products           MULT         X
+4142000000     Wholesale trade                        MULT         X
+4200000000     Retail trade                           MULT         X
+               Transportation and
+4300000000                                            MULT         X
+               warehousing
+4422000000     Utilities                              MULT         X
+5000000000     Information                            MULT         X
+5500000000     Financial activities                   MULT         X
+                                    Seasonal Adjustment - PW
+ NAICS Tabcode          Tabcode title                 Mode             4/5 week adj Other adj
+                 Professional and business
+6000000000                                            MULT                  X
+                 services
+                 Education and health
+6500000000                                             ADD                  X
+                 services
+7000000000       Leisure and hospitality               ADD                  X
+8000000000       Other services                       MULT                  X
+
+
+
+                               Seasonal Adjustment - AWH
+   NAICS                                                   4/5 week 10/11 day Easter/Labor
+                    Tabcode title             Mode
+   Tabcode                                                    adj      adj      Day adj
+
+1000000000   Mining and Logging              MULT              X                   X
+2000000000   Construction                    ADD               X                   X
+3132100000   Wood products                   MULT              X                   X
+             Nonmetallic mineral
+3132700000                                   MULT              X                   X
+             products
+3133100000   Primary metals                  MULT              X                   X
+3133200000   Fabricated metal products       MULT              X                   X
+3133300000   Machinery                       MULT              X                   X
+             Computer and electronic
+3133400000                                   MULT              X                   X
+             products
+             Electrical equipment and
+3133500000                                   MULT              X                   X
+             appliances
+3133600000   Transportation equipment        MULT              X                   X
+3133600100   Motor vehicles and parts        MULT              X                   X
+             Furniture and related
+3133700000                                   MULT              X                   X
+             products
+             Miscellaneous
+3133900000                                   MULT              X                   X
+             manufacturing
+3231100000   Food manufacturing              MULT              X                   X
+                                Seasonal Adjustment - AWH
+   NAICS                                                    4/5 week 10/11 day Easter/Labor
+                    Tabcode title            Mode
+   Tabcode                                                     adj      adj      Day adj
+             Beverages and tobacco
+3231200000                                   MULT              X                    X
+             products
+3231300000   Textile mills                   ADD               X                    X
+3231400000   Textile product mills           MULT              X                    X
+3231500000   Apparel                         MULT              X                    X
+3231600000   Leather and allied products     MULT              X                    X
+3232200000   Paper and paper products        MULT              X                    X
+             Printing and related support
+3232300000                                   MULT              X                    X
+             activities
+3232400000   Petroleum and coal products     MULT              X                    X
+3232500000   Chemicals                       MULT              X
+3232600000   Plastics and rubber products    MULT              X                    X
+4142000000   Wholesale trade                 MULT                       X           X
+4200000000   Retail trade                    MULT                       X
+             Transportation and
+4300000000                                   MULT                       X           X
+             warehousing
+4422000000   Utilities                       MULT              X
+5000000000   Information                     MULT                       X
+5500000000   Financial activities            MULT                       X
+             Professional and business
+6000000000                                   MULT                       X           X
+             services
+             Education and health
+6500000000                                   MULT                       X
+             services
+7000000000   Leisure and hospitality         MULT                       X
+8000000000   Other services                  MULT                       X           X
+
+
+
+                         Seasonal Adjustment - AHE
+   NAICS                                                    4/5 week 10/11 day
+                   Tabcode title             Mode
+   Tabcode                                                     adj      adj
+                                 Seasonal Adjustment - AHE
+    NAICS                                                                4/5 week 10/11 day
+                           Tabcode title                 Mode
+   Tabcode                                                                  adj      adj
+1000000000          Mining and Logging                  MULT                 X
+2000000000          Construction                        MULT                 X
+3100000000          Durable goods                       ADD                  X
+3200000000          Nondurable goods                    MULT                 X
+4142000000          Wholesale trade                     ADD                           X
+4200000000          Retail trade                        MULT                          X
+                    Transportation and
+4300000000                                              MULT                X
+                    warehousing
+4422000000          Utilities                           ADD                 X
+5000000000          Information                         MULT                           X
+5500000000          Financial activities                MULT                           X
+                    Professional and business
+6000000000                                              MULT                           X
+                    services
+                    Education and health
+6500000000                                               ADD                X
+                    services
+7000000000          Leisure and hospitality             MULT                X
+8000000000          Other services                      MULT                           X
+
+
+
+                                Seasonal Adjustment Comparison - AOT
+       NAICS                                                  4/5 week 10/11 day Easter/Labor
+                       Tabcode title            Mode
+      Tabcode                                                     adj     adj      Day adj
+      31000000         Durable goods            MULT               X                  X
+      32000000        Nondurable goods          MULT               X                  X
+
+                                                                                                                                 back up
+1
+    Seasonal adjustment occurs at the lowest available industry level.
+2
+    Residential and nonresidential specialty trade estimates are raked to the specialty trade estimates to ensure consistency.
+3
+    Special adjustment for the presence/absence of poll workers in local government.
+ Benchmark Tables
+ Table 1. Percent differences between nonfarm employment benchmarks and estimates by industry division, March 1999-2008
+
+ Table 2. Nonfarm employment benchmarks by industry, March 2008
+
+ Table 3. Differences in seasonally adjusted levels and over-the-month changes, total nonfarm employment, January 2008-December
+ 2008
+
+ Table 4. Hours and earnings estimates, selected industries, March 2008
+
+
+
+Table 1. Percent differences between nonfarm employment benchmarks and estimates by industry supersector, March 1999-2008 (1)
+                                Industry                          1999 2000 2001 2002 2003 2004 2005 2006 2007 2008
+                                  Total                          0.2 0.4 - 0.1 - 0.2 - 0.1 0.2 - 0.1 0.6 -0.2 -0.1
+                             Total private                       .2     .3   - .2 - .4 - .2 .2        - .2 .7     -.2  -.1
+                                                                                                                  (2)
+                          Mining and logging                                              .9    .7    -.3   1.2        .4
+                             Construction                                                 -.8   .6    .5    2.6   .1   .7
+                            Manufacturing                                                 -1.1 -.4    -.3   -.1   -1.0 -.1
+                                                                                          (2)
+                  Trade, transportation, and utilities                                          .2    .3    .6    .5   .2
+                              Information                                                 -2.6 -1.0 -2.1 -.5      -1.8 .3
+                          Financial activities                                            .2    .1    -.8   .4    -1.3 -.3
+                   Professional and business services                                     -.7   -.2   -.4   1.3 .2     -.4
+                                                                                                      (2)
+                     Education and health services                                        .3    .2          .5    -.2  -.1
+                        Leisure and hospitality                                           .5    1.2 .4      .3    -.8  -1.1
+                             Other services                                               1.4 .5      -1.3 .5     .3   .2
+                                                                                                      (2)   (2)
+                              Government                         .1     .6   .3     1.0 .3      .1                -.2  .2
+
+ (1)
+       Differences are based on comparisons of final published March estimates and benchmark levels, as originally published.
+ (2)
+       Less than 0.05 percent.
+
+                                                                                                                                back up
+Table 2. Nonfarm employment benchmarks by industry, March 2008 (levels in thousands)
+                                                                                                    Difference
+                            Industry                               Benchmark       Estimate
+                                                                                                 Amount       Percent
+                          Total nonfarm                         136,944          137,033      -89         -0.1
+                           Total private                        114,104          114,241      -137        -0.1
+                        Goods-producing                         21,347           21,312       35          0.2
+                       Mining and logging                       741              738          3           0.4
+                             Logging                            55               57           -2          -3.6
+                              Mining                            686              680          6           0.9
+                                                                                                          (1)
+                     Oil and gas extraction                     155              155          0
+                   Mining, except oil and gas                   215              219          -4          -1.9
+                           Coal mining                          78               79           -1          -1.3
+                  Support activities for mining                 316              307          9           2.8
+                          Construction                          7,047            6,998        49          0.7
+                    Construction of buildings                   1,651            1,609        42          2.5
+             Heavy and civil engineering construction           909              896          13          1.4
+                   Specialty trade contractors                  4,487            4,494        -7          -0.2
+                         Manufacturing                          13,559           13,576       -17         -0.1
+                          Durable goods                         8,599            8,626        -27         -0.3
+                         Wood products                          471              485          -14         -3
+                 Nonmetallic mineral products                   468              477          -9          -1.9
+                         Primary metals                         451              452          -1          -0.2
+                   Fabricated metal products                    1,551            1,552        -1          -0.1
+                            Machinery                           1,193            1,196        -3          -0.3
+               Computer and electronic products                 1,254            1,252        2           0.2
+              Computer and peripheral equipment                 183              186          -3          -1.6
+                  Communications equipment                      128              129          -1          -0.8
+            Semiconductor and electronic components             437              428          9           2.1
+                     Electronic instruments                     443              446          -3          -0.7
+              Electrical equipment and appliances               426              419          7           1.6
+                   Transportation equipment                     1,656            1,653        3           0.2
+                 Furniture and related products                 499              510          -11         -2.2
+                  Miscellaneous manufacturing                   633              631          2           0.3
+                       Nondurable goods                         4,960            4,950        10          0.2
+                      Food manufacturing                        1,459            1,450        9           0.6
+Table 2. Nonfarm employment benchmarks by industry, March 2008 (levels in thousands)
+                                                                                                    Difference
+                            Industry                               Benchmark       Estimate
+                                                                                                 Amount       Percent
+                 Beverage and tobacco products                  193              185          8           4.1
+                                                                                                          (1)
+                           Textile mills                        159              159          0
+                      Textile product mills                     151              154          -3          -2
+                             Apparel                            203              198          5           2.5
+                   Leather and allied products                  33               34           -1          -3
+                    Paper and paper products                    447              455          -8          -1.8
+             Printing and related support activities            606              613          -7          -1.2
+                  Petroleum and coal products                   114              110          4           3.5
+                            Chemicals                           852              859          -7          -0.8
+                  Plastics and rubber products                  743              733          10          1.3
+                        Service-providing                       115,597          115,721      -124        -0.1
+                    Private service-providing                   92,757           92,929       -172        -0.2
+               Trade, transportation, and utilities             26,330           26,265       65          0.2
+                         Wholesale trade                        5,981            6,024        -43         -0.7
+           Electronic markets and agents and brokers            846              836          10          1.2
+                           Retail trade                         15,279           15,186       93          0.6
+                 Motor vehicle and parts dealers                1,875            1,890        -15         -0.8
+                       Automobile dealers                       1,220            1,230        -10         -0.8
+             Furniture and home furnishings stores              542              563          -21         -3.9
+                Electronics and appliance stores                549              531          18          3.3
+           Building material and garden supply stores           1,242            1,229        13          1
+                    Food and beverage stores                    2,849            2,865        -16         -0.6
+                 Health and personal care stores                1,003            989          14          1.4
+                                                                                                          (1)
+                        Gasoline stations                       844              844          0
+            Clothing and clothing accessories stores            1,446            1,447        -1          -0.1
+          Sporting goods, hobby, book and music stores          637              643          -6          -0.9
+                  General merchandise stores                    3,023            2,908        115         3.8
+                       Department stores                        1,545            1,498        47          3
+                  Miscellaneous store retailers                 834              845          -11         -1.3
+                        Nonstore retailers                      435              434          1           0.2
+                Transportation and warehousing                  4,515            4,500        15          0.3
+                       Air transportation                       503              505          -2          -0.4
+Table 2. Nonfarm employment benchmarks by industry, March 2008 (levels in thousands)
+                                                                                                    Difference
+                            Industry                               Benchmark       Estimate
+                                                                                                 Amount       Percent
+                        Rail transportation                     230              232          -2          -0.9
+                       Water transportation                     63               59           4           6.3
+                       Truck transportation                     1,389            1,396        -7          -0.5
+          Transit and ground passenger transportation           434              427          7           1.6
+                                                                                                          (1)
+                      Pipeline transportation                   41               41           0
+              Scenic and sightseeing transportation             23               26           -3          -13
+              Support activities for transportation             588              584          4           0.7
+                    Couriers and messengers                     573              579          -6          -1
+                    Warehousing and storage                     672              652          20          3
+                                                                                                          (1)
+                              Utilities                         555              555          0
+                            Information                         3,016            3,008        8           0.3
+              Publishing industries, except Internet            892              882          10          1.1
+          Motion picture and sound recording industries         381              379          2           0.5
+                  Broadcasting, except Internet                 318              322          -4          -1.3
+                       Telecommunications                       1,027            1,020        7           0.7
+          Data processing, hosting, and related services        265              273          -8          -3
+                   Other information services                   134              132          2           1.5
+                        Financial activities                    8,171            8,194        -23         -0.3
+                      Finance and insurance                     6,056            6,103        -47         -0.8
+               Monetary authorities - central bank              23               21           2           8.7
+           Credit intermediation and related activities         2,765            2,814        -49         -1.8
+                Depository credit intermediation                1,823            1,820        3           0.2
+                       Commercial banking                       1,361            1,343        18          1.3
+          Securities, commodity contracts, investments          868              866          2           0.2
+            Insurance carriers and related activities           2,311            2,315        -4          -0.2
+           Funds, trusts, and other financial vehicles          90               87           3           3.3
+                Real estate and rental and leasing              2,115            2,091        24          1.1
+                             Real estate                        1,469            1,441        28          1.9
+                                                                                                          (1)
+                   Rental and leasing services                  618              618          0
+            Lessors of nonfinancial intangible assets           28               31           -3          -10.7
+               Professional and business services               17,733           17,796       -63         -0.4
+               Professional and technical services              7,883            7,891        -8          -0.1
+Table 2. Nonfarm employment benchmarks by industry, March 2008 (levels in thousands)
+                                                                                                    Difference
+                            Industry                               Benchmark       Estimate
+                                                                                                 Amount       Percent
+                         Legal services                         1,163            1,166        -3          -0.3
+             Accounting and bookkeeping services                1,064            1,100        -36         -3.4
+            Architectural and engineering services              1,431            1,443        -12         -0.8
+          Computer systems design and related services          1,427            1,387        40          2.8
+                                                                                                          (1)
+          Management and technical consulting services          989              989          0
+           Management of companies and enterprises              1,896            1,830        66          3.5
+              Administrative and waste services                 7,955            8,075        -120        -1.5
+             Administrative and support services                7,604            7,717        -113        -1.5
+                      Employment services                       3,176            3,352        -176        -5.5
+                    Temporary help services                     2,372            2,397        -25         -1.1
+                   Business support services                    837              799          38          4.5
+              Services to buildings and dwellings               1,721            1,727        -6          -0.3
+          Waste management and remediation services             352              358          -6          -1.7
+                Education and health services                   18,833           18,850       -17         -0.1
+                      Educational services                      3,153            3,178        -25         -0.8
+                                                                                                          (1)
+               Health care and social assistance                15,679           15,672       7
+               Ambulatory health care services                  5,588            5,600        -12         -0.2
+                      Offices of physicians                     2,238            2,246        -8          -0.4
+                    Outpatient care centers                     528              512          16          3
+                   Home health care services                    942              940          2           0.2
+                            Hospitals                           4,588            4,595        -7          -0.2
+             Nursing and residential care facilities            2,994            2,974        20          0.7
+                     Nursing care facilities                    1,611            1,605        6           0.4
+                        Social assistance                       2,511            2,504        7           0.3
+                     Child day care services                    879              875          4           0.5
+                     Leisure and hospitality                    13,156           13,307       -151        -1.1
+              Arts, entertainment, and recreation               1,837            1,864        -27         -1.5
+             Performing arts and spectator sports               385              409          -24         -6.2
+                                                                                                          (1)
+           Museums, historical sites, zoos, and parks           124              124          0
+            Amusements, gambling, and recreation                1,328            1,332        -4          -0.3
+              Accommodation and food services                   11,319           11,443       -124        -1.1
+                        Accommodation                           1,825            1,791        34          1.9
+Table 2. Nonfarm employment benchmarks by industry, March 2008 (levels in thousands)
+                                                                                                      Difference
+                             Industry                               Benchmark        Estimate
+                                                                                                   Amount       Percent
+                Food services and drinking places                 9,494           9,652         -158        -1.7
+                         Other services                           5,518           5,509         9           0.2
+                    Repair and maintenance                        1,243           1,254         -11         -0.9
+                 Personal and laundry services                    1,317           1,303         14          1.1
+             Membership associations and organizations            2,958           2,951         7           0.2
+                          Government                              22,840          22,792        48          0.2
+                             Federal                              2,732           2,710         22          0.8
+                 Federal, except Postal Service                   1,977           1,976         1           0.1
+                       U.S. Postal Service                        756             734           22          2.9
+                        State government                          5,293           5,303         -10         -0.2
+                  State government education                      2,483           2,486         -3          -0.1
+                State government excl. education                  2,810           2,817         -7          -0.2
+                        Local government                          14,815          14,779        36          0.2
+                  Local government education                      8,441           8,408         33          0.4
+                                                                                                            (1)
+                Local government excl. education                  6,374           6,371         3
+
+(1)
+  Less than 0.05 percent.
+
+                                                                                                                    back up
+
+Table 3. Differences in seasonally adjusted levels and over-the-month changes, total nonfarm employment, January 2008-
+December 2008 (in thousands)
+                                          Levels                                       Over-the-month changes
+2008:              As previously published As revised Difference          As previously published As revised Difference
+    January      138,002                      138,080      78           -76                       -72         4
+   February      137,919                      137,936      17           -83                       -144        -61
+     March       137,831                      137,814      -17          -88                       -122        -34
+      April      137,764                      137,654      -110         -67                       -160        -93
+      May        137,717                      137,517      -200         -47                       -137        -90
+      June       137,617                      137,356      -261         -100                      -161        -61
+      July       137,550                      137,228      -322         -67                       -128        -61
+     August      137,423                      137,053      -370         -127                      -175        -48
+Table 3. Differences in seasonally adjusted levels and over-the-month changes, total nonfarm employment, January 2008-
+December 2008 (in thousands)
+                                          Levels                                       Over-the-month changes
+  September 137,020                           136,732      -288         -403                      -321        82
+    October      136,597                      136,352      -245         -423                      -380        43
+   November      136,013                      135,755      -228         -584                      -597        -13
+ December (p) 135,489                         135,178      -370         -524                      -577        -53
+
+(p): Preliminary
+
+                                                                                                                    back up
+
+Table 4. Hours and earnings estimates for selected industries, March 2008
+                  Industry                       Average Weekly Hours        Average Hourly Earnings
+                Total private                 33.8                        $17.97
+              Goods-producing                 40.4                        19.06
+            Mining and Logging                45.7                        22.29
+                Construction                  38.5                        21.44
+               Manufacturing                  41.1                        17.62
+                Durable goods                 41.4                        18.56
+               Wood products                  38.3                        13.92
+        Nonmetallic mineral products          42.6                        16.79
+               Primary metals                 43.0                        20.23
+          Fabricated metal products           41.7                        16.86
+                 Machinery                    42.8                        17.87
+     Computer and electronic products         41.0                        20.76
+    Electrical equipment and appliances       41.2                        15.64
+          Transportation equipment            42.5                        23.52
+       Furniture and related products         38.5                        14.42
+        Miscellaneous manufacturing           39.4                        15.08
+             Nondurable goods                 40.5                        16.01
+            Food manufacturing                40.3                        13.85
+       Beverages and tobacco products         39.9                        19.73
+                 Textile mills                38.8                        13.45
+            Textile product mills             39.4                        11.77
+Table 4. Hours and earnings estimates for selected industries, March 2008
+                    Industry                     Average Weekly Hours        Average Hourly Earnings
+                    Apparel                   36.9                        11.35
+         Leather and allied products          39.0                        12.81
+          Paper and paper products            43.3                        18.70
+   Printing and related support activities    38.7                        16.64
+         Petroleum and coal products          42.8                        27.06
+                   Chemicals                  41.9                        19.31
+         Plastics and rubber products         41.1                        15.72
+           Private service-providing          32.5                        17.70
+     Trade, transportation, and utilities     33.3                        16.14
+                Wholesale trade               38.6                        20.08
+                  Retail trade                30.0                        12.88
+      Transportation and warehousing          36.7                        18.20
+                     Utilities                43.0                        28.90
+                  Information                 36.7                        24.62
+              Financial activities            36.2                        20.17
+      Professional and business services      35.1                        21.00
+        Education and health services         32.7                        18.74
+            Leisure and hospitality           25.3                        10.77
+                 Other services               30.9                        16.11
+
+                                                                                                       back up
+
+Last Modified Date: February 6, 2009
+

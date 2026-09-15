@@ -101,7 +101,7 @@ values), resume re-validates Stages 4, 12, and 13 before routing them.
       Exit: the differencing module reproduces every row of the BLS 1979–present revision table — SA and NSA, all three pairwise MARs — to rounding, including the 2003 gap (bullet 1); re-ingest reproduces every panel value from raw plus transformations; every stage-label row carries exactly one stage, M is right-censored where its vintage does not exist, and the preliminary benchmark is not a stage (Req 2); no sector vintage precedes May 2003 and the aggregate leg carries `concept_regime` (Req 4); the eleven sector values sum to the published total within rounding in every release file (Req 5); the Req 9 identity holds on every same-release pair; live fetches carry the `network` marker and the default tier passes on fixtures; the release-date index agrees with `es-vintages.csv` on every release from May 1999 on and covers the February 1995–April 1999 releases with checked dates or records those years as out of scope (the pre-May-1999 item in `specs/deferred_items.md`, plan 2).\
       ROUTING: writing-plans
 
-- [ ] Stage 4: Benchmark, birth–death, QCEW-revision, and sample tables\
+- [x] Stage 4: Benchmark, birth–death, QCEW-revision, and sample tables\
       Objective: Ingest the annual-source tables the operators and covariates read — benchmark revisions and sector contributions with publication dates, reconstruction events, birth–death forecasts and forecast-vs-realized rows, the 2017+ QCEW revision sequence, and the Table 1 coverage share and RSE by supersector-year.\
       Spec: Req 1; Req 3 (sample rows); Req 10 (inputs); Req 11\
       Gap closed: Req 1 (benchmark sources); Req 3 (sample panel); Req 11 (data half)\

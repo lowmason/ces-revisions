@@ -18,3 +18,10 @@ wheels/
 # Stage 3 data: data/raw/ is committed; the workbook cache and the built panel are rebuilt
 data/cache/
 data/panel/
+
+# Isolated local development worktrees
+.worktrees/
+
+# Stage 4 annual data: raw sources are committed; cache and built parquet are rebuilt
+data/annual/cache/
+data/annual/panel/
