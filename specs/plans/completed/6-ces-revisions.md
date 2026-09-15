@@ -1,5 +1,7 @@
 # Stage 4 — Benchmark, Birth–Death, QCEW Revision, and Sample Tables Implementation Plan
 
+**Status: COMPLETE (2026-09-15)** — executed via executing-plans; nothing deferred
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revisions-roadmap.md, Stage 4 — on plan completion, tick the stage and
@@ -35,7 +37,7 @@
 
 ## Source and numbering
 
-This plan implements [`specs/ces-revisions.md`](../ces-revisions.md) Req 1's benchmark sources, Req 3's sample rows, Req 10's preliminary/final and QCEW inputs, and Req 11's data half. It implements Stage 4 of [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md), using the findings in [`docs/ces-revisions-review.md`](../../docs/ces-revisions-review.md) and the coverage item in [`specs/deferred_items.md`](../deferred_items.md).
+This plan implements [`specs/ces-revisions.md`](../../ces-revisions.md) Req 1's benchmark sources, Req 3's sample rows, Req 10's preliminary/final and QCEW inputs, and Req 11's data half. It implements Stage 4 of [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md), using the findings in [`docs/ces-revisions-review.md`](../../../docs/ces-revisions-review.md) and the coverage item in [`specs/deferred_items.md`](../../deferred_items.md).
 
 The plan ID is **6**, although this is roadmap Stage 4. Plans 3 and 4 are reserved by the cloud-GPU amendment on branch `claude/cloud-gpu-ces-revisions-ee5804`; plan 5 implemented Stage 3 and is retired at `specs/plans/completed/5-ces-revisions.md`.
 
@@ -140,7 +142,7 @@ Stage 4 names four datasets, but they share three contracts that make one plan c
 - Consumes: the gitignored `.project.env`, its `BLS_CONTACT_EMAIL` key, `python-dotenv.load_dotenv()`, and `ces_revisions.vintages.raw.file_sha256()`'s hashing convention.
 - Produces: `annual.raw.RAW_DIR`, `PANEL_DIR`, `MANIFEST`, `SOURCE_CATALOG`, `PUBLICATION_DATES`, `TRANSFORMATIONS`, `cell_key()`, `parse_number()`, `raw_frame()`, and `manifest_frame()`; `annual_sources.load_contact_email(env_file)`, `user_agent(contact_email)`, `download(url, contact_email)`, `fetch_sources(now, env_file=...)`, `refresh_manifest(now)`, and `main(argv)`.
 
-- [ ] **Step 1: Write the failing path, parsing, and source-manifest tests**
+- [x] **Step 1: Write the failing path, parsing, and source-manifest tests**
 
 Create `tests/test_annual_raw.py`:
 
@@ -366,13 +368,13 @@ def test_live_qcew_header_has_not_changed():
     )
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_annual_raw.py tests/test_annual_sources.py -q -m "not network"`
 
 Expected: collection fails because `ces_revisions.annual` and `annual_sources` do not exist yet; no test body runs.
 
-- [ ] **Step 3: Create the package boundary and raw contracts**
+- [x] **Step 3: Create the package boundary and raw contracts**
 
 Create `src/ces_revisions/annual/__init__.py`:
 
@@ -523,7 +525,7 @@ def read_source_catalog(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
     return pl.read_csv(raw_dir / SOURCE_CATALOG, infer_schema_length=0)
 ```
 
-- [ ] **Step 4: Create the source catalog and publication-date evidence table**
+- [x] **Step 4: Create the source catalog and publication-date evidence table**
 
 Create `data/annual/raw/source-catalog.csv` with this exact header:
 
@@ -562,7 +564,7 @@ The first and last preliminary rows must be source-supported; the last row is ex
 benchmark_preliminary_2026,benchmark_preliminary,2026,,,,2026-08-28,10:00:00,bls/preliminary/prebmk-2026.htm,release header,https://www.bls.gov/news.release/archives/prebmk_08282026.htm
 ```
 
-- [ ] **Step 5: Write the fetch and manifest CLI**
+- [x] **Step 5: Write the fetch and manifest CLI**
 
 Add and lock the sole new runtime dependency:
 
@@ -708,7 +710,7 @@ if __name__ == "__main__":
 
 The local import inside `build_tables()` keeps Task 1 test collection independent of the build module written in Task 7. This follows `/Users/lowell/Projects/bls-stats/src/bls_stats/core/config.py`: `load_dotenv()` runs before the environment lookup and does not override an explicitly exported variable. Unlike the older Stage 3 helper, every Stage 4 request carries the contact address. The real address is never printed or written to the source manifest.
 
-- [ ] **Step 6: Ignore only rebuilt annual artifacts**
+- [x] **Step 6: Ignore only rebuilt annual artifacts**
 
 Append to `.gitignore`:
 
@@ -719,7 +721,7 @@ data/annual/cache/
 data/annual/panel/
 ```
 
-- [ ] **Step 7: Materialize the first manifest and run the unit tests**
+- [x] **Step 7: Materialize the first manifest and run the unit tests**
 
 Run:
 
@@ -730,7 +732,7 @@ uv run pytest tests/test_annual_raw.py tests/test_annual_sources.py -q -m "not n
 
 Expected: all non-network tests pass against the catalog, manual publication table, and then-current contents of `data/annual/raw/`; the network fetch itself remains isolated to Step 8.
 
-- [ ] **Step 8: Fetch and inspect the committed source archive**
+- [x] **Step 8: Fetch and inspect the committed source archive**
 
 Run:
 
@@ -752,7 +754,7 @@ rg -n "Net Birth-Death Forecast" data/annual/raw/bls/cesbd-history.htm
 
 Expected: the QCEW header equals the pinned header in Step 1; Table 5 contains years 1979 and 2025 plus footnote 12; the birth–death page contains initial and post-benchmark captions.
 
-- [ ] **Step 9: Run the committed-source and live tests**
+- [x] **Step 9: Run the committed-source and live tests**
 
 Run:
 
@@ -765,7 +767,7 @@ uv run ruff check src/ces_revisions/annual scripts/annual_sources.py tests/test_
 
 Expected: all tests pass and ruff is clean.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add .gitignore pyproject.toml uv.lock src/ces_revisions/annual/__init__.py src/ces_revisions/annual/raw.py scripts/annual_sources.py tests/test_annual_raw.py tests/test_annual_sources.py tests/fixtures/annual data/annual/raw
@@ -788,7 +790,7 @@ git commit -m "Archive and hash Stage 4 annual sources"
 - Consumes: `annual.raw.raw_frame()`, `vintages.release_index.build_release_index()`, and `manual/publication-dates.csv`.
 - Produces: `HtmlTable(caption, rows)`, `parse_tables(page)`, `find_table(page, caption)`, `table_raw_cells(...)`, `final_carrier_month(year)`, `catalog_publications(raw_dir)`, `final_benchmark_publications(release_index)`, and `build_publication_calendar(release_index, raw_dir)`.
 
-- [ ] **Step 1: Write the failing HTML parser tests**
+- [x] **Step 1: Write the failing HTML parser tests**
 
 Append to `tests/test_annual_raw.py`:
 
@@ -827,7 +829,7 @@ def test_table_raw_cells_preserve_printed_text():
     ]
 ```
 
-- [ ] **Step 2: Write the failing publication tests**
+- [x] **Step 2: Write the failing publication tests**
 
 Create `tests/test_annual_publications.py`:
 
@@ -881,13 +883,13 @@ def test_every_catalog_publication_has_a_utc_observable_timestamp():
     )
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_annual_raw.py tests/test_annual_publications.py -q`
 
 Expected: collection fails because `html_tables` and `publications` do not exist.
 
-- [ ] **Step 4: Write the HTML table reader**
+- [x] **Step 4: Write the HTML table reader**
 
 Create `src/ces_revisions/annual/html_tables.py`:
 
@@ -994,7 +996,13 @@ def table_raw_cells(
     return raw_frame(records)
 ```
 
-- [ ] **Step 5: Write the publication calendar**
+- [x] **Step 5: Write the publication calendar**
+
+> **Deviation (source correction):** The shipped calendar uses the actual historical
+> preliminary-announcement dates and times, including the earlier 2011–2018 notices,
+> rather than deriving them from later annual carriers. QCEW news-release and full-data
+> availability are represented as separate product events because BLS sometimes published
+> them on different dates.
 
 Create `src/ces_revisions/annual/publications.py`:
 
@@ -1118,7 +1126,7 @@ def build_publication_calendar(
     return frame
 ```
 
-- [ ] **Step 6: Add publication-date cells to the raw-value contract**
+- [x] **Step 6: Add publication-date cells to the raw-value contract**
 
 Append this test to `tests/test_annual_publications.py`:
 
@@ -1152,7 +1160,7 @@ def publication_raw_values(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
 
 Add `raw_frame` to the import from `ces_revisions.annual.raw`.
 
-- [ ] **Step 7: Run the tests and the fast tier**
+- [x] **Step 7: Run the tests and the fast tier**
 
 Run:
 
@@ -1165,7 +1173,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: the focused tests and existing fast tier pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/ces_revisions/annual/html_tables.py src/ces_revisions/annual/publications.py tests/test_annual_raw.py tests/test_annual_publications.py data/annual/raw/manual/publication-dates.csv data/annual/raw/manifest.csv
@@ -1191,7 +1199,7 @@ git commit -m "Date annual-source publications on the Stage 3 release clock"
 - Consumes: `find_table()`, `table_raw_cells()`, `parse_number()`, and the publication calendar from Task 2.
 - Produces: `benchmarks.table5_raw_values(raw_dir)`, `benchmark_sector_raw_values(raw_dir)`, `build_benchmarks(calendar, raw_dir)`, `reconstructions.raw_values(raw_dir)`, and `build_reconstruction_events(calendar, raw_dir)`.
 
-- [ ] **Step 1: Transcribe the benchmark-article sector cells**
+- [x] **Step 1: Transcribe the benchmark-article sector cells**
 
 Create `data/annual/raw/manual/benchmark-sector-cells.csv` with this exact header:
 
@@ -1203,7 +1211,7 @@ For each benchmark year 2003–2025, transcribe the article's NSA major-industry
 
 Before continuing, check each year's sector identity in a one-off Polars expression: the eleven sector revisions must sum to the article's total to printed rounding. Where an article explicitly explains a scope/reconstruction difference, record that in the reconstruction table, not by changing a sector cell.
 
-- [ ] **Step 2: Transcribe the documented event rows**
+- [x] **Step 2: Transcribe the documented event rows**
 
 Create `data/annual/raw/manual/reconstruction-events.csv` with this exact header:
 
@@ -1232,7 +1240,7 @@ Create these rows, one per independently described operation:
 
 Use Table 5 footnotes 3–12 and the linked benchmark-article sections as `source_file`/`source_locator`. `sectors` and `series_codes` are semicolon-delimited lists. Leave an effect blank only when BLS prints none; never derive an unprinted effect from the benchmark discrepancy.
 
-- [ ] **Step 3: Write the failing benchmark tests**
+- [x] **Step 3: Write the failing benchmark tests**
 
 Create `tests/test_benchmarks.py`:
 
@@ -1361,7 +1369,7 @@ def test_all_benchmark_rows_are_nsa_and_dated():
     assert frame["observable_at"].is_not_null().all()
 ```
 
-- [ ] **Step 4: Write the failing reconstruction tests**
+- [x] **Step 4: Write the failing reconstruction tests**
 
 Create `tests/test_reconstructions.py`:
 
@@ -1422,13 +1430,13 @@ def test_reconstruction_publications_match_final_benchmark_publications():
     assert (joined["observable_at"] == joined["expected"]).all()
 ```
 
-- [ ] **Step 5: Run the tests to verify they fail**
+- [x] **Step 5: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_benchmarks.py tests/test_reconstructions.py -q`
 
 Expected: collection fails because the two modules do not exist.
 
-- [ ] **Step 6: Write the benchmark builder**
+- [x] **Step 6: Write the benchmark builder**
 
 Create `src/ces_revisions/annual/benchmarks.py` with these public contracts and schema:
 
@@ -1733,7 +1741,7 @@ def build_benchmarks(calendar: pl.DataFrame, raw_dir: Path = RAW_DIR) -> pl.Data
     return frame
 ```
 
-- [ ] **Step 7: Write the reconstruction builder**
+- [x] **Step 7: Write the reconstruction builder**
 
 Create `src/ces_revisions/annual/reconstructions.py`:
 
@@ -1824,7 +1832,7 @@ def build_reconstruction_events(
     return pl.DataFrame(rows).sort("benchmark_year", "event_id")
 ```
 
-- [ ] **Step 8: Run the focused tests and repair only source-layout differences**
+- [x] **Step 8: Run the focused tests and repair only source-layout differences**
 
 Run:
 
@@ -1836,7 +1844,7 @@ uv run ruff check src/ces_revisions/annual tests/test_benchmarks.py tests/test_r
 
 Expected: all focused tests pass. If the fetched HTML's row/column structure differs from the fixture, adapt `_anchor_rows()` to the observed header labels and add the observed excerpt to the fixture; do not change any expected year, value, or discrepancy.
 
-- [ ] **Step 9: Refresh the source manifest and run the fast tier**
+- [x] **Step 9: Refresh the source manifest and run the fast tier**
 
 Run:
 
@@ -1847,7 +1855,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: the manifest includes both transcription CSVs and the full fast tier passes.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add src/ces_revisions/annual/benchmarks.py src/ces_revisions/annual/reconstructions.py tests/test_benchmarks.py tests/test_reconstructions.py tests/fixtures/annual data/annual/raw/manual/benchmark-sector-cells.csv data/annual/raw/manual/reconstruction-events.csv data/annual/raw/manifest.csv
@@ -1871,7 +1879,7 @@ git commit -m "Build dated benchmark and reconstruction tables"
 - Consumes: `html_tables.parse_tables(page)`, `raw.parse_number(text)`, the Task 2 publication calendar, and Stage 3's release index.
 - Produces: `birth_death.raw_values(raw_dir) -> pl.DataFrame`, `birth_death.build_birth_death(calendar, release_index, raw_dir) -> pl.DataFrame`, and `BIRTH_DEATH_SCHEMA`. The table key is `(series_kind, benchmark_year, reference_month, frequency, sector, value_kind)`.
 
-- [ ] **Step 1: Create the two audited manual inputs**
+- [x] **Step 1: Create the two audited manual inputs**
 
 Create `data/annual/raw/manual/birth-death-annual-cells.csv` with this exact header:
 
@@ -1896,7 +1904,7 @@ uv run python -c 'import polars as pl; p="data/annual/raw/manual/birth-death-ann
 
 Expected: exit 0. A mismatch stops the task and is resolved against the printed PDF before writing parser code.
 
-- [ ] **Step 2: Write the failing birth–death tests**
+- [x] **Step 2: Write the failing birth–death tests**
 
 Create `tests/test_birth_death.py`:
 
@@ -2021,13 +2029,13 @@ def test_every_birth_death_row_is_nsa_dated_and_in_thousands():
     assert frame["observable_at"].is_not_null().all()
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_birth_death.py -q`
 
 Expected: collection fails with `ImportError: cannot import name 'birth_death'`.
 
-- [ ] **Step 4: Write the schedule parser and schema**
+- [x] **Step 4: Write the schedule parser and schema**
 
 Create `src/ces_revisions/annual/birth_death.py` with the following constants, schema, and parsing helpers:
 
@@ -2219,7 +2227,7 @@ def raw_values(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
 
 The source selection is deliberate: the historical page owns complete preliminary schedules for 2004–2025 and post-benchmark schedules for 2003–2025; the live page contributes only the non-null 2026 preliminary months. It excludes the detailed `41`–`44` rows so they cannot be added again beneath sector `40`.
 
-- [ ] **Step 5: Write the dated builders and identity checks**
+- [x] **Step 5: Write the dated builders and identity checks**
 
 Append to `src/ces_revisions/annual/birth_death.py`:
 
@@ -2431,7 +2439,7 @@ def build_birth_death(
 
 The `preliminary` label here is BLS's label for the original monthly schedule; it is unrelated to the preliminary annual benchmark and remains `series_kind=published_schedule`. The schedule value is dated to the Employment Situation that first used that reference month. A `post_benchmark` value is dated to the final benchmark release that recalculated the April–December period.
 
-- [ ] **Step 6: Run the focused tests and inspect the source identities**
+- [x] **Step 6: Run the focused tests and inspect the source identities**
 
 Run:
 
@@ -2443,7 +2451,7 @@ uv run ruff check src/ces_revisions/annual/birth_death.py tests/test_birth_death
 
 Expected: all tests pass. If a historical caption or title fails to map, add its literal title to `SECTOR_BY_TITLE` or the caption fixture; do not broaden matching until detailed `41`–`44` rows can leak into the supersector sum.
 
-- [ ] **Step 7: Refresh the manifest and run the fast tier**
+- [x] **Step 7: Refresh the manifest and run the fast tier**
 
 Run:
 
@@ -2454,7 +2462,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: `manifest.csv` hashes both manual files and all tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/ces_revisions/annual/birth_death.py tests/test_birth_death.py data/annual/raw/manual/birth-death-annual-cells.csv data/annual/raw/manual/birth-death-rules.csv data/annual/raw/manifest.csv
@@ -2476,7 +2484,7 @@ git commit -m "Build dated CES birth-death tables"
 - Consumes: `bls/qcew-revisions.csv`, Task 2's QCEW publication rows, `raw.cell_key()`, and `raw.parse_number()`.
 - Produces: `qcew.raw_values(raw_dir) -> pl.DataFrame`, `qcew.build_qcew_revisions(calendar, raw_dir) -> pl.DataFrame`, `qcew.build_qcew_precision(revisions) -> pl.DataFrame`, `QCEW_REVISION_SCHEMA`, and `QCEW_PRECISION_SCHEMA`.
 
-- [ ] **Step 1: Write the failing QCEW tests**
+- [x] **Step 1: Write the failing QCEW tests**
 
 Create `tests/test_qcew.py`:
 
@@ -2603,13 +2611,17 @@ def test_latest_incomplete_march_sequence_is_right_censored():
     assert precision["observable_at"].is_not_null().all()
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_qcew.py -q`
 
 Expected: collection fails with `ImportError: cannot import name 'qcew'`.
 
-- [ ] **Step 3: Write the source reader and long revision sequence**
+- [x] **Step 3: Write the source reader and long revision sequence**
+
+> **Deviation (as-of correction):** QCEW quarter-end initial employment uses the news
+> release, while other initial-month values and every revised value use the full-data
+> release. This preserves the actual first-observable date when the two products diverge.
 
 Create `src/ces_revisions/annual/qcew.py`:
 
@@ -2841,7 +2853,7 @@ def build_qcew_revisions(
     return frame
 ```
 
-- [ ] **Step 4: Write the complete/right-censored March precision builder**
+- [x] **Step 4: Write the complete/right-censored March precision builder**
 
 Append to `src/ces_revisions/annual/qcew.py`:
 
@@ -2876,7 +2888,7 @@ def build_qcew_precision(revisions: pl.DataFrame) -> pl.DataFrame:
 
 Do not use `Final Value` as another observation. It is retained in `raw_values()` so the alias check is reproducible, but the long table has only orders 0–4/0–3/0–2/0–1 for quarters 1–4.
 
-- [ ] **Step 5: Run the focused tests and inspect the national slice**
+- [x] **Step 5: Run the focused tests and inspect the national slice**
 
 Run:
 
@@ -2889,7 +2901,7 @@ uv run ruff check src/ces_revisions/annual/qcew.py tests/test_qcew.py
 
 Expected: all tests pass; the inspection prints only United States employment rows, with order 0 revision null and later revisions in whole jobs.
 
-- [ ] **Step 6: Refresh the manifest and run the fast tier**
+- [x] **Step 6: Refresh the manifest and run the fast tier**
 
 Run:
 
@@ -2900,7 +2912,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: the QCEW source hash remains pinned and the full fast tier passes.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/ces_revisions/annual/qcew.py tests/test_qcew.py data/annual/raw/manifest.csv
@@ -2923,7 +2935,7 @@ git commit -m "Build the national QCEW revision sequence"
 - Consumes: Task 1's selected technical-note captures, Task 2's final-benchmark publication calendar, and `html_tables.find_table()`.
 - Produces: `sample.raw_values(raw_dir) -> pl.DataFrame`, `sample.build_sample_panel(calendar, raw_dir) -> pl.DataFrame`, `SAMPLE_SCHEMA`, and the fixed `SECTORS` tuple. The unique key is `(benchmark_year, sector)`; it is intentionally annual and is never expanded to months.
 
-- [ ] **Step 1: Create the auditable source-regime map**
+- [x] **Step 1: Create the auditable source-regime map**
 
 Create `data/annual/raw/manual/sample-source-regimes.csv` with this exact header:
 
@@ -2942,7 +2954,7 @@ Populate exactly one row for every benchmark year 2002–2025:
 
 Every `published` file must be an available row of `source-catalog.csv`; every caption regex must match exactly one table in that file.
 
-- [ ] **Step 2: Write the failing sample-panel tests**
+- [x] **Step 2: Write the failing sample-panel tests**
 
 Create `tests/test_sample_panel.py`:
 
@@ -3052,13 +3064,13 @@ def test_every_sample_row_has_an_as_of_timestamp():
     assert built()["observable_at"].is_not_null().all()
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_sample_panel.py -q`
 
 Expected: collection fails with `ImportError: cannot import name 'sample'`.
 
-- [ ] **Step 4: Write the source readers and stable annual schema**
+- [x] **Step 4: Write the source readers and stable annual schema**
 
 Create `src/ces_revisions/annual/sample.py`:
 
@@ -3187,7 +3199,7 @@ def raw_values(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
 
 The Table 1 data columns are fixed by the source contract: code, title, benchmark employment (thousands), active UI-account reports, establishments, sample employees (thousands), and employee coverage percent. The output names the UI count `active_ui_accounts` because Table 1 footnote 1 says the counts reflect active sample reports.
 
-- [ ] **Step 5: Write the coverage/RSE builder and regime-break logic**
+- [x] **Step 5: Write the coverage/RSE builder and regime-break logic**
 
 Append to `src/ces_revisions/annual/sample.py`:
 
@@ -3402,7 +3414,7 @@ def build_sample_panel(calendar: pl.DataFrame, raw_dir: Path = RAW_DIR) -> pl.Da
     return frame
 ```
 
-- [ ] **Step 6: Run the focused tests and validate all selected tables**
+- [x] **Step 6: Run the focused tests and validate all selected tables**
 
 Run:
 
@@ -3415,7 +3427,7 @@ uv run ruff check src/ces_revisions/annual/sample.py tests/test_sample_panel.py
 
 Expected: all tests pass; the inspection shows the coverage gap only in 2012 and the two non-null RSE definitions on their documented year ranges.
 
-- [ ] **Step 7: Refresh the manifest and run the fast tier**
+- [x] **Step 7: Refresh the manifest and run the fast tier**
 
 Run:
 
@@ -3426,7 +3438,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: `sample-source-regimes.csv` is hashed and all tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/ces_revisions/annual/sample.py tests/test_sample_panel.py data/annual/raw/manual/sample-source-regimes.csv data/annual/raw/manifest.csv
@@ -3451,7 +3463,7 @@ git commit -m "Build annual CES coverage and RSE panels"
 - Consumes: every Task 2–6 builder plus `vintages.release_index.build_release_index(stage3_raw_dir)`.
 - Produces: immutable `AnnualBuild`, `annual.build.build(raw_dir=..., stage3_raw_dir=...) -> AnnualBuild`, `annual.build.write(result, out_dir=..., raw_dir=..., stage3_raw_dir=...) -> dict`, nine parquet artifacts, and `data/annual/panel/manifest.json`.
 
-- [ ] **Step 1: Write the failing assembly and round-trip tests**
+- [x] **Step 1: Write the failing assembly and round-trip tests**
 
 Create `tests/test_annual_build.py`:
 
@@ -3513,13 +3525,13 @@ def test_built_outputs_live_only_below_the_gitignored_panel_directory():
     assert not str(raw.RAW_DIR).startswith(str(raw.PANEL_DIR))
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_annual_build.py -q`
 
 Expected: collection fails with `ImportError: cannot import name 'build'` from `ces_revisions.annual`.
 
-- [ ] **Step 3: Write the build object and artifact writer**
+- [x] **Step 3: Write the build object and artifact writer**
 
 Create `src/ces_revisions/annual/build.py`:
 
@@ -3627,7 +3639,7 @@ def write(
 
 This mirrors Stage 3's `VintageBuild` convention but pins two source manifests: Stage 4's annual archive and Stage 3's release-date archive. The output directory remains rebuilt and gitignored; raw source bytes, transcriptions, and their manifest remain committed.
 
-- [ ] **Step 4: Add session-cached test access and the CLI contract test**
+- [x] **Step 4: Add session-cached test access and the CLI contract test**
 
 Create `tests/annual_data.py`:
 
@@ -3667,7 +3679,7 @@ def test_build_command_reports_each_written_artifact(monkeypatch, capsys):
     assert capsys.readouterr().out == "benchmarks: 70 rows\n"
 ```
 
-- [ ] **Step 5: Document the annual archive and offline build**
+- [x] **Step 5: Document the annual archive and offline build**
 
 Append this section after the vintage-panel section in `README.md`:
 
@@ -3719,7 +3731,7 @@ uv run python scripts/annual_sources.py manifest  # rehash committed Stage 4 sou
 uv run python scripts/annual_sources.py build     # rebuild data/annual/panel/ (offline)
 ```
 
-- [ ] **Step 6: Build twice and verify deterministic artifacts**
+- [x] **Step 6: Build twice and verify deterministic artifacts**
 
 Run:
 
@@ -3736,13 +3748,13 @@ uv run ruff check src/ces_revisions/annual/build.py tests/annual_data.py tests/t
 
 Expected: focused tests pass; both manifest files are byte-identical; `git status` prints nothing for the ignored panel; ruff is clean.
 
-- [ ] **Step 7: Run the full fast tier**
+- [x] **Step 7: Run the full fast tier**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
 Expected: all existing and Stage 4 fast tests pass.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/ces_revisions/annual/build.py tests/annual_data.py tests/test_annual_build.py tests/test_annual_sources.py README.md CLAUDE.md
@@ -3765,7 +3777,7 @@ git commit -m "Assemble reproducible Stage 4 annual artifacts"
 - Consumes: `AnnualBuild`, Stage 3's release index, all stable annual raw-cell keys, and the namespaced `stage3::release_index::YYYY-MM` keys from Task 2.
 - Produces: `contract.validate(result, release_index) -> None`; `build()` calls it before returning, so CLI and tests share the same exit gate.
 
-- [ ] **Step 1: Write the failing cross-artifact tests**
+- [x] **Step 1: Write the failing cross-artifact tests**
 
 Create `tests/test_annual_contract.py`:
 
@@ -3856,13 +3868,17 @@ def test_qcew_long_values_are_jobs_and_precision_is_thousands():
     ]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_annual_contract.py -q`
 
 Expected: collection fails with `ImportError: cannot import name 'contract'`.
 
-- [ ] **Step 3: Implement the executable contract**
+- [x] **Step 3: Implement the executable contract**
+
+> **Deviation (review hardening):** The contract also enforces required derived schemas,
+> non-null/non-empty provenance elements, registered transformations, complete benchmark
+> and sample domains, government structural zeros, and the exact 2025 ruling/event set.
 
 Create `src/ces_revisions/annual/contract.py`:
 
@@ -4033,7 +4049,7 @@ def build(
 
 Add `contract` to the grouped import from `ces_revisions.annual`. Replace the Task 7 direct `return AnnualBuild(...)` block with the block above; do not retain both.
 
-- [ ] **Step 4: Run the focused exit gate**
+- [x] **Step 4: Run the focused exit gate**
 
 Run:
 
@@ -4046,7 +4062,7 @@ uv run ruff check src/ces_revisions/annual/contract.py src/ces_revisions/annual/
 
 Expected: all contract tests pass, the offline build succeeds, and ruff is clean.
 
-- [ ] **Step 5: Run the source, deterministic-build, and full-suite gates**
+- [x] **Step 5: Run the source, deterministic-build, and full-suite gates**
 
 Run in this order:
 
@@ -4064,7 +4080,12 @@ git status --short
 
 Expected: the locked environment resolves; the manifest is already current after regeneration; the fast, slow, and network tiers pass; both ruff commands and `git diff --check` exit 0. `git status` shows only the Stage 4 implementation, committed source archive/transcriptions, and any pre-existing user files. If a live source changed, stop and perform Task 1's capture/inspection flow; never update a fixture alone.
 
-- [ ] **Step 6: Request and resolve the final whole-branch review**
+- [x] **Step 6: Request and resolve the final whole-branch review**
+
+> **Deviation (review routing):** The dedicated `code-reviewer` role was unavailable on
+> two dispatch attempts, so an isolated reviewer was given the same whole-plan rubric.
+> Its four Important and two Minor findings were fixed, and follow-up review confirmed
+> that no findings remain open.
 
 Use `requesting-code-review` with the base commit from immediately before Task 1 and the current `HEAD`. The review brief is:
 
@@ -4074,7 +4095,7 @@ Review roadmap Stage 4 against specs/plans/6-ces-revisions.md. Prioritize as-of 
 
 Resolve every Important finding before continuing. Fix Minor findings that affect correctness, provenance, secrets, or reproducibility; put only genuinely non-blocking leftovers through the Plan Completion Protocol's resolve-before-defer gate. Re-run the commands from Step 5 after the last fix.
 
-- [ ] **Step 7: Commit the gate**
+- [x] **Step 7: Commit the gate**
 
 ```bash
 git add src/ces_revisions/annual/contract.py src/ces_revisions/annual/build.py tests/test_annual_contract.py data/annual/raw/manifest.csv
