@@ -231,3 +231,13 @@ def test_the_revision_table_and_the_release_index_end_with_the_same_release():
     assert (
         first["reference_month"].max() == vintage_data.index()["reference_month"].max()
     )
+
+
+# --- Task 6: the assembled panel ------------------------------------------------------------
+
+
+def test_the_assembled_panel_holds_every_source_row_once_under_req_1_columns():
+    frame = vintage_data.long_panel()
+    assert frame.columns == panel.PANEL_COLUMNS
+    assert frame.select(KEY).n_unique() == frame.height
+    assert frame.height == sum(source.height for source in sources().values())

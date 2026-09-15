@@ -239,3 +239,49 @@ def revision_table_changes(raw: pl.DataFrame, index: pl.DataFrame) -> pl.DataFra
         ),
         concept_regime=_regime(),
     )
+
+
+PANEL_COLUMNS = [
+    "source",
+    "sector",
+    "reference_month",
+    "release_month",
+    "vintage_id",
+    "seasonal_status",
+    "measure",
+    "release_date",
+    "release_stage",
+    "value_thousands",
+    "marker",
+    "concept_regime",
+    "cell_id",
+    "transformation",
+]
+
+
+def assemble_panel(
+    levels: pl.DataFrame,
+    rtdsm: pl.DataFrame,
+    changes: pl.DataFrame,
+    stage_labels: pl.DataFrame,
+) -> pl.DataFrame:
+    """The long panel: the three sources, with vintage-file levels labeled by stage."""
+    stages = stage_labels.filter(
+        (pl.col("source") == "cesvinall") & pl.col("vintage_id").is_not_null()
+    ).select(
+        "sector", "reference_month", "seasonal_status", "vintage_id", "release_stage"
+    )
+    labeled = levels.join(
+        stages,
+        on=["sector", "reference_month", "seasonal_status", "vintage_id"],
+        how="left",
+    )
+    return pl.concat(
+        [
+            labeled.select(PANEL_COLUMNS),
+            rtdsm.with_columns(release_stage=pl.lit(None, dtype=pl.String)).select(
+                PANEL_COLUMNS
+            ),
+            changes.select(PANEL_COLUMNS),
+        ]
+    ).sort("source", "sector", "seasonal_status", "reference_month", "vintage_id")

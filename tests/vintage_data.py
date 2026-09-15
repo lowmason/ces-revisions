@@ -9,6 +9,7 @@ from ces_revisions.vintages import (
     raw,
     release_index,
     revision_table,
+    stages,
 )
 
 
@@ -45,3 +46,15 @@ def rtdsm() -> pl.DataFrame:
 @cache
 def table_changes() -> pl.DataFrame:
     return panel.revision_table_changes(raw_values(), index())
+
+
+@cache
+def labels() -> pl.DataFrame:
+    return stages.build_stage_labels(
+        levels(), table_changes(), index(), raw.read_vintage_comments()
+    )
+
+
+@cache
+def long_panel() -> pl.DataFrame:
+    return panel.assemble_panel(levels(), rtdsm(), table_changes(), labels())
