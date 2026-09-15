@@ -1,0 +1,1774 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+<!-- P2 -->
+
+<title>Technical Notes for the CES-National Benchmark</title>
+<!-- ********************** Begin META TAGS ******************************* --> 
+	<!-- START include/global/head_express.stm -->
+	<script language="javascript" id="_fed_an_ua_tag" src="https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=DOL&subagency=BLS&yt=true"></script>
+	
+	<script src="/javascripts/jquery-latest.js"></script>
+	<script src="/javascripts/bls-latest.js"></script>
+	<script src="/javascripts/jquery-tools.js"></script>
+	<script src="/javascripts/jquery-migrate-1.2.1.min.js"></script>
+	
+	
+	<link rel="stylesheet" href="/assets/bootstrap/latest/bootstrap.min.css">
+	<script src="/assets/bootstrap/latest/popper.min.js"></script>
+	<script src="/assets/bootstrap/latest/bootstrap.min.js"></script>
+
+	
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bls_combined.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bls_content.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bls_tables.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/jquery-tools.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bls_nr.css">
+    <!--[if lt IE 9]>
+		<link href="/stylesheets/ie8-styles.css" media="all" rel="Stylesheet" type="text/css"> 
+	<![endif]-->
+	<!--[if lt IE 8]>
+		<link href="/stylesheets/ie7-styles.css" media="all" rel="Stylesheet" type="text/css"> 
+	<![endif]-->
+	<!--[if lt IE 7]>
+		<link href="/stylesheets/ie6-styles.css" media="all" rel="Stylesheet" type="text/css"> 
+		<style type="text/css">
+		body {
+			behavior:url(/stylesheets/csshover2.htc);
+		}
+		</style>			
+	<![endif]-->
+	<!--[if IE]>
+		<style type="text/css">
+		body {
+			font-size: expression(1 / (screen.deviceXDPI / 96) * 84 + '%');
+		}
+		</style>	
+	<![endif]-->
+	<noscript>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/bls_noscript.css">
+	</noscript>
+	<!-----This means that the browser will (probably) render the width of the page at the width of its own screen. ------>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!----------->
+	<meta http-equiv="x-ua-compatible" content="IE=Edge" />
+    <meta property="og:image" content="https://www.bls.gov/images/bls_emblem.png" />
+		<style type="text/css">
+			td.gsc-table-cell-thumbnail{
+			display:none !important;
+			}
+		</style>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+	<link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+	<link rel="manifest" href="/manifest.json" />
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+	<meta name="theme-color" content="#ffffff" />
+<!-- END include/global/head_express.stm --> 
+
+	<meta name="agency" content="BLS" />
+	<meta name="audience" content="general" /> 
+<meta name="subagency" content="BLS: Employment and Unemployment">
+<meta name="program" content="BLS: Employment and Unemployment: Employment, Hours, and Earnings from the Current Employment Statistics survey (National)">
+<meta name="subject" content="Statistics: By geographical coverage: National, Statistics: By Industries, Statistics: Employment and Unemployment, Statistics: Wages and benefits: Hours and earnings">
+<meta name="date" content="02/02/2024">
+<!-- ********************** End META TAGS ********************************* --> 
+<link rel="stylesheet" type="text/css" href="/stylesheets/bls_programs.css">
+<noscript>
+	<style>
+
+		#programs-banner.generic #program-browse{
+			display: block;
+			top: 3px;
+			width:100%;
+		}
+		#programs-banner.generic #program-browse > div{
+			display: block;
+			position: static;
+			border: none;
+			border-top: 1px solid #fff;
+			margin: 10px 0 0;
+		}
+	</style>
+</noscript>
+
+<script>
+$(document).ready(function(){
+	/* Nav, tabbable*/
+	$(".main-content #programs-banner-nav > li a").focus(function(){
+		var parentUL = $(this).parent().parent();
+		$(".focus").removeClass("focus");
+		$(this).parent().addClass("focus");
+		if(parentUL.find("span").size() == 1){
+			parentUL.parent().find("ul").parent().addClass("focus");
+		};
+	});
+	$(".main-content #programs-banner-nav a").blur(function(){
+		setTimeout(function(){if( !$(document.activeElement).parents("#programs-banner-nav").size()){$(".focus").removeClass("focus");};},100);
+	});
+	
+	$(".main-content #programs-banner-nav li").click(function(e){
+		e.stopPropagation();
+		if($(this).find("a").attr("target") == "_blank"){
+			window.open($(this).find("a").attr("href"));
+		}else{
+			window.location = $(this).find("a").attr("href");
+		}
+	});
+	$(".main-content #programs-banner-nav li a").click(function(e){
+		$(this).blur();
+		e.stopPropagation();
+		e.stopImmediatePropagation();
+	});
+	
+
+	$("#programs-banner.generic #program-browse > a").focus(function(){
+		$(this).parent().addClass("focused");
+		$("#programs-banner.generic #program-browse").hover(function(){
+			$(this).removeClass("focused");
+			$("#programs-banner.generic #program-browse *").blur();
+		});
+	});			
+	$("#programs-banner.generic #program-browse a").each(function(){
+		$(this).blur(function(){
+			setTimeout(function(){
+				if($(document.activeElement).parents("#program-browse").length < 1 ){
+					$("#programs-banner.generic #program-browse").removeClass("focused")
+				};
+			});
+		});
+	});
+
+	/*Notices Archive Page, load*/
+	$(".main-content #archive-left-side .notice-items").hide();
+	var archiveLeftShow = $(".main-content #archive-left-side .notice-items")[0];
+	$(archiveLeftShow).show();
+	var archiveRightCurrent = $(".main-content #archive-right-side a")[0];
+	$(archiveRightCurrent).addClass("current");
+	/*Notices Archive Page, fcns*/
+	$(".main-content #archive-right-side a").click(function(e){
+		e.preventDefault();
+		$(".main-content #archive-right-side a.current").removeClass("current");
+		$(this).addClass("current");
+		$(".main-content #archive-left-side .notice-items").hide();
+		$(".main-content #archive-left-side #notices-"+$(this).text()).show();
+	});	
+
+});
+</script>
+ 
+<!-- ********************** Begin STICKY BACK TO TOP SCRIPT ********************* --> 
+<script>
+ $(document).ready(function(){
+  var $backToTop=$("#page-top-link");
+  var back_to_top_location = $backToTop.position().top;
+  var footerHeight = $(document).height() - $("#footer-primary-wrapper").position().top + 100
+  var $pageTopLink= $backToTop.find('a');
+  var offsetLeft=$pageTopLink.offset().left;
+  $(window).scroll(function(){
+   if($(window).scrollTop() > back_to_top_location && $(document).height() - ($(window).scrollTop() + $(window).height()) > footerHeight){
+   $pageTopLink.css({"position":"fixed","bottom":"10px" ,"left": offsetLeft+"px"})
+   }
+   else if($(document).height() - ($(window).scrollTop() + $(window).height()) < footerHeight ){
+   var back_to_top_bottom = footerHeight + ($(window).scrollTop() + $(window).height()) - $(document).height();
+   $pageTopLink.css({"position":"fixed","bottom":back_to_top_bottom+"px"}) ;
+    }
+   else if($(window).scrollTop() <= back_to_top_location){
+   $pageTopLink.css({"position":"relative", "bottom":"auto" ,"left": "auto"});
+   }
+   });
+  });
+</script> 
+<!-- *********************** End STICKY BACK TO TOP SCRIPT ********************** -->
+</head>
+<body>
+<!-- ************************ Begin HEADER ******************************** --> 
+
+
+<!-- OneColHeadBasic Begin: Name -->
+
+<!-- Header Filename: "/include/ces/ces_header_cms.txt" -->
+
+<!--no_index_start-->
+
+<!-- DOL BANNER BEGIN -->
+<!-- DOL BANNER START -->
+<header > <!-- Header is closed at the end of BLS banner -->
+		<a class="skiplink" href="#startcontent">Skip to Content</a>
+
+		<div id="usa-banner-wrapper">
+<div id="usa-banner" class="bootstrap standard-width">
+	<div class="content">
+	<div class="USA-flag-link">
+	<img src="https://www.dol.gov/themes/opa_theme/img/flag-favicon-57.png" alt="U.S. flag">
+	<p>An official website of the United States government 
+	  
+	<button type="button" data-toggle="collapse" data-target="#usaBanner" aria-expanded="false" aria-controls="usaBanner">Here is how you know <span class="oi" data-glyph="chevron-bottom"></span></button>
+	</p>
+	</div>
+		<a href="https://www.dol.gov/" id="dolHolder" class="dolHolder" target="_blank"><img src="https://www.dol.gov/themes/opa_theme/img/logo-primary.svg" alt="Department of Labor Logo"/>  United States Department of Labor</a>
+	</div>
+	
+	<div class="collapse " id="usaBanner">	
+	<div class="row">
+	<div class="col-md-6">
+		<img src="https://www.dol.gov/themes/opa_theme/img/icon-dot-gov.svg" alt="Dot gov">
+
+		<p>
+			<strong>The .gov means it's official.</strong>
+			<br> Federal government websites often end in .gov or .mil. Before sharing sensitive information,
+			make sure you're on a federal government site.
+		</p>
+	</div>
+
+	<div class="col-md-6">
+	<img class="usa-banner-icon usa-media_block-img" src="https://www.dol.gov/themes/opa_theme/img/icon-https.svg" alt="Https">
+	
+		<p>
+			<strong>The site is secure.</strong>
+			<br> The
+			<strong>https://</strong> ensures that you are connecting to the official website and that any
+			information you provide is encrypted and transmitted securely.
+		</p>
+	</div>
+	</div>
+	</div>		
+</div>
+</div>
+
+
+
+<!-- DOL BANNER END -->
+
+
+<!-- DOL BANNER END -->
+<!-- BLS BANNER BEGIN -->
+
+<div id="bls-banner-wrapper">
+<div id="top"></div>
+		<div class="bootstrap standard-width">
+<div>
+  <div id="bls-banner" class="row">
+    <div id="bls-banner-emblem" class="col-sm-12 col-md-7">
+      <a href="https://www.bls.gov/">U.S. Bureau of Labor Statistics</a>
+    </div>
+    <div id="bls-banner-right" class="col-sm-12 col-md-5 d-none d-md-block">
+      <div id="bls-banner-links"><span class="social-follow"><a title="Follow Us on X, formerly referred to as Twitter" target="_blank" href="https://twitter.com/BLS_gov" aria-label="Follow Us on X, formerly referred to as Twitter">Follow Us</a> </span><span class="social-follow-links"> 
+        <!-- <img src="/images/icons/facebook.png"/>--> 
+        <a target="_blank" href="https://twitter.com/BLS_gov" aria-label="Follow Us on X, formerly referred to as Twitter"><img style="margin-top:-10px;" alt="Follow Us on X, formerly referred to as Twitter" src="/images/icons/twitter.png"/></a> 
+        <!--<img src="/images/icons/linkedin.png"/>--> 
+        </span> | <a href="/schedule/news_release/">Release Calendar</a> | <a href="/blog/" aria-label="Blog page">Blog</a></div>
+      <div id="bls-banner-search1" class="bls-banner-search">
+        <form method="get" action="/search/query">
+		  <label for="bls-banner-search-submit1" class="invisible">Search button</label>
+          <input type="image" src="/images/buttons/search_button_blue_16.png" name="term" id="bls-banner-search-submit1" alt="BLS Search Submit" title="Submit" >
+		  <label for="bls-banner-search-input1" class="invisible">Search:</label>
+          <input name="query" type="text" id="bls-banner-search-input1" value="Search BLS.gov" title="Search Input" onclick="this.value=''; this.onclick = null;">
+
+        </form>
+      </div>
+    </div>
+    <div class="clearfloat"></div>
+  </div>
+</div>
+</div>
+</div>
+</header> <!-- Header is opened at the begining of DOL banner -->
+
+<!-- BLS BANNER END -->
+<!-- MAIN NAV BEGIN -->
+
+<div id="main-nav-wrapper">
+	<div id="main-nav-container">
+		<div>
+			<div class="bootstrap standard-width">
+<nav aria-label="top-level navigation menu" class="navbar navbar-expand-md">
+  
+  
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation menu">
+    <span class="navbar-toggler-icon">Menu</span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  
+
+
+<ul class="nojs navbar-nav mr-auto">
+     <li class="dropdownSearch"><div id="bls-banner-search" class="dropdown-search">
+        <form method="get" action="/search/query">
+		  <label for="bls-banner-search-submit" class="invisible">Search button</label>
+          <input type="image" src="/images/buttons/search_button_blue_20.png" name="term" id="bls-banner-search-submit" alt="BLS Search Submit" title="Submit">
+		  <label for="bls-banner-search-input" class="invisible">Search:</label>
+          <input name="query" type="text" id="bls-banner-search-input" value="Search BLS.gov" title="Search Input" onclick="this.value=''; this.onclick = null;">
+
+        </form>
+      </div>
+	
+	  <div class="bls-banner-links-mob"><span class="social-follow"><a title="Follow Us on X, formerly referred to as Twitter" target="_blank" href="https://twitter.com/BLS_gov" aria-label="Follow Us on X, formerly referred to as Twitter">Follow Us <img  alt="Follow Us on X, formerly referred to as Twitter" src="/images/icons/twitter.png"></a> </span>| <a href="/schedule/news_release/">Release Calendar</a> | <a href="/blog/" aria-label="Blog page">Blog</a></div>
+	</li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="https://www.bls.gov/" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Home <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown1"><!-- ********************************************** Begin Home Tab LIST ****************************************** -->
+<!-- 1st column -->
+<div class="main-nav-submenu" id="submenu-home">
+	<ul class="main-nav-submenu-inn">
+	
+		<li class="heading"><a href="/bls/about-bls.htm" aria-label="About BLS">About BLS</a></li>
+		<li><a href="/bls/history/home.htm" aria-label="BLS History">History</a></li>	
+		<li><a href="/bls/senior_staff/home.htm" aria-label="Our Leadership">Our Leadership</a></li>
+		<li><a href="/bls/bls_budget_and_performance.htm" aria-label="Budget and Performance">Budget and Performance</a></li>		
+		<li><a href="/bls/faqs.htm" aria-label="Questions and Answers">Questions and Answers</a></li>	
+		<li><a href="/bls/topicsaz.htm" aria-label="A-Z Index">A-Z Index</a></li>	
+		<li><a href="/bls/glossary.htm" aria-label="Glossary">Glossary</a></li>	
+		<li><a href="/jobs/" aria-label="Careers at BLS">Careers at BLS </a></li>	
+		<li><a href="/bls/bls-speakers/" aria-label="BLS Speakers Available">BLS Speakers Available</a></li>
+		<li><a href="/errata/" aria-label="Errata">Errata</a></li>  				
+		<li><a href="/bls/contact.htm" aria-label="Contact BLS">Contact BLS</a></li>	
+
+	</ul>	
+	<!-- 2nd column -->	
+<ul class="main-nav-submenu-inn">	
+		<li class="heading"><a href="/bls/overview.htm" aria-label="Overview of BLS Statistics">Overview of BLS Statistics</a></li>
+		<li><a href="/information-guide/home.htm" aria-label="Guide to Programs & Services">Guide to Programs &amp; Services</a></li>
+		<li><a href="/bls/demographics.htm" aria-label="Demographics Data">Demographics</a></li>
+		<li><a href="/bls/industry.htm" aria-label="Statistics by Industries">Industries</a></li>
+		<li><a href="/bls/business.htm" aria-label="Statistics on Business Costs">Business Costs</a></li>
+		<li><a href="/bls/occupation.htm" aria-label="Statistics by Occupations">Occupations</a></li>
+		<li><a href="/bls/geography.htm" aria-label="Statistics by Geography">Geography</a></li>	
+	
+	</ul>
+	<!-- 3rd column -->
+	<ul class="main-nav-submenu-inn">
+		<li class="heading"><a href="/audience/" aria-label="Resources For">Resources For</a></li>
+		<li><a href="/audience/business.htm" aria-label="Resources for Business Leaders">Business Leaders</a></li>
+		<li><a href="/audience/consumers.htm" aria-label="Resources for Consumers">Consumers</a></li>
+		<li><a href="/audience/developers.htm" aria-label="Developers site">Developers</a></li>
+		<li><a href="/audience/economists.htm" aria-label="Economists or Economic Analyst">Economists</a></li>
+		<li><a href="/audience/investors.htm" aria-label="Resources for Financial Investors">Investors</a></li>
+		<li><a href="/audience/jobseekers.htm" aria-label="Resources for Jobseekers">Jobseekers</a></li>
+		<li><a href="/audience/media.htm" aria-label="Media">Media</a></li>
+		<li><a href="/audience/policy.htm" aria-label="Resources for Public Policymakers">Public Policymakers</a></li>
+		<li><a href="/audience/researcher.htm" aria-label="Researcher">Researcher</a></li>		
+		<li><a href="/audience/students.htm" aria-label="Resources for Students & Teachers">Students &amp; Teachers</a></li>
+		<li><a href="/respondents/" aria-label="Survey Respondents">Survey Respondents</a></li>
+	</ul>
+</div>
+
+<!-- ***********************************************End Home Tab LIST ******************************************** --> 
+
+</div>
+    </li>
+    <li class="nav-item dropdown active"><a class="nav-link dropdown-toggle" href="/bls/proghome.htm" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Subjects <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown2"><!-- ************************************* Begin SUBJECTS TAB list ****************************************** -->
+<!-- 1st column -->
+<div class="main-nav-submenu" id="submenu-programs">
+	<ul class="main-nav-submenu-inn">
+		<li class="heading"><a href="/bls/inflation.htm" aria-label="Statistics on Inflation & Prices">Inflation &amp; Prices</a></li>
+		<li><a href="/cpi/" aria-label="Consumer Price Index ">Consumer Price Index</a></li>
+		<li><a href="/ppi/" aria-label="Producer Price Indexes">Producer Price Indexes</a></li>
+		<li><a href="/mxp/" aria-label="Import/Export Price Indexes">Import/Export Price Indexes</a></li>
+		<li><a href="/bls/escalation.htm" aria-label="Contract Escalation">Contract Escalation</a></li>
+		<li><a href="/pir/" aria-label="Price Index Research">Price Index Research</a></li>
+		<li class="heading"><a href="/bls/wages.htm" aria-label="Statistics on Pay & Benefits">Pay &amp; Benefits</a></li>
+		<li><a href="/eci/" aria-label="Employment Cost Index">Employment Cost Index</a></li>
+		<li><a href="/ecec/home.htm" aria-label="Employer Costs for Employee Compensation">Employer Costs for Employee Compensation</a></li>
+						<li><a href="/oes/" aria-label="Wage Data by Occupation">Wage Data by Occupation</a></li>
+		<li><a href="/cps/earnings.htm#demographics" aria-label="Earnings by Demographics">Earnings by Demographics</a></li>
+		<li><a href="/ces/" aria-label="Earnings by Industry">Earnings by Industry</a></li>
+		<li><a href="https://www.bls.gov/cew/" aria-label="County Wages">County Wages</a></li>  <!--full path is needed since they have a folder on the data server-->
+		<li><a href="/ebs/" aria-label="Employee Benefits Survey">Benefits</a></li>
+		<li><a href="/mwe/" aria-label="Modeled Wage Estimates">Modeled Wage Estimates</a></li>		
+		<li><a href="/crp/" aria-label="Compensation Research & Program Development">Compensation Research</a></li>
+		<li><a href="/wsp/" aria-label="Strikes & Lockouts">Strikes &amp; Lockouts </a></li>
+		<li><a href="/wrp/" aria-label="Wage Records from Unemployment Insurance">Wage Records from Unemployment Insurance</a></li>
+		<li class="heading"><a href="/ors/" aria-label="Occupational Requirements Survey">Occupational Requirements</a></li>		
+	</ul>
+	<!-- 2nd column -->
+	<ul class="main-nav-submenu-inn">
+		<li class="heading"><a href="/bls/unemployment.htm" aria-label="Statistics on Unemployment">Unemployment</a></li>
+		<li><a href="/cps/" aria-label="National Unemployment Rate">National Unemployment Rate </a></li>
+		<li><a href="/lau/" aria-label="State & Local Unemployment Rates">State &amp; Local Unemployment Rates </a></li>
+		<li><a href="/ers/" aria-label="Unemployment Research">Unemployment Research</a></li>
+		<li class="heading"><a href="/bls/employment.htm" aria-label="Statistics on Employment">Employment</a></li>
+		<li><a href="/ces/" aria-label="National Employment Statistics">National Employment </a></li>
+		<li><a href="/sae/" aria-label="State & Local Employment, Hours, and Earnings">State &amp; Local Employment </a></li>
+		<li><a href="https://www.bls.gov/cew/" aria-label="County Employment">County Employment </a></li> <!--full path is needed since they have a folder on the data server-->
+		<li><a href="/cps/" aria-label="Worker Characteristics">Worker Characteristics </a></li>
+		<li><a href="/air/" aria-label="American Indian Report">American Indian Report</a></li>
+		<li><a href="/emp/" aria-label="Employment Projections">Employment Projections </a></li>
+		<li><a href="/jlt/" aria-label="Job Openings & Labor Turnover Survey">Job Openings &amp; Labor Turnover Survey </a></li>
+		<li><a href="/brs/" aria-label="Business Response Survey">Business Response Survey</a></li>
+		<li><a href="/oes/" aria-label="Employment by Occupation">Employment by Occupation </a></li>
+		<li><a href="/nls/" aria-label="Work Experience Over Time">Work Experience Over Time </a></li>
+		<li><a href="/bdm/" aria-label="Business Employment Dynamics">Business Employment Dynamics </a></li>
+		<li><a href="/fdi/" aria-label="Foreign Direct Investment">Foreign Direct Investment </a></li>
+		<li><a href="/ers/" aria-label="Employment Research and Program Development">Employment Research</a></li>
+		<li class="heading"><a href="/iif/" aria-label="Workplace Injuries, Illnesses, and Fatalities">Workplace Injuries</a></li>
+	</ul>
+	<!-- 3rd column -->
+	<ul class="main-nav-submenu-inn">
+		<li class="heading"><a href="/bls/productivity.htm" aria-label="Productivity Statistics">Productivity</a></li>
+		<li><a href="/productivity/" aria-label="Labor and Total Factor Productivity">Labor and Total Factor Productivity</a></li>
+		<li><a href="/dpr/" aria-label="Productivity Research and Program Development">Productivity Research</a></li>
+		<li class="heading"><a href="/bls/spending.htm" aria-label="Statistics on Spending & Time Use">Spending &amp; Time Use</a></li>
+		<li><a href="/cex/" aria-label="Consumer Expenditures Surveys">Consumer Expenditures </a></li>
+		<li><a href="/tus/" aria-label="How Americans Spend Time Survey">How Americans Spend Time</a></li>			
+		<li class="heading"><a href="/bls/international.htm" aria-label="International Data and Technical Cooperation">International</a></li>
+		<li><a href="/itc/" aria-label="International Technical Cooperation">International Technical Cooperation</a></li>
+		<li><a href="/mxp/" aria-label="Import/Export Price Indexes">Import/Export Price Indexes</a></li>
+		<li class="heading"><a href="/regions/" aria-label="Geographic Information">Geographic Information</a></li>
+		<li><a href="/regions/northeast/" aria-label="Northeast (Boston-New York) Information Office">Northeast (Boston-New York)</a></li>
+		<li><a href="/regions/mid-atlantic/" aria-label="Mid-Atlantic (Philadelphia) Information Office">Mid-Atlantic (Philadelphia)</a></li>
+		<li><a href="/regions/southeast/" aria-label="Southeast (Atlanta) Information Office">Southeast (Atlanta)</a></li>
+		<li><a href="/regions/midwest/" aria-label="Midwest (Chicago) Information Office">Midwest (Chicago)</a></li>
+		<li><a href="/regions/southwest/" aria-label="Southwest (Dallas) Information Office">Southwest (Dallas)</a></li>
+		<li><a href="/regions/mountain-plains/" aria-label="Mountain-Plains (Kansas City) Information Office">Mountain-Plains (Kansas City)</a></li>
+		<li><a href="/regions/west/" aria-label="West (San Francisco) Information Office">West (San Francisco)</a></li>
+	</ul>
+</div>
+<!-- **************************************End SUBJECT AREAS ******************************************** --> 
+	</div>	
+    </li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/data/" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Data Tools <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown3"><!-- ******************************************** Begin DATA TOOLS LIST ****************************************** -->
+<div class="main-nav-submenu"  id="submenu-data">
+    <ul class="main-nav-submenu-inn">
+        <li class="heading"><a href="/data/tools.htm" aria-label="Data Retrieval Tools Databases, Tables & Calculators by Subject">Data Retrieval Tools</a></li>
+		<li><a href="https://data.bls.gov/cgi-bin/surveymost?bls" aria-label="BLS Popular Series Top Picks">BLS Popular Series</a></li>
+		<li><a href="https://data.bls.gov/cgi-bin/srgate" aria-label="Series Report">Series Report</a></li>
+		<li><a href="/data/home.htm" aria-label="Top Picks, One Screen, Multi-Screen, and Maps" >Top Picks, One Screen, Multi-Screen, and Maps</a></li>
+		<li><a href="https://beta.bls.gov/dataQuery/search" aria-label="Data Finder">Data Finder</a></li>
+		<li><a href="/developers/home.htm" aria-label="Public Data API Programming Interface">Public Data API</a></li>
+
+    </ul>
+    <!-- 2nd column -->
+    <ul class="main-nav-submenu-inn">
+        <li class="heading"><a href="/data/apps.htm" aria-label="Charts and Applications">Charts and Applications</a></li>
+		<li><a href="/charts/home.htm" aria-label="Charts for Economic News Releases">Charts for Economic News Releases</a></li>	
+		<li><a href="/data/inflation_calculator.htm" aria-label="CPI Inflation Calculator">CPI Inflation Calculator</a></li>	
+		<li><a href="https://data.bls.gov/iirc/" aria-label="Injury and Illness Calculator">Injury and Illness Calculator</a></li>		
+		<li><a href="https://data.bls.gov/apps/compensation-comparison-matrix/home.htm" aria-label="Pay Measure Comparison">Pay Measure Comparison</a></li>
+		<li><a href="https://data.bls.gov/apps/demographic-comparison-matrix/home.htm" aria-label="Demographic Data Sources">Demographic Data Sources</a></li>
+		<li><a href="https://data.bls.gov/apps/covid-dashboard/home.htm" aria-label="COVID-19 Economic Trends">COVID-19 Economic Trends</a></li>
+		<li><a href="https://data.bls.gov/apps/industry-productivity-viewer/home.htm" aria-label="Industry Productivity Viewer" >Industry Productivity Viewer</a></li>
+		<li><a href="https://data.bls.gov/cew/apps/data_views/data_views.htm#tab=Tables" aria-label="Employment and Wages Data Viewer">Employment and Wages Data Viewer</a></li>
+		<li><a href="https://data.bls.gov/cew/apps/bls_naics/bls_naics_app.htm" aria-label="Industry Finder from the Quarterly Census of Employment and Wages">Industry Finder from the Quarterly Census of Employment and Wages</a></li>
+	
+    </ul>
+	<!-- 3rd column -->
+	<ul class="main-nav-submenu-inn">
+	    <li class="heading"><a href="/data/tables.htm" aria-label="Customized Tables">Customized Tables</a></li>
+		<li><a href="/eag/eag.us.htm" aria-label="U.S. Economy at a Glance">U.S. Economy at a Glance</a></li>
+		<li><a href="/eag/home.htm" aria-label="Regions, States & Areas at a Glance">Regions, States &amp; Areas at a Glance</a></li>
+		<li><a href="/iag/home.htm" aria-label="Industry at a Glance">Industry at a Glance</a></li>			
+		<li><a href="https://download.bls.gov/pub/time.series/" aria-label="Text Files">Text Files</a></li>
+		<li><a href="/data/#historical-tables" aria-label="Historical News Release Tables">News Release Tables</a></li>
+		
+		<li class="heading"><a href="/bls/moredata.htm" aria-label="More Sources of Data">More Sources of Data</a></li>
+		<li><a href="/rda/home.htm" aria-label="Bureau of Labor Statistics Restricted Data Access">Restricted Data Access</a></li>
+		<li><a href="/data/archived.htm" aria-label="Discontinued Databases">Discontinued Databases </a></li>
+		<li><a href="/help/hlpform1.htm" aria-label="Questions & Answers regarding Bureau of Labor Statistics website data retrieval tools">Questions &amp; Answers</a></li>
+		<li><a href="/help/notice.htm" aria-label="Special Notices">Special Notices </a></li>	
+	</ul>
+</div>
+<!-- *********************************************End DATABASES and TOOLS LIST ******************************************** --></div>
+    </li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/opub/" id="navbarDropdown4" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Publications <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown4"><!-- ********************************************** Begin PUBLICATIONS LIST ****************************************** -->
+<div class="main-nav-submenu"  id="submenu-pubs">    
+    <ul class="main-nav-submenu-inn"> 
+		<li class="heading"><a href="/opub/" aria-label="Latest Publications">Latest Publications</a></li>
+		<li><a href="/opub/ted/" aria-label="The Economics Daily">The Economics Daily</a></li>
+		<li><a href="/opub/mlr/" aria-label="Monthly Labor Review">Monthly Labor Review</a></li>
+		<li><a href="/opub/btn/" aria-label="Beyond the Numbers">Beyond the Numbers</a></li>
+		<li><a href="/spotlight/" aria-label="Spotlight on Statistics">Spotlight on Statistics</a></li>
+		<li><a href="/opub/reports" aria-label="Bureau of Labor Statistics Reports">Reports</a></li>
+		<li><a href="/blog/" aria-label="Commissioner's Corner">Commissioner's Corner</a></li>
+		<li><a href="/video/" aria-label="Videos">Videos</a></li>
+		<li><a href="/careeroutlook/" aria-label="Career Outlook">Career Outlook</a></li>		
+    </ul>
+    <!-- 2nd column -->
+    <ul class="main-nav-submenu-inn">
+		<li><a href="/ooh/" aria-label="Occupational Outlook Handbook">Occupational Outlook Handbook</a></li>
+		<li><a href="/opub/geographic-profile/" aria-label="Geographic Profile">Geographic Profile</a></li>
+		<li><a href="/opub/hom/" aria-label="Handbook of Methods">Handbook of Methods</a></li>
+		<li><a href="/osmr/research-papers/" aria-label="Research Papers - Office of Survey Methods Research">Research Papers</a></li>
+		<li><a href="/opub/copyright-information.htm" aria-label="Copyright Information">Copyright Information</a></li>
+		<li><a href="/opub/opbinfo.htm" aria-label="Contact & Help">Contact &amp; Help </a></li>
+		<li><a href="/opub/update.htm" aria-label="Weekly Update">Weekly Update</a></li>		
+    </ul>
+</div>
+<!-- ***********************************************End PUBLICATIONS LIST ******************************************** --> </div>
+    </li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/bls/newsrels.htm" id="navbarDropdown5" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Economic Releases <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown5"><!-- ********************************************** Begin ECONOMIC RELEASES LIST ****************************************** -->
+<!-- 1st column -->
+
+<div class="main-nav-submenu" id="submenu-news">
+    <ul class="main-nav-submenu-inn">
+        <li class="heading"><a href="/bls/newsrels.htm#latest-releases" aria-label="Latest Releases">Latest Releases</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#major" aria-label="Major Economic Indicators">Major Economic Indicators</a></li>
+		<li class="heading"><a href="/schedule/news_release/" aria-label="Schedules for news Releases">Schedules for news Releases</a></li>
+		<li><a href="/schedule/" aria-label="Release Calendar By Month">By Month</a></li>
+		<li><a href="/schedule/schedule/by_prog/all_sched.htm" aria-label="Release Calendar By News Release">By News Release</a></li>
+		<li><a href="/schedule/news_release/current_year.asp" aria-label="Release Calendar Current Year">Current Year</a></li>
+		<li><a href="/bls/archived_sched.htm" aria-label="Schedules for Selected Bureau of Labor Statistics Economic News Releases for Prior Years">Prior Years</a></li>
+		<li class="heading"><a href="/bls/news-release/" aria-label="Archived News Releases">Archived News Releases</a></li>
+    </ul>
+    <!-- 2nd column -->
+    <ul class="main-nav-submenu-inn">
+        <li class="heading"><a href="/bls/newsrels.htm#OEUS" aria-label="Employment & Unemployment">Employment &amp; Unemployment</a></li>
+		<li><a href="/bls/newsrels.htm#OEUS" aria-label="Monthly">Monthly</a></li>
+		<li><a href="/bls/newsrels.htm#OEUS" aria-label="Quarterly, annual, and other">Quarterly, annual, and other</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#OPLC" aria-label="Inflation & Prices"> Inflation &amp; Prices</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#OCWC" aria-label="Pay & Benefits & Workplace Injuries">Pay &amp; Benefits &amp; Workplace Injuries</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#OPT" aria-label="Productivity & Technology">Productivity &amp; Technology</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#OEP" aria-label="Employment Projections">Employment Projections</a></li>
+		<li class="heading"><a href="/bls/newsrels.htm#NEWS" aria-label="Regional News Releases">Regional News Releases</a></li>
+    </ul>
+</div></div>
+    </li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/k12/" id="navbarDropdown6" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Classroom <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown6"><!-- ********************************************** Begin Students Tab LIST ****************************************** -->
+<div class="main-nav-submenu" id="submenu-students">
+	<ul class="main-nav-submenu-inn">
+		<li class="heading"><a href="/k12/" aria-label="K-12 Student & Teacher Resources">K-12 Student &amp; Teacher Resources</a></li>		
+        <li><a href="/k12/games/" aria-label="Games & Quizzes">Games &amp; Quizzes</a></li>
+		<li><a href="/k12/students/" aria-label="Student's Desk">Student&apos;s Desk</a></li>
+		<li><a href="/k12/teachers/" aria-label="Teacher's Desk">Teacher&apos;s Desk</a></li>
+		<li><a href="/k12/faq.htm" aria-label="Questions & Answers">Questions &amp; Answers</a></li>
+    </ul>
+</div>
+<!-- ***********************************************End Students Tab LIST ******************************************** --></div>
+    </li>
+    <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="/beta/" id="navbarDropdown7" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Beta <span class="circle-arrow"></span></a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown7"><!-- ***********************************************Start BETA LIST ******************************************** -->
+
+<div class="main-nav-submenu" id="submenu-beta">
+  <ul class="main-nav-submenu-inn">
+    <li class="heading"><a href="/beta/redesigned-news-releases.htm" aria-label="Redesigned News Releases">Redesigned News Releases</a></li>
+  </ul>
+</div>
+<!-- ***********************************************End BETA LIST ******************************************** --></div>
+    </li>
+</ul>
+
+
+  </div>
+</nav>
+</div>
+
+		</div>
+		<div class="clearfloat"></div>
+	</div>
+</div>
+
+
+<!-- MAIN NAV END -->
+
+<!-- WRAPPER TOP BEGIN -->
+	<div id="wrapper-outer" role="main">
+		<div id="wrapper">
+			<div id="container">
+<!-- WRAPPER TOP END -->
+<!-- SUBDOMAIN TITLE TOP BEGIN -->
+
+<!-- 1COL CMS LAYOUT COL1 BEGIN -->	
+
+<div class="main-content">
+<div id="startcontent" class="hidden"></div>
+
+<!-- 1COL CMS LAYOUT COL1 END -->
+
+
+
+<!--no_index_end-->
+
+<!-- OneColHeadBasic End -->
+
+ 
+<!-- ************************ End HEADER ********************************** --> 
+<div id="programs-banner">
+    	<div id="program-title" aria-level="1" role="heading">Current Employment Statistics - CES (National)</div><div id="social-search-box"><div class="article-tools-box social-media"><span class="social-media"><span>SHARE ON:</span><a href="javascript:void(0);" class="share_facebook"><img alt="share on facebook" src="/images/icons/facebook.png" title="Facebook"></a><a href="javascript:void(0);" class="share_twitter"><img alt="share on twitter" src="/images/icons/twitter.png" title="Twitter"></a><a href="javascript:void(0);" class="share_linkedin"><img alt="share on linkedin" src="/images/icons/linkedin.png" title="LinkedIn"></a></span></div><form method="get" id="search-secondary-nav-form" action="/search/query"><input type="hidden" value="https://www.bls.gov/ces" id="search-secondary-nav-category" name="prefix"><label for="search-secondary-nav-query" class="invisible">Search Current Employment Statistics - CES (National)</label><input type="text" onclick="this.value=''; this.onclick = null;" value="Search Current Employment Statistics - CES (National)" id="search-secondary-nav-query"name="query"><input type="submit" value="Go" id="search-secondary-nav-submit" name="submit"></form></div><div class="clearfloat"></div><style>.layout-wide #dol-bar-content, .layout-wide #bls-banner, .layout-wide #main-nav-container{margin:0 !important;}.layout-wide #wrapper, .layout-wide #footer-links-wrapper{max-width:100% !important;}.layout-wide #programs-banner{width:923px !important;}div.p{font-family: Tahoma, Arial, Helvetica, sans-serif;margin: 0 0 1em 0 !important;padding: 0;font-size: 100%;color: #333;line-height: 160%;}</style>	
+	
+<div class="bootstrap standard-width">
+<nav class="navbar navbar-expand-md programsNavBar " aria-label="secondary-nav">
+  <ul class="navbar-nav" role="menu">
+			        					<li class="nav-item" role="none">
+        																						<a role="menuitem" class="nav-link home progNav" href="/ces/">CES Home</a>
+				</li>        							        					<li class="nav-item dropdown" role="none">
+        																						<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link data progNav" href="javascript:">CES Publications</a>
+				        			        	        		<div class="dropdown-menu" role="menu">                                								<a class="dropdown-item heading" role="menuitem" href="/ces/publications-overview.htm">Publications Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/news.htm">News Releases</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/ceshighlights.pdf">Current CES Highlights</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/publications/strike-report.htm">Strike Report</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/tables/navsea-shipyard-earnings-index.htm">Shipyard Earnings Indexes</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesbmart.htm">Current Benchmark Article</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/publications/articles.htm">Publications by CES Staff</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/ces_cps_trends.htm">Comparing Employment from BLS Household and Payroll Surveys</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/publications/length-pay-period.htm">Pay Period Frequency</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/publications/highlights/highlights-archive.htm">Archived CES Highlights</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesbmkarch.htm">Archived Benchmark Articles</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://public.govdelivery.com/accounts/USDOLBLS/subscribers/new?topic_id=USDOLBLS_007">Subscriptions</a>
+								</div></li>        																			        					<li class="nav-item dropdown" role="none">
+        																						<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link data progNav" href="javascript:">CES Data</a>
+				        			        	        		<div class="dropdown-menu" role="menu">                                								<a class="dropdown-item heading" role="menuitem" href="/ces/data-overview.htm">Data Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/data/">Databases</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/charts/employment-situation/otm-employment-change-by-industry-confidence-intervals.htm">Interactive Charts</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/tables/peak-trough.htm">Peak-Trough Tables</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/data/analytical-tables.htm">Analytical Tables</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/data/employment-and-earnings/">Employment and Earnings Tables</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesnaicsrev.htm">Revisions</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/tables/census-temporary-intermittent-workers-government-employment.htm">Census Workers</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/latest-numbers.htm">Latest Numbers</a>
+								</div></li>        																        					<li class="nav-item dropdown" role="none">
+        																						<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link data progNav" href="javascript:">CES Methods</a>
+				        			        	        		<div class="dropdown-menu" role="menu">                                								<a class="dropdown-item heading" role="menuitem" href="/ces/methods-overview.htm">Methods Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/opub/hom/ces/">Handbook of Methods</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/bls/empsitquickguide.htm">Quick Guide</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cestn.htm">Technical Notes</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/naics/">Industry Classification Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesregrec.htm">Collection Rates</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/opub/hom/ces/calculation.htm#reliability">Measurements of Error</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesconfidenceintervals.xlsx">Confidence Intervals</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/methods/benchmark-tables.htm">Benchmark</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesbd.htm">Birth-Death</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesseasadj.htm">Seasonal Adjustment</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/report-forms/">Report Forms</a>
+								</div></li>        																			        					<li class="nav-item dropdown" role="none">
+        																						<a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle nav-link about progNav" href="javascript:">About CES</a>
+				        			        	        		<div class="dropdown-menu" role="menu">                                								<a class="dropdown-item heading" role="menuitem" href="/ces/about-overview.htm">About CES Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesprog.htm">Overview</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/respondents/ces/">Info for Survey Participants</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="https://www.bls.gov/web/empsit/cesfaq.htm">Questions and Answers</a>
+								        			        	        		                                								<a class="dropdown-item" role="menuitem" href="/ces/notices/">Notices</a>
+								</div></li>        												        					<li class="nav-item" role="none">
+        																						<a role="menuitem" class="nav-link contact progNav" href="/ces/contact.htm">Contact CES</a>
+				</li>        				  </ul>
+</nav>
+</div>
+	
+	
+</div>
+
+<style>
+.main-content #programs-banner #programs-banner-nav > li a{
+padding:0px;
+}
+
+#home-latest-numbers .data {
+    margin-left: 15px;
+}
+#home-latest-numbers .title {
+    display: block;
+    margin-top: 15px;
+}
+#home-latest-numbers p:nth-of-type(1), #home-latest-numbers p:nth-of-type(2), #home-latest-numbers p:nth-of-type(3){
+display:block;
+}
+
+#home-latest-charts .chartAndTableGroup .chartPackageDiv, #home-latest-charts .chartAndTableGroup .chartPackageDiv .highcharts-container {
+    height: 500px !important; 
+}
+
+</style>
+
+<script>
+$(document).ready(function(){
+if($("#home-highchart template").size()){
+	var highchartString = "";
+	var sel = $("#home-highchart template code").length == 0 ? "#home-highchart template" : "#home-highchart code";
+	highchartString = $(sel).html().replace(/<[^<]*?jquery[^<]*?><\/script>/gim,"").replace(/(722|700)px/gim,"450px").replace(/(690|660)px/gim,"500px") + "</div></div>";
+	highchartString = highchartString.replace(/<\/?code>/gi,"")
+
+		$("#home-highchart").html(highchartString);
+setTimeout(function(){
+		var credits=""
+		$("div[id^=\"chartDiv\"").each(function(i){
+			ctx = $(this).highcharts();
+			credits = $(this).highcharts().credits.textStr;
+			ctx.update({credits:{text:""}})
+			ctx.update({chart:{marginBottom:60,width:450}})
+	ctx.update({xAxis:{labels:{style:{fontSize:"11px"}}}})
+			ctx.update({exporting:{buttons:{contextButton:{theme:{fill:"transparent"}}}}})
+		})
+		
+		$("#home-highchart").after("<p style=\"font-size:11px; background-color:#fff; margin-left:2px; padding: 5px\">"+credits+"</p>");	
+	},100);
+}
+});
+</script> 
+
+<!-- Begin Main CES Content -->
+<h1>Technical Notes for the CES National Benchmark</h1>
+<h2 id="Introduction">Introduction</h2>
+<p>The Bureau of Labor Statistics (BLS) collects data each month on employment, hours, and earnings from a sample of nonfarm establishments through the Current Employment Statistics (CES) program. The CES survey includes about <!-- 1 -->119,000 businesses and government agencies, which cover approximately <!-- 2 -->629,000 individual worksites drawn from a sampling frame of Unemployment Insurance (UI) tax accounts covering roughly <!-- 3 -->11.3 million establishments. The active CES sample includes approximately <!-- 4 -->30 percent of all nonfarm payroll employees in the 50 states and the District of Columbia. From these data, a large number of employment, hours, and earnings series in considerable industry and geographic detail are prepared and published each month. Historical statistics for the nation are available on the <a href="/ces/data/">CES-National data</a> webpage. Information and data for states and metropolitan areas are available on the <a href="/sae/data/">CES-State and Metro Area data</a> webpage.</p>
+<p>Each year, CES-National estimates are benchmarked to the most recent <a href="/cew/">Quarterly Census of Employment and Wage (QCEW)</a> data, based on Unemployment Insurance records, along with a small amount of employment data that is not covered by QCEW. Benchmarking is a standard part of any sample-based survey and is meant to more closely align the CES estimates to population totals. These technical notes will provide background and analysis about the benchmarking process, the data used in that process, and the effects that updates to population data have on CES estimates.</p>
+<p>The methodology used in the Current Employment Statistics (CES) program’s <a href="/opub/hom/ces/concepts.htm">concepts</a>, <a href="/opub/hom/ces/data.htm">data sources</a>, <a href="/opub/hom/ces/design.htm">design</a>, <a href="/opub/hom/ces/calculation.htm">calculations</a>, and <a href="/opub/hom/ces/presentation.htm">presentation</a> of data is described in the <a href="/opub/hom/ces/">CES Handbook of Methods</a>. This webpage supplements the Handbook by providing additional detail and information specific to the most recent CES benchmark.</p>
+<h2 id="Table-of-Contents">Table of Contents</h2>
+<p>Use the links below to skip to specific topics about the CES sample, data collection, estimation, and revisions. A link is included to skip to a list of tables in these notes.</p>
+
+<!-- BEGIN TABLE OF CONTENTS -->
+<ul>
+  <li><a href="#The-Sample">The Sample</a></li>
+  <ul>
+    <li><a href="#Coverage">Coverage</a></li>
+    <li><a href="#CES-Sample-by-Employment-Size-Class">CES Sample by Employment Size Class</a></li>
+  </ul>
+  <li><a href="#Reliability">Reliability</a></li>
+  <ul>
+    <li><a href="#Measurement-of-Error">Measurements of Error</a></li>
+    <li><a href="#Revisions-Between-Preliminary-and-Final-Data">Revisions Between Preliminary and Final Data</a></li>
+    <li><a href="#Benchmark-Revision-as-a-Measure-of-Survey-Error">Benchmark Revision as a Measure of Survey Error</a></li>
+  </ul>
+  <li><a href="#CES-Estimation">CES Estimation</a></li>
+  <ul>
+    <li><a href="#Industry-Structure-Changes">Industry Structure Changes</a></li>
+    <li><a href="#Birth-Death-Model">Birth-Death Model</a></li>
+    <li><a href="#Seasonal-Adjustment">Seasonal Adjustment</a></li>
+  </ul>
+  <li><a href="#Revisions">Revisions</a></li>
+  <ul>
+    <li><a href="#Benchmarks">Benchmarks</a></li>
+    <li><a href="#Historical-Reconstructions">Historical Reconstructions</a></li>
+  </ul>
+  <li><a href="#Table-of-Figures">Table of Figures</a></li>
+</ul>
+<!-- END TABLE OF CONTENTS --> 
+
+<!-- *********************** Begin STICKY BACK TO TOP ********************** --> 
+<div id="page-top-link" class="sticky-backtotop alignRight" >
+   <a href="#top" title="Jump to Top" >Top</a>
+</div>
+ 
+<!-- *********************** End STICKY BACK TO TOP ********************** -->
+
+<h2 id="The-Sample">The Sample</h2>
+<p>The Current Employment Statistics (CES) sample is a stratified, simple random sample of worksites, clustered by Unemployment Insurance (UI) account number. The UI account number is a major identifier on the Bureau of Labor Statistics (BLS) Longitudinal Database (LDB) of employer records, which serves as both the sampling frame and the benchmark source for the CES employment estimates. </p>
+<p>More information about the CES sample design, including frame and sample selection, selection weighting, frame maintenance and sample updates, and the inclusion of a model component to account for units that cannot be sampled, is available in the CES Handbook of Methods under <a href="/opub/hom/ces/design.htm">Design</a>.</p>
+<h3 id="Coverage">Coverage</h3>
+<p><a href="#tb1">Table 1</a> shows the 2023 benchmark employment levels and the approximate proportion of total universe employment coverage at the total nonfarm and <a href="/opub/hom/ces/calculation.htm#aggregation-procedures">major industry sector</a> levels. The sample distribution by industry reflects the goal of minimizing the sampling error in the total nonfarm employment estimate, while also providing reliable employment estimates by industry. Sample coverage rates vary by industry as a result of building a design to meet these goals. </p>
+<p>The CES government sample is not part of the program's probability-based design, which is used to estimate employment for all private industries. A very high level of universe employment coverage is achieved by obtaining full payroll employment counts for many government agencies. The private and government estimates are summed to derive total nonfarm employment estimates.</p>
+<p>More information about sample coverage in the CES survey is available in the <a href="/opub/hom/ces/design.htm#coverage">Coverage</a> section of the CES Handbook of Methods.</p>
+
+<!-- BEGIN TABLE 1 -->
+<table id="tb1" class="regular" cellspacing="0" cellpadding="0" xborder="1">
+  <caption>
+  <span class="tableTitle">Table 1. Employment benchmarks and approximate coverage of BLS employment and payrolls sample, March 2023</span>
+  </caption>
+  <thead>
+    <tr>
+      <th class="stubhead" rowspan="3">CES Industry Code</th>
+      <th rowspan="3">CES Industry Title</th>
+      <th rowspan="3">Employment Benchmarks (in thousands)</th>
+      <th colspan="4">Sample Coverage</th>
+    </tr>
+    <tr>
+      <th rowspan="2">Unemployment Insurance Counts (UI)<sup><a href="#t1f1">(1)</a></sup></th>
+      <th rowspan="2">Number of Establishments</th>
+      <th colspan="2">Employees</th>
+    </tr>
+    <tr>
+      <th>Number (in thousands)<sup><a href="#t1f2">(2)</a></sup></th>
+      <th>Percent of Benchmark Employment Level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr   >
+      <th id="Tb1.r.1 " headers="Tb1.r"><p class="sub0" >00-000000 </p></th>
+      <th>Total nonfarm </th>
+      <td>154,253 </td>
+      <td>114,655 </td>
+      <td>660,834 </td>
+      <td>41,515 </td>
+      <td>27 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.2 " headers="Tb1.r"><p class="sub0" >10-000000 </p></th>
+      <th>Mining and logging </th>
+      <td>628 </td>
+      <td>747 </td>
+      <td>2,359 </td>
+      <td>134 </td>
+      <td>21 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.3 " headers="Tb1.r"><p class="sub0" >20-000000 </p></th>
+      <th>Construction </th>
+      <td>7,701 </td>
+      <td>7,999 </td>
+      <td>11,650 </td>
+      <td>722 </td>
+      <td>9 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.4 " headers="Tb1.r"><p class="sub0" >30-000000 </p></th>
+      <th>Manufacturing </th>
+      <td>12,889 </td>
+      <td>6,318 </td>
+      <td>15,141 </td>
+      <td>2,291 </td>
+      <td>18 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.5 " headers="Tb1.r"><p class="sub0" >40-000000 </p></th>
+      <th>Trade, transportation, and utilities </th>
+      <td>28,553 </td>
+      <td>17,958 <sup><a href="#t1f3">(3)</a></sup></td>
+      <td>203,133 </td>
+      <td>8,951 </td>
+      <td>31 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.6 " headers="Tb1.r"><p class="sub1" >41-420000 <sup><a href="#t1f4">(4)</a></sup> </p></th>
+      <th>Wholesale trade </th>
+      <td>6,072 </td>
+      <td>5,341 </td>
+      <td>15,001 </td>
+      <td>580 </td>
+      <td>10 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.7 " headers="Tb1.r"><p class="sub1" >42-000000 <sup><a href="#t1f4">(4)</a></sup> </p></th>
+      <th>Retail trade </th>
+      <td>15,391 </td>
+      <td>9,037 </td>
+      <td>171,804 </td>
+      <td>6,460 </td>
+      <td>42 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.8 " headers="Tb1.r"><p class="sub1" >43-000000 <sup><a href="#t1f4">(4)</a></sup> </p></th>
+      <th>Transportation and warehousing </th>
+      <td>6,519 </td>
+      <td>3,812 <sup><a href="#t1f3">(3)</a></sup></td>
+      <td>13,201 </td>
+      <td>1,732 </td>
+      <td>27 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.9 " headers="Tb1.r"><p class="sub1" >44-220000 <sup><a href="#t1f4">(4)</a></sup> </p></th>
+      <th>Utilities </th>
+      <td>570 </td>
+      <td>313 </td>
+      <td>3,127 </td>
+      <td>179 </td>
+      <td>31 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.10 " headers="Tb1.r"><p class="sub0" >50-000000 </p></th>
+      <th>Information </th>
+      <td>3,036 </td>
+      <td>2,416 </td>
+      <td>14,979 </td>
+      <td>730 </td>
+      <td>24 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.11 " headers="Tb1.r"><p class="sub0" >55-000000 </p></th>
+      <th>Financial activities </th>
+      <td>9,094 </td>
+      <td>5,983 </td>
+      <td>81,950 </td>
+      <td>1,762 </td>
+      <td>19 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.12 " headers="Tb1.r"><p class="sub0" >60-000000 </p></th>
+      <th>Professional and business services </th>
+      <td>22,552 </td>
+      <td>17,243 </td>
+      <td>62,957 </td>
+      <td>3,322 </td>
+      <td>15 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.13 " headers="Tb1.r"><p class="sub0" >65-000000 </p></th>
+      <th>Private education and health services </th>
+      <td>25,133 </td>
+      <td>13,125 </td>
+      <td>59,826 </td>
+      <td>5,557 </td>
+      <td>22 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.14 " headers="Tb1.r"><p class="sub0" >70-000000 </p></th>
+      <th>Leisure and hospitality </th>
+      <td>16,031 </td>
+      <td>11,412 </td>
+      <td>59,648 </td>
+      <td>2,344 </td>
+      <td>15 </td>
+    </tr>
+    <tr   >
+      <th id="Tb1.r.15 " headers="Tb1.r"><p class="sub0" >80-000000 </p></th>
+      <th>Other services </th>
+      <td>5,750 </td>
+      <td>4,337 </td>
+      <td>13,351 </td>
+      <td>322 </td>
+      <td>6 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Tb1.r.16 " headers="Tb1.r"><p class="sub0" >90-000000 </p></th>
+      <th>Government </th>
+      <td>22,886 </td>
+      <td>29,897 </td>
+      <td>135,840 </td>
+      <td>15,380 </td>
+      <td>67 </td>
+    </tr>
+    <tr class = "footnotes">
+      <td class = "footnotes" colspan = "7"><p class = "footnotes"><span class = "footnotestitle">Footnotes:<br>
+          </span> <sup id = "t1f1">(1)</sup> Counts reflect active sample reports. Because not all
+          establishments report payroll and hours information, hours and earnings estimates
+          are based on a smaller sample than are the employment estimates.<br>
+          <sup id = "t1f2">(2)</sup> Employment of reported values for March 2023.<br>
+          <sup id = "t1f3">(3)</sup> The Surface Transportation Board provides a complete count of
+          employment for Class I railroads plus Amtrak. A small sample is used to estimate hours
+          and earnings data.<br>
+          <sup id = "t1f4">(4)</sup> Indented industries are a part of trade, transportation, and utilities. </p></td>
+    </tr>
+  </tbody>
+</table>
+<!-- END TABLE 1  -->
+
+<p align="right"><a href="#Table-of-Figures">To Table of Figures</a></p>
+<h3 id="CES-Sample-by-Employment-Size-Class">CES Sample by Employment Size Class</h3>
+<p>The employment universe that the CES sample is estimating is highly skewed towards employers with fewer than 10 employees, as shown by <a href="#tb2">table 2</a>. CES samples larger firms at a higher rate than smaller firms, a standard technique used in business establishment surveys.</p>
+
+<!-- BEGIN TABLE 2  -->
+<table id="tb2" class="regular">
+  <caption>
+  <span class="tableTitle">Table 2. Total private universe employment by size of UI, March 2023</span>
+  </caption>
+  <thead>
+    <tr>
+      <th class="stubhead" scope="col" rowspan="1" colspan="1">Size Class</th>
+      <th scope="col" rowspan="1" colspan="1">Percent of All UIs</th>
+      <th scope="col" rowspan="1" colspan="1">Percent of Employment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"><p class="sub0">1 (0-9 employees)</p></th>
+      <td>72.5</td>
+      <td>10.3</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">2 (10-19 employees)</p></th>
+      <td>12.8</td>
+      <td>7.7</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">3 (20-49 employees)</p></th>
+      <td>8.8</td>
+      <td>12.2</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">4 (50-99 employees)</p></th>
+      <td>3.0</td>
+      <td>9.8</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">5 (100-249 employees)</p></th>
+      <td>1.8</td>
+      <td>13.0</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">6 (250-499 employees)</p></th>
+      <td>0.6</td>
+      <td>9.4</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">7 (500-999 employees</p></th>
+      <td>0.3</td>
+      <td>8.8</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">8 (1000+ employees)</p></th>
+      <td>0.2</td>
+      <td>28.8</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">Total</p></th>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+<!-- END TABLE 2 -->
+
+<p align="right"><a href="#Table-of-Figures">To Table of Figures</a></p>
+<p><a href="#tb3">Table 3</a> shows the distribution of the active CES sample units. A much greater proportion of large UIs are selected; however, that does not create a bias in either the sample or the estimates made from the sample. The use of sample weights in the estimation process prevents a large (or small) firm bias in the estimates.</p>
+
+<!-- BEGIN TABLE 3  -->
+<table id="tb3" class="regular">
+  <caption>
+  <span class="tableTitle">Table 3. Total private CES sample employment by size of UI, March 2023</span>
+  </caption>
+  <thead>
+    <tr>
+      <th class="stubhead" scope="col" rowspan="1" colspan="1">Size Class</th>
+      <th scope="col" rowspan="1" colspan="1">Percent of All UIs</th>
+      <th scope="col" rowspan="1" colspan="1">Percent of Employment</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row"><p class="sub0">1 (0-9 employees)</p></th>
+      <td>33.0</td>
+      <td>0.3</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">2 (10-19 employees)</p></th>
+      <td>12.0</td>
+      <td>0.5</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">3 (20-49 employees)</p></th>
+      <td>15.3</td>
+      <td>1.5</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">4 (50-99 employees)</p></th>
+      <td>10.1</td>
+      <td>2.3</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">5 (100-249 employees)</p></th>
+      <td>11.2</td>
+      <td>5.7</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">6 (250-499 employees)</p></th>
+      <td>6.7</td>
+      <td>8.0</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">7 (500-999 employees</p></th>
+      <td>5.5</td>
+      <td>13.3</td>
+    </tr>
+    <tr class="greenbar">
+      <th scope="row"><p class="sub0">8 (1000+ employees)</p></th>
+      <td>6.2</td>
+      <td>68.4</td>
+    </tr>
+    <tr>
+      <th scope="row"><p class="sub0">Total</p></th>
+      <td>100.0</td>
+      <td>100.0</td>
+    </tr>
+  </tbody>
+  <tfoot>
+  </tfoot>
+</table>
+<!-- END TABLE 3 -->
+
+<p align="right"><a href="#Table-of-Figures">To Table of Figures</a></p>
+<h2 id="Reliability">Reliability</h2>
+<p>The reliability of the CES estimates can be assessed in several ways including sample variance, monthly revisions, and benchmarks.</p>
+<h3 id="Measurement-of-Error">Measurements of Error</h3>
+<p>The CES survey, like other sample surveys, is subject to two types of error, sampling and non-sampling error. The magnitude of sampling error, or variance, is directly related to the size of the sample and the percentage of universe coverage achieved by the sample. The CES survey sample covers over 30 percent of total universe employment; this yields a very small variance on the total nonfarm estimates. Measurements of error associated with sample estimates are provided in <a href="#tb4">table 4</a> and the <a href="/web/empsit/cesvarae.htm">all employee</a> (AE), <a href="/web/empsit/cesvarpe.htm">production employee</a> (PE), and <a href="/web/empsit/cesvarwe.htm">women employee</a> (WE) standard error tables.</p>
+
+<!-- BEGIN TABLE 4  -->
+<table id ="tb4" class="regular" cellspacing="0" cellpadding="0" xborder="1">
+  <caption>
+  <span class="tableTitle">Table 4. Standard and relative standard errors of CES sample-based estimates for a 1-month change </span>
+  </caption>
+  <thead>
+    <tr>
+      <th class="stubhead" >CES Industry Code</th>
+      <th class="stubhead" >CES Industry Title</th>
+      <th class="stubhead" >Standard Error<sup><a href="#t4f1">(1)</a></sup></th>
+      <th class="stubhead" >Relative Standard Error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr   >
+      <th id="Table4.r.1 " headers="Table4.r"><p class="sub0" >00-000000 </p></th>
+      <td>Total nonfarm </td>
+      <td>85,318 </td>
+      <td>0.2 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.2 " headers="Table4.r"><p class="sub0" >05-000000 </p></th>
+      <td>Total private </td>
+      <td>77,903 </td>
+      <td>0.2 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.3 " headers="Table4.r"><p class="sub0" >06-000000 </p></th>
+      <td>Goods-producing </td>
+      <td>26,263 </td>
+      <td>0.4 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.4 " headers="Table4.r"><p class="sub0" >07-000000 </p></th>
+      <td>Service-providing </td>
+      <td>81,328 </td>
+      <td>0.2 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.5 " headers="Table4.r"><p class="sub0" >08-000000 </p></th>
+      <td>Private service-providing </td>
+      <td>73,512 </td>
+      <td>0.2 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.6 " headers="Table4.r"><p class="sub0" >10-000000 </p></th>
+      <td>Mining and logging </td>
+      <td>3,426 </td>
+      <td>3.3 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.7 " headers="Table4.r"><p class="sub0" >20-000000 </p></th>
+      <td>Construction </td>
+      <td>16,319 </td>
+      <td>0.8 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.8 " headers="Table4.r"><p class="sub0" >30-000000 </p></th>
+      <td>Manufacturing </td>
+      <td>19,491 </td>
+      <td>0.5 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.9 " headers="Table4.r"><p class="sub0" >31-000000 </p></th>
+      <td>Durable goods </td>
+      <td>16,899 </td>
+      <td>0.6 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.10 " headers="Table4.r"><p class="sub0" >32-000000 </p></th>
+      <td>Nondurable goods </td>
+      <td>9,736 </td>
+      <td>0.7 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.11 " headers="Table4.r"><p class="sub0" >40-000000 </p></th>
+      <td>Trade, transportation, and utilities </td>
+      <td>27,640 </td>
+      <td>0.4 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.12 " headers="Table4.r"><p class="sub1" >41-420000 <sup><a href="#t4f2">(2)</a></sup> </p></th>
+      <td>Wholesale trade </td>
+      <td>10,949 </td>
+      <td>0.6 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.13 " headers="Table4.r"><p class="sub1" >42-000000 <sup><a href="#t4f2">(2)</a></sup> </p></th>
+      <td>Retail trade </td>
+      <td>17,691 </td>
+      <td>0.5 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.14 " headers="Table4.r"><p class="sub1" >43-000000 <sup><a href="#t4f2">(2)</a></sup> </p></th>
+      <td>Transportation and warehousing </td>
+      <td>15,974 </td>
+      <td>1 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.15 " headers="Table4.r"><p class="sub1" >44-220000 <sup><a href="#t4f2">(2)</a></sup> </p></th>
+      <td>Utilities </td>
+      <td>1,756 </td>
+      <td>2 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.16 " headers="Table4.r"><p class="sub0" >50-000000 </p></th>
+      <td>Information </td>
+      <td>12,894 </td>
+      <td>2.1 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.17 " headers="Table4.r"><p class="sub0" >55-000000 </p></th>
+      <td>Financial activities </td>
+      <td>12,831 </td>
+      <td>0.6 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.18 " headers="Table4.r"><p class="sub0" >60-000000 </p></th>
+      <td>Professional and business services </td>
+      <td>35,103 </td>
+      <td>0.5 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.19 " headers="Table4.r"><p class="sub0" >65-000000 </p></th>
+      <td>Private education and health services </td>
+      <td>30,661 </td>
+      <td>0.4 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.20 " headers="Table4.r"><p class="sub0" >70-000000 </p></th>
+      <td>Leisure and hospitality </td>
+      <td>39,130 </td>
+      <td>1 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.21 " headers="Table4.r"><p class="sub0" >80-000000 </p></th>
+      <td>Other services </td>
+      <td>13,838 </td>
+      <td>0.8 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.22 " headers="Table4.r"><p class="sub0" >90-000000 </p></th>
+      <td>Government </td>
+      <td>34,789 </td>
+      <td>0.6 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.23 " headers="Table4.r"><p class="sub0" >90-910000 </p></th>
+      <td>Federal </td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.24 " headers="Table4.r"><p class="sub0" >90-911000 </p></th>
+      <td>Federal, except U.S. Postal Service </td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.25 " headers="Table4.r"><p class="sub0" >90-919120 </p></th>
+      <td>U.S. Postal Service </td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+      <td><sup><a href="#t4f3">(3)</a></sup></td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.26 " headers="Table4.r"><p class="sub0" >90-920000 </p></th>
+      <td>State government </td>
+      <td>16,272 </td>
+      <td>1.3 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.27 " headers="Table4.r"><p class="sub0" >90-921611 </p></th>
+      <td>State government education </td>
+      <td>10,463 </td>
+      <td>1.6 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.28 " headers="Table4.r"><p class="sub0" >90-922000 </p></th>
+      <td>State government, excluding education </td>
+      <td>10,486 </td>
+      <td>1.6 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.29 " headers="Table4.r"><p class="sub0" >90-930000 </p></th>
+      <td>Local government </td>
+      <td>30,749 </td>
+      <td>0.9 </td>
+    </tr>
+    <tr class = "greenbar" >
+      <th id="Table4.r.30 " headers="Table4.r"><p class="sub0" >90-931611 </p></th>
+      <td>Local government education </td>
+      <td>21,293 </td>
+      <td>1.1 </td>
+    </tr>
+    <tr   >
+      <th id="Table4.r.31 " headers="Table4.r"><p class="sub0" >90-932000 </p></th>
+      <td>Local government, excluding education </td>
+      <td>18,225 </td>
+      <td>1.2 </td>
+    </tr>
+  </tbody>
+  <tr class="footnotes">
+    <td class="footnotes" colspan="4"><p class="footnotes"> <span class="footnotestitle">Footnotes<br>
+        </span> <sup id="t4f1">(1)</sup> Variance for total private is calculated using Fay's Balanced Half Samples (BHS)
+        replication technique. Replicate estimates are derived by perturbing the original sampling weights and using the
+        same estimation structure and weighted-link-relative formula used in the original estimator. The variance is computed
+        by measuring the variability of the replicate estimates. Variances for state and local government are based on a regression
+        formula that uses relationships between sampling variability and employment level. For more information, see the Variance
+        estimation section under <a href="/opub/hom/ces/calculation.htm#reliability">Reliability</a> in the CES Handbook of Methods.<br>
+        <sup id="t4f2">(2)</sup> Indented industries are part of trade, transportation, and utilities.<br>
+        <sup id="t4f3">(3)</sup> Federal government is estimated from a nearly complete population count of employment,
+        so these industries have zero variance.</p></td>
+  </tr>
+</table>
+<!-- END TABLE 4 -->
+
+<p align="right"><a href="#Table-of-Figures">To Table of Figures</a></p>
+<h3 id="Revisions-Between-Preliminary-and-Final-Data">Revisions Between Preliminary and Final Data</h3>
+<p>First preliminary estimates of employment, hours, and earnings, based on less than the total sample, are published immediately following the reference month and are revised with each of the 2 following months to incorporate additional sample received. <a href="#tb4">Table 4</a> presents the standard error and the relative standard error of CES sample-based estimates for a 1-month change for total nonfarm, total private, and aggregate industries. Standard and relative standard errors for detailed CES industries also are available as variance tables for <a href="/web/empsit/cesvarae.htm">AE</a>, <a href="/web/empsit/cesvarpe.htm">PE</a>, and <a href="/web/empsit/cesvarwe.htm">WE</a>. An explanation of variance estimation and the uses of standard and relative standard errors for CES estimates is available in the Variance estimation section under <a href="/opub/hom/ces/calculation.htm#reliability">Reliability</a> in the CES Handbook of Methods.</p>
+<h3 id="Benchmark-Revision-as-a-Measure-of-Survey-Error">Benchmark Revision as a Measure of Survey Error</h3>
+<p>The sum of sampling and non-sampling error can be considered total survey error. Unlike most sample surveys that publish sampling error as their only measure of error, the CES derives an annual approximation of total error on a lagged basis because of the availability of the independently derived universe data. While the benchmark error is often used as a proxy measure of total error for the CES survey estimate, it actually represents the difference between two employment estimates derived from separate statistical processes (the CES sample process and the UI administrative process) and therefore reflects the sum of the errors present in each program. Historically, the benchmark revision has been small for total nonfarm employment. Over the prior 10 years, absolute percentage benchmark error has averaged <!-- 1 -->0.1 percent, with an absolute range from <!-- 2 -->less than 0.05 percent to <!-- 3 -->0.3 percent. Further discussion about CES annual benchmarks can be found under <a href="/opub/hom/ces/calculation.htm#benchmark">Benchmark</a> in the CES Handbook of Methods.</p>
+<h2 id="CES-Estimation">CES Estimation</h2>
+<p>Certain aspects of CES estimation are updated each year during benchmark processing. With the benchmark release, updates to the list of published industries are incorporated. The previous year’s business net birth-death forecasts are replaced with new forecasted values for the post-benchmark period. Seasonal adjustment models are reselected. Also, any changes deemed necessary for published estimates including reconstructions, corrections, and NAICS updates are all implemented with the benchmark. The latest of these changes are described below.</p>
+<p><a href="/opub/hom/ces/calculation.htm#monthly-estimation">Estimation methods</a> are described in the Handbook of Methods in the Calculation section.</p>
+<h3 id="Industry-Structure-Changes">Industry Structure Changes</h3>
+<p>All CES series are evaluated annually for sample size, coverage, and response rate adequacy and to ensure respondent identifying information cannot be ascertained from estimates. All changes resulting from a re-evaluation of the sample and universe coverage for CES industries, which are based on the 2022 North American Industry Classification System (NAICS) industries, are published on the <a href="/web/empsit/cesnewseries.htm">Notice of Publication Changes</a> webpage. </p>
+<p>Some small industries no longer have sufficient sample to be estimated and published separately and are combined with other similar industries for estimation and publication purposes. A list of currently published CES series is available on the <a href="/web/empsit/cesseriespub.htm">CES Published Series</a> webpage. </p>
+<p>CES estimates series at the basic cell level and then aggregates these estimates to higher industry levels. Aggregation procedures are specific to the data type and published level of precision. For detailed descriptions of CES aggregation procedures for all data types, see <a href="/opub/hom/ces/calculation.htm#aggregation-procedures">Aggregation procedures</a> under the Calculations section of the CES Handbook of Methods.</p>
+<h3 id="Birth-Death-Model">Birth-Death Model</h3>
+<p>The CES sample alone is not sufficient for estimating the total employment level because each month new firms generate employment that cannot be captured through the sample. There is an unavoidable lag between a firm opening for business and its appearance on the CES sample frame. </p>
+<p>A parallel though somewhat different issue exists in capturing employment loss from business deaths through monthly sample collection. Businesses that have closed are unlikely to respond to the survey, and data collectors may not be able to ascertain until after the monthly collection period that firms have in fact gone out of business. </p>
+<p>CES adjusts for these limitations explicitly, using a statistical modeling technique in conjunction with the sample. Without the net birth-death model-based adjustment, the CES nonfarm payroll employment estimates would be considerably less accurate.</p>
+<p>For more information about CES birth-death modeling and implementation in the CES estimates, see <a href="/opub/hom/ces/calculation.htm#business-births-and-deaths">Business births and deaths</a> in the Calculations section of the CES Handbook of Methods.</p>
+<p><a href="/web/empsit/cesbmart.htm#Table9">Table 9</a> in the Benchmark Article shows the net birth-death model forecasts for the post-benchmark period from April to October of the benchmark year. For more recent months of birth-death information, see the <a href="/web/empsit/cesbd.htm">CES net birth-death</a> webpage. </p>
+<h3 id="Seasonal-Adjustment">Seasonal Adjustment</h3>
+<p>The CES program employs a concurrent seasonal adjustment methodology to seasonally adjust its national estimates of employment, hours, and earnings each month. Each year, new seasonal adjustment models are re-specified and implemented with the benchmark update. All seasonally adjusted series are updated for the latest 5 years based on the newly selected models. For more about seasonal adjustment methodology in the CES program, see <a href="/opub/hom/ces/calculation.htm#seasonal-adjustment">Seasonal adjustment</a> in the CES Handbook of Methods. For files and information used to calculate seasonal adjusted CES estimates, see the <a href="/web/empsit/cesseasadj.htm">CES seasonal adjustment</a> webpage.</p>
+<h2 id="Revisions">Revisions</h2>
+<p>Annual revisions to CES data are the result of benchmarking, but historical reconstructions can sometimes lead to additional revisions.</p>
+<h3 id="Benchmarks">Benchmarks</h3>
+<p>For national CES estimates, annual benchmarks are constructed in order to realign the sample-based employment totals for March of each year with the Unemployment Insurance (UI) based population counts for March. These population counts are much less timely than sample-based estimates and are used to provide an annual point-in-time census for employment. Only the March sample-based estimates are replaced with UI counts. Other months are revised based on that March universe level back to the previous April and forward to the current month. </p>
+<p>A benchmark revision is the difference between the universe count of employment for March and its corresponding sample-based estimate after removing the effect of any changes in employment scope. The March 2023 benchmark revisions (published in February 2024) resulted in revised series from April 2022 through December 2023 on a not seasonally-adjusted-basis and revised series from January 2019 through December 2023 on a seasonally-adjusted-basis for all series.</p>
+<p>Annual CES benchmark revisions are published along with January first preliminary estimates in February of each year. For example, the annual CES benchmark revisions for March 2023 were published along with the January 2024 first preliminary estimates on February 2, 2024.</p>
+<p>Benchmark revisions from 1979 forward are included in <a href="#tb5">table 5</a>. See the <a href="/web/empsit/cesbmart.htm">CES National Benchmark Article</a> for more details about the current benchmarking process. For more information about benchmarking methods, see the <a href="/opub/hom/ces/calculation.htm#benchmark">Benchmark</a> section of the Calculations chapter in the CES Handbook of Methods.</p>
+
+<!-- BEGIN TABLE 5  -->
+
+<table id="tb5" class="regular" cellspacing="0" cellpadding="0" xborder="1">
+  <caption>
+  <span class="tableTitle">Table 5. CES total nonfarm benchmark revisions<sup><a href="#t5f1">(1)</a></sup></span>
+  </caption>
+  <thead>
+    <tr>
+      <th class="stubhead" rowspan="1" colspan="1">Year</th>
+      <th rowspan="1" colspan="1">Percent difference</th>
+      <th rowspan="1" colspan="1">Difference in thousands</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="tb5.r.1" headers="tb5.r "><p class="sub0">1979</p></th>
+      <td>0.5</td>
+      <td>447</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.2" headers="tb5.r "><p class="sub0">1980</p></th>
+      <td>-0.1</td>
+      <td>-63</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.3" headers="tb5.r "><p class="sub0">1981</p></th>
+      <td>-0.4</td>
+      <td>-349</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.4" headers="tb5.r "><p class="sub0">1982</p></th>
+      <td>-0.1</td>
+      <td>-113</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.5" headers="tb5.r "><p class="sub0">1983</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>36</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.6" headers="tb5.r "><p class="sub0">1984</p></th>
+      <td>0.4</td>
+      <td>353</td>
+    </tr>
+    <tr>
+      <th id="tb52.r.7" headers="tb5.r "><p class="sub0">1985</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>-3</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.8" headers="tb5.r "><p class="sub0">1986</p></th>
+      <td>-0.5</td>
+      <td>-467</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.9" headers="tb5.r "><p class="sub0">1987</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>-35</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.10" headers="tb5.r "><p class="sub0">1988</p></th>
+      <td>-0.3</td>
+      <td>-326</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.11" headers="tb5.r "><p class="sub0">1989</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>47</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.12" headers="tb5.r "><p class="sub0">1990</p></th>
+      <td>-0.2</td>
+      <td>-229</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.13" headers="tb5.r "><p class="sub0">1991</p></th>
+      <td>-0.6</td>
+      <td>-640</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.14" headers="tb5.r "><p class="sub0">1992</p></th>
+      <td>-0.1</td>
+      <td>-59</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.15" headers="tb5.r "><p class="sub0">1993</p></th>
+      <td>0.2</td>
+      <td>263</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.16" headers="tb5.r "><p class="sub0">1994</p></th>
+      <td>0.7</td>
+      <td>747</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.17" headers="tb5.r "><p class="sub0">1995</p></th>
+      <td>0.5</td>
+      <td>542</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.18" headers="tb5.r "><p class="sub0">1996</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>57</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.19" headers="tb5.r "><p class="sub0">1997</p></th>
+      <td>0.4</td>
+      <td>431</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.20" headers="tb5.r "><p class="sub0">1998</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>44</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.21" headers="tb5.r "><p class="sub0">1999</p></th>
+      <td>0.2</td>
+      <td>258</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.22" headers="tb5.r "><p class="sub0">2000</p></th>
+      <td>0.4</td>
+      <td>468</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.23" headers="tb5.r "><p class="sub0">2001</p></th>
+      <td>-0.1</td>
+      <td>-123</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.24" headers="tb5.r "><p class="sub0">2002<sup><a href="#t5f3">(3)</a></sup></p></th>
+      <td>-0.2</td>
+      <td>-203</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.25" headers="tb5.r "><p class="sub0">2003</p></th>
+      <td>-0.1</td>
+      <td>-122</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.26" headers="tb5.r "><p class="sub0">2004</p></th>
+      <td>0.2</td>
+      <td>203</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.27" headers="tb5.r "><p class="sub0">2005</p></th>
+      <td>-0.1</td>
+      <td>-158</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.28" headers="tb5.r "><p class="sub0">2006</p></th>
+      <td>0.6</td>
+      <td>752</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.29" headers="tb5.r "><p class="sub0">2007</p></th>
+      <td>-0.2</td>
+      <td>-293</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.30" headers="tb5.r "><p class="sub0">2008</p></th>
+      <td>-0.1</td>
+      <td>-89</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.31" headers="tb5.r "><p class="sub0">2009</p></th>
+      <td>-0.7</td>
+      <td>-902</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.32" headers="tb5.r "><p class="sub0">2010<sup><a href="#t5f4">(4)</a></sup></p></th>
+      <td>-0.3</td>
+      <td>-378</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.33" headers="tb5.r "><p class="sub0">2011<sup><a href="#t5f5">(5)</a></sup></p></th>
+      <td>0.1</td>
+      <td>162</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.34" headers="tb5.r "><p class="sub0">2012</p></th>
+      <td>0.3</td>
+      <td>424</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.35" headers="tb5.r "><p class="sub0">2013<sup><a href="#t5f6">(6)</a></sup></p></th>
+      <td>-0.1</td>
+      <td>-119</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.36" headers="tb5.r "><p class="sub0">2014</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>67</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.37" headers="tb5.r "><p class="sub0">2015<sup><a href="#t5f7">(7)</a></sup></p></th>
+      <td>-0.1</td>
+      <td>-172</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.38" headers="tb5.r "><p class="sub0">2016</p></th>
+      <td>-0.1</td>
+      <td>-81</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.39" headers="tb5.r "><p class="sub0">2017<sup><a href="#t5f8">(8)</a></sup></p></th>
+      <td>0.1</td>
+      <td>135</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.40" headers="tb5.r "><p class="sub0">2018</p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>-16</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.41" headers="tb5.r " ><p class="sub0"> 2019 <sup><a href="#t5f9">(9)</a></sup> </p></th>
+      <td>-0.3</td>
+      <td>-489</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.42" headers="tb5.r " ><p class="sub0"> 2020</p></th>
+      <td>-0.1</td>
+      <td>-121</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.43" headers="tb5.r " ><p class="sub0"> 2021 </p></th>
+      <td><sup><a href="#t5f2">(2)</a></sup></td>
+      <td>-7</td>
+    </tr>
+    <tr class="greenbar">
+      <th id="tb5.r.44" headers="tb5.r " ><p class="sub0"> 2022 <sup><a href="#t5f10">(10)</a></sup> </p></th>
+      <td> 0.3</td>
+      <td> 506</td>
+    </tr>
+    <tr>
+      <th id="tb5.r.45" headers="tb5.r " ><p class="sub0"> 2023 </p></th>
+      <td> -0.1</td>
+      <td> -187</td>
+    </tr>
+  </tbody>
+  <tr class="footnotes">
+    <td class="footnotes" colspan="3"><p class="footnotes"> <span class="footnotestitle">Footnotes<br />
+        </span> <sup id="t5f1">(1)</sup> The table reflects the benchmark revisions after removing the effect of any changes in employment scope.<br />
+        <sup id="t5f2">(2)</sup> Absolute revision is less than 0.05 percent.<br />
+        <sup id="t5f3">(3)</sup> With the conversion from SIC to NAICS, support activities for animal production (NAICS 1152) was removed from CES scope. Also, the federal government employment level derivations were changed from end-of-month counts provided by the Office of Personnel Management that excluded some workers, mostly employees of U.S. Department of Defense-owned  establishments such as military base commissaries, to QCEW-derived benchmark employment levels. For more information, see the <a href="/ces/publications/benchmark/ces-benchmark-revision-2002.pdf">2002 CES Benchmark Article</a>. <br />
+        <sup id="t5f4">(4)</sup> With the 2010 benchmark, BLS reconstructed historical national levels of all employees for other federal government (91-999900) to reflect corrections to initial counts for temporary and intermittent workers for the 2010 Census. The reconstructions resulted in about 4,000 in employment being added to other federal government. For more information, see the Reconstructions section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2010.pdf">2010 CES Benchmark Article</a>. <br />
+        <sup id="t5f5">(5)</sup> A review of industries for the possible presence of noncovered employment yielded 13 additional industries. As a result of including these industries, employment in the amount of 95,000 was added to the benchmark nonfarm level. For more information, see the Changes to noncovered employment section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2011.pdf">2011 CES Benchmark Article</a>. <br />
+        <sup id="t5f6">(6)</sup> With the 2013 benchmark, BLS reconstructed several national employment series. Each first quarter,
+        the Quarterly Census of Employment and Wages (QCEW) program, whose data account for approximately 97 percent
+        of the CES universe scope (see the <a href="/opub/hom/ces/design.htm#frame-and-sample-selection"> Frame and sample selection </a> section of Design in the CES Handbook of Methods),
+        incorporates updated industry assignments. In 2013, these updates included two substantial groups of nonrandom, noneconomic code changes,
+        one to funds, trusts, and other financial vehicles (NAICS 525), and the other, a reclassification of approximately 466,000 in employment from
+        private households (NAICS 814), which is out of scope for CES, to services for the elderly and persons with disabilities (NAICS 62412), which is in scope.
+        These changes also had an impact, beyond what would be considered typical for a given benchmark year, on corresponding CES series. For more information about
+        the changes to these industries, see the <a href="/news.release/archives/cewqtr_09262013.htm">QCEW First Quarter 2013 News Release</a> or the
+        Special notice regarding reconstructed data section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2013.pdf">2013 CES Benchmark Article</a>. <br />
+        <sup id="t5f7">(7)</sup> With the 2015 benchmark, BLS reconstructed the national employment series services for the elderly and persons with disabilities (65-624120) back to January 2000. BLS previously reconstructed this series with the 2013 benchmark; however, between the 2013 and 2015 benchmark, a better source of information for the employment within NAICS 62412 for the state of California was found. The inclusion of the reconstructed series resulted in total nonfarm and total private employment that was 27,000 less than the originally published March 2015 estimate level. The difference between the benchmarked and originally published March 2015 estimate level is &minus;199,000 or &minus;0.1 percent. This table displays March 2015 data after accounting for the decrease of 27,000 from the reconstructed series. Similarly, for the education and health services supersector, this table displays March 2015 data after incorporating the reconstructed series. For more information, see the Reconstructions section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2015.pdf">2015 CES Benchmark Article</a>. <br />
+        <sup id="t5f8">(8)</sup> With the 2017 benchmark, BLS reconstructed the national employment series security guards and patrols and armored car services (60-561613)  back to October 2016 to correct a microdata error. The inclusion of the reconstructed series resulted in total nonfarm and total private employment that was 3,000 more than the originally published March 2017 estimate level. The difference between the benchmarked and originally published March 2017 estimate level is 138,000 or 0.1 percent. This table displays March 2017 data after accounting for the increase of 3,000 from the reconstructed series. Similarly, for the professional and business services supersector, this table displays March 2017 data after incorporating the reconstructed series. For more information, see the Reconstructions section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2017.pdf">2017 CES Benchmark Article</a>. <br />
+        <sup id="t5f9">(9)</sup> With the 2019 benchmark, BLS reconstructed some national employment series in transportation to correct a processing error in rail transportation (43-482000), which had resulted in 16,000 employment being double counted. The reconstruction removed the double-counted employment and affected aggregates of rail transportation, up to and including total nonfarm, back to January 1990. While the difference between
+        the benchmarked and originally published March 2019 estimate level is &minus;505,000, or &minus;0.3 percent, this table
+        displays March 2019 data after accounting for the removal of 16,000 from the published series. For more
+        information, see the Reconstructions section in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2019.pdf">2019 CES Benchmark Article</a>.<br />
+        <sup id="t5f10">(10)</sup> With the 2022 benchmark, BLS reconstructed several national employment series. A recoding effort in the QCEW resulted in about 68,000 in employment in electronic shopping and mail-order houses (42-454100) being moved into corporate, subsidiary, and regional managing offices (60-551114). Affected series were reconstructed for their entire history going back to January 1990. Additionally, the CES program found that some QCEW employment microdata submitted for services for the elderly and persons with disabilities (NAICS 624120) was erroneously reported for the first quarter of 2022. CES imputed the March 2022 level for this industry, and the new level was approximately 83,000 greater than the originally reported QCEW level. For more information, see the Reconstructions and Benchmark level adjustment to services for the elderly and persons with disabilities sections in the <a href="/ces/publications/benchmark/ces-benchmark-revision-2022.pdf">2022 CES Benchmark Article</a>. <br />
+      </p></td>
+  </tr>
+</table>
+
+<!-- END TABLE 5 -->
+
+<p align="right"><a href="#Table-of-Figures">To Table of Figures</a></p>
+<h3 id="Historical-Reconstructions">Historical Reconstructions</h3>
+<p>In addition to the monthly revisions and the benchmark revisions, CES employment, hours, and earnings estimates have been reconstructed several times in order to avoid series breaks and to provide users with continuous, comparable employment time series suitable for economic analysis when incorporating methodological changes. The major reconstruction efforts are briefly described in the <a href="/opub/hom/ces/history.htm">History</a> section of the CES Handbook of Methods. </p>
+<p>There are no reconstructions affecting the current benchmark.</p>
+<h2 id="Table-of-Figures">Table of Figures</h2>
+<p>Use the links below to skip to specific tables describing the CES sample, errors, and revisions.</p>
+<ul>
+  <li><a href="#tb1">Table 1. Employment benchmarks and approximate coverage of CES employment and payrolls sample</a></li>
+  <li><a href="#tb2">Table 2. Total private universe employment by size of UI</a></li>
+  <li><a href="#tb3">Table 3. Total private CES sample employment by size of UI</a></li>
+  <li><a href="#tb4">Table 4. Standard and relative standard errors of CES sample-based estimates for a 1-month change</a></li>
+  <li><a href="#tb5">Table 5. CES total nonfarm benchmark revisions</a></li>
+</ul>
+<p><strong>Last Modified Date:</strong> February 2, 2024</p>
+
+<!-- End Main CES Content --> 
+<!-- **********************TRAILER FILES************************************* --> 
+<!-- OneColFootBasic Begin -->
+<!-- Footer Filename: -->
+<!--no_index_start-->
+<!-- 1COL CMS BASIC LAYOUT COL1 END --><div class="clearfloat"></div><div class="social-media"><div>Recommend this page using:</div>
+	<div><a href="javascript:void(0);" class="share_facebook"><img alt="share on facebook" src="/images/icons/facebook.png"></a><span><a href="javascript:void(0);" class="share_facebook">Facebook</a></span></div>
+	<div><a href="javascript:void(0);" class="share_twitter"><img alt="Share BLS on X, formerly referred to as Twitter" src="/images/icons/twitter.png"></a><span><a href="javascript:void(0);" class="share_twitter">Twitter</a></span></div>
+	<div><a href="javascript:void(0);" class="share_linkedin"><img alt="share on linkedin" src="/images/icons/linkedin.png"></a><span><a href="javascript:void(0);" class="share_linkedin">LinkedIn</a></span></div>
+	<!--<div><a href="javascript:void(0);" class="share_googleplus"><img src="/images/icons/google.png"></a><span><a href="javascript:void(0);" class="share_googleplus">Google+</a></span></div>-->
+</div>
+</div> 
+
+<!-- 1COL CMS LAYOUT COL1 END -->
+
+<!-- QUICK LINKS BEGIN -->
+<!-- -->
+
+<!-- QUICK LINKS END -->
+
+<!-- WRAPPER BOTTOM BEGIN -->
+
+		
+		
+		</div><!-- close id="wrapper-outer" -->
+	</div><!-- close id="wrapper" -->
+</div><!-- close id="container" -->
+
+	
+
+<!-- WRAPPER BOTTOM END -->
+
+<!-- FOOTER LEFT BEGIN -->
+<footer >
+	
+<!-- Footer Nav Menu-->
+<div class="footerNav">
+<ul class="footerNavInner">
+   <li class="footerNavItem"><a href="https://www.bls.gov/">Home</a></li>
+   <li class="footerNavItem"><a href="/bls/proghome.htm">Subjects</a></li>
+   <li class="footerNavItem"><a href="/data/">Data Tools</a></li>
+   <li class="footerNavItem"><a href="/opub/">Publications</a></li>
+   <li class="footerNavItem"><a href="/bls/newsrels.htm">Economic Releases</a></li>
+   <li class="footerNavItem"><a href="/k12/" >Classroom</a></li>
+   <li class="footerNavItem"><a href="/beta/">Beta</a></li>
+</ul>
+</div>
+<!-- Footer Nav Menu-->
+<script>/*<![CDATA[*/(function(){var sz = document.createElement('script'); sz.type = 'text/javascript'; sz.async = true;sz.src = '//siteimproveanalytics.com/js/siteanalyze_6032860.js';var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(sz, s);})();/*]]>*/</script> 
+<div id="footer-primary-wrapper">
+<div class="bootstrap standard-width">
+<div id="footer-container" class="row">
+	<div id="footer-links-container" class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+	
+	
+<div class="bls-lftside-holder">	
+<div class="bls-logo-footer">
+<img src="/images/bls_emblem_trans.png" class="responsiveImg" alt="U.S. Bureau of Labor Statistics Logo "/><div class="d-none d-md-block clearfloat"><br><br></div>
+
+ </div>
+ <div class="address-contact-footer">
+<!-- FOOTER LEFT END -->
+
+<address class="footer-address"  >  
+<strong  >U.S. Bureau of Labor Statistics </strong>
+<span  >Division of Current Employment Statistics</span> 
+<span  >PSB Suite 4860</span> 
+<span  >2 Massachusetts Avenue NE</span>  
+<span  >Washington, DC 20212-0001</span>
+</address> 	 	 	
+
+<!-- FOOTER CENTER BEGIN -->
+
+
+
+<!-- FOOTER CENTER END -->
+
+
+<span class="footer-contact">  
+
+<a href="tel:12026916555" class="number" aria-label="Telephone: 1-202-691-6555">
+<span>Telephone:</span><span> 1-202-691-6555 </span>
+
+</a>
+
+<a href="/ces/home.htm" aria-label="www.bls.gov/CES" >www.bls.gov/CES</a>
+<a href="https://data.bls.gov/forms/ces.htm?/web/empsit/cestn.htm" aria-label="Contact CES">Contact CES</a>
+
+</span>
+			
+
+
+<!-- FOOTER RIGHT BEGIN -->
+</div> 
+</div>
+</div>
+
+				<div id="quicklinks" class="row col-xs-12 col-sm-12 col-md-8 col-lg-8">
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-5">
+					<strong>resources</strong>
+					<a class="d-sm-none" data-toggle="collapse" href="#quicklinksli5" role="button" aria-expanded="false" aria-controls="quicklinksli5" aria-label="resources Sub Menu"></a>
+						<div class="collapse" id="quicklinksli5">
+							<ul class="d-sm-block">						
+								<li><a href="https://www.oig.dol.gov/" aria-label="Office of Inspector General (OIG) website">Inspector General (OIG)</a></li>
+								<li><a href="/bls/bls_budget_and_performance.htm" aria-label="Budget and Performance">Budget and Performance</a></li>	
+								<li><a href="https://www.dol.gov/grants" aria-label="Department of Labor Grants">Department of Labor Grants</a></li>									
+								<li><a href="/bls/no_fear_act.htm" aria-label="No Fear Act">No Fear Act</a></li>
+								<li><a href="https://www.usa.gov/" aria-label="USA.gov website">USA.gov</a></li>
+								<li><a href="https://www.vote.gov/" aria-label="Register to vote at Vote.gov" title="Public and private decision making about worker rights and benefits depend on you exercising your fundamental right. Register to vote at Vote.gov!">Vote.gov</a></li>						
+							</ul>
+						</div>
+					</div>		
+					<div class="col-xs-6 col-sm-6 col-md-6 col-lg-5">
+					<strong>about the site</strong>
+					<a class="d-sm-none" data-toggle="collapse" href="#quicklinksli6" role="button" aria-expanded="false" aria-controls="quicklinksli6" aria-label="about this site Sub Menu"></a>
+						<div class="collapse" id="quicklinksli6">
+							<ul class="d-sm-block">	
+								<li><a href="/bls/sitemap.htm" aria-label="Sitemap">Sitemap</a></li>						
+								<li><a href="/bls/blsfoia.htm" aria-label="Freedom of Information Act">Freedom of Information Act</a></li>
+								<li><a href="/bls/pss.htm" aria-label="Privacy and Security Statement">Privacy and Security Statement</a></li>
+								<li><a href="/bls/disclaimer.htm" aria-label="Disclaimers">Disclaimers</a></li>
+								<li><a href="/bls/linksite.htm" aria-label="Linking and Copyright Information">Linking and Copyright Info</a></li>	
+								<li><a href="/bls/website-policies.htm" aria-label="Important Website Notices">Important Website Notices</a></li>
+								<li><a href="/help/" aria-label="Help and Tutorials">Help and Tutorials</a></li>
+								<li><a href="/bls/babel.htm" aria-label="Language Services">Babel&nbsp;Notice:&nbsp;accessing&nbsp;language&nbsp;services</a></li>
+							</ul>
+						</div>
+					</div>				
+                </div>
+				 
+</div>
+</div>
+</div>
+<div id="footer-secondary-wrapper">
+
+<div class="bootstrap standard-width">
+
+<div>
+<span>Connect With BLS</span>
+  <div class="social-media-icons"> 
+    
+           <a class="social-media-icon" href="https://twitter.com/BLS_gov" title="Connect with BLS on X, formerly referred to as Twitter" target="_blank" rel="noopener noreferrer" >
+              <!--?xml version="1.0" encoding="utf-8"?-->
+              <svg aria-hidden="true" data-prefix="fab" data-icon="twitter" class="svg-inline--fa fa-twitter fa-w-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"></path></svg>
+              <span class="sr-only">Twitter</span>
+          </a>
+                  
+           <a class="social-media-icon" href="https://www.youtube.com/channel/UCijn3WBpHtx4AvSya7NER9Q" title="BLS Youtube" target="_blank" rel="noopener noreferrer" >
+              <!--?xml version="1.0" encoding="utf-8"?-->
+              <svg aria-hidden="true" data-prefix="fab" data-icon="youtube" class="svg-inline--fa fa-youtube fa-w-18"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>
+              <span class="sr-only">Youtube</span>
+          </a>
+          <a class="social-media-icon" href="javascript:window.open('https://public.govdelivery.com/accounts/USDOLBLS/subscriber/new ','Popup','width=800,height=500,toolbar=no,scrollbars=yes,resizable=yes'); void('');" onclick="window.status='Subscribe'; return true" onmouseover="window.status='Subscribe'; return true" onmouseout="window.status=''; return true" id="email" title="Subscribe to BLS E-mail Updates">
+              <!--?xml version="1.0" encoding="utf-8"?-->
+              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="envelope" class="svg-inline--fa fa-envelope fa-w-16"  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M502.3 190.8c3.9-3.1 9.7-.2 9.7 4.7V400c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V195.6c0-5 5.7-7.8 9.7-4.7 22.4 17.4 52.1 39.5 154.1 113.6 21.1 15.4 56.7 47.8 92.2 47.6 35.7.3 72-32.8 92.3-47.6 102-74.1 131.6-96.3 154-113.7zM256 320c23.2.4 56.6-29.2 73.4-41.4 132.7-96.3 142.8-104.7 173.4-128.7 5.8-4.5 9.2-11.5 9.2-18.9v-19c0-26.5-21.5-48-48-48H48C21.5 64 0 85.5 0 112v19c0 7.4 3.4 14.3 9.2 18.9 30.6 23.9 40.7 32.4 173.4 128.7 16.8 12.2 50.2 41.8 73.4 41.4z"></path></svg>
+              <span class="sr-only">Email</span>
+          </a>
+        </div>
+</div>
+</div>
+</div>
+</footer>
+<!-- FOOTER RIGHT END -->
+
+<!--no_index_end-->
+<!-- OneColFootBasic End -->
+ 
+<!-- ********************* END TRAILER ************************************** -->
+
+</body>
+</html>

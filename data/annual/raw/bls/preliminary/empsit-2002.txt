@@ -1,0 +1,1455 @@
+Technical information:
+   Household data:                          (202) 691-6378               USDL 02-570
+                                    http://www.bls.gov/cps/
+
+       Establishment data:                      691-6555                 Transmission of material in this release is
+                                    http://www.bls.gov/ces/              embargoed until 8:30 A.M. (EDT),
+Media contact:                                  691-5902                 Friday, October 4, 2002.
+
+                           THE EMPLOYMENT SITUATION: SEPTEMBER 2002
+    Both nonfarm payroll employment and the unemployment rate were essentially unchanged in September,
+the Bureau of Labor Statistics of the U.S. Department of Labor reported today. Job losses in manufacturing
+and transportation offset gains in finance and health services.
+
+   Chart 1. Unemployment rate, seasonally adjusted,               Chart 2. Nonfarm payroll employment, seasonally adjusted,
+ Percent    October 1999 - September 2002                     Millions     October 1999 - September 2002
+ 6.5                                                          134.0
+
+
+ 6.0                                                          132.0
+
+
+ 5.5                                                          130.0
+
+
+ 5.0                                                          128.0
+
+
+ 4.5                                                          126.0
+
+
+ 4.0                                                          124.0
+
+
+ 0.0
+ 3.5                                                            0.0
+                                                              122.0
+           2000              2001               2002                       2000             2001              2002
+
+
+
+Unemployment (Household Survey Data)
+    The number of unemployed persons (8.1 million) and the unemployment rate (5.6 percent) were
+essentially unchanged in September. The jobless rates for the major worker groups—adult men (5.2
+percent), adult women (4.9 percent), teenagers (15.7 percent), whites (5.1 percent), blacks (9.6 percent),
+and Hispanics (7.4 percent)—showed no statistically significant change in September. (See tables A-1
+and A-2.)
+
+Total Employment and the Labor Force (Household Survey Data)
+     Total employment, as measured by the household survey, rose by 711,000 to 135.2 million in
+September, after seasonal adjustment. Nearly half of this increase was among teens, who experience
+large seasonal swings in employment between August and September. The total employment-population
+ratio was up by 0.2 percentage point to 63.0 percent. This ratio was 0.6 percentage point lower than in
+September 2001 and 1.8 percentage points lower than its peak in April 2000. (See table A-1.)
+                                                                             2
+
+
+
+Table A. Major indicators of labor market activity, seasonally adjusted
+(Numbers in thousands)
+                                     Quarterly averages               Monthly data                                        Aug.-
+             Category                      2002                          2002                                             Sept.
+                                                           II              III        July        Aug.         Sept.     change
+          HOUSEHOLD DATA                                                             Labor force status
+
+Civilian labor force.............................         142,605        142,761     142,390     142,616       143,277        661
+   Employment...................................          134,149        134,568     134,045     134,474       135,185        711
+   Unemployment..............................               8,456          8,193       8,345       8,142         8,092        -50
+Not in labor force................................         71,059         71,465      71,633      71,609        71,152       -457
+                                                                                    Unemployment rates
+
+All workers.........................................             5.9          5.7         5.9           5.7        5.6       -0.1
+    Adult men......................................              5.3          5.2         5.2           5.2        5.2         .0
+    Adult women.................................                 5.2          5.0         5.2           4.9        4.9         .0
+    Teenagers......................................             17.1         16.9        17.7          17.2       15.7       -1.5
+    White..............................................          5.2          5.1         5.3           5.1        5.1         .0
+    Black..............................................         10.7          9.7         9.9           9.6        9.6         .0
+    Hispanic origin...............................               7.4          7.5         7.6           7.5        7.4        -.1
+      ESTABLISHMENT DATA                                                               Employment
+
+Nonfarm employment.........................               130,706       p130,847     130,790    p130,897      p130,854       p-43
+  Goods-producing¹..........................               23,879        p23,783      23,812     p23,787       p23,749       p-38
+      Construction............................              6,544         p6,541       6,519      p6,553        p6,552        p-1
+        Manufacturing.........................             16,776        p16,688      16,742     p16,679       p16,644       p-35
+     Service-producing¹......................             106,827       p107,064     106,978    p107,110      p107,105        p-5
+        Retail trade...............................        23,327        p23,304      23,339     p23,295       p23,279       p-16
+        Services....................................       41,090        p41,316      41,215     p41,352       p41,380        p28
+        Government..............................           21,201        p21,265      21,228     p21,281       p21,285         p4
+                                                                                      Hours of work²
+
+Total private........................................           34.2        p34.1        34.0         p34.1      p34.3       p0.2
+   Manufacturing................................                41.0        p40.8        40.7         p40.9      p40.9        p.0
+       Overtime...................................               4.2         p4.1         4.0          p4.2       p4.1       p-.1
+                                                                       Indexes of aggregate weekly hours (1982=100)²
+
+Total private........................................       148.3         p148.0        147.5        p148.0     p148.6       p0.6
+                                                                                         Earnings²
+
+Average hourly earnings,
+    total private................................... $14.71 p$14.82                   $14.78     p$14.82       p$14.87     p$0.05
+Average weekly earnings,
+    total private................................... 503.58 p505.97                   502.52     p505.36       p510.04      p4.68
+¹ Includes other industries, not shown separately.
+² Data relate to private production or nonsupervisory workers.
+p=preliminary.
+                                                        3
+    The civilian labor force increased by 661,000 over the month to 143.3 million, seasonally adjusted, and
+the labor force participation rate rose by 0.2 percentage point to 66.8 percent. (See table A-1.)
+
+   About 7.2 million persons (not seasonally adjusted) held more than one job in September. These
+multiple jobholders represented 5.4 percent of the total employed. (See table A-10.)
+
+Persons Not in the Labor Force (Household Survey Data)
+    About 1.5 million persons (not seasonally adjusted) were marginally attached to the labor force in
+September, compared with 1.3 million a year earlier. These individuals reported that they wanted and were
+available for work and had looked for a job sometime in the prior 12 months. They were not counted as
+unemployed, however, because they had not actively searched for work in the 4 weeks preceding the survey.
+The number of discouraged workers was 387,000 in September, up from 280,000 a year earlier. Dis-
+couraged workers, a subset of the marginally attached, were not currently looking for work specifically
+because they believed no jobs were available for them. (See table A-10.)
+
+Industry Payroll Employment (Establishment Survey Data)
+    Total nonfarm payroll employment was essentially unchanged (-43,000) in September at 130.9 million.
+In the prior 4 months, employment had increased by 217,000, including a gain of 107,000 (as revised) in
+August. (See table B-1.)
+
+     Manufacturing employment decreased by 35,000 in September. Job losses have accelerated over the
+last 2 months, following a moderation in declines between March and July. This trend is especially evident in
+electronic equipment and industrial machinery, which lost 11,000 and 9,000 jobs in September, respectively.
+Aircraft and parts and furniture and fixtures lost 6,000 jobs each in September. Aircraft manufacturers have
+reduced payrolls by 65,000 workers over the year, primarily due to reduced demand for passenger jets.
+
+    Transportation employment fell by 26,000 in September. Despite a 12,000 job loss over the month, air
+transportation has had no net employment change so far this year. This follows losses that totaled 132,000 in
+the last 4 months of 2001. Employment in the trucking industry had held steady for the first 7 months of this
+year, but since July has fallen by 22,000. Employment in communications continued to decline in September;
+since April 2001, the industry has lost 145,000 jobs.
+
+    Employment in the services industry was little changed in September (+28,000), following a gain of
+137,000 in August. Health services added 21,000 jobs in September; employment in the industry has risen
+by 282,000 over the past 12 months. Employment in engineering and management services increased by
+18,000 in September. Amusement and recreation services lost 26,000 jobs, as seasonal layoffs were larger
+than usual.
+
+    Finance employment grew by 9,000 over the month, with most of the gain occurring among mortgage
+bankers (+6,000). Over the past year, mortgage banking has added 44,000 jobs. Federal government
+employment (excluding postal workers) was up in September, mainly due to the hiring of additional airport
+security workers.
+
+Weekly Hours (Establishment Survey Data)
+    The average workweek for production or nonsupervisory workers on private nonfarm payrolls increased
+by 0.2 hour in September to 34.3 hours, seasonally adjusted. This follows a rise of 0.1 hour in August.
+These gains offset July’s 0.3 hour loss. The manufacturing workweek was unchanged at 40.9 hours.
+Manufacturing overtime edged down by 0.1 hour to 4.1 hours. (See table B-2.)
+                                                        4
+   The index of aggregate weekly hours of production or nonsupervisory workers on private nonfarm
+payrolls rose by 0.4 percent in September to 148.6 (1982=100). The manufacturing index was down
+by 0.3 percent over the month to 92.1. (See table B-5.)
+
+Hourly and Weekly Earnings (Establishment Survey Data)
+    Average hourly earnings of production or nonsupervisory workers on private nonfarm payrolls increased
+by 5 cents in September to $14.87, seasonally adjusted. Average weekly earnings rose by 0.9 percent over
+the month to $510.04. Over the year, average hourly earnings grew by 3.0 percent, and average weekly
+earnings increased by 3.7 percent. (See table B-3.)
+
+
+
+                                     ______________________________
+
+
+
+    The Employment Situation for October 2002 is scheduled to be released on Friday, November 1, at
+8:30 A.M. (EST).
+
+
+
+
+           In accordance with annual practice, the establishment survey has completed preliminary
+       tabulations of the universe counts for the first quarter of this year. The tabulations indicate
+       that the estimate of overall payroll employment will require a downward revision of
+       approximately 284,000, or two-tenths of one percent, for the March 2002 reference month.
+       The historical average for benchmark revisions over the last ten years has been plus or minus
+       three-tenths of one percent.
+                                                  5
+       Upcoming Changes to Household and National Nonfarm Payroll Data Series
+
+
+Household Data Series
+    Effective with the release of November 2002 data, the Current Population Survey (CPS)
+sample size will be decreased from about 60,000 to about 55,000 eligible households as a
+cost savings measure. The sample cut will occur in 31 states and the District of Columbia
+and will reduce by about half the number of households added to the CPS sample in the fall
+of 2000. This decrease in the sample will have a negligible effect on the reliability of national
+labor force estimates.
+
+    Effective with the release of January 2003 data, several changes to the CPS will affect
+estimates contained in the Employment Situation news release:
+
+ • Population controls that reflect the results of Census 2000 will be used in the monthly
+   CPS estimation process. In addition, CPS data series from January 2000 through
+   December 2002 will be revised to reflect the introduction of the Census 2000-based
+   population controls.
+
+ • The questions on race and Hispanic origin in the CPS will be modified to comply with the
+   new standards for federal statistical agencies. A major change under those standards is
+   that respondents may select more than one race when answering the survey. Respondents
+   will continue to be asked a separate question to determine if they are Hispanic. The
+   Employment Situation news release will present data for persons who report they are
+   white and no other race, black or African American and no other race, and Asian and no
+   other race. Data will continue to be presented for Hispanics separately.
+
+ • The CPS will adopt the Census industry and occupation classification systems derived
+   from the 2002 North American Industry Classification System and the 2000 Standard
+   Occupational Classification system. These new classification systems represent complete
+   breaks in the time series for occupation and industry data. As a result, seasonally
+   adjusted occupation and industry estimates from the household survey will not be
+   presented until sufficient time series become available for seasonal adjustment.
+
+ • The CPS program will begin using the X-12 ARIMA software for seasonal adjustment of
+   time series data. Because of the other revisions being introduced with the January data,
+   the annual revision of 5 years of seasonally adjusted data that typically occurs with the
+   release of data for December will be delayed until the release of data for January.
+
+    Questions about upcoming changes to the CPS data series can be directed to the Division
+of Labor Force Statistics at 202-691-6378.
+
+National Nonfarm Payroll Data Series
+    NAICS conversion. The nonfarm payroll series, produced from the Current
+Employment Statistics (CES) program, will be converted from the 1987 Standard Industrial
+Classification (SIC) basis to the 2002 North American Industry Classification System
+(NAICS) basis with the June 6, 2003, release of May 2003 estimates. The NAICS
+conversion involves major definitional changes to many of the currently published SIC-based
+                                                 6
+series. After the conversion to NAICS, SIC-based series will no longer be produced or
+published. Historical time series will be reconstructed as part of the NAICS conversion
+process. All published series will have a NAICS-based history extending back to at least
+January 1990. For total nonfarm and other high-level aggregates, NAICS history will begin
+in January 1939, the current starting date for these series. For more detailed series, the
+starting date will vary depending on the scope of the definitional changes between SIC and
+NAICS. The NAICS-based reconstruction effort will cover all CES published data types:
+all employees, women workers, production workers, average weekly hours, average hourly
+earnings, and derivative series (for example, indexes of aggregate weekly hours).
+
+    Completion of the CES sample redesign. June 6, 2003, also will mark the completion
+of the CES sample redesign phase-in. The redesign converts the CES from a quota-based
+sample to a probability-based sample. In June 2003, the services industries will be converted
+to the new sample design; all other private sector industries have already been converted.
+The final stage of sample redesign phase-in may result in level shifts for average weekly hours,
+average hourly earnings, production worker, and women worker series. New levels for these
+series are being recomputed from the NAICS-based probability sample.
+
+    Concurrent seasonal adjustment. Also beginning in June 2003, the CES program
+will convert to concurrent seasonal adjustment, which uses all available monthly estimates,
+including those for the current month, in developing seasonal factors. Currently, the CES
+program projects seasonal factors twice a year. With the introduction of concurrent seasonal
+adjustment, BLS will no longer publish seasonal factors for CES national estimates.
+
+    Change to federal government series. Beginning in June 2003, the CES series for
+federal government employment will be revised slightly in scope and definition due to a
+change in source data and estimation methods. The current national series is an end-of-month
+federal employee count produced by the Office of Personnel Management, and it excludes
+some workers, mostly employees who work in Department of Defense-owned establishments
+such as military base commissaries. The CES national series will include these workers.
+Also, federal government employment will be estimated from a sample of federal establish-
+ments, will be benchmarked annually to counts from unemployment insurance tax records, and
+will reflect employee counts as of the pay period including the 12th of the month, consistent
+with other CES industry series. The historical time series for federal government employment
+will be revised to reflect these changes.
+
+    Further information on upcoming changes to CES data series is available through the BLS
+public database on the Internet, via the CES homepage at http://www.bls.gov/ces/, or by
+calling 202-691-6555.
+Explanatory Note
+
+    This news release presents statistics from two major surveys, the       nonfarm payrolls are those who received pay for any part of the
+Current Population Survey (household survey) and the Current                reference pay period, including persons on paid leave. Persons are
+Employment Statistics survey (establishment survey). The household          counted in each job they hold. Hours and earnings data are for private
+survey provides the information on the labor force, employment, and         businesses and relate only to production workers in the goods-
+unemployment that appears in the A tables, marked HOUSEHOLD                 producing sector and nonsupervisory workers in the service-producing
+DATA. It is a sample survey of about 60,000 households conducted            sector.
+by the U.S. Census Bureau for the Bureau of Labor Statistics (BLS).             Differences in employment estimates. The numerous conceptual
+    The establishment survey provides the information on the                and methodological differences between the household and
+employment, hours, and earnings of workers on nonfarm payrolls that         establishment surveys result in important distinctions in the employment
+appears in the B tables, marked ESTABLISHMENT DATA. This                    estimates derived from the surveys. Among these are:
+information is collected from payroll records by BLS in cooperation             • The household survey includes agricultural workers, the self-employed,
+with State agencies. In June 2001, the sample included about 350,000        unpaid family workers, and private household workers among the employed.
+establishments employing about 39 million people.                           These groups are excluded from the establishment survey.
+    For both surveys, the data for a given month relate to a particular         • The household survey includes people on unpaid leave among the
+week or pay period. In the household survey, the reference week is          employed. The establishment survey does not.
+generally the calendar week that contains the 12th day of the month.            • The household survey is limited to workers 16 years of age and older.
+In the establishment survey, the reference period is the pay period         The establishment survey is not limited by age.
+including the 12th, which may or may not correspond directly to the             • The household survey has no duplication of individuals, because
+calendar week.                                                              individuals are counted only once, even if they hold more than one job. In
+                                                                            the establishment survey, employees working at more than one job and
+Coverage, definitions, and differences
+                                                                            thus appearing on more than one payroll would be counted separately for
+between surveys
+                                                                            each appearance.
+    Household survey. The sample is selected to reflect the entire
+civilian noninstitutional population. Based on responses to a series of        Other differences between the two surveys are described in
+questions on work and job search activities, each person 16 years and       “Comparing Employment Estimates from Household and Payroll
+over in a sample household is classified as employed, unemployed, or        Surveys,” which may be obtained from BLS upon request.
+not in the labor force.                                                     Seasonal adjustment
+    People are classified as employed if they did any work at all as paid       Over the course of a year, the size of the nation’s labor force and
+employees during the reference week; worked in their own business,          the levels of employment and unemployment undergo sharp
+profession, or on their own farm; or worked without pay at least 15         fluctuations due to such seasonal events as changes in weather,
+hours in a family business or farm. People are also counted as              reduced or expanded production, harvests, major holidays, and the
+employed if they were temporarily absent from their jobs because of         opening and closing of schools. The effect of such seasonal variation
+illness, bad weather, vacation, labor-management disputes, or personal      can be very large; seasonal fluctuations may account for as much as
+reasons.                                                                    95 percent of the month-to-month changes in unemployment.
+    People are classified as unemployed if they meet all of the fol-            Because these seasonal events follow a more or less regular
+lowing criteria: They had no employment during the reference week;          pattern each year, their influence on statistical trends can be eliminated
+they were available for work at that time; and they made specific efforts   by adjusting the statistics from month to month. These adjustments
+to find employment sometime during the 4-week period ending with            make nonseasonal developments, such as declines in economic
+the reference week. Persons laid off from a job and expecting recall        activity or increases in the participation of women in the labor force,
+need not be looking for work to be counted as unemployed. The               easier to spot. For example, the large number of youth entering the
+unemployment data derived from the household survey in no way               labor force each June is likely to obscure any other changes that have
+depend upon the eligibility for or receipt of unemployment insurance        taken place relative to May, making it difficult to determine if the
+benefits.                                                                   level of economic activity has risen or declined. However, because
+    The civilian labor force is the sum of employed and unemployed          the effect of students finishing school in previous years is known, the
+persons. Those not classified as employed or unemployed are not in          statistics for the current year can be adjusted to allow for a comparable
+the labor force. The unemployment rate is the number unemployed as          change. Insofar as the seasonal adjustment is made correctly, the
+a percent of the labor force. The labor force participation rate is the     adjusted figure provides a more useful tool with which to analyze
+labor force as a percent of the population, and the employment-             changes in economic activity.
+population ratio is the employed as a percent of the population.                In both the household and establishment surveys, most seasonally
+    Establishment survey. The sample establishments are drawn               adjusted series are independently adjusted. However, the adjusted
+from private nonfarm businesses such as factories, offices, and stores,     series for many major estimates, such as total payroll employment,
+as well as Federal, State, and local government entities. Employees on      employment in most major industry divisions, total employment, and
+unemployment are computed by aggregating independently adjusted                 The household and establishment surveys are also affected by
+component series. For example, total unemployment is derived by             nonsampling error. Nonsampling errors can occur for many reasons,
+summing the adjusted series for four major age-sex components; this         including the failure to sample a segment of the population, inability
+differs from the unemployment estimate that would be obtained by            to obtain information for all respondents in the sample, inability or
+directly adjusting the total or by combining the duration, reasons, or      unwillingness of respondents to provide correct information on a
+more detailed age categories.                                               timely basis, mistakes made by respondents, and errors made in the
+                                                                            collection or processing of the data.
+    The numerical factors used to make the seasonal adjustments are
+                                                                                For example, in the establishment survey, estimates for the most
+recalculated twice a year. For the household survey, the factors are
+                                                                            recent 2 months are based on substantially incomplete returns; for this
+calculated for the January-June period and again for the July-December
+                                                                            reason, these estimates are labeled preliminary in the tables. It is only
+period. For the establishment survey, updated factors for seasonal
+                                                                            after two successive revisions to a monthly estimate, when nearly
+adjustment are calculated for the May-October period and introduced
+                                                                            all sample reports have been received, that the estimate is considered
+along with new benchmarks, and again for the November-April period.
+                                                                            final.
+In both surveys, revisions to historical data are made once a year.
+                                                                                Another major source of nonsampling error in the establishment
+Reliability of the estimates                                                survey is the inability to capture, on a timely basis, employment
+    Statistics based on the household and establishment surveys are         generated by new firms. To correct for this systematic underestimation
+subject to both sampling and nonsampling error. When a sample rather        of employment growth (and other sources of error), a process known
+than the entire population is surveyed, there is a chance that the sample   as bias adjustment is included in the survey’s estimating procedures,
+estimates may differ from the “true” population values they represent.      whereby a specified number of jobs is added to the monthly sample-
+The exact difference, or sampling error, varies depending on the            based change. The size of the monthly bias adjustment is based largely
+particular sample selected, and this variability is measured by the         on past relationships between the sample-based estimates
+standard error of the estimate. There is about a 90-percent chance, or      of employment and the total counts of employment described below.
+level of confidence, that an estimate based on a sample will differ by          The sample-based estimates from the establishment survey are
+no more than 1.6 standard errors from the “true” population value           adjusted once a year (on a lagged basis) to universe counts of payroll
+because of sampling error. BLS analyses are generally conducted at          employment obtained from administrative records of the unemployment
+the 90-percent level of confidence.                                         insurance program. The difference between the March sample-based
+    For example, the confidence interval for the monthly change in total    employment estimates and the March universe counts is known as a
+employment from the household survey is on the order of plus or minus       benchmark revision, and serves as a rough proxy for total survey error.
+292,000. Suppose the estimate of total employment increases by              The new benchmarks also incorporate changes in the classification of
+100,000 from one month to the next. The 90-percent confidence               industries. Over the past decade, the benchmark revision for total
+interval on the monthly change would range from -192,000 to 392,000         nonfarm employment has averaged 0.3 percent, ranging from zero to
+(100,000 +/- 292,000). These figures do not mean that the sample            0.7 percent.
+results are off by these magnitudes, but rather that there is about a 90-
+                                                                            Additional statistics and other information
+percent chance that the “true” over-the-month change lies within this
+                                                                                More comprehensive statistics are contained in Employment and
+interval. Since this range includes values of less than zero, we could
+                                                                            Earnings, published each month by BLS. It is available for $26.00 per
+not say with confidence that employment had, in fact, increased. If,
+                                                                            issue or $50.00 per year from the U.S. Government Printing Office,
+however, the reported employment rise was half a million, then all of
+                                                                            Washington, DC 20402. All orders must be prepaid by sending a
+the values within the 90-percent confidence interval would be greater
+                                                                            check or money order payable to the Superintendent of Documents, or
+than zero. In this case, it is likely (at least a 90-percent chance) that
+                                                                            by charging to Mastercard or Visa.
+an employment rise had, in fact, occurred. The 90-percent confidence
+                                                                                Employment and Earnings also provides measures of
+interval for the monthly change in unemployment is +/- 273,000, and         sampling error for the household survey data published in this
+for the monthly change in the unemployment rate it is +/- .19               release. For unemployment and other labor force categories, these
+percentage point.                                                           measures appear in tables 1-B through 1-D of its “Explanatory Notes.”
+    In general, estimates involving many individuals or establishments      Measures of the reliability of the data drawn from the
+have lower standard errors (relative to the size of the estimate) than      establishment survey and the actual amounts of revision due to bench-
+estimates which are based on a small number of observations. The            mark adjustments are provided in tables 2-B through 2-H of that
+precision of estimates is also improved when the data are cumulated         publication.
+over time such as for quarterly and annual averages. The seasonal               Information in this release will be made available to sensory
+adjustment process can also improve the stability of the monthly            impaired individuals upon request. Voice phone: 202-691-5200;
+estimates.                                                                  TDD message referral phone: 1-800-877-8339.
+HOUSEHOLD DATA                                                                                                                                                                     HOUSEHOLD DATA
+
+Table A-1. Employment status of the civilian population by sex and age
+(Numbers in thousands)
+
+
+
+                                                                                               Not seasonally adjusted                                 Seasonally adjusted1
+
+                 Employment status, sex, and age
+
+                                                                                              Sept.      Aug.       Sept.       Sept.         May         June          July         Aug.      Sept.
+                                                                                              2001       2002       2002        2001          2002        2002          2002         2002      2002
+
+
+                                      TOTAL
+Civilian noninstitutional population ...........................................             212,357    214,225    214,429     212,357      213,658      213,842      214,023      214,225    214,429
+ Civilian labor force ..................................................................     141,576    143,176    142,745     142,068      142,769      142,476      142,390      142,616    143,277
+      Participation rate ...............................................................        66.7       66.8       66.6        66.9         66.8         66.6         66.5         66.6       66.8
+  Employed ..............................................................................    134,868    135,028    135,063     135,004      134,417      134,053      134,045      134,474    135,185
+      Employment-population ratio ............................................                  63.5       63.0       63.0        63.6         62.9         62.7         62.6         62.8       63.0
+    Agriculture ..........................................................................     3,371      3,479      3,501       3,181        3,097        3,110        3,282        3,188      3,298
+    Nonagricultural industries ...................................................           131,497    131,549    131,562     131,823      131,320      130,942      130,763      131,286    131,887
+  Unemployed .........................................................................         6,708      8,148      7,683       7,064        8,351        8,424        8,345        8,142      8,092
+      Unemployment rate ..........................................................                4.7        5.7        5.4         5.0          5.8          5.9          5.9          5.7        5.6
+ Not in labor force ....................................................................      70,781     71,049     71,684      70,289       70,889       71,366       71,633       71,609     71,152
+  Persons who currently want a job .........................................                   4,348      4,751      4,449       4,568        4,779        4,689        4,895        4,503      4,674
+
+
+                     Men, 16 years and over
+Civilian noninstitutional population ...........................................             102,110    103,046    103,148     102,110      102,765      102,856      102,945      103,046    103,148
+ Civilian labor force ..................................................................      75,689     76,669     76,201      75,951       76,415       76,189       76,041       76,088     76,480
+      Participation rate ...............................................................        74.1       74.4       73.9        74.4         74.4         74.1         73.9         73.8       74.1
+  Employed ..............................................................................     72,284     72,456     72,154      72,177       71,894       71,524       71,509       71,552     72,004
+      Employment-population ratio ............................................                  70.8       70.3       70.0        70.7         70.0         69.5         69.5         69.4       69.8
+  Unemployed .........................................................................         3,405      4,213      4,047       3,774        4,521        4,665        4,532        4,536      4,476
+      Unemployment rate ..........................................................                4.5        5.5        5.3         5.0          5.9          6.1          6.0          6.0        5.9
+
+
+                     Men, 20 years and over
+Civilian noninstitutional population ...........................................              93,917     94,756     94,906      93,917       94,479       94,622       94,694       94,756     94,906
+ Civilian labor force ..................................................................      71,750     72,418     72,416      71,805       72,428       72,288       72,172       72,203     72,473
+      Participation rate ...............................................................        76.4       76.4       76.3        76.5         76.7         76.4         76.2         76.2       76.4
+  Employed ..............................................................................     68,952     68,958     69,026      68,696       68,647       68,390       68,405       68,447     68,711
+      Employment-population ratio ............................................                  73.4       72.8       72.7        73.1         72.7         72.3         72.2         72.2       72.4
+    Agriculture ..........................................................................     2,301      2,400      2,408       2,138        2,125        2,138        2,256        2,221      2,226
+    Nonagricultural industries ...................................................            66,651     66,557     66,618      66,558       66,522       66,251       66,149       66,226     66,485
+  Unemployed .........................................................................         2,799      3,460      3,390       3,109        3,781        3,899        3,767        3,757      3,762
+      Unemployment rate ..........................................................                3.9        4.8        4.7         4.3          5.2          5.4          5.2          5.2        5.2
+
+
+                 Women, 16 years and over
+Civilian noninstitutional population ...........................................             110,247    111,179    111,281     110,247      110,893      110,985      111,078      111,179    111,281
+ Civilian labor force ..................................................................      65,887     66,507     66,545      66,117       66,354       66,287       66,349       66,527     66,797
+      Participation rate ...............................................................        59.8       59.8       59.8        60.0         59.8         59.7         59.7         59.8       60.0
+  Employed ..............................................................................     62,584     62,572     62,909      62,827       62,524       62,528       62,536       62,922     63,181
+      Employment-population ratio ............................................                  56.8       56.3       56.5        57.0         56.4         56.3         56.3         56.6       56.8
+  Unemployed .........................................................................         3,303      3,934      3,636       3,290        3,830        3,759        3,813        3,605      3,616
+      Unemployment rate ..........................................................                5.0        5.9        5.5         5.0          5.8          5.7          5.7          5.4        5.4
+
+
+                 Women, 20 years and over
+Civilian noninstitutional population ...........................................             102,277    103,256    103,335     102,277      102,936      103,038      103,127      103,256    103,335
+ Civilian labor force ..................................................................      62,230     62,448     62,919      62,222       62,597       62,481       62,590       62,783     62,929
+      Participation rate ...............................................................        60.8       60.5       60.9        60.8         60.8         60.6         60.7         60.8       60.9
+  Employed ..............................................................................     59,446     59,037     59,791      59,463       59,337       59,316       59,364       59,710     59,835
+      Employment-population ratio ............................................                  58.1       57.2       57.9        58.1         57.6         57.6         57.6         57.8       57.9
+    Agriculture ..........................................................................       842        806        859         823          760          749          814          772        845
+    Nonagricultural industries ...................................................            58,604     58,231     58,932      58,640       58,577       58,567       58,550       58,938     58,991
+  Unemployed .........................................................................         2,784      3,411      3,128       2,759        3,260        3,165        3,226        3,073      3,094
+      Unemployment rate ..........................................................                4.5        5.5        5.0         4.4          5.2          5.1          5.2          4.9        4.9
+
+
+                  Both sexes, 16 to 19 years
+Civilian noninstitutional population ..........................................               16,163     16,212     16,189      16,163       16,243       16,182       16,202       16,212     16,189
+ Civilian labor force ..................................................................       7,595      8,310      7,411       8,041        7,744        7,707        7,629        7,630      7,874
+      Participation rate ...............................................................        47.0       51.3       45.8        49.7         47.7         47.6         47.1         47.1       48.6
+  Employed ..............................................................................      6,469      7,033      6,246       6,845        6,434        6,347        6,276        6,318      6,639
+      Employment-population ratio ............................................                  40.0       43.4       38.6        42.3         39.6         39.2         38.7         39.0       41.0
+    Agriculture ..........................................................................       228        272        234         220          213          223          213          196        227
+    Nonagricultural industries ...................................................             6,242      6,761      6,012       6,625        6,221        6,124        6,064        6,122      6,411
+  Unemployed .........................................................................         1,126      1,277      1,165       1,196        1,310        1,360        1,352        1,312      1,236
+      Unemployment rate ..........................................................              14.8       15.4       15.7        14.9         16.9         17.6         17.7         17.2       15.7
+
+
+   1 The population figures are not adjusted for seasonal variation; therefore, identical                             numbers appear in the unadjusted and seasonally adjusted columns.
+HOUSEHOLD DATA                                                                                                                                                               HOUSEHOLD DATA
+
+Table A-2. Employment status of the civilian population by race, sex, age, and Hispanic origin
+(Numbers in thousands)
+
+
+
+                                                                                                 Not seasonally adjusted                              Seasonally adjusted1
+           Employment status, race, sex, age, and
+                     Hispanic origin
+                                                                                                Sept.      Aug.       Sept.      Sept.      May         June       July       Aug.       Sept.
+                                                                                                2001       2002       2002       2001       2002        2002       2002       2002       2002
+
+
+                                       WHITE
+Civilian noninstitutional population ...........................................               176,220    177,486    177,628    176,220    177,087     177,217    177,345    177,486    177,628
+ Civilian labor force ..................................................................       117,853    119,117    118,576    118,274    118,742     118,530    118,678    118,919    119,021
+    Participation rate .................................................................          66.9       67.1       66.8       67.1       67.1        66.9       66.9       67.0       67.0
+  Employed ..............................................................................      113,013    113,159    112,906    113,147    112,563     112,382    112,446    112,844    113,010
+    Employment-population ratio ..............................................                    64.1       63.8       63.6       64.2       63.6        63.4       63.4       63.6       63.6
+  Unemployed .........................................................................           4,840      5,958      5,670      5,127      6,179       6,148      6,233      6,075      6,011
+    Unemployment rate ............................................................                  4.1        5.0        4.8        4.3        5.2         5.2        5.3        5.1        5.1
+
+                        Men, 20 years and over
+ Civilian labor force ..................................................................        60,672     61,200     61,129     60,751     61,095      61,007     61,068     61,240     61,212
+   Participation rate .................................................................           76.8       76.8       76.6       76.9       76.9        76.7       76.7       76.9       76.7
+  Employed ..............................................................................       58,610     58,623     58,564     58,428     58,170      58,112     58,164     58,332     58,331
+   Employment-population ratio ..............................................                     74.2       73.6       73.4       73.9       73.2        73.1       73.1       73.2       73.1
+  Unemployed .........................................................................           2,063      2,577      2,564      2,323      2,926       2,895      2,904      2,908      2,881
+   Unemployment rate ............................................................                  3.4        4.2        4.2         3.8        4.8         4.7        4.8        4.7        4.7
+
+                     Women, 20 years and over
+ Civilian labor force ..................................................................        50,713     50,913     51,223     50,680     51,163      51,060     51,125     51,297     51,212
+   Participation rate .................................................................           60.1       59.9       60.2       60.1       60.4        60.2       60.2       60.4       60.2
+  Employed ..............................................................................       48,773     48,438     48,994     48,747     48,871      48,812     48,856     49,076     48,994
+   Employment-population ratio ..............................................                     57.8       57.0       57.6       57.8       57.7        57.5       57.6       57.8       57.6
+  Unemployed .........................................................................           1,941      2,475      2,229      1,933      2,292       2,248      2,268      2,221      2,218
+   Unemployment rate ............................................................                  3.8        4.9        4.4         3.8        4.5         4.4        4.4        4.3        4.3
+
+                     Both sexes, 16 to 19 years
+ Civilian labor force ..................................................................         6,468      7,004      6,225      6,843      6,483       6,464      6,485      6,382      6,597
+   Participation rate .................................................................           50.4       54.5       48.4       53.4       50.5        50.3       50.5       49.7       51.3
+  Employed ..............................................................................        5,630      6,098      5,348      5,972      5,522       5,458      5,425      5,437      5,685
+   Employment-population ratio ..............................................                     43.9       47.5       41.6       46.6       43.0        42.5       42.2       42.3       44.2
+  Unemployed .........................................................................             837        906        876        871        961       1,006      1,060        945        911
+   Unemployment rate ............................................................                 12.9       12.9       14.1       12.7       14.8        15.6       16.4       14.8       13.8
+     Men ...................................................................................      13.3       15.0       15.0       13.6       15.4        17.7       19.1       17.5       15.3
+     Women .............................................................................          12.5       10.8       13.1       11.7       14.2        13.4       13.6       12.1       12.3
+
+                                       BLACK
+Civilian noninstitutional population ...........................................                25,644     26,000     26,039     25,644     25,898      25,930     25,961     26,000     26,039
+ Civilian labor force ..................................................................        16,719     16,829     16,922     16,827     16,887      16,822     16,618     16,753     17,053
+    Participation rate .................................................................          65.2       64.7       65.0       65.6       65.2        64.9       64.0       64.4       65.5
+  Employed ..............................................................................       15,269     15,149     15,347     15,339     15,168      15,027     14,976     15,142     15,420
+    Employment-population ratio ..............................................                    59.5       58.3       58.9       59.8       58.6        58.0       57.7       58.2       59.2
+  Unemployed .........................................................................           1,450      1,680      1,575      1,488      1,718       1,794      1,642      1,611      1,633
+    Unemployment rate ............................................................                  8.7      10.0         9.3        8.8      10.2        10.7         9.9        9.6        9.6
+
+                        Men, 20 years and over
+ Civilian labor force ..................................................................         7,436      7,489      7,572      7,486      7,573       7,543      7,472      7,492      7,652
+   Participation rate .................................................................           72.3       71.7       72.4       72.8       72.8        72.4       71.6       71.7       73.1
+  Employed ..............................................................................        6,897      6,841      6,923      6,905      6,925       6,760      6,800      6,834      6,944
+   Employment-population ratio ..............................................                     67.1       65.5       66.2       67.1       66.6        64.9       65.2       65.4       66.4
+  Unemployed .........................................................................             538        648        649        581        648         783        673        658        708
+   Unemployment rate ............................................................                  7.2        8.7         8.6        7.8       8.6        10.4         9.0        8.8        9.3
+
+                     Women, 20 years and over
+ Civilian labor force ..................................................................         8,433      8,384      8,477      8,431      8,401       8,363      8,348      8,414      8,465
+   Participation rate .................................................................           65.5       64.2       64.8       65.5       64.6        64.3       64.1       64.5       64.8
+  Employed ..............................................................................        7,764      7,642      7,792      7,783      7,606       7,628      7,602      7,719      7,799
+   Employment-population ratio ..............................................                     60.3       58.5       59.6       60.5       58.5        58.6       58.3       59.1       59.7
+  Unemployed .........................................................................             669        742        685        648        794         735        746        695        665
+   Unemployment rate ............................................................                  7.9        8.8         8.1        7.7       9.5          8.8        8.9        8.3        7.9
+
+                     Both sexes, 16 to 19 years
+ Civilian labor force ..................................................................           851        956        873        910        913         916        798        847        936
+   Participation rate .................................................................           34.2       38.2       34.9       36.6       36.6        36.6       31.9       33.9       37.4
+  Employed ..............................................................................          608        666        633        651        637         639        575        589        677
+   Employment-population ratio ..............................................                     24.4       26.6       25.3       26.2       25.5        25.6       23.0       23.5       27.0
+  Unemployed .........................................................................             243        290        240        259        276         276        223        258        259
+   Unemployment rate ............................................................                 28.5       30.4       27.5       28.5       30.2        30.2       28.0       30.5       27.7
+     Men ...................................................................................      29.8       32.0       33.7       30.8       36.8        30.0       20.5       30.5       34.7
+     Women .............................................................................          27.1       28.7       21.4       26.1       22.3        30.4       34.8       30.4       20.8
+
+
+See footnotes at end of table.
+HOUSEHOLD DATA                                                                                                                                                                     HOUSEHOLD DATA
+
+Table A-2. Employment status of the civilian population by race, sex, age, and Hispanic origin — Continued
+(Numbers in thousands)
+
+
+
+                                                                                             Not seasonally adjusted                                  Seasonally adjusted1
+           Employment status, race, sex, age, and
+                     Hispanic origin
+                                                                                            Sept.     Aug.       Sept.         Sept.         May          June          July         Aug.          Sept.
+                                                                                            2001      2002       2002          2001          2002         2002          2002         2002          2002
+
+
+                            HISPANIC ORIGIN
+Civilian noninstitutional population ...........................................            23,288    23,999    24,065         23,288       23,797        23,867       23,935        23,999        24,065
+ Civilian labor force ..................................................................    15,815    16,245    16,290         15,811       16,085        16,146       16,304        16,240        16,294
+    Participation rate .................................................................      67.9      67.7      67.7           67.9         67.6          67.6         68.1          67.7          67.7
+  Employed ..............................................................................   14,817    15,029    15,141         14,785       14,963        14,959       15,066        15,014        15,095
+    Employment-population ratio ..............................................                63.6      62.6      62.9           63.5         62.9          62.7         62.9          62.6          62.7
+  Unemployed .........................................................................         998     1,215     1,149          1,026        1,122         1,187        1,238         1,225         1,198
+    Unemployment rate ............................................................              6.3       7.5       7.1            6.5          7.0           7.4          7.6           7.5           7.4
+
+
+  1 The population figures are not adjusted for seasonal variation; therefore, identical                           because data for the "other races" group are not presented and Hispanics are included in
+numbers appear in the unadjusted and seasonally adjusted columns.                                                  both the white and black population groups.
+   NOTE: Detail for the above race and Hispanic-origin groups will not sum to totals
+
+
+
+
+Table A-3. Employment status of the civilian population 25 years and over by educational attainment
+(Numbers in thousands)
+
+
+
+                                                                                             Not seasonally adjusted                                  Seasonally adjusted1
+                         Educational attainment
+                                                                                            Sept.     Aug.       Sept.         Sept.         May          June          July         Aug.          Sept.
+                                                                                            2001      2002       2002          2001          2002         2002          2002         2002          2002
+
+
+
+               Less than a high school diploma
+
+Civilian noninstitutional population ...........................................            27,478    26,900    26,847         27,478       28,073        28,105       27,112        26,900        26,847
+ Civilian labor force ..................................................................    12,126    11,817    11,946         11,981       12,356        12,254       11,770        11,752        11,808
+    Percent of population ..........................................................          44.1      43.9      44.5           43.6         44.0          43.6         43.4          43.7          44.0
+  Employed ..............................................................................   11,271    10,912    11,090         11,056       11,306        11,288       10,743        10,762        10,883
+    Employment-population ratio ..............................................                41.0      40.6      41.3           40.2         40.3          40.2         39.6          40.0          40.5
+  Unemployed .........................................................................         855       905       856            925        1,051           966        1,028           991           925
+    Unemployment rate ............................................................              7.1       7.7       7.2            7.7          8.5           7.9          8.7           8.4           7.8
+
+             High school graduates, no college2
+
+Civilian noninstitutional population ...........................................            57,400    57,778    58,097         57,400       57,063        57,070       57,012        57,778        58,097
+ Civilian labor force ..................................................................    36,712    36,916    37,333         36,923       36,648        36,737       37,149        37,203        37,533
+    Percent of population ..........................................................          64.0      63.9      64.3           64.3         64.2          64.4         65.2          64.4          64.6
+  Employed ..............................................................................   35,232    35,076    35,632         35,319       34,605        34,676       35,250        35,323        35,668
+    Employment-population ratio ..............................................                61.4      60.7      61.3           61.5         60.6          60.8         61.8          61.1          61.4
+  Unemployed .........................................................................       1,479     1,840     1,701          1,604        2,042         2,061        1,898         1,880         1,865
+    Unemployment rate ............................................................              4.0       5.0       4.6            4.3          5.6           5.6          5.1           5.1           5.0
+
+                 Less than a bachelor's degree3
+
+Civilian noninstitutional population ...........................................            45,424    45,494    45,386         45,424       44,541        44,897       45,695        45,494        45,386
+ Civilian labor force ..................................................................    33,585    33,264    33,407         33,759       32,786        32,962       33,162        33,184        33,599
+    Percent of population ..........................................................          73.9      73.1      73.6           74.3         73.6          73.4         72.6          72.9          74.0
+  Employed ..............................................................................   32,467    31,773    31,917         32,570       31,184        31,413       31,693        31,742        32,013
+    Employment-population ratio ..............................................                71.5      69.8      70.3           71.7         70.0          70.0         69.4          69.8          70.5
+  Unemployed .........................................................................       1,117     1,490     1,491          1,189        1,602         1,550        1,469         1,443         1,586
+    Unemployment rate ............................................................              3.3       4.5       4.5            3.5          4.9           4.7          4.4           4.3           4.7
+
+                            College graduates
+
+Civilian noninstitutional population ...........................................            46,870    48,583    48,557         46,870       48,583        48,435       48,755        48,583        48,557
+ Civilian labor force ..................................................................    36,998    37,779    38,061         36,918       38,359        38,084       37,850        37,996        37,997
+    Percent of population ..........................................................          78.9      77.8      78.4           78.8         79.0          78.6         77.6          78.2          78.3
+  Employed ..............................................................................   36,072    36,568    36,933         36,008       37,239        36,971       36,750        36,974        36,896
+    Employment-population ratio ..............................................                77.0      75.3      76.1           76.8         76.6          76.3         75.4          76.1          76.0
+  Unemployed .........................................................................         926     1,211     1,128            910        1,121         1,113        1,100         1,021         1,101
+    Unemployment rate ............................................................              2.5       3.2       3.0            2.5          2.9           2.9          2.9           2.7           2.9
+
+
+  1 The population figures are not adjusted for seasonal variation, therefore, identical                               2 Includes high school diploma or equivalent.
+numbers appear in the unadjusted and seasonally adjusted columns.                                                      3 Includes the categories, some college, no degree; and associate degree.
+HOUSEHOLD DATA                                                                                                                                                                HOUSEHOLD DATA
+
+Table A-4. Selected employment indicators
+(In thousands)
+
+
+
+                                                                                           Not seasonally adjusted                                Seasonally adjusted
+
+                                   Category
+
+                                                                                          Sept.     Aug.       Sept.       Sept.         May         June          July         Aug.        Sept.
+                                                                                          2001      2002       2002        2001          2002        2002          2002         2002        2002
+
+
+                          CHARACTERISTIC
+
+Total employed, 16 years and over ..........................................             134,868   135,028   135,063      135,004      134,417      134,053      134,045      134,474      135,185
+ Married men, spouse present .................................................            43,436    43,458    43,528       43,099       43,548       43,140       43,273       43,371       43,225
+ Married women, spouse present ............................................               33,597    33,183    33,963       33,604       33,371       33,362       33,361       33,723       33,997
+ Women who maintain families ................................................              8,381     8,494     8,474        8,274        8,397        8,465        8,521        8,419        8,357
+
+                              OCCUPATION
+
+ Managerial and professional specialty ...................................                41,899    41,813    42,444       41,813       41,901       41,675       41,978       42,152       42,385
+ Technical, sales, and administrative support ..........................                  38,645    38,698    38,391       38,891       38,346       38,740       38,458       38,892       38,623
+ Service occupations ...............................................................      18,210    18,921    18,657       18,402       18,909       18,889       18,752       18,771       18,884
+ Precision production, craft, and repair ....................................             14,866    14,541    14,532       14,857       14,365       14,375       14,073       14,242       14,503
+ Operators, fabricators, and laborers .......................................             17,730    17,340    17,436       17,654       17,468       17,152       17,327       17,142       17,345
+ Farming, forestry, and fishing .................................................          3,517     3,714     3,603        3,281        3,265        3,285        3,501        3,340        3,361
+
+                        CLASS OF WORKER
+
+ Agriculture:
+  Wage and salary workers .....................................................            2,003     2,110      2,183       1,882        1,911        1,909        2,031        1,927        2,054
+  Self-employed workers .........................................................          1,342     1,337      1,292       1,278        1,156        1,158        1,227        1,231        1,221
+  Unpaid family workers ..........................................................            26        31         26          24           40           29           27           24           25
+ Nonagricultural industries:
+  Wage and salary workers .....................................................          122,744   123,080   122,927      123,186      123,071      122,627      122,196      122,885      123,327
+   Government ........................................................................    19,222    19,008    19,403       19,290       19,811       19,630       19,709       19,596       19,442
+   Private industries ................................................................   103,522   104,072   103,524      103,896      103,260      102,997      102,486      103,289      103,885
+     Private households ...........................................................          768       872       902          804          775          810          855          887          934
+     Other industries ................................................................   102,754   103,200   102,622      103,092      102,485      102,187      101,631      102,402      102,951
+  Self-employed workers .........................................................          8,657     8,385     8,549        8,556        8,305        8,208        8,268        8,368        8,439
+  Unpaid family workers ..........................................................            95        84        86          101          105           95           99           87           91
+
+              PERSONS AT WORK PART TIME
+
+ All industries:
+  Part time for economic reasons ............................................              3,765     4,190     3,854        4,148        3,996        3,899        4,177        4,325        4,217
+    Slack work or business conditions ......................................               2,561     2,658     2,483        2,796        2,626        2,588        2,723        2,880        2,687
+    Could only find part-time work ............................................            1,005     1,107     1,139        1,064        1,064        1,031        1,096        1,159        1,202
+  Part time for noneconomic reasons ......................................                18,994    16,500    19,041       18,798       18,887       19,170       19,138       19,120       18,833
+
+ Nonagricultural industries:
+  Part time for economic reasons ............................................              3,648     3,991     3,726        4,015        3,818        3,758        3,949        4,060        4,068
+   Slack work or business conditions ......................................                2,480     2,522     2,398        2,704        2,515        2,472        2,609        2,715        2,596
+   Could only find part-time work ............................................               988     1,080     1,113        1,045        1,033        1,022        1,074        1,131        1,174
+  Part time for noneconomic reasons ......................................                18,406    16,004    18,483       18,232       18,350       18,739       18,572       18,609       18,300
+
+
+   NOTE: Persons at work excludes employed persons who were absent from their jobs                               but worked only 1 to 34 hours during the reference week for reasons such as holidays,
+during the entire reference week for reasons such as vacation, illness, or industrial                            illness, and bad weather.
+dispute. Part time for noneconomic reasons excludes persons who usually work full time
+HOUSEHOLD DATA                                                                                                                                                                      HOUSEHOLD DATA
+
+Table A-5. Selected unemployment indicators, seasonally adjusted
+
+                                                                                                      Number of
+                                                                                                unemployed persons                                     Unemployment rates1
+                                    Category                                                       (in thousands)
+                                                                                             Sept.     Aug.       Sept.         Sept.        May           June         July          Aug.         Sept.
+                                                                                             2001      2002       2002          2001         2002          2002         2002          2002         2002
+
+
+                           CHARACTERISTIC
+Total, 16 years and over ..........................................................          7,064     8,142      8,092          5.0           5.8          5.9           5.9          5.7           5.6
+ Men, 20 years and over .........................................................            3,109     3,757      3,762          4.3           5.2          5.4           5.2          5.2           5.2
+ Women, 20 years and over ...................................................                2,759     3,073      3,094          4.4           5.2          5.1           5.2          4.9           4.9
+ Both sexes, 16 to 19 years ....................................................             1,196     1,312      1,236         14.9          16.9         17.6          17.7         17.2          15.7
+
+ Married men, spouse present ................................................                1,229     1,529      1,602          2.8           3.6          4.1           3.5          3.4           3.6
+ Married women, spouse present ...........................................                   1,156     1,223      1,258          3.3           3.9          3.8           3.7          3.5           3.6
+ Women who maintain families ...............................................                   629       665        646          7.1           8.1          8.2           8.4          7.3           7.2
+
+ Full-time workers ...................................................................       5,928     6,754      6,775          5.0           5.9          6.1           5.9          5.7           5.7
+ Part-time workers ..................................................................        1,129     1,430      1,326          4.6           5.6          5.0           5.4          5.6           5.3
+
+                              OCCUPATION2
+ Managerial and professional specialty ..................................                    1,035     1,343      1,373          2.4           3.2          3.2           3.1          3.1           3.1
+ Technical, sales, and administrative support .........................                      1,807     2,125      2,141          4.4           5.2          5.3           5.3          5.2           5.3
+ Precision production, craft, and repair ...................................                   766       936        885          4.9           5.9          5.9           6.4          6.2           5.8
+ Operators, fabricators, and laborers ......................................                 1,471     1,542      1,609          7.7           8.9          9.3           8.6          8.3           8.5
+ Farming, forestry, and fishing ................................................               254       344        299          7.2           6.3          6.1           8.8          9.3           8.2
+
+                                  INDUSTRY
+ Nonagricultural private wage and salary workers ..................                          5,749     6,584      6,598          5.2           6.3          6.3           6.2          6.0           6.0
+  Goods-producing industries .................................................               1,753     1,942      2,024          6.2           7.4          7.5           7.4          7.2           7.4
+   Mining ................................................................................      28        31         44          5.0           4.4          7.9           3.8          6.0           8.0
+   Construction ......................................................................         649       760        769          7.8           8.9          9.1          10.3          9.5           9.3
+   Manufacturing ....................................................................        1,076     1,150      1,211          5.6           6.7          6.8           6.3          6.3           6.5
+     Durable goods .................................................................           679       726        782          5.8           6.3          7.3           6.8          6.5           6.9
+     Nondurable goods ...........................................................              397       424        429          5.4           7.5          6.1           5.6          5.9           5.9
+  Service-producing industries ...............................................               3,996     4,643      4,575          4.9           5.9          5.9           5.9          5.6           5.5
+   Transportation and public utilities ......................................                  310       372        386          3.9           5.7          5.9           5.3          4.8           5.0
+   Wholesale and retail trade .................................................              1,648     1,927      1,944          5.9           7.0          6.6           6.8          6.8           6.9
+   Finance, insurance, and real estate ..................................                      229       266        266          2.8           4.0          4.1           3.7          3.1           3.1
+   Services .............................................................................    1,809     2,078      1,978          4.8           5.6          5.9           5.8          5.4           5.1
+ Government workers .............................................................              428       477        546          2.2           2.6          2.3           2.5          2.4           2.7
+ Agricultural wage and salary workers ....................................                     155       210        198          7.6           9.1          8.3           9.7          9.8           8.8
+
+
+  1 Unemployment as a percent of the civilian labor force.                                                           because the seasonal component, which is small relative to the trend-cycle and irregular
+  2 Seasonally adjusted unemployment data for service occupations are not available                                  components, cannot be separated with sufficient precision.
+
+
+
+
+Table A-6. Duration of unemployment
+(Numbers in thousands)
+
+
+
+                                                                                              Not seasonally adjusted                                   Seasonally adjusted
+                                     Duration
+                                                                                             Sept.     Aug.       Sept.         Sept.        May           June         July          Aug.         Sept.
+                                                                                             2001      2002       2002          2001         2002          2002         2002          2002         2002
+
+
+                  NUMBER OF UNEMPLOYED
+
+Less than 5 weeks ...................................................................        2,792     2,872      2,713         2,807         2,876        2,729         2,896        2,880         2,708
+5 to 14 weeks ..........................................................................     2,127     2,658      2,272         2,366         2,531        2,784         2,464        2,431         2,511
+15 weeks and over ..................................................................         1,790     2,618      2,697         1,907         2,952        3,103         2,883        2,783         2,900
+  15 to 26 weeks .....................................................................       1,002     1,071      1,177         1,084         1,316        1,434         1,349        1,309         1,315
+  27 weeks and over ...............................................................            787     1,548      1,520           823         1,636        1,669         1,533        1,474         1,585
+
+Average (mean) duration, in weeks .........................................                   13.1      16.3       17.4          13.3          17.1         17.3          16.4         16.2          17.8
+Median duration, in weeks .......................................................              7.2       8.9        9.4           7.3           9.8         11.7           8.6          8.4           9.5
+
+                     PERCENT DISTRIBUTION
+
+Total unemployed ....................................................................        100.0     100.0      100.0         100.0         100.0        100.0         100.0        100.0         100.0
+ Less than 5 weeks .................................................................          41.6      35.2       35.3          39.6          34.4         31.7          35.1         35.6          33.4
+ 5 to 14 weeks ........................................................................       31.7      32.6       29.6          33.4          30.3         32.3          29.9         30.0          30.9
+ 15 weeks and over ................................................................           26.7      32.1       35.1          26.9          35.3         36.0          35.0         34.4          35.7
+  15 to 26 weeks ....................................................................         14.9      13.1       15.3          15.3          15.7         16.6          16.4         16.2          16.2
+  27 weeks and over ..............................................................            11.7      19.0       19.8          11.6          19.6         19.4          18.6         18.2          19.5
+        HOUSEHOLD DATA                                                                                                                                                                                             HOUSEHOLD DATA
+
+        Table A-7. Reason for unemployment
+        (Numbers in thousands)
+
+
+
+                                                                                                              Not seasonally adjusted                                             Seasonally adjusted
+                                                Reason
+                                                                                                            Sept.                Aug.         Sept.        Sept.        May          June            July              Aug.             Sept.
+                                                                                                            2001                 2002         2002         2001         2002         2002            2002              2002             2002
+
+
+                            NUMBER OF UNEMPLOYED
+
+        Job losers and persons who completed temporary jobs ..........                                      3,243                4,341        4,046        3,595         4,598        4,579           4,580             4,560           4,535
+         On temporary layoff ................................................................                 786                1,075          704        1,114         1,091        1,061           1,224             1,151             999
+         Not on temporary layoff ..........................................................                 2,457                3,267        3,341        2,481         3,506        3,518           3,356             3,410           3,536
+          Permanent job losers ............................................................                 1,795                2,464        2,557        (1)           (1)          (1)             (1)               (1)             (1)
+          Persons who completed temporary jobs ..............................                                 663                  803          784        (1)           (1)          (1)             (1)               (1)             (1)
+        Job leavers ...............................................................................           893                  924          847          819           902          836             818               824             781
+        Reentrants ................................................................................         2,137                2,231        2,297        2,102         2,433        2,360           2,375             2,270           2,263
+        New entrants ............................................................................             434                  651          493          466           499          584             571               619             526
+
+                               PERCENT DISTRIBUTION
+
+        Total unemployed .....................................................................              100.0                100.0        100.0        100.0         100.0        100.0           100.0             100.0           100.0
+        Job losers and persons who completed temporary jobs .........                                        48.4                 53.3         52.7         51.5          54.5         54.8            54.9              55.1            56.0
+         On temporary layoff ...............................................................                 11.7                 13.2          9.2         16.0          12.9         12.7            14.7              13.9            12.3
+         Not on temporary layoff .........................................................                   36.6                 40.1         43.5         35.5          41.6         42.1            40.2              41.2            43.6
+        Job leavers ..............................................................................           13.3                 11.3         11.0         11.7          10.7         10.0             9.8              10.0             9.6
+        Reentrants ...............................................................................           31.9                 27.4         29.9         30.1          28.9         28.2            28.5              27.4            27.9
+        New entrants ...........................................................................              6.5                  8.0          6.4          6.7           5.9          7.0             6.8               7.5             6.5
+
+                  UNEMPLOYED AS A PERCENT OF THE
+                        CIVILIAN LABOR FORCE
+
+         Job losers and persons who completed temporary jobs .........                                          2.3                3.0          2.8           2.5          3.2            3.2              3.2            3.2             3.2
+         Job leavers ..............................................................................              .6                 .6           .6            .6           .6             .6               .6             .6              .5
+         Reentrants ...............................................................................             1.5                1.6          1.6           1.5          1.7            1.7              1.7            1.6             1.6
+         New entrants ...........................................................................                .3                 .5           .3            .3           .3             .4               .4             .4              .4
+
+
+            1 Not available.
+
+
+
+
+Table A-8. Range of alternative measures of labor underutilization
+(Percent)
+
+
+
+                                                                                                                                  Not seasonally adjusted                                       Seasonally adjusted
+                                                       Measure
+                                                                                                                                  Sept.        Aug.        Sept.       Sept.       May            June           July           Aug.            Sept.
+                                                                                                                                  2001         2002        2002        2001        2002           2002           2002           2002            2002
+
+
+U-1 Persons unemployed 15 weeks or longer, as a percent of the civilian
+   labor force ...............................................................................................................          1.3       1.8         1.9         1.3         2.1            2.2           2.0            2.0             2.0
+
+U-2 Job losers and persons who completed temporary jobs, as a percent of the
+   civilian labor force ...................................................................................................             2.3       3.0         2.8         2.5         3.2            3.2           3.2            3.2             3.2
+
+U-3 Total unemployed, as a percent of the civilian labor force
+   (official unemployment rate) ...............................................................................                         4.7       5.7         5.4         5.0         5.8            5.9           5.9            5.7             5.6
+
+U-4 Total unemployed plus discouraged workers, as a percent of the civilian
+    labor force plus discouraged workers ....................................................................                           4.9       5.9         5.6       (1)         (1)            (1)           (1)            (1)             (1)
+
+U-5 Total unemployed, plus discouraged workers, plus all other marginally
+    attached workers, as a percent of the civilian labor force plus all marginally
+    attached workers ...................................................................................................                5.6       6.6         6.4       (1)         (1)            (1)           (1)            (1)             (1)
+
+U-6 Total unemployed, plus all marginally attached workers, plus total employed
+    part time for economic reasons, as a percent of the civilian labor force plus
+    all marginally attached workers .............................................................................                       8.3       9.5         9.0       (1)         (1)            (1)           (1)            (1)             (1)
+
+
+  1 Not available.                                                                                                                              a subset of the marginally attached, have given a job-market related reason for not currently
+  NOTE: This range of alternative measures of labor underutilization replaces the U1-U7 range                                                   looking for a job. Persons employed part time for economic reasons are those who want and
+published in table A-7 of this release prior to 1994. Marginally attached workers are persons                                                   are available for full-time work but have had to settle for a part-time schedule. For further
+who currently are neither working nor looking for work but indicate that they want and are                                                      information, see "BLS introduces new range of alternative unemployment measures," in the
+available for a job and have looked for work sometime in the recent past. Discouraged workers,                                                  October 1995 issue of the Monthly Labor Review.
+HOUSEHOLD DATA                                                                                                                                                                              HOUSEHOLD DATA
+
+Table A-9. Unemployed persons by sex and age, seasonally adjusted
+
+
+                                                                                       Number of
+                                                                                 unemployed persons                                                     Unemployment rates1
+                        Age and sex                                                 (in thousands)
+
+
+                                                                           Sept.                Aug.         Sept.            Sept.          May            June           July             Aug.             Sept.
+                                                                           2001                 2002         2002             2001           2002           2002           2002             2002             2002
+
+
+
+Total, 16 years and over .......................................            7,064                8,142       8,092             5.0            5.8            5.9            5.9              5.7              5.6
+ 16 to 24 years .....................................................       2,472                2,741       2,673            10.8           11.6           12.2           12.3             12.2             11.8
+  16 to 19 years ...................................................        1,196                1,312       1,236            14.9           16.9           17.6           17.7             17.2             15.7
+   16 to 17 years .................................................           508                  561         575            16.6           20.7           20.8           20.9             19.7             19.3
+   18 to 19 years .................................................           691                  769         663            13.9           14.8           15.6           16.1             16.0             13.6
+  20 to 24 years ...................................................        1,276                1,429       1,437             8.6            8.9            9.3            9.5              9.6              9.7
+ 25 years and over ...............................................          4,587                5,441       5,421             3.8            4.8            4.8            4.6              4.5              4.5
+  25 to 54 years ...................................................        3,955                4,642       4,630             3.9            5.0            4.9            4.8              4.6              4.6
+  55 years and over .............................................             613                  815         772             3.2            4.2            4.2            3.7              4.0              3.7
+
+ Men, 16 years and over ......................................              3,774                4,536       4,476             5.0            5.9            6.1            6.0              6.0              5.9
+  16 to 24 years ...................................................        1,378                1,585       1,561            11.5           12.5           12.9           13.0             13.7             13.2
+   16 to 19 years .................................................           665                  780         714            16.0           18.6           19.6           19.8             20.1             17.8
+    16 to 17 years ...............................................            294                  342         316            18.7           23.7           23.2           23.9             24.5             21.5
+    18 to 19 years ...............................................            372                  443         401            14.5           15.6           17.4           17.4             17.8             15.9
+   20 to 24 years .................................................           713                  805         847             9.1            9.4            9.5            9.6             10.5             10.8
+  25 years and over .............................................           2,398                2,943       2,923             3.7            4.8            4.9            4.7              4.6              4.5
+   25 to 54 years .................................................         2,068                2,513       2,494             3.8            4.9            5.0            4.8              4.7              4.7
+   55 years and over ...........................................              337                  461         435             3.3            4.5            4.6            4.0              4.1              3.9
+
+ Women, 16 years and over ................................                  3,290                3,605       3,616             5.0            5.8            5.7            5.7              5.4              5.4
+  16 to 24 years ...................................................        1,094                1,156       1,112            10.1           10.7           11.4           11.6             10.6             10.3
+   16 to 19 years .................................................           531                  532         522            13.6           15.2           15.6           15.6             14.2             13.5
+    16 to 17 years ...............................................            214                  219         259            14.3           17.4           18.3           17.9             15.1             17.2
+    18 to 19 years ...............................................            319                  326         262            13.3           14.1           13.7           14.8             14.1             11.1
+   20 to 24 years .................................................           563                  624         590             8.1            8.3            9.1            9.4              8.7              8.5
+  25 years and over .............................................           2,189                2,498       2,497             4.0            4.8            4.6            4.6              4.5              4.5
+   25 to 54 years .................................................         1,887                2,129       2,137             4.0            5.1            4.8            4.8              4.6              4.6
+   55 years and over ...........................................              276                  354         337             3.2            3.7            3.8            3.4              3.8              3.5
+
+
+   1 Unemployment as a percent of the civilian labor force.
+
+
+
+
+       Table A-10. Persons not in the labor force and multiple jobholders by sex, not seasonally adjusted
+       (Numbers in thousands)
+
+
+
+                                                                                                                  Total                               Men                                  Women
+                                                Category
+                                                                                                         Sept.              Sept.            Sept.             Sept.              Sept.            Sept.
+                                                                                                         2001               2002             2001              2002               2001             2002
+
+
+                               NOT IN THE LABOR FORCE
+
+
+       Total not in the labor force ..................................................................   70,781            71,684           26,421            26,948            44,361             44,736
+         Persons who currently want a job ...................................................             4,348             4,449            1,949             1,984             2,400              2,466
+            Searched for work and available to work now1 ..........................                       1,325             1,492              659               741               666                751
+               Reason not currently looking:
+                   Discouragement over job prospects2 ................................                      280               387               164                240              116              147
+                   Reasons other than discouragement3 ...............................                     1,045             1,105               495                501              550              605
+
+                                 MULTIPLE JOBHOLDERS
+
+       Total multiple jobholders4 ...................................................................     7,246             7,232             3,825            3,736              3,421             3,496
+         Percent of total employed ...............................................................          5.4               5.4               5.3              5.2                 5.5               5.6
+
+           Primary job full time, secondary job part time .................................               3,897             3,839             2,244            2,182              1,653             1,657
+           Primary and secondary jobs both part time ....................................                 1,576             1,578               516              501              1,060             1,077
+           Primary and secondary jobs both full time ......................................                 265               303               165              222                100                81
+           Hours vary on primary or secondary job .........................................               1,484             1,494               888              824                596               670
+
+
+          1 Data refer to persons who have searched for work during the prior 12 months                                   reasons as child-care and transportation problems, as well as a small number for
+       and were available to take a job during the reference week.                                                        which reason for nonparticipation was not determined.
+          2 Includes thinks no work available, could not find work, lacks schooling or                                       4 Includes persons who work part time on their primary job and full time on their
+       training, employer thinks too young or old, and other types of discrimination.                                     secondary job(s), not shown separately.
+          3 Includes those who did not actively look for work in the prior 4 weeks for such
+ESTABLISHMENT DATA                                                                                                                                    ESTABLISHMENT DATA
+
+
+Table B-1. Employees on nonfarm payrolls by industry
+
+(In thousands)
+
+                                                                                    Not seasonally adjusted                              Seasonally adjusted
+                              Industry
+                                                                            Sept.       July      Aug.        Sept.    Sept.    May        June     July        Aug.    Sept.
+                                                                            2001        2002     2002p        2002p    2001     2002       2002     2002       2002p    2002p
+
+                 Total .................................................. 132,135 130,589 130,673 131,151 131,819 130,702 130,736 130,790 130,897 130,854
+
+            Total private ............................................ 111,285 110,494 110,563 110,059 110,776 109,496 109,525 109,562 109,616 109,569
+
+Goods-producing ..................................................          24,988      24,159   24,207       24,055   24,675   23,870     23,861   23,812     23,787   23,749
+
+   Mining ...............................................................      578         559       565         561      571     558         555      551        555      553
+     Metal mining .................................................           35.0        32.8      32.5        32.7       35      32          32       33         32       32
+     Coal mining ...................................................          81.8        78.9      78.5        78.7       82      80          80       79         79       79
+     Oil and gas extraction ...................................              346.5       332.7     337.9       334.2      343     334         333      329        333      331
+     Nonmetallic minerals, except fuels ...............                      114.7       114.5     115.7       115.2      111     112         110      110        111      111
+
+   Construction .....................................................         6,916      6,851     6,863     6,785      6,674    6,541      6,549     6,519     6,553    6,552
+     General building contractors .........................                 1,497.7    1,508.7   1,525.0   1,505.4      1,462    1,454      1,454     1,445     1,464    1,469
+     Heavy construction, except building .............                        996.3      971.3     970.9     964.7        924      908        910       899       898      895
+     Special trade contractors ..............................               4,422.3    4,371.3   4,367.2   4,314.9      4,288    4,179      4,185     4,175     4,191    4,188
+
+   Manufacturing ...................................................        17,494      16,749   16,779       16,709   17,430   16,771     16,757   16,742     16,679   16,644
+      Production workers ...................................                11,786      11,224   11,277       11,242   11,719   11,245     11,236   11,247     11,198   11,175
+
+     Durable goods ................................................          10,457      9,911     9,910     9,849     10,445   9,963       9,944    9,922      9,876    9,834
+         Production workers ...................................               6,985      6,580     6,599     6,560      6,971   6,619       6,603    6,609      6,578    6,544
+      Lumber and wood products ..........................                     795.2      778.1     783.4     775.5        784     770         767      766        767      764
+      Furniture and fixtures ....................................             506.1      492.8     494.9     488.4        507     494         495      495        495      489
+      Stone, clay, and glass products ....................                    573.8      564.2     565.8     563.7        566     549         552      554        556      556
+      Primary metal industries ...............................                644.5      586.0     590.0     589.6        643     597         593      589        589      588
+         Blast furnaces and basic steel products ...                          206.6      187.1     188.8     188.8      (1)     (1)         (1)      (1)        (1)      (1)
+      Fabricated metal products ............................                1,467.0    1,418.0   1,418.5   1,415.3      1,465   1,428       1,425    1,428      1,416    1,413
+      Industrial machinery and equipment .............                      1,950.3    1,823.0   1,806.8   1,794.7      1,957   1,834       1,829    1,826      1,810    1,801
+         Computer and office equipment ...............                        331.1      303.1     296.9     293.8        331     308         304      301        296      294
+      Electronic and other electrical equipment .....                       1,561.9    1,421.2   1,404.5   1,393.7      1,565   1,437       1,428    1,426      1,407    1,396
+         Electronic components and accessories ..                             621.3      559.9     552.0     547.2        628     567         566      563        555      554
+      Transportation equipment .............................                1,751.3    1,649.3   1,671.9   1,658.4      1,750   1,675       1,679    1,661      1,668    1,657
+         Motor vehicles and equipment ..................                      938.5      891.0     916.5     911.4        937     914         920      905        914      910
+         Aircraft and parts ......................................            463.8      408.7     404.3     399.1        463     416         411      409        404      398
+      Instruments and related products .................                      830.6      807.6     801.7     795.5        832     807         805      803        798      796
+      Miscellaneous manufacturing .......................                     376.4      371.0     372.7     373.8        376     372         371      374        370      374
+
+     Nondurable goods ..........................................              7,037      6,838     6,869     6,860      6,985    6,808      6,813     6,820     6,803    6,810
+         Production workers ...................................               4,801      4,644     4,678     4,682      4,748    4,626      4,633     4,638     4,620    4,631
+      Food and kindred products ...........................                 1,735.0    1,709.7   1,736.7   1,738.8      1,690    1,687      1,691     1,687     1,683    1,694
+      Tobacco products .........................................               35.1       32.8      37.1      38.1         34       34         34        35        38       37
+      Textile mill products ......................................            467.5      428.0     430.6     428.4        464      434        432       429       427      425
+      Apparel and other textile products ................                     553.5      520.6     522.2     517.3        551      520        522       525       523      515
+      Paper and allied products .............................                 629.5      613.6     613.7     615.7        628      612        612       612       613      614
+      Printing and publishing .................................             1,468.1    1,407.2   1,402.0   1,400.4      1,471    1,407      1,405     1,406     1,401    1,403
+      Chemicals and allied products ......................                  1,015.4    1,011.4   1,009.9   1,006.9      1,019    1,006      1,008     1,008     1,007    1,011
+      Petroleum and coal products ........................                    128.6      128.6     128.3     127.9        126      125        125       126       126      126
+      Rubber and misc. plastics products ..............                       947.1      931.3     932.6     929.7        945      928        929       936       930      928
+      Leather and leather products ........................                    56.7       54.6      55.8      56.4         57       55         55        56        55       57
+
+Service-producing ................................................. 107,147 106,430 106,466 107,096 107,144 106,832 106,875 106,978 107,110 107,105
+
+   Transportation and public utilities .....................                  7,097      6,764     6,754     6,782      7,044    6,793      6,790     6,780     6,763    6,731
+     Transportation ..............................................            4,534      4,301     4,299     4,339      4,487    4,328      4,334     4,328     4,320    4,294
+       Railroad transportation .............................                  232.6      227.9     227.0     228.0        232      228        229       227       226      228
+       Local and interurban passenger transit ....                            486.5      415.6     406.1     476.4        477      475        472       471       464      467
+       Trucking and warehousing .......................                     1,871.3    1,847.9   1,858.9   1,841.7      1,841    1,827      1,829     1,834     1,829    1,812
+       Water transportation .................................                 198.9      205.4     204.3     196.4        192      193        193       192       190      190
+       Transportation by air .................................              1,266.7    1,164.2   1,163.6   1,161.6      1,268    1,165      1,172     1,167     1,175    1,163
+       Pipelines, except natural gas ....................                      15.2       14.9      14.8      14.9         15       15         15        15        15       15
+       Transportation services ............................                   463.0      424.8     423.9     420.2        462      425        424       422       421      419
+     Communications and public utilities .............                        2,563      2,463     2,455     2,443      2,557    2,465      2,456     2,452     2,443    2,437
+       Communications .......................................               1,711.6    1,613.5   1,606.6   1,596.7      1,706    1,626      1,615     1,608     1,598    1,591
+       Electric, gas, and sanitary services ..........                        851.0      849.1     848.3     846.0        851      839        841       844       845      846
+
+   Wholesale trade ................................................          6,752       6,713     6,699       6,672    6,747    6,681      6,681     6,679     6,672    6,667
+    Durable goods ..............................................             3,995       3,932     3,922       3,897    3,998    3,916      3,915     3,914     3,905    3,900
+    Nondurable goods ........................................                2,757       2,781     2,777       2,775    2,749    2,765      2,766     2,765     2,767    2,767
+
+
+See footnotes at end of table.
+ESTABLISHMENT DATA                                                                                                                                   ESTABLISHMENT DATA
+
+
+Table B-1. Employees on nonfarm payrolls by industryÐContinued
+
+(In thousands)
+
+                                                                                  Not seasonally adjusted                               Seasonally adjusted
+                             Industry
+                                                                          Sept.       July      Aug.        Sept.   Sept.     May         June     July        Aug.    Sept.
+                                                                          2001        2002     2002p        2002p   2001      2002        2002     2002       2002p    2002p
+
+  Retail trade .......................................................     23,545     23,463    23,460     23,317   23,509     23,327     23,308   23,339     23,295   23,279
+    Building materials and garden supplies ........                       1,053.1    1,105.3   1,086.6    1,066.0    1,051      1,068      1,066    1,067      1,065    1,063
+    General merchandise stores ........................                   2,865.0    2,821.9   2,808.6    2,811.5    2,902      2,897      2,884    2,885      2,851    2,848
+      Department stores ....................................              2,535.3    2,486.1   2,473.8    2,476.4    2,567      2,560      2,542    2,544      2,513    2,506
+    Food stores ...................................................       3,428.6    3,400.3   3,398.2    3,386.1    3,438      3,397      3,394    3,388      3,392    3,395
+    Automotive dealers and service stations ......                        2,445.1    2,462.0   2,465.3    2,449.6    2,434      2,434      2,432    2,437      2,444    2,438
+      New and used car dealers ........................                   1,127.4    1,133.2   1,136.2    1,133.6    1,123      1,133      1,128    1,127      1,130    1,129
+    Apparel and accessory stores ......................                   1,174.3    1,175.1   1,184.2    1,155.8    1,188      1,169      1,173    1,178      1,177    1,169
+    Furniture and home furnishings stores .........                       1,125.3    1,137.4   1,137.6    1,136.0    1,141      1,146      1,148    1,153      1,153    1,152
+    Eating and drinking places ...........................                8,349.4    8,318.6   8,321.9    8,241.4    8,234      8,130      8,121    8,144      8,125    8,127
+    Miscellaneous retail establishments .............                     3,104.2    3,041.9   3,058.0    3,070.8    3,121      3,086      3,090    3,087      3,088    3,087
+
+  Finance, insurance, and real estate .................                     7,737      7,813     7,815      7,759     7,739     7,732      7,733     7,737     7,747    7,763
+     Finance .........................................................      3,805      3,841     3,843      3,822     3,813     3,813      3,819     3,819     3,823    3,832
+        Depository institutions ..............................            2,055.9    2,086.9   2,088.8    2,070.5     2,061     2,073      2,071     2,073     2,076    2,076
+           Commercial banks ................................              1,432.7    1,456.3   1,458.3    1,444.0     1,437     1,446      1,444     1,445     1,449    1,449
+           Savings institutions ...............................             256.4      263.8     264.0      262.3       258       264        264       263       263      264
+        Nondepository institutions ........................                 729.5      769.1     774.8      777.2       733       756        762       767       774      781
+           Mortgage bankers and brokers .............                       336.1      374.7     376.4      379.4       337       359        366       372       375      381
+        Security and commodity brokers ..............                       759.7      724.5     720.1      715.1       758       723        723       718       714      714
+        Holding and other investment offices .......                        259.5      260.3     258.8      259.4       261       261        263       261       259      261
+     Insurance ......................................................       2,372      2,374     2,372      2,365     2,375     2,369      2,366     2,365     2,367    2,368
+        Insurance carriers .....................................          1,594.5    1,584.6   1,579.4    1,570.8     1,598     1,583      1,579     1,576     1,574    1,575
+        Insurance agents, brokers, and service ....                         777.6      789.5     792.4      794.0       777       786        787       789       793      793
+     Real estate ...................................................        1,560      1,598     1,600      1,572     1,551     1,550      1,548     1,553     1,557    1,563
+
+  Services2 .......................................................... 41,166 41,582 41,628 41,474                  41,062     41,093     41,152   41,215     41,352   41,380
+    Agricultural services .....................................         898.1  948.2   934.6    916.3                  857        856        857      862        862      874
+    Hotels and other lodging places ................... 1,910.0 1,954.9 1,942.9 1,834.9                              1,852      1,789      1,801    1,795      1,788    1,779
+    Personal services ......................................... 1,238.5 1,233.1 1,240.8 1,249.8                      1,274      1,279      1,285    1,282      1,286    1,286
+    Business services ......................................... 9,614.5 9,368.2 9,470.2 9,489.0                      9,522      9,330      9,332    9,325      9,397    9,394
+       Services to buildings ................................. 1,024.1 1,041.5 1,046.5 1,050.1                       1,020      1,023      1,023    1,034      1,039    1,046
+       Personnel supply services ........................ 3,483.0 3,226.7 3,320.5 3,342.0                            3,383      3,198      3,205    3,196      3,256    3,235
+         Help supply services ............................. 3,123.2 2,908.8 2,999.5 3,020.0                          3,029      2,888      2,902    2,875      2,926    2,928
+       Computer and data processing services .. 2,222.1 2,193.9 2,193.3 2,183.0                                      2,233      2,190      2,191    2,193      2,193    2,194
+    Auto repair, services, and parking ................ 1,261.7 1,274.4 1,271.1 1,269.5                              1,261      1,262      1,265    1,266      1,265    1,269
+    Miscellaneous repair services ......................                376.2  381.6   380.0    379.3                  375        375        378      379        377      378
+    Motion pictures .............................................       570.4  598.3   608.1    582.5                  580        578        581      584        592      593
+    Amusement and recreation services ............ 1,772.5 1,949.3 1,937.7 1,706.4                                   1,700      1,621      1,631    1,649      1,664    1,638
+    Health services ............................................. 10,442.2 10,714.5 10,736.5 10,724.0               10,452     10,626     10,660   10,687     10,713   10,734
+       Offices and clinics of medical doctors ...... 2,013.8 2,071.2 2,082.4 2,077.2                                 2,016      2,050      2,061    2,067      2,075    2,080
+       Nursing and personal care facilities .......... 1,857.9 1,892.1 1,899.1 1,897.0                               1,858      1,883      1,887    1,888      1,893    1,897
+       Hospitals ................................................... 4,125.2 4,245.9 4,248.5 4,246.0                 4,129      4,207      4,221    4,233      4,243    4,249
+       Home health care services .......................                639.6  644.9   646.5    650.5                  639        644        643      646        647      650
+    Legal services ............................................... 1,039.1 1,082.5 1,073.3 1,065.0                   1,046      1,066      1,065    1,065      1,066    1,071
+    Educational services ..................................... 2,408.1 2,222.2 2,203.5 2,488.8                       2,452      2,518      2,511    2,529      2,535    2,533
+    Social services .............................................. 3,081.2 3,131.7 3,154.1 3,179.8                   3,097      3,164      3,165    3,181      3,203    3,203
+       Child day care services ............................             720.9  663.2   679.5    723.8                  722        722        726      726        734      725
+       Residential care ........................................        876.0  912.8   913.3    906.8                  878        901        904      904        907      909
+    Museums and botanical and zoological
+       gardens .....................................................    112.0  119.1   116.5    109.4                   111       108        109      109        108      108
+    Membership organizations ........................... 2,456.2 2,543.6 2,508.1 2,456.0                              2,479     2,480      2,484    2,476      2,472    2,478
+    Engineering and management services ....... 3,591.8 3,668.1 3,659.0 3,632.5                                       3,610     3,649      3,636    3,634      3,633    3,651
+       Engineering and architectural services ..... 1,060.4 1,051.6 1,048.4 1,032.3                                   1,057     1,042      1,034    1,032      1,031    1,029
+       Management and public relations ............. 1,171.9 1,222.4 1,217.3 1,214.5                                  1,175     1,209      1,204    1,214      1,210    1,218
+    Services, nec ................................................       49.5   48.6    47.7     46.6                 (1)       (1)        (1)      (1)        (1)      (1)
+
+  Government ......................................................        20,850     20,095    20,110     21,092   21,043     21,206     21,211   21,228     21,281   21,285
+    Federal .........................................................       2,620      2,629     2,625      2,626    2,622      2,600      2,601    2,607      2,616    2,627
+      Federal, except Postal Service .................                    1,776.4    1,816.1   1,813.2    1,817.9    1,774      1,777      1,783    1,790      1,799    1,815
+    State .............................................................     4,913      4,683     4,696      4,930    4,938      4,945      4,935    4,950      4,944    4,956
+      Education ..................................................        2,101.6    1,849.0   1,861.9    2,124.9    2,140      2,141      2,135    2,155      2,143    2,163
+      Other State government ...........................                  2,811.2    2,834.1   2,833.6    2,805.4    2,798      2,804      2,800    2,795      2,801    2,793
+    Local .............................................................    13,317     12,783    12,789     13,536   13,483     13,661     13,675   13,671     13,721   13,702
+      Education ..................................................        7,522.8    6,582.2   6,672.2    7,654.8    7,679      7,770      7,755    7,788      7,832    7,810
+      Other local government ............................                 5,793.7    6,201.0   6,116.8    5,880.8    5,804      5,891      5,920    5,883      5,889    5,892
+
+
+    1 These series are not published seasonally adjusted because the                                     2 Includes other industries, not shown separately.
+seasonal component, which is small relative to the trend-cycle and                                       p = preliminary.
+irregular components, cannot be separated with sufficient precision.
+ESTABLISHMENT DATA                                                                                                                                  ESTABLISHMENT DATA
+
+
+Table B-2. Average weekly hours of production or nonsupervisory workers1 on private nonfarm payrolls by industry
+
+                                                                                    Not seasonally adjusted                            Seasonally adjusted
+                              Industry
+                                                                            Sept.       July      Aug.      Sept.     Sept.     May      June      July       Aug.   Sept.
+                                                                            2001        2002     2002p      2002p     2001      2002     2002      2002      2002p   2002p
+
+
+            Total private ............................................      34.4        34.2      34.4        34.5     34.1     34.2     34.3      34.0      34.1     34.3
+
+Goods-producing ..................................................          40.8        40.0      40.7        40.8     40.3     40.3     40.5      40.0      40.3     40.3
+
+   Mining ...............................................................   44.0        43.0      43.4        43.1     43.6     43.0     43.3      42.7      43.3     42.6
+
+   Construction .....................................................       39.9        39.2      39.5        39.6     39.2     38.7     39.0      38.2      38.6     39.0
+
+   Manufacturing ...................................................        41.1        40.3      41.1        41.3     40.6     40.9     41.1      40.7      40.9     40.9
+      Overtime hours .........................................               4.3         4.0       4.5         4.5      3.9      4.2      4.3       4.0       4.2      4.1
+
+     Durable goods ................................................         41.3        40.5      41.4        41.6     40.9     41.3     41.5      41.0      41.2     41.3
+        Overtime hours .........................................             4.1         3.8       4.4         4.5      3.8      4.1      4.2       3.9       4.1      4.2
+
+      Lumber and wood products ..........................                   41.6        41.1      41.3        41.7     41.2     40.8     41.0      41.2      41.0     41.3
+      Furniture and fixtures ....................................           39.7        39.8      40.6        40.7     39.1     40.4     40.2      40.1      40.3     40.1
+      Stone, clay, and glass products ....................                  45.1        43.7      44.1        44.5     43.9     43.4     43.7      43.2      43.3     43.3
+      Primary metal industries ...............................              44.3        43.7      44.3        44.4     43.7     44.1     44.6      44.1      44.3     43.7
+         Blast furnaces and basic steel products ...                        45.9        45.8      45.8        46.3     45.3     45.6     46.1      45.5      45.8     45.7
+      Fabricated metal products ............................                41.5        41.0      41.8        41.8     41.2     41.9     42.0      41.7      41.7     41.5
+      Industrial machinery and equipment .............                      40.4        40.0      40.6        40.7     40.3     40.7     40.9      40.3      40.8     40.6
+      Electronic and other electrical equipment .....                       39.4        38.0      38.8        39.3     39.1     39.4     39.4      38.7      38.7     39.0
+      Transportation equipment .............................                41.9        40.3      42.6        43.3     41.5     42.3     42.5      41.7      42.1     43.0
+         Motor vehicles and equipment ..................                    42.9        41.0      44.4        45.2     42.4     44.2     44.1      42.9      43.7     44.6
+      Instruments and related products .................                    41.2        40.0      40.7        40.7     41.1     40.4     40.9      40.4      40.8     40.7
+      Miscellaneous manufacturing .......................                   37.8        38.1      38.7        38.6     37.7     38.8     39.6      38.4      38.5     38.5
+
+     Nondurable goods ..........................................            40.7        40.0      40.6        40.8     40.2     40.4     40.6      40.2      40.5     40.2
+        Overtime hours .........................................             4.6         4.3       4.6         4.6      4.1      4.3      4.3       4.2       4.2      4.1
+
+      Food and kindred products ...........................                 42.1        41.0      41.8        41.8     41.0     41.2     41.6      41.0      41.3     40.7
+      Tobacco products .........................................            40.4        42.1      40.3        40.7     39.7     41.6     41.1      42.1      40.3     40.0
+      Textile mill products ......................................          40.2        40.9      42.1        41.7     39.8     41.4     41.5      41.6      41.8     41.3
+      Apparel and other textile products ................                   36.7        36.6      36.7        36.9     36.9     37.0     37.0      36.8      36.7     37.1
+      Paper and allied products .............................               42.2        41.1      41.6        42.2     41.7     41.9     41.6      41.2      41.7     41.6
+      Printing and publishing .................................             38.5        37.1      37.8        37.8     38.0     37.5     37.7      37.3      37.7     37.3
+      Chemicals and allied products ......................                  42.3        41.9      42.5        43.1     42.1     42.3     42.5      42.1      42.6     42.9
+      Petroleum and coal products ........................                  42.9        41.8      41.1        42.3      (2)      (2)      (2)       (2)       (2)      (2)
+      Rubber and misc. plastics products ..............                     41.2        40.3      41.1        41.3     40.8     41.2     41.5      41.0      41.2     40.9
+      Leather and leather products ........................                 36.8        36.0      36.0        35.5     36.4     36.7     36.8      36.7      35.7     35.2
+
+Service-producing .................................................         32.9        32.9      33.0        33.1     32.7     32.8     32.8      32.6      32.7     32.9
+
+   Transportation and public utilities .....................                38.2        38.4      38.7        39.0     37.9     38.4     38.3      38.3      38.4     38.7
+
+   Wholesale trade ................................................         38.6        38.3      38.4        38.8     38.3     38.3     38.6      38.4      38.4     38.5
+
+   Retail trade .......................................................     28.9        29.6      29.5        29.2     28.8     29.1     29.1      28.8      28.9     29.1
+
+   Finance, insurance, and real estate .................                    36.7        35.8      36.1        36.8     36.0     36.1     36.0      36.0      36.2     36.2
+
+   Services ............................................................    32.8        32.6      32.8        32.9     32.7     32.6     32.7      32.5      32.6     32.8
+
+
+   1 Data relate to production workers in mining and manufacturing;                                      payrolls.
+construction workers in construction; and nonsupervisory workers in                                         2 This series is not published seasonally adjusted because the
+transportation and public utilities; wholesale and retail trade; finance,                                seasonal component, which is small relative to the trend-cycle and
+insurance, and real estate; and services. These groups account for                                       irregular components, cannot be separated with sufficient precision.
+approximately four-fifths of the total employees on private nonfarm                                         p = preliminary.
+ESTABLISHMENT DATA                                                                                                                            ESTABLISHMENT DATA
+
+
+Table B-3. Average hourly and weekly earnings of production or nonsupervisory workers1 on private nonfarm payrolls by industry
+
+                                                                                     Average hourly earnings                      Average weekly earnings
+                              Industry
+                                                                             Sept.      July        Aug.       Sept.     Sept.       July        Aug.       Sept.
+                                                                             2001       2002       2002p       2002p     2001        2002       2002p       2002p
+
+
+            Total private ............................................      $14.50    $14.65      $14.70       $14.93   $498.80     $501.03     $505.68     $515.09
+             Seasonally adjusted .............................               14.43     14.78       14.82        14.87    492.06      502.52      505.36      510.04
+
+Goods-producing ..................................................           16.13     16.45       16.48        16.58    658.10      658.00      670.74      676.46
+
+   Mining ...............................................................    17.61     17.76       17.72        17.79    774.84      763.68      769.05      766.75
+
+   Construction .....................................................        18.51     18.90       18.96        19.06    738.55      740.88      748.92      754.78
+
+   Manufacturing ...................................................         15.01     15.26       15.31        15.42    616.91      614.98      629.24      636.85
+
+     Durable goods ................................................          15.49     15.66       15.79        15.91    639.74      634.23      653.71      661.86
+      Lumber and wood products ..........................                    12.44     12.58       12.57        12.60    517.50      517.04      519.14      525.42
+      Furniture and fixtures ....................................            12.39     12.55       12.72        12.75    491.88      499.49      516.43      518.93
+      Stone, clay, and glass products ....................                   15.21     15.62       15.52        15.71    685.97      682.59      684.43      699.10
+      Primary metal industries ...............................               17.23     17.60       17.46        17.65    763.29      769.12      773.48      783.66
+         Blast furnaces and basic steel products ...                         20.90     21.07       20.90        21.03    959.31      965.01      957.22      973.69
+      Fabricated metal products ............................                 14.42     14.61       14.72        14.82    598.43      599.01      615.30      619.48
+      Industrial machinery and equipment .............                       16.01     16.47       16.55        16.59    646.80      658.80      671.93      675.21
+      Electronic and other electrical equipment .....                        14.82     15.05       15.04        15.13    583.91      571.90      583.55      594.61
+      Transportation equipment .............................                 19.36     19.37       19.80        20.04    811.18      780.61      843.48      867.73
+         Motor vehicles and equipment ..................                     19.73     19.76       20.54        20.77    846.42      810.16      911.98      938.80
+      Instruments and related products .................                     15.00     15.24       15.28        15.40    618.00      609.60      621.90      626.78
+      Miscellaneous manufacturing .......................                    12.38     12.30       12.36        12.44    467.96      468.63      478.33      480.18
+
+     Nondurable goods ..........................................             14.30     14.69       14.61        14.72    582.01      587.60      593.17      600.58
+      Food and kindred products ...........................                  12.97     13.34       13.25        13.33    546.04      546.94      553.85      557.19
+      Tobacco products .........................................             20.71     23.34       20.98        20.50    836.68      982.61      845.49      834.35
+      Textile mill products ......................................           11.40     11.74       11.75        11.75    458.28      480.17      494.68      489.98
+      Apparel and other textile products ................                     9.54      9.91        9.95        10.00    350.12      362.71      365.17      369.00
+      Paper and allied products .............................                17.11     17.73       17.56        17.75    722.04      728.70      730.50      749.05
+      Printing and publishing .................................              15.01     15.15       15.18        15.36    577.89      562.07      573.80      580.61
+      Chemicals and allied products ......................                   18.85     19.32       19.31        19.52    797.36      809.51      820.68      841.31
+      Petroleum and coal products ........................                   22.24     22.22       22.08        22.28    954.10      928.80      907.49      942.44
+      Rubber and misc. plastics products ..............                      13.50     13.76       13.71        13.70    556.20      554.53      563.48      565.81
+      Leather and leather products ........................                  10.24     10.37       10.27        10.03    376.83      373.32      369.72      356.07
+
+Service-producing .................................................          14.01     14.15       14.19        14.46    460.93      465.54      468.27      478.63
+
+   Transportation and public utilities .....................                 16.91     17.33       17.30        17.48    645.96      665.47      669.51      681.72
+
+   Wholesale trade ................................................          16.08     16.10       16.18        16.40    620.69      616.63      621.31      636.32
+
+   Retail trade .......................................................       9.86       9.98      10.01        10.15    284.95      295.41      295.30      296.38
+
+   Finance, insurance, and real estate .................                     15.96     16.25       16.31        16.55    585.73      581.75      588.79      609.04
+
+   Services ............................................................     14.85     15.02       15.04        15.37    487.08      489.65      493.31      505.67
+
+
+   1 See footnote 1, table B-2.                                                                      p = preliminary.
+ESTABLISHMENT DATA                                                                                         ESTABLISHMENT DATA
+
+
+Table B-4. Average hourly earnings of production or nonsupervisory workers1 on private nonfarm payrolls by
+industry, seasonally adjusted
+
+                                                                                                                       Percent
+                                                                                                                       change
+                                                          Sept.    May       June      July        Aug.     Sept.
+                      Industry                                                                                          from:
+                                                          2001     2002      2002      2002       2002p     2002p
+                                                                                                                      Aug. 2002-
+                                                                                                                      Sept. 2002
+
+
+Total private:
+   Current dollars ................................       $14.43   $14.70    $14.75    $14.78     $14.82    $14.87         0.3
+   Constant (1982) dollars2 ................                8.01     8.12      8.14      8.14       8.14     N.A.         (3)
+
+   Goods-producing ..............................          16.02    16.35     16.39     16.38      16.43      16.47         .2
+     Mining ...........................................    17.62    17.87     17.70     17.78      17.88      17.81        -.4
+     Construction .................................        18.39    18.77     18.81     18.87      18.89      18.94         .3
+     Manufacturing ...............................         14.95    15.27     15.31     15.28      15.33      15.36         .2
+       Excluding overtime4 .................               14.28    14.53     14.56     14.57      14.59      14.64         .3
+
+   Service-producing .............................         13.97    14.24     14.29     14.33      14.37      14.42         .3
+     Transportation and public utilities                   16.87    17.31     17.37     17.33      17.34      17.44         .6
+     Wholesale trade ............................          15.99    16.12     16.15     16.14      16.27      16.31         .2
+     Retail trade ...................................       9.81     9.99     10.06     10.05      10.09      10.10         .1
+     Finance, insurance, and real
+         estate ......................................     15.93    16.17     16.27     16.38      16.43      16.52         .5
+     Services ........................................     14.83    15.16     15.19     15.26      15.29      15.35         .4
+
+
+  1 See footnote 1, table B-2.                                              2002, the latest month available.
+  2 The Consumer Price Index for Urban Wage Earners                           4 Derived by assuming that overtime hours are paid at
+and Clerical Workers (CPI-W) is used to deflate this                        the rate of time and one-half.
+series.                                                                        N.A. = not available.
+  3 Change was .0 percent from July 2002 to August                            p = preliminary.
+ESTABLISHMENT DATA                                                                                                                                ESTABLISHMENT DATA
+
+
+Table B-5. Indexes of aggregate weekly hours of production or nonsupervisory workers1 on private nonfarm payrolls by industry
+
+(1982=100)
+
+                                                                                    Not seasonally adjusted                          Seasonally adjusted
+                              Industry
+                                                                            Sept.     July      Aug.      Sept.      Sept.   May      June     July     Aug.       Sept.
+                                                                            2001      2002     2002p      2002p      2001    2002     2002     2002    2002p       2002p
+
+
+            Total private ............................................ 151.5          150.0    151.0      150.5      149.6   148.1   148.6    147.5        148.0   148.6
+
+Goods-producing .................................................. 112.1              105.9    108.0      107.8      108.8   105.0   105.7    104.1        104.7   104.7
+
+   Mining ...............................................................    56.9      53.8      55.3         54.5    55.5    53.7     53.7    52.5         53.9    53.0
+
+   Construction ..................................................... 194.8           189.1    190.7      188.4      183.6   176.4   178.4    173.8        176.3   178.0
+
+   Manufacturing ...................................................         97.6      91.2      93.4         93.6    96.0    92.8     93.2    92.3         92.4    92.1
+
+    Durable goods ................................................          100.6      92.9     95.2       95.3       99.5    95.4    95.6     94.5         94.6    94.3
+     Lumber and wood products ..........................                    141.0     136.7    138.5      139.0      137.5   134.4   134.0    134.8        134.2   135.2
+     Furniture and fixtures ....................................            124.2     121.0    124.4      122.8      122.6   122.9   122.9    123.2        123.8   121.3
+     Stone, clay, and glass products ....................                   122.7     116.1    117.8      118.7      117.3   112.6   113.3    112.3        113.6   113.3
+     Primary metal industries ...............................                83.8      74.1     76.0       76.1       82.5    76.4    76.6     75.4         75.9    74.7
+        Blast furnaces and basic steel products ...                          65.8      59.0     59.7       60.3       64.7    58.9    59.2     58.4         59.6    59.1
+     Fabricated metal products ............................                 112.4     106.8    109.3      109.1      111.1   110.1   110.2    109.9        108.6   107.9
+     Industrial machinery and equipment .............                        87.9      81.0     81.5       81.3       88.3    82.8    83.1     81.9         82.3    81.6
+     Electronic and other electrical equipment .....                         90.9      78.1     78.6       79.1       90.5    82.2    81.7     80.4         78.9    78.7
+     Transportation equipment .............................                 110.2      98.7    106.5      107.0      108.9   105.6   106.4    103.7        105.3   106.1
+        Motor vehicles and equipment ..................                     144.7     130.2    146.4      147.2      142.8   144.0   144.7    139.6        144.3   145.1
+     Instruments and related products .................                      71.6      67.1     67.5       67.1       71.7    67.9    68.2     67.9         67.5    67.3
+     Miscellaneous manufacturing .......................                     89.8      88.5     91.3       91.4       89.1    90.6    92.1     90.4         89.9    91.0
+
+    Nondurable goods ..........................................   93.5                 88.8     90.9       91.3       91.2    89.4    89.9     89.1         89.4    89.1
+     Food and kindred products ........................... 122.1                      116.8    121.6      121.8      115.0   115.6   117.1    114.9        115.7   114.6
+     Tobacco products .........................................   53.0                 49.6     55.8       58.2       49.2    51.5    52.9     54.2         57.9    55.5
+     Textile mill products ...................................... 65.4                 60.2     62.4       61.5       64.2    61.6    61.6     61.4         61.3    60.2
+     Apparel and other textile products ................          45.9                 42.8     43.0       43.5       45.9    43.4    43.5     43.5         43.2    43.6
+     Paper and allied products .............................      98.5                 93.5     94.5       96.3       96.8    95.0    94.5     93.4         94.5    94.5
+     Printing and publishing ................................. 114.7                  105.2    106.8      106.9      113.2   106.2   106.8    105.7        106.2   105.4
+     Chemicals and allied products ......................         95.7                 94.0     95.4       96.3       95.6    95.1    95.7     94.8         95.6    96.2
+     Petroleum and coal products ........................         74.0                 74.2     72.1       74.2       71.6    70.9    70.7     71.6         70.5    72.0
+     Rubber and misc. plastics products .............. 136.7                          131.7    134.6      134.9      135.1   133.8   135.2    135.0        134.4   133.2
+     Leather and leather products ........................        23.8                 22.4     22.6       24.6       24.0    23.1    22.6     23.7         21.9    24.9
+
+Service-producing ................................................. 169.2             169.7    170.3      169.7      167.8   167.5   167.8    167.0        167.5   168.4
+
+   Transportation and public utilities ..................... 140.1                    133.7    134.5      136.0      137.7   134.4   133.9    133.7        133.5   133.8
+
+   Wholesale trade ................................................ 127.3             126.5    126.8      127.4      126.1   125.7   126.7    125.9        125.9   126.2
+
+   Retail trade ....................................................... 147.0         150.8    150.0      147.7      146.4   147.1   147.1    145.7        146.0   146.9
+
+   Finance, insurance, and real estate ................. 142.0                        141.0    142.1      143.5      139.7   140.6   140.0    139.9        141.0   141.6
+
+   Services ............................................................ 213.7        214.7    216.3      215.3      212.4   211.8   212.7    211.8        212.8   214.1
+
+
+   1 See footnote 1, table B-2.                                                                          p = preliminary.
+ESTABLISHMENT DATA                                                                                                         ESTABLISHMENT DATA
+
+
+Table B-6. Diffusion indexes of employment change, seasonally adjusted
+
+(Percent)
+
+           Time span                    Jan.   Feb.    Mar.    Apr.     May        June      July      Aug.       Sept.   Oct.      Nov.     Dec.
+
+                                                                      Private nonfarm payrolls, 347 industries1
+
+
+Over 1-month span:
+      1998 ..........................   62.4    57.5    59.1   60.2      57.5       56.8      54.6     59.1        57.2    53.0     57.9      56.8
+      1999 ..........................   55.3    58.6    53.6   58.4      55.5       57.8      57.1     54.8        57.1    57.2     60.4      58.1
+      2000 ..........................   55.9    57.5    57.9   51.2      50.1       55.8      57.8     51.4        52.4    52.4     53.2      52.7
+      2001 ..........................   49.4    45.7    50.3   42.4      47.3       43.2      44.5     42.5        42.4    40.5     39.3      44.1
+      2002 ..........................   47.3    41.4    49.7   47.8      50.9       49.4      48.6    p46.7       p47.7
+
+
+Over 3-month span:
+      1998 ..........................   65.3    66.3    65.3   65.9      62.7       58.2      58.9     59.1        59.8    57.9     57.1      58.8
+      1999 ..........................   59.2    57.6    59.5   55.2      60.2       57.2      59.4     59.2        59.7    58.9     61.2      60.7
+      2000 ..........................   60.4    61.4    58.4   53.2      52.4       55.5      56.6     56.2        51.2    51.0     53.2      51.6
+      2001 ..........................   45.5    46.1    40.8   43.4      37.8       43.2      39.3     38.0        35.3    33.7     36.3      38.9
+      2002 ..........................   40.1    43.2    42.5   46.5      48.0       50.1     p46.0    p45.0
+
+
+Over 6-month span:
+      1998 ..........................   70.2    67.4    64.7   61.5     64.1        62.1      59.1      58.8       57.5    60.2     59.2      58.4
+      1999 ..........................   60.2    58.9    58.5   59.7     57.2        60.8      61.2      62.5       62.7    61.8     61.2      62.8
+      2000 ..........................   61.1    59.4    58.1   57.9     54.2        52.4      52.9      54.2       52.4    48.7     45.7      46.5
+      2001 ..........................   44.7    42.7    39.5   40.1     40.8        35.6      37.0      32.4       34.3    33.1     34.1      35.6
+      2002 ..........................   37.0    41.6    43.4   44.4    p46.3       p46.7
+
+
+Over 12-month span:
+      1998 ..........................   69.9    67.9    67.6   65.6      64.1       62.7      61.7      62.2       60.8    59.4     60.8      58.9
+      1999 ..........................   61.2    60.1    58.2   61.0      60.7       61.5      62.2      61.1       63.8    62.2     59.7      60.5
+      2000 ..........................   61.4    59.9    58.8   56.2      55.3       53.6      53.0      51.0       47.7    45.2     44.5      42.9
+      2001 ..........................   41.5    41.5    38.9   37.5      37.3       36.2      34.1      33.6       34.4    33.9     33.3      34.0
+      2002 ..........................   35.2   p36.5   p37.3
+
+                                                                      Manufacturing payrolls, 136 industries1
+
+
+Over 1-month span:
+      1998 ..........................   57.0    52.6    52.2   52.9      44.9       47.4      38.2     52.9        44.9    38.6     42.3      41.5
+      1999 ..........................   47.4    41.2    42.6   46.0      46.3       43.4      50.0     42.6        46.0    45.6     51.5      49.3
+      2000 ..........................   44.9    52.2    49.3   46.0      49.3       50.7      57.4     36.8        39.0    42.3     47.1      40.8
+      2001 ..........................   34.9    26.8    38.2   29.0      28.3       30.5      34.9     25.7        31.6    31.3     25.0      30.9
+      2002 ..........................   35.3    37.9    40.4   47.4      47.1       40.4      48.9    p38.6       p40.4
+
+
+Over 3-month span:
+      1998 ..........................   59.2    57.0    54.8   51.8      48.2       38.2      41.9     43.0        43.0    38.2     32.7      40.4
+      1999 ..........................   39.3    39.3    39.7   40.1      41.2       43.8      44.1     46.3        42.3    44.1     47.8      45.2
+      2000 ..........................   48.2    48.9    48.9   44.5      46.7       52.2      46.0     38.6        29.0    34.2     39.0      36.0
+      2001 ..........................   21.3    21.3    18.4   23.5      19.9       23.2      17.3     19.1        16.2    18.0     18.4      18.0
+      2002 ..........................   24.6    30.1    37.1   38.6      40.1       41.2     p36.0    p33.8
+
+
+Over 6-month span:
+      1998 ..........................   60.7    54.4    49.3   40.1     45.2        42.6      39.0      38.2       34.6    41.2     35.7      33.1
+      1999 ..........................   36.4    36.0    37.5   40.4     37.5        42.3      43.0      44.5       48.2    43.0     44.5      47.4
+      2000 ..........................   47.8    45.2    44.5   50.0     41.9        37.9      36.0      35.3       32.4    26.1     21.3      21.7
+      2001 ..........................   20.2    16.9    14.0   16.2     16.5        13.2      14.7      11.8       14.0    13.2     17.6      16.5
+      2002 ..........................   19.9    26.8    29.8   38.2    p36.0       p35.3
+
+
+Over 12-month span:
+      1998 ..........................   54.8    52.2    51.8   46.7      40.4       40.1      38.2      37.5       36.4    34.6     35.7      34.2
+      1999 ..........................   38.6    34.6    32.4   36.0      37.9       39.0      40.1      40.4       44.5    44.5     43.4      44.5
+      2000 ..........................   49.3    44.1    39.3   36.8      35.3       34.2      33.8      28.7       22.1    19.1     17.6      14.0
+      2001 ..........................   13.6    13.6    13.6   15.4      12.1       11.0      11.0      11.0       12.9    12.9     14.0      13.6
+      2002 ..........................   18.0   p18.0   p18.8
+
+
+  1 Based on seasonally adjusted data for 1-, 3-, and 6-month spans                NOTE: Figures are the percent of industries with employment
+and unadjusted data for the 12-month span. Data are centered within             increasing plus one-half of the industries with unchanged employment,
+the span.                                                                       where 50 percent indicates an equal balance between industries with
+  p = preliminary.                                                              increasing and decreasing employment.
+

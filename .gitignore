@@ -21,3 +21,7 @@ data/panel/
 
 # Isolated local development worktrees
 .worktrees/
+
+# Stage 4 annual data: raw sources are committed; cache and built parquet are rebuilt
+data/annual/cache/
+data/annual/panel/
