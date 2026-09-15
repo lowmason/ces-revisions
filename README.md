@@ -73,6 +73,8 @@ uv run python scripts/annual_sources.py build     # offline parquet build
 
 The build writes dated benchmark, reconstruction, birth–death, QCEW-revision,
 QCEW-precision, and annual sample/RSE tables. CES quantities are in thousands;
-the long QCEW sequence remains in jobs.
+the long QCEW sequence remains in jobs. Its observation clock distinguishes the
+early quarter-end value in a QCEW news release from prior-quarter revisions and
+other current-quarter months that first appear with the full-data update.
 
 The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).

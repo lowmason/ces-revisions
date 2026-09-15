@@ -69,6 +69,8 @@ def test_transformations_name_every_non_identity_derivation():
         "government_structural_zero",
         "explicit_archive_gap",
         "sample_jobs_to_thousands",
+        "parse_publication_datetime",
+        "join_stage3_release_index",
     }
 
 

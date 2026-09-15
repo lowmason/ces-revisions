@@ -1,5 +1,6 @@
 """The public national QCEW revision sequence and its March precision proxy."""
 
+from datetime import date
 from math import sqrt
 
 import polars as pl
@@ -62,38 +63,38 @@ def test_values_and_successive_revisions_remain_in_jobs():
     assert group["revision_jobs"].to_list() == expected.to_list()
 
 
-def test_each_revision_uses_the_qcew_publication_clock():
-    calendar = publications.build_publication_calendar(build_release_index())
+def test_revisions_wait_for_the_full_data_update():
     frame = revisions()
     row = frame.filter(
         (pl.col("qcew_year") == 2017)
         & (pl.col("qcew_quarter") == 1)
+        & (pl.col("field") == "March Employment")
         & (pl.col("release_order") == 4)
     ).row(0, named=True)
-    expected = calendar.filter(
-        (pl.col("publication_kind") == "qcew_revision")
-        & (pl.col("qcew_year") == 2017)
+    assert row["employment_jobs"] == 142293796
+    assert row["publication_date"] == date(2018, 9, 5)
+
+
+def test_only_quarter_end_initial_values_use_the_early_news_release():
+    frame = revisions().filter(
+        (pl.col("qcew_year") == 2018)
         & (pl.col("qcew_quarter") == 1)
-        & (pl.col("release_order") == 4)
-    ).row(0, named=True)
-    assert row["publication_date"] == expected["publication_date"]
-    assert row["observable_at"] == expected["observable_at"]
-
-
-def test_qcew_calendar_has_exactly_the_releases_present_in_the_source():
-    calendar = publications.build_publication_calendar(build_release_index())
-    keys = ["qcew_year", "qcew_quarter", "release_order"]
-    expected = revisions().select(keys).unique().sort(keys)
-    actual = (
-        calendar.filter(pl.col("publication_kind") == "qcew_revision")
-        .select(keys)
-        .unique()
-        .sort(keys)
+        & (pl.col("release_order") == 0)
     )
-    assert actual.equals(expected)
-    qcew_dates = calendar.filter(pl.col("publication_kind") == "qcew_revision")
-    for group in qcew_dates.partition_by("qcew_year", "qcew_quarter"):
-        assert group.sort("release_order")["publication_date"].is_sorted()
+    dates = dict(frame.select("field", "publication_date").iter_rows())
+    assert dates["March Employment"] == date(2018, 8, 22)
+    assert dates["January Employment"] == date(2018, 9, 5)
+    assert dates["February Employment"] == date(2018, 9, 5)
+
+
+def test_qcew_product_calendar_is_complete_through_the_source_horizon():
+    calendar = publications.build_publication_calendar(build_release_index()).filter(
+        pl.col("publication_kind").is_in(["qcew_news", "qcew_full_data"])
+    )
+    counts = calendar.group_by("qcew_year", "qcew_quarter").len()
+    assert counts["len"].unique().to_list() == [2]
+    assert calendar.select("qcew_year", "qcew_quarter").n_unique() == 37
+    assert calendar["release_order"].is_null().all()
 
 
 def test_march_precision_is_rms_of_four_revision_increments_in_thousands():

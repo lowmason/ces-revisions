@@ -16,6 +16,11 @@ def manifest_rows() -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def normalized_source_text(file: str) -> str:
+    text = (raw.RAW_DIR / file).read_text(encoding="utf-8", errors="replace")
+    return " ".join(text.split())
+
+
 def test_dotenv_supplies_the_contact_without_exposing_it(monkeypatch, tmp_path: Path):
     monkeypatch.delenv("BLS_CONTACT_EMAIL", raising=False)
     env_file = tmp_path / ".project.env"
@@ -150,6 +155,30 @@ def test_2019_preliminary_evidence_uses_the_dated_bls_blog():
     )
 
 
+def test_review_timing_evidence_is_preserved_in_the_source_archive():
+    preliminary_2012 = normalized_source_text("bls/preliminary/empsit-2012.txt")
+    assert "On September 27, 2012, at 8:30 a.m." in preliminary_2012
+
+    qcew_rule = normalized_source_text("bls/qcew-product-timing.htm")
+    assert "partial data update" in qcew_rule
+    assert (
+        "prior quarter revisions and the usual current quarter information" in qcew_rule
+    )
+
+    carrier_1979 = normalized_source_text(
+        "fraser/employment-and-earnings-june-1980.txt"
+    )
+    assert "March 1979 benchmark will be in-" in carrier_1979
+    assert "troduced in the July 1980 issue" in carrier_1979
+
+    carrier_1980 = normalized_source_text("fraser/employment-situation-june-1981.txt")
+    assert "JULY 2, 1981" in carrier_1980
+    assert "revisions based on March 1980 benchmarks" in carrier_1980
+
+    carrier_1989 = normalized_source_text("bls/ces-100-years.htm")
+    assert "CES delayed the national benchmark release until September" in carrier_1989
+
+
 def test_manifest_matches_every_committed_annual_source():
     rows = manifest_rows()
     files = sorted(
@@ -162,6 +191,12 @@ def test_manifest_matches_every_committed_annual_source():
         path = raw.RAW_DIR / row["file"]
         assert row["sha256"] == raw.file_sha256(path)
         assert row["bytes"] == str(path.stat().st_size)
+
+
+def test_every_available_catalog_source_is_archived():
+    available = raw.read_source_catalog().filter(pl.col("status") == "available")
+    missing = [file for file in available["file"] if not (raw.RAW_DIR / file).is_file()]
+    assert missing == []
 
 
 def test_build_command_reports_each_written_artifact(monkeypatch, capsys):

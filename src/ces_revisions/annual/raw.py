@@ -14,6 +14,8 @@ CACHE_DIR = DATA_DIR / "cache"
 MANIFEST = "manifest.csv"
 SOURCE_CATALOG = "source-catalog.csv"
 PUBLICATION_DATES = "manual/publication-dates.csv"
+QCEW_PUBLICATION_DATES = "manual/qcew-publication-dates.csv"
+FINAL_CARRIER_OVERRIDES = "manual/final-carrier-overrides.csv"
 
 RAW_SCHEMA = {
     "cell_key": pl.String,
@@ -64,6 +66,14 @@ TRANSFORMATIONS = pl.DataFrame(
         (
             "explicit_archive_gap",
             "Materialize a null row where the source table is documented absent.",
+        ),
+        (
+            "parse_publication_datetime",
+            "Interpret a transcribed Eastern publication date and release time as UTC.",
+        ),
+        (
+            "join_stage3_release_index",
+            "Join a benchmark carrier reference month to Stage 3's dated release index.",
         ),
     ],
     schema=["transformation", "description"],

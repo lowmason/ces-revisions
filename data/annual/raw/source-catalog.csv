@@ -5,6 +5,11 @@ cesbd-current,birth_death_current,2025,available,https://www.bls.gov/web/empsit/
 cesbd-faq,birth_death_scope,,available,https://www.bls.gov/web/empsit/cesbdqa.htm,bls/cesbd-faq.htm,,,private-industry scope
 qcew-revisions,qcew_revisions,,available,https://www.bls.gov/cew/revisions/qcew-revisions.csv,bls/qcew-revisions.csv,,,national employment revision rows
 qcew-release-archive,publication_evidence,,available,https://www.bls.gov/bls/news-release/cewqtr.htm,bls/qcew-release-archive.htm,,,2017 through 2026 quarterly release links
+qcew-release-calendar,publication_evidence,,available,https://www.bls.gov/cew/release-calendar.htm,bls/qcew-release-calendar.htm,,,news-release and full-data dates by reference quarter
+qcew-product-timing,publication_evidence,,available,https://www.bls.gov/cew/notices/2017/change-in-schedule-of-the-county-employment-and-wages-news-release.htm,bls/qcew-product-timing.htm,,,partial news-release and full-data product definitions
+ces-history-100-years,publication_evidence,,available,https://www.bls.gov/opub/mlr/2016/article/one-hundred-years-of-current-employment-statistics-an-overview-of-survey-advancements.htm,bls/ces-100-years.htm,,,historical national benchmark release timing
+final-carrier-1979,publication_evidence,1979,available,https://fraser.stlouisfed.org/files/docs/publications/employment/1980s/empl_061980.pdf,fraser/employment-and-earnings-june-1980.pdf,,,July 1980 issue notice for the March 1979 benchmark
+final-carrier-1980,publication_evidence,1980,available,https://fraser.stlouisfed.org/files/docs/releases/bls/bls_employnews_198106.pdf,fraser/employment-situation-june-1981.pdf,,,July 2 release of June 1981 data incorporating the March 1980 benchmark
 benchmark-article-2002,benchmark_article,2002,available,https://www.bls.gov/ces/publications/benchmark/ces-benchmark-revision-2002.pdf,bls/benchmark/ces-benchmark-revision-2002.pdf,,,benchmark article tables
 benchmark-article-2003,benchmark_article,2003,available,https://www.bls.gov/ces/publications/benchmark/ces-benchmark-revision-2003.pdf,bls/benchmark/ces-benchmark-revision-2003.pdf,,,benchmark article tables
 benchmark-article-2004,benchmark_article,2004,available,https://www.bls.gov/ces/publications/benchmark/ces-benchmark-revision-2004.pdf,bls/benchmark/ces-benchmark-revision-2004.pdf,,,benchmark article tables
@@ -82,14 +87,14 @@ preliminary-2007,publication_evidence,2007,available,https://www.bls.gov/news.re
 preliminary-2008,publication_evidence,2008,available,https://www.bls.gov/news.release/archives/empsit_10032008.pdf,bls/preliminary/empsit-2008.pdf,,,preliminary benchmark release date
 preliminary-2009,publication_evidence,2009,available,https://www.bls.gov/news.release/archives/empsit_10022009.pdf,bls/preliminary/empsit-2009.pdf,,,preliminary benchmark release date
 preliminary-2010,publication_evidence,2010,available,https://www.bls.gov/news.release/archives/empsit_10082010.pdf,bls/preliminary/empsit-2010.pdf,,,preliminary benchmark release date
-preliminary-2011,publication_evidence,2011,available,https://www.bls.gov/news.release/archives/empsit_10072011.pdf,bls/preliminary/empsit-2011.pdf,,,preliminary benchmark release date
-preliminary-2012,publication_evidence,2012,available,https://www.bls.gov/news.release/archives/empsit_10052012.pdf,bls/preliminary/empsit-2012.pdf,,,preliminary benchmark release date
-preliminary-2013,publication_evidence,2013,available,https://www.bls.gov/news.release/archives/empsit_10222013.pdf,bls/preliminary/empsit-2013.pdf,,,preliminary benchmark release date
-preliminary-2014,publication_evidence,2014,available,https://www.bls.gov/news.release/archives/empsit_10032014.pdf,bls/preliminary/empsit-2014.pdf,,,preliminary benchmark release date
-preliminary-2015,publication_evidence,2015,available,https://www.bls.gov/news.release/archives/empsit_10022015.pdf,bls/preliminary/empsit-2015.pdf,,,preliminary benchmark release date
-preliminary-2016,publication_evidence,2016,available,https://www.bls.gov/news.release/archives/empsit_10072016.pdf,bls/preliminary/empsit-2016.pdf,,,preliminary benchmark release date
-preliminary-2017,publication_evidence,2017,available,https://www.bls.gov/news.release/archives/empsit_10062017.pdf,bls/preliminary/empsit-2017.pdf,,,preliminary benchmark release date
-preliminary-2018,publication_evidence,2018,available,https://www.bls.gov/news.release/archives/empsit_10052018.pdf,bls/preliminary/empsit-2018.pdf,,,preliminary benchmark release date
+preliminary-2011,publication_evidence,2011,available,https://www.bls.gov/news.release/archives/empsit_09022011.pdf,bls/preliminary/empsit-2011.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2012,publication_evidence,2012,available,https://www.bls.gov/news.release/archives/empsit_09072012.pdf,bls/preliminary/empsit-2012.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2013,publication_evidence,2013,available,https://www.bls.gov/news.release/archives/empsit_09062013.pdf,bls/preliminary/empsit-2013.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2014,publication_evidence,2014,available,https://www.bls.gov/news.release/archives/empsit_09052014.pdf,bls/preliminary/empsit-2014.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2015,publication_evidence,2015,available,https://www.bls.gov/news.release/archives/empsit_09042015.pdf,bls/preliminary/empsit-2015.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2016,publication_evidence,2016,available,https://www.bls.gov/news.release/archives/empsit_08052016.pdf,bls/preliminary/empsit-2016.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2017,publication_evidence,2017,available,https://www.bls.gov/news.release/archives/empsit_08042017.pdf,bls/preliminary/empsit-2017.pdf,,,boxed preliminary benchmark publication announcement
+preliminary-2018,publication_evidence,2018,available,https://www.bls.gov/news.release/archives/empsit_08032018.pdf,bls/preliminary/empsit-2018.pdf,,,boxed preliminary benchmark publication announcement
 preliminary-2019,publication_evidence,2019,available,https://www.bls.gov/blog/2019/what-is-benchmarking-of-bureau-of-labor-statistics-employment-data.htm,bls/preliminary/preliminary-2019.htm,,,preliminary benchmark release date
 preliminary-2020,publication_evidence,2020,available,https://www.bls.gov/ces/notices/2020/2020-ces-benchmark-revision.htm,bls/preliminary/preliminary-2020.htm,,,preliminary benchmark release date
 preliminary-2021,publication_evidence,2021,available,https://www.bls.gov/ces/notices/2021/2021-ces-preliminary-benchmark-revision.htm,bls/preliminary/preliminary-2021.htm,,,preliminary benchmark release date

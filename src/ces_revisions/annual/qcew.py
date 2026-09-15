@@ -137,16 +137,30 @@ def raw_values(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
     return raw_frame(records)
 
 
-def _publication(calendar: pl.DataFrame, year: int, quarter: int, order: int) -> dict:
+def _advance_quarter(year: int, quarter: int, steps: int) -> tuple[int, int]:
+    index = year * 4 + quarter - 1 + steps
+    publication_year, zero_based_quarter = divmod(index, 4)
+    return publication_year, zero_based_quarter + 1
+
+
+def _publication(
+    calendar: pl.DataFrame,
+    year: int,
+    quarter: int,
+    order: int,
+    month: int,
+) -> dict:
+    publication_year, publication_quarter = _advance_quarter(year, quarter, order)
+    kind = "qcew_news" if order == 0 and month == quarter * 3 else "qcew_full_data"
     rows = calendar.filter(
-        (pl.col("publication_kind") == "qcew_revision")
-        & (pl.col("qcew_year") == year)
-        & (pl.col("qcew_quarter") == quarter)
-        & (pl.col("release_order") == order)
+        (pl.col("publication_kind") == kind)
+        & (pl.col("qcew_year") == publication_year)
+        & (pl.col("qcew_quarter") == publication_quarter)
     )
     if rows.height != 1:
         raise ValueError(
-            f"expected one QCEW publication for {(year, quarter, order)}, "
+            f"expected one {kind} publication for "
+            f"{(publication_year, publication_quarter)}, "
             f"found {rows.height}"
         )
     return rows.row(0, named=True)
@@ -170,7 +184,7 @@ def build_qcew_revisions(
         previous = None
         previous_column = None
         for order, column, value in available:
-            publication = _publication(calendar, year, quarter, order)
+            publication = _publication(calendar, year, quarter, order, month)
             keys = [
                 cell_key(
                     SOURCE,

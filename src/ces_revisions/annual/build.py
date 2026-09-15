@@ -9,6 +9,7 @@ import polars as pl
 from ces_revisions.annual import (
     benchmarks,
     birth_death,
+    contract,
     publications,
     qcew,
     raw,
@@ -56,7 +57,7 @@ def build(
     release_index = build_release_index(stage3_raw_dir)
     calendar = publications.build_publication_calendar(release_index, raw_dir)
     qcew_revisions = qcew.build_qcew_revisions(calendar, raw_dir)
-    return AnnualBuild(
+    result = AnnualBuild(
         raw_values=_raw_values(raw_dir),
         transformations=raw.TRANSFORMATIONS,
         publication_calendar=calendar,
@@ -69,6 +70,8 @@ def build(
         qcew_precision=qcew.build_qcew_precision(qcew_revisions),
         sample_panel=sample.build_sample_panel(calendar, raw_dir),
     )
+    contract.validate(result, release_index)
+    return result
 
 
 def write(
