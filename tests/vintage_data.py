@@ -5,6 +5,7 @@ from functools import cache
 import polars as pl
 
 from ces_revisions.vintages import (
+    accounting,
     differencing,
     panel,
     raw,
@@ -69,3 +70,10 @@ def stage_changes() -> pl.DataFrame:
         levels().filter(pl.col("reference_month") >= first)
     )
     return differencing.stage_changes(within, labels())
+
+
+@cache
+def identity_terms() -> pl.DataFrame:
+    return accounting.identity_terms(
+        accounting.accounting_changes(stage_changes(), table_estimates())
+    )
