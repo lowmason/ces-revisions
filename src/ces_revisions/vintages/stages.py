@@ -158,7 +158,10 @@ def vintage_file_stage_labels(
     revised = mature.join(later, on=_KEYS, how="left").select(
         *_KEYS,
         release_stage=pl.lit("M"),
-        revised_after_m=pl.col("revised").fill_null(False),
+        # No vintage file follows the frontier, so an M there cannot be checked yet.
+        revised_after_m=pl.when(pl.col("mature_month") >= frontier)
+        .then(pl.lit(None, dtype=pl.Boolean))
+        .otherwise(pl.col("revised").fill_null(False)),
     )
     return _finish(
         labeled.join(revised, on=[*_KEYS, "release_stage"], how="left"), index, comments

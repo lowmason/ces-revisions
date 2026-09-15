@@ -7,6 +7,7 @@ import pytest
 import vintage_data
 
 from ces_revisions.vintages import raw, stages
+from ces_revisions.vintages.months import month_range
 from ces_revisions.vintages.stages import comment_release_month, stage_release_months
 
 UNIT = ["source", "sector", "reference_month", "seasonal_status"]
@@ -188,16 +189,29 @@ def test_nonstandard_releases_are_the_releases_the_comments_describe():
     assert sorted(set(flagged["release_month"])) == COMMENTED_RELEASES
 
 
-def test_revised_after_m_marks_only_observed_m_rows():
+def test_revised_after_m_is_checked_where_a_later_release_exists():
+    """No release in the vintage files follows the frontier, so an M in the frontier release
+    leaves revised_after_m null rather than false."""
     labels = vintage_data.labels()
-    marked = labels.filter(pl.col("revised_after_m").is_not_null())
+    checked = labels.filter(pl.col("revised_after_m").is_not_null())
     assert set(
-        marked.select("source", "release_stage", "status").unique().iter_rows()
+        checked.select("source", "release_stage", "status").unique().iter_rows()
     ) == {("cesvinall", "M", "observed")}
     observed_m = labels.filter(
         (pl.col("release_stage") == "M") & (pl.col("status") == "observed")
     )
-    assert marked.height == observed_m.height
+    unchecked = observed_m.filter(pl.col("revised_after_m").is_null())
+    # cesvinall.zip of 2026-03-06: the January 2026 release is M for unadjusted November 2023 to
+    # October 2024 and for adjusted 2020.
+    expected = {
+        ("NSA", month) for month in month_range(date(2023, 11, 1), date(2024, 10, 1))
+    } | {("SA", month) for month in month_range(date(2020, 1, 1), date(2020, 12, 1))}
+    assert (
+        set(unchecked.select("seasonal_status", "reference_month").unique().iter_rows())
+        == expected
+    )
+    assert unchecked.height == len(expected) * len(raw.SECTORS)
+    assert checked.height == observed_m.height - unchecked.height
 
 
 def test_panel_levels_carry_the_stage_their_vintage_serves():
