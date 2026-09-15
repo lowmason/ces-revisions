@@ -5,12 +5,14 @@ from functools import cache
 import polars as pl
 
 from ces_revisions.vintages import (
+    differencing,
     panel,
     raw,
     release_index,
     revision_table,
     stages,
 )
+from ces_revisions.vintages.months import add_months
 
 
 @cache
@@ -58,3 +60,12 @@ def labels() -> pl.DataFrame:
 @cache
 def long_panel() -> pl.DataFrame:
     return panel.assemble_panel(levels(), rtdsm(), table_changes(), labels())
+
+
+@cache
+def stage_changes() -> pl.DataFrame:
+    first = add_months(stages.FIRST_SECTOR_MONTH, -1)
+    within = differencing.same_release_changes(
+        levels().filter(pl.col("reference_month") >= first)
+    )
+    return differencing.stage_changes(within, labels())
