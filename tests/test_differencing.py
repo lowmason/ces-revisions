@@ -42,6 +42,48 @@ def test_changes_difference_levels_within_one_vintage_only():
     ]
 
 
+def stage_change(month: date, change: int | None) -> dict:
+    return {
+        "sector": "00",
+        "reference_month": month,
+        "seasonal_status": "SA",
+        "release_stage": "F",
+        "status": "observed",
+        "change_thousands": change,
+    }
+
+
+def table_estimate(month: date, value: int | None) -> dict:
+    return {
+        "reference_month": month,
+        "seasonal_status": "SA",
+        "release_stage": "F",
+        "value": value,
+        "marker": None,
+    }
+
+
+def test_reconcile_names_a_value_missing_on_one_side():
+    months = [date(2010, number, 1) for number in range(1, 6)]
+    panel_values = [100, 100, None, 100, None]
+    table_values = [100, 90, 100, None, None]
+    frame = differencing.reconcile(
+        pl.DataFrame(
+            [stage_change(m, v) for m, v in zip(months, panel_values, strict=True)]
+        ),
+        pl.DataFrame(
+            [table_estimate(m, v) for m, v in zip(months, table_values, strict=True)]
+        ),
+    ).sort("reference_month")
+    assert frame["outcome"].to_list() == [
+        "reproduced",
+        "differs",
+        "missing_in_panel",
+        "missing_in_table",
+        "missing_in_both",
+    ]
+
+
 # --- The committed sources ------------------------------------------------------------------
 
 
