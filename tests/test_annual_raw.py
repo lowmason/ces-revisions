@@ -19,6 +19,7 @@ def test_annual_paths_do_not_mutate_stage_3s_archive():
     [
         ("-861", -861.0),
         ("−862", -862.0),
+        ("‐902", -902.0),
         ("83,200", 83200.0),
         ("< 0.05", 0.05),
         ("Not yet published", None),

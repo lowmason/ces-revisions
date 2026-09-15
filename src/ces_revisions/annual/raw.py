@@ -77,7 +77,7 @@ def cell_key(file: str, table_key: str, row_key: str, column_key: str) -> str:
 def parse_number(text: str) -> float | None:
     """Parse BLS numeric text while preserving documented missing values."""
     cleaned = re.sub(r"\([A-Za-z0-9]+\)$", "", text.strip())
-    cleaned = cleaned.replace("−", "-").replace(",", "").strip()
+    cleaned = cleaned.translate(str.maketrans("−‐–", "---")).replace(",", "").strip()
     if cleaned in _MISSING:
         return None
     cleaned = cleaned.removeprefix("< ")
