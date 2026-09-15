@@ -8,7 +8,7 @@ import vintage_data
 
 from ces_revisions.vintages import raw, stages
 from ces_revisions.vintages.months import month_range
-from ces_revisions.vintages.stages import comment_release_month, stage_release_months
+from ces_revisions.vintages.stages import comment_release_months, stage_release_months
 
 UNIT = ["source", "sector", "reference_month", "seasonal_status"]
 LAPSE_GAPS = {(date(2025, 9, 1), "S"), (date(2025, 10, 1), "F")}
@@ -30,6 +30,7 @@ COMMENTED_RELEASES = [
     date(2023, 1, 1),
     date(2025, 1, 1),
     date(2025, 10, 1),
+    date(2025, 11, 1),
     date(2026, 1, 1),
 ]
 
@@ -66,38 +67,44 @@ def test_benchmark_stages_count_from_the_third_estimate(month, status, expected)
 
 
 @pytest.mark.parametrize(
-    ("text", "month"),
+    ("text", "months"),
     [
         (
             "With the release of May 2003 data on June 6, 2003, the CES national nonfarm",
-            date(2003, 5, 1),
+            (date(2003, 5, 1),),
         ),
         (
             "With the 2024 benchmark, CES reconstructed several series.",
-            date(2025, 1, 1),
+            (date(2025, 1, 1),),
         ),
         (
             "Due to the 2025 lapse in appropriations, no estimates for October first",
-            date(2025, 10, 1),
+            (date(2025, 10, 1), date(2025, 11, 1)),
         ),
     ],
 )
-def test_comment_entries_name_their_release(text, month):
-    assert comment_release_month(text) == month
+def test_comment_entries_name_their_releases(text, months):
+    assert comment_release_months(text) == months
 
 
 def test_a_comment_without_a_release_rule_is_an_error():
     with pytest.raises(ValueError, match="no release rule"):
-        comment_release_month("Historical revisions, reconstructions, or adjustments")
+        comment_release_months("Historical revisions, reconstructions, or adjustments")
 
 
 # --- The committed sources ------------------------------------------------------------------
 
 
-def test_the_committed_comments_describe_thirteen_releases():
+def test_the_committed_comments_describe_fourteen_releases():
+    """The lapse entry names two releases: the canceled October 2025 release, and November's,
+    which carried October's initial estimates and September's final ones."""
     comments = raw.read_vintage_comments()
     assert comments.height == 16
-    months = {comment_release_month(text) for text in comments["adjustment"]}
+    months = {
+        month
+        for text in comments["adjustment"]
+        for month in comment_release_months(text)
+    }
     assert sorted(months) == COMMENTED_RELEASES
 
 

@@ -70,14 +70,18 @@ def stage_release_months(
     }
 
 
-def comment_release_month(adjustment: str) -> date:
-    """The release a Comments-sheet entry describes, read from its opening words."""
+def comment_release_months(adjustment: str) -> tuple[date, ...]:
+    """The releases a Comments-sheet entry describes, read from its opening words.
+
+    The 2025 lapse entry names two: the canceled October release, and the November release that
+    carried October's initial estimates and September's final ones.
+    """
     if match := _RELEASE_OF.match(adjustment):
-        return date(int(match.group(2)), MONTH_NAMES.index(match.group(1)) + 1, 1)
+        return (date(int(match.group(2)), MONTH_NAMES.index(match.group(1)) + 1, 1),)
     if match := _BENCHMARK_OF.match(adjustment):
-        return date(int(match.group(1)) + 1, 1, 1)
+        return (date(int(match.group(1)) + 1, 1, 1),)
     if _LAPSE.match(adjustment):
-        return date(2025, 10, 1)
+        return (date(2025, 10, 1), date(2025, 11, 1))
     raise ValueError(f"no release rule for the comment {adjustment[:60]!r}")
 
 
@@ -105,7 +109,13 @@ def _calendar(months: list[date], sectors, stages) -> pl.DataFrame:
 def _finish(
     labeled: pl.DataFrame, index: pl.DataFrame, comments: pl.DataFrame
 ) -> pl.DataFrame:
-    commented = sorted({comment_release_month(text) for text in comments["adjustment"]})
+    commented = sorted(
+        {
+            month
+            for text in comments["adjustment"]
+            for month in comment_release_months(text)
+        }
+    )
     releases = index.select(
         "published_date", "benchmark_release", release_month="reference_month"
     )
