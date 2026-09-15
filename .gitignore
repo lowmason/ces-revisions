@@ -14,3 +14,7 @@ wheels/
 
 # Local API keys and contact settings; never commit
 .project.env
+
+# Stage 3 data: data/raw/ is committed; the workbook cache and the built panel are rebuilt
+data/cache/
+data/panel/
