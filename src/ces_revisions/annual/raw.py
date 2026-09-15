@@ -108,7 +108,7 @@ def file_sha256(path: Path) -> str:
 
 
 def content_sha256(frame: pl.DataFrame) -> str:
-    payload = frame.write_csv().encode()
+    payload = frame.write_json().encode()
     return hashlib.sha256(payload).hexdigest()
 
 

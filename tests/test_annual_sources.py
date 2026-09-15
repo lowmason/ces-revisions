@@ -164,6 +164,16 @@ def test_manifest_matches_every_committed_annual_source():
         assert row["bytes"] == str(path.stat().st_size)
 
 
+def test_build_command_reports_each_written_artifact(monkeypatch, capsys):
+    expected = {"benchmarks": {"rows": 70}}
+    monkeypatch.setattr("ces_revisions.annual.build.build", lambda: object())
+    monkeypatch.setattr(
+        "ces_revisions.annual.build.write", lambda result: {"artifacts": expected}
+    )
+    assert annual_sources.build_tables() == 0
+    assert capsys.readouterr().out == "benchmarks: 70 rows\n"
+
+
 @pytest.mark.network
 def test_live_qcew_header_has_not_changed():
     contact = annual_sources.load_contact_email()

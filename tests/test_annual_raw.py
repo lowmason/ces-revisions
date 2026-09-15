@@ -1,5 +1,6 @@
 """Stage 4 source cells and transformations."""
 
+import hashlib
 from pathlib import Path
 
 import polars as pl
@@ -79,6 +80,12 @@ def test_manifest_frame_hashes_every_file_but_the_manifest(tmp_path: Path):
     assert frame["file"].to_list() == ["bls/page.htm", "source-catalog.csv"]
     assert frame["sha256"].str.len_chars().eq(64).all()
     assert frame.schema["bytes"] == pl.Int64
+
+
+def test_content_hash_supports_nested_provenance_columns():
+    frame = pl.DataFrame({"source_keys": [["source::a", "source::b"]]})
+    expected = hashlib.sha256(frame.write_json().encode()).hexdigest()
+    assert raw.content_sha256(frame) == expected
 
 
 def test_html_tables_keep_caption_rows_and_nested_text():
