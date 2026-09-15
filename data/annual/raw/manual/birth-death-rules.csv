@@ -1,0 +1,2 @@
+rule_id,value_text,description,source_file,source_locator
+government-structural-zero,0,CES net birth-death applies only to private-industry employment; government therefore contributes zero,bls/cesbd-faq.htm,FAQ scope statement and industry tables
