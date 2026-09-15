@@ -115,10 +115,11 @@ def test_the_index_agrees_with_es_vintages_except_the_december_1999_repost():
         vintage_data.index().select("reference_month", "release_date").iter_rows()
     )
     listed = release_index.read_release_list(ES_VINTAGES)
+    # The two lists are refreshed by different scripts, so compare the months both hold.
     differences = {
-        month: (index[month], released)
-        for month, released in listed.items()
-        if index[month] != released
+        month: (index[month], listed[month])
+        for month in sorted(listed.keys() & index.keys())
+        if index[month] != listed[month]
     }
     assert differences == {date(1999, 12, 1): (date(2000, 1, 7), date(2000, 1, 19))}
 
