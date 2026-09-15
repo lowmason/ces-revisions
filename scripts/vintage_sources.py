@@ -194,7 +194,7 @@ def refresh_manifest(raw_dir: Path = RAW_DIR) -> int:
     files = sorted(
         str(path.relative_to(raw_dir))
         for path in raw_dir.rglob("*")
-        if path.is_file() and path.name not in {MANIFEST, ".DS_Store"}
+        if path.is_file() and path != raw_dir / MANIFEST and path.name != ".DS_Store"
     )
     if set(existing) != set(files):
         missing = sorted(set(existing) - set(files))
