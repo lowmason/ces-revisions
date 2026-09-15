@@ -1,7 +1,7 @@
 """Minimal HTML table extraction for the stable BLS tables Stage 4 reads."""
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from html.parser import HTMLParser
 
 import polars as pl
@@ -19,51 +19,149 @@ def _clean(parts: list[str]) -> str:
     return re.sub(r"\s+", " ", " ".join(parts)).strip()
 
 
+@dataclass
+class _TableState:
+    fallback_caption: str | None
+    caption_parts: list[str] = field(default_factory=list)
+    rows: list[tuple[str, ...]] = field(default_factory=list)
+    row: list[str] | None = None
+    cell_parts: list[str] | None = None
+    in_caption: bool = False
+
+
 class _Parser(HTMLParser):
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.tables: list[HtmlTable] = []
-        self.in_table = False
-        self.in_caption = False
-        self.in_cell = False
-        self.caption_parts: list[str] = []
-        self.cell_parts: list[str] = []
-        self.rows: list[tuple[str, ...]] = []
-        self.row: list[str] | None = None
+        self.table_stack: list[_TableState] = []
+        self.pending_caption: str | None = None
+        self.title_tag: str | None = None
+        self.title_parts: list[str] = []
+        self.superscript_parts: list[str] | None = None
+
+    @property
+    def _table(self) -> _TableState | None:
+        return self.table_stack[-1] if self.table_stack else None
+
+    @staticmethod
+    def _finish_cell(table: _TableState, *, keep_empty: bool) -> None:
+        if table.cell_parts is None:
+            return
+        if table.row is None:
+            table.row = []
+        value = _clean(table.cell_parts)
+        if value or keep_empty:
+            table.row.append(value)
+        table.cell_parts = None
+
+    @classmethod
+    def _finish_row(cls, table: _TableState) -> None:
+        cls._finish_cell(table, keep_empty=True)
+        if table.row:
+            table.rows.append(tuple(table.row))
+        table.row = None
 
     def handle_starttag(self, tag: str, attrs) -> None:
-        if tag == "table" and not self.in_table:
-            self.in_table = True
-            self.caption_parts, self.rows = [], []
-        elif self.in_table and tag == "caption":
-            self.in_caption = True
-        elif self.in_table and tag == "tr":
-            self.row = []
-        elif self.in_table and tag in {"th", "td"}:
-            self.in_cell = True
-            self.cell_parts = []
+        if tag == "sup":
+            self.superscript_parts = []
+            return
+        if self.title_tag is None and tag in {
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "p",
+        }:
+            self.title_tag = tag
+            self.title_parts = []
+        if tag == "table":
+            fallback = self.pending_caption
+            self.pending_caption = None
+            parent = self._table
+            if (
+                fallback is None
+                and parent is not None
+                and parent.fallback_caption is not None
+                and not parent.caption_parts
+                and not parent.rows
+                and not parent.row
+                and parent.cell_parts is None
+            ):
+                fallback = parent.fallback_caption
+                parent.fallback_caption = None
+            self.table_stack.append(_TableState(fallback))
+            return
+        table = self._table
+        if table is None:
+            return
+        if tag == "caption":
+            table.in_caption = True
+        elif tag == "tr":
+            if table.row is not None:
+                self._finish_row(table)
+            table.row = []
+        elif tag in {"th", "td"}:
+            if table.cell_parts is not None:
+                self._finish_cell(table, keep_empty=False)
+            if table.row is None:
+                table.row = []
+            table.cell_parts = []
 
     def handle_data(self, data: str) -> None:
-        if self.in_caption:
-            self.caption_parts.append(data)
-        if self.in_cell:
-            self.cell_parts.append(data)
+        if self.superscript_parts is not None:
+            self.superscript_parts.append(data)
+            return
+        if self.title_tag is not None:
+            self.title_parts.append(data)
+        table = self._table
+        if table is None:
+            return
+        if table.in_caption:
+            table.caption_parts.append(data)
+        if table.cell_parts is not None:
+            table.cell_parts.append(data)
 
     def handle_endtag(self, tag: str) -> None:
-        if tag in {"th", "td"} and self.in_cell:
-            if self.row is None:
-                raise ValueError("table cell outside a row")
-            self.row.append(_clean(self.cell_parts))
-            self.in_cell = False
-        elif tag == "tr" and self.in_table:
-            if self.row:
-                self.rows.append(tuple(self.row))
-            self.row = None
-        elif tag == "caption":
-            self.in_caption = False
-        elif tag == "table" and self.in_table:
-            self.tables.append(HtmlTable(_clean(self.caption_parts), tuple(self.rows)))
-            self.in_table = False
+        if tag == "sup" and self.superscript_parts is not None:
+            marker = _clean(self.superscript_parts)
+            if marker and not (marker.startswith("(") and marker.endswith(")")):
+                marker = f"({marker})"
+            if marker:
+                if self.title_tag is not None:
+                    self.title_parts.append(marker)
+                table = self._table
+                if table is not None:
+                    if table.in_caption:
+                        table.caption_parts.append(marker)
+                    if table.cell_parts is not None:
+                        table.cell_parts.append(marker)
+            self.superscript_parts = None
+            return
+        table = self._table
+        if table is not None:
+            if tag in {"th", "td"}:
+                self._finish_cell(table, keep_empty=True)
+            elif tag == "tr":
+                self._finish_row(table)
+            elif tag == "caption":
+                table.in_caption = False
+            elif tag == "table":
+                self._finish_row(table)
+                self.table_stack.pop()
+                native_caption = _clean(table.caption_parts)
+                caption = native_caption or table.fallback_caption or ""
+                if table.rows or native_caption:
+                    self.tables.append(HtmlTable(caption, tuple(table.rows)))
+                elif table.fallback_caption:
+                    self.pending_caption = table.fallback_caption
+        if tag == self.title_tag:
+            title = _clean(self.title_parts)
+            if re.match(r"^Table\s", title, re.IGNORECASE):
+                self.pending_caption = title
+            self.title_tag = None
+            self.title_parts = []
 
 
 def parse_tables(page: str) -> tuple[HtmlTable, ...]:

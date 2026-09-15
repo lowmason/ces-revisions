@@ -1,2 +1,6 @@
 # data/raw/manifest.csv pins each committed source's SHA-256, so git never converts their bytes
 data/raw/** -text
+data/annual/raw/** -text
+data/annual/raw/bls/** -diff
+data/annual/raw/dol/** -diff
+data/annual/raw/internet-archive/** -diff

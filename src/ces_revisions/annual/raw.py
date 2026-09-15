@@ -42,6 +42,10 @@ TRANSFORMATIONS = pl.DataFrame(
             "Divide a QCEW person-count employment value by 1,000.",
         ),
         (
+            "sample_jobs_to_thousands",
+            "Divide a CES sample employee count by 1,000 when the archived table cells are counts despite a thousands header.",
+        ),
+        (
             "successive_difference",
             "Subtract the preceding publication of the same QCEW cell.",
         ),

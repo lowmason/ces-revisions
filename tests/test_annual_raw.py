@@ -67,6 +67,7 @@ def test_transformations_name_every_non_identity_derivation():
         "realized_minus_forecast",
         "government_structural_zero",
         "explicit_archive_gap",
+        "sample_jobs_to_thousands",
     }
 
 
@@ -90,6 +91,60 @@ def test_html_tables_keep_caption_rows_and_nested_text():
     table = html_tables.find_table(page, r"Table 5\. Benchmark")
     assert table.caption == "Table 5. Benchmark revisions"
     assert table.rows == (("Year", "Final"), ("2025 (12)", "−861"))
+
+
+def test_html_superscript_footnotes_remain_distinct_from_numeric_values():
+    page = """
+    <table><caption>Table 1. Coverage</caption>
+      <tr><td>Trade</td><td>19,476<sup>2</sup></td></tr>
+    </table>
+    """
+    value = html_tables.find_table(page, r"Table 1[.]").rows[0][1]
+    assert value == "19,476 (2)"
+    assert raw.parse_number(value) == 19476.0
+
+
+def test_html_tables_use_a_preceding_legacy_table_title():
+    page = """
+    <h4><a>Table 2-C. Employment benchmarks and approximate coverage</a></h4>
+    <table><tr><td>Total</td><td>129,672</td></tr></table>
+    """
+    table = html_tables.find_table(page, r"^Table 2-C[.]")
+    assert table.caption.startswith("Table 2-C. Employment benchmarks")
+    assert table.rows == (("Total", "129,672"),)
+
+
+def test_html_tables_carry_a_legacy_title_past_an_empty_shim_table():
+    page = """
+    <p><strong>Table 2-E. Relative standard error, first closing</strong></p>
+    <table><tbody></tbody></table>
+    <table><tr><td>Total nonfarm</td><td>0.1</td></tr></table>
+    """
+    table = html_tables.find_table(page, r"^Table 2-E[.]")
+    assert table.rows == (("Total nonfarm", "0.1"),)
+
+
+def test_html_tables_transfer_a_legacy_title_through_an_empty_wrapper():
+    page = """
+    <h4>Table 2-E. Relative standard error, first closing</h4>
+    <table>
+      <table><tr><td>Total nonfarm</td><td>0.2</td></tr></table>
+    </table>
+    """
+    table = html_tables.find_table(page, r"^Table 2-E[.]")
+    assert table.rows == (("Total nonfarm", "0.2"),)
+
+
+def test_html_tables_extract_a_captioned_table_nested_in_page_layout():
+    page = """
+    <table><tr><td>Page chrome
+      <table><caption>Table 1. Coverage</caption>
+        <tr><td>00-000000</td><td>Total nonfarm</td></tr>
+      </table>
+    </td></tr></table>
+    """
+    table = html_tables.find_table(page, r"^Table 1[.]")
+    assert table.rows == (("00-000000", "Total nonfarm"),)
 
 
 def test_find_table_requires_exactly_one_matching_caption():
