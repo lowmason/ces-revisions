@@ -1,6 +1,7 @@
-"""Fetch roadmap Stage 3's source files into data/raw/, with a manifest of their hashes.
+"""Fetch roadmap Stage 3's source files into data/raw/, or build the vintage panel from them.
 
     uv run python scripts/vintage_sources.py fetch   # network: refresh data/raw/ and its manifest
+    uv run python scripts/vintage_sources.py build   # offline: write data/panel/ from data/raw/
 
 BLS keeps one current copy of each file and overwrites it in place, so the committed files are
 the raw archive Req 1 asks for. data/raw/manifest.csv records each file's origin, SHA-256, size,
@@ -21,11 +22,13 @@ from urllib.parse import urlsplit
 import archive_inventory
 import fastexcel
 
+from ces_revisions.vintages.build import build, write
 from ces_revisions.vintages.raw import (
     DATA_DIR,
     EMPSIT_RELEASES,
     HISTORICAL_RELEASE_DATES,
     MANIFEST,
+    PANEL_DIR,
     RAW_DIR,
     RESCHEDULES,
     VINTAGE_COMMENTS,
@@ -197,11 +200,21 @@ def fetch_sources(now: datetime) -> int:
     return 0
 
 
+def build_panel() -> int:
+    """Offline step: write every Stage 3 artifact to data/panel/."""
+    manifest = write(build(RAW_DIR), PANEL_DIR)
+    for name, entry in manifest.items():
+        print(f"{name}: {entry['rows']} rows")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=["fetch"])
-    parser.parse_args(argv)
-    return fetch_sources(datetime.now(UTC).replace(microsecond=0))
+    parser.add_argument("command", choices=["fetch", "build"])
+    command = parser.parse_args(argv).command
+    if command == "fetch":
+        return fetch_sources(datetime.now(UTC).replace(microsecond=0))
+    return build_panel()
 
 
 if __name__ == "__main__":
