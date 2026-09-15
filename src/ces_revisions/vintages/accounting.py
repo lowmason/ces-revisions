@@ -10,6 +10,11 @@ from datetime import date
 
 import polars as pl
 
+from ces_revisions.vintages.panel import STAGE_OFFSETS
+
+# B to M has no transition: the identity needs each stage's two changes from one release, and
+# seasonally adjusted M waits for the five-year seasonal revision window, so unadjusted and
+# adjusted M are never one release.
 TRANSITIONS = (("F", "S"), ("S", "T"), ("T", "B"))
 # Req 18's regimes, by reference month; the pre-2003 regime is the revision table's alone.
 REGIMES = (
@@ -27,7 +32,9 @@ def accounting_changes(
     """Observed stage changes: vintage files from May 2003, the table's before May 2003."""
     files = stage_changes.filter(
         (pl.col("status") == "observed") & pl.col("release_stage").is_in(list("FSTB"))
-    ).select(*_UNIT, "seasonal_status", "release_stage", "change_thousands")
+    ).select(
+        *_UNIT, "seasonal_status", "release_stage", "release_month", "change_thousands"
+    )
     table = table_estimates.filter(
         (pl.col("reference_month") < REGIMES[1][1]) & pl.col("value").is_not_null()
     ).select(
@@ -36,6 +43,9 @@ def accounting_changes(
         reference_month="reference_month",
         seasonal_status="seasonal_status",
         release_stage="release_stage",
+        release_month=pl.col("reference_month").dt.offset_by(
+            pl.col("release_stage").replace_strict(STAGE_OFFSETS)
+        ),
         change_thousands="value",
     )
     return pl.concat([files, table])
@@ -53,7 +63,21 @@ def _regime() -> pl.Expr:
 
 
 def identity_terms(changes: pl.DataFrame) -> pl.DataFrame:
-    """One row per unit and transition whose two stages are observed seasonally adjusted and not."""
+    """One row per unit and transition whose two stages are observed seasonally adjusted and not.
+
+    The identity is exact only for same-release changes, so a stage whose unadjusted and adjusted
+    changes come from different releases is an error.
+    """
+    per_stage = changes.group_by(*_UNIT, "release_stage").agg(
+        releases=pl.col("release_month").n_unique()
+    )
+    mixed = per_stage.filter(pl.col("releases") > 1).sort(*_UNIT, "release_stage")
+    if mixed.height:
+        source, sector, month, stage, _ = mixed.row(0)
+        raise ValueError(
+            f"{source} {sector} {month:%Y-%m} {stage}: unadjusted and adjusted changes "
+            "come from different releases"
+        )
     wide = changes.pivot(
         on="seasonal_status", index=[*_UNIT, "release_stage"], values="change_thousands"
     )
