@@ -4,9 +4,17 @@ from functools import cache
 
 import polars as pl
 
-from ces_revisions.vintages import raw
+from ces_revisions.vintages import (
+    raw,
+    release_index,
+)
 
 
 @cache
 def raw_values() -> pl.DataFrame:
     return raw.raw_values()
+
+
+@cache
+def index() -> pl.DataFrame:
+    return release_index.build_release_index()
