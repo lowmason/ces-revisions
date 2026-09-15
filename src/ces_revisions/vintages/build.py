@@ -66,17 +66,27 @@ def build(raw_dir: Path = raw.RAW_DIR) -> VintageBuild:
     )
 
 
-def write(result: VintageBuild, out_dir: Path = raw.PANEL_DIR) -> dict[str, dict]:
-    """Write each frame as parquet, with a manifest of row counts and content hashes."""
+def write(
+    result: VintageBuild, out_dir: Path = raw.PANEL_DIR, raw_dir: Path = raw.RAW_DIR
+) -> dict:
+    """Write each frame as parquet, with a manifest of row counts and content hashes.
+
+    The manifest also records the SHA-256 of manifest.csv in raw_dir, the directory the build
+    read; that file pins each source, and so the cells that cell_id numbers.
+    """
     out_dir.mkdir(parents=True, exist_ok=True)
-    manifest = {}
+    artifacts = {}
     for field in fields(result):
         frame = getattr(result, field.name)
         frame.write_parquet(out_dir / f"{field.name}.parquet")
-        manifest[field.name] = {
+        artifacts[field.name] = {
             "rows": frame.height,
             "sha256": raw.content_sha256(frame),
         }
+    manifest = {
+        "source_manifest_sha256": raw.file_sha256(raw_dir / raw.MANIFEST),
+        "artifacts": artifacts,
+    }
     (out_dir / "manifest.json").write_text(
         json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
     )

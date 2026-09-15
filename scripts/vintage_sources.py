@@ -211,8 +211,8 @@ def fetch_sources(now: datetime) -> int:
 
 def build_panel() -> int:
     """Offline step: write every Stage 3 artifact to data/panel/."""
-    manifest = write(build(RAW_DIR), PANEL_DIR)
-    for name, entry in manifest.items():
+    manifest = write(build(RAW_DIR), PANEL_DIR, RAW_DIR)
+    for name, entry in manifest["artifacts"].items():
         print(f"{name}: {entry['rows']} rows")
     return 0
 

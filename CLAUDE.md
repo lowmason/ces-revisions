@@ -33,7 +33,7 @@ uv sync                                         # create/update .venv; installs 
 uv run ces-revisions                            # run the console entry point
 uv run pytest                                   # run all tests
 uv run pytest -m "not slow and not network"     # fast, hermetic tier to run on every change
-uv run pytest -m slow                           # the synthetic pilot's four-chain NUTS fit (~15 s)
+uv run pytest -m slow                           # the synthetic pilot's four-chain NUTS fit and the Stage 3 build (~30 s)
 uv run pytest tests/test_smoke.py::test_main_prints_greeting   # run a single test
 uv run ruff check                               # lint (--fix applies safe fixes)
 uv run ruff format                              # format (--check to verify without writing)

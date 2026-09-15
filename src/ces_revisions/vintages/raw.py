@@ -182,7 +182,11 @@ def read_rtdsm_matrix(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
 
 
 def raw_values(raw_dir: Path = RAW_DIR) -> pl.DataFrame:
-    """The immutable raw-value table: every cell Stage 3 reads, each with a stable cell_id."""
+    """The immutable raw-value table: every cell Stage 3 reads, numbered in key order.
+
+    cell_id is stable only while the sources are: a refresh that adds or drops a cell renumbers
+    every cell sorted after it.
+    """
     with zipfile.ZipFile(raw_dir / VINTAGE_FILES) as archive:
         parts = [
             triangle_cells(archive.read(member), member)
