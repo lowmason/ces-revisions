@@ -1,8 +1,10 @@
 """scripts/vintage_sources.py and the manifest of the committed sources in data/raw/."""
 
 import csv
+import subprocess
 import urllib.request
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pytest
 import vintage_sources
@@ -58,6 +60,80 @@ def test_comment_rows_without_the_header_are_an_error():
     rows = [("NOTE ON DATA USAGE", None), ("June 2003", "With the release of May 2003")]
     with pytest.raises(ValueError, match="Publication Date"):
         vintage_sources.comment_rows(rows)
+
+
+@pytest.mark.parametrize(
+    ("url", "payload", "message"),
+    [
+        ("https://www.bls.gov/source.zip", b"<html>error</html>", "ZIP signature"),
+        ("https://www.bls.gov/source.pdf", b"<html>error</html>", "PDF signature"),
+        ("https://www.bls.gov/source.xls", b"<html>error</html>", "XLS signature"),
+        ("https://www.bls.gov/source.xlsx", b"<html>error</html>", "XLSX signature"),
+        (
+            "https://www.bls.gov/source.htm",
+            b"temporarily unavailable",
+            "HTML signature",
+        ),
+        (
+            "https://www.bls.gov/source.html",
+            b"temporarily unavailable",
+            "HTML signature",
+        ),
+    ],
+)
+def test_payload_validation_rejects_error_pages_and_wrong_file_types(
+    url, payload, message
+):
+    with pytest.raises(ValueError, match=message):
+        vintage_sources.validate_payload(url, payload)
+
+
+@pytest.mark.parametrize(
+    ("url", "payload"),
+    [
+        ("https://www.bls.gov/source.zip", b"PK\x03\x04archive"),
+        ("https://www.bls.gov/source.pdf", b"%PDF-1.7\nbody"),
+        (
+            "https://www.bls.gov/source.xls",
+            b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1workbook",
+        ),
+        ("https://www.bls.gov/source.xlsx", b"PK\x03\x04workbook"),
+        ("https://www.bls.gov/source.htm", b"<!doctype html><html></html>"),
+    ],
+)
+def test_payload_validation_accepts_expected_file_signatures(url, payload):
+    vintage_sources.validate_payload(url, payload)
+
+
+def test_payload_validation_rejects_an_empty_response():
+    with pytest.raises(ValueError, match="empty payload"):
+        vintage_sources.validate_payload("https://www.bls.gov/source.zip", b"")
+
+
+def test_pdftotext_version_is_the_first_nonempty_output_line(monkeypatch):
+    completed = subprocess.CompletedProcess(
+        ["pdftotext", "-v"],
+        0,
+        stdout="",
+        stderr="pdftotext version 26.06.0\nCopyright line\n",
+    )
+    monkeypatch.setattr(
+        vintage_sources.subprocess, "run", lambda *args, **kwargs: completed
+    )
+    assert vintage_sources.pdftotext_version() == "pdftotext version 26.06.0"
+
+
+def test_pdf_conversion_rejects_empty_derived_text(monkeypatch, tmp_path):
+    source = tmp_path / "source.pdf"
+    target = tmp_path / "source.txt"
+    source.write_bytes(b"%PDF-1.7")
+
+    def empty_conversion(command, check):
+        Path(command[-1]).write_text("\n", encoding="utf-8")
+
+    monkeypatch.setattr(vintage_sources.subprocess, "run", empty_conversion)
+    with pytest.raises(ValueError, match="produced no text"):
+        vintage_sources.convert_pdf(source, target)
 
 
 def test_fetch_stops_before_downloading_without_a_contact_address(monkeypatch, capsys):

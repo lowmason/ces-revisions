@@ -75,7 +75,51 @@ MANIFEST_COLUMNS = [
     "fetched_at",
     "derived_from",
     "derived_from_sha256",
+    "tool_version",
 ]
+ZIP_SIGNATURES = (b"PK\x03\x04", b"PK\x05\x06", b"PK\x07\x08")
+XLS_SIGNATURE = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+
+
+def validate_payload(url: str, payload: bytes) -> None:
+    """Reject empty responses and payloads that do not match their file type."""
+    if not payload:
+        raise ValueError(f"{url} returned an empty payload")
+    suffix = Path(urlsplit(url).path).suffix.lower()
+    prefix = payload.lstrip()[:4096].lower()
+    checks = {
+        ".zip": (payload.startswith(ZIP_SIGNATURES), "ZIP"),
+        ".pdf": (payload.startswith(b"%PDF-"), "PDF"),
+        ".xls": (payload.startswith(XLS_SIGNATURE), "XLS"),
+        ".xlsx": (payload.startswith(ZIP_SIGNATURES), "XLSX"),
+        ".htm": (b"<html" in prefix, "HTML"),
+        ".html": (b"<html" in prefix, "HTML"),
+    }
+    if suffix in checks:
+        valid, label = checks[suffix]
+        if not valid:
+            raise ValueError(f"{url} does not have a {label} signature")
+
+
+def pdftotext_version() -> str:
+    """Return the Poppler version line recorded beside layout-derived text."""
+    completed = subprocess.run(
+        ["pdftotext", "-v"], check=True, capture_output=True, text=True
+    )
+    lines = [
+        line.strip() for line in (completed.stderr or completed.stdout).splitlines()
+    ]
+    try:
+        return next(line for line in lines if line)
+    except StopIteration as error:
+        raise ValueError("pdftotext -v returned no version text") from error
+
+
+def convert_pdf(source: Path, target: Path) -> None:
+    """Create layout-preserving text and reject an empty conversion."""
+    subprocess.run(["pdftotext", "-layout", str(source), str(target)], check=True)
+    if not target.read_text(encoding="utf-8").strip():
+        raise ValueError(f"pdftotext produced no text for {source}")
 
 
 def user_agent_for(url: str) -> str:
