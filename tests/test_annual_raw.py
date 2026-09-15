@@ -5,7 +5,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from ces_revisions.annual import raw
+from ces_revisions.annual import html_tables, raw
 
 
 def test_annual_paths_do_not_mutate_stage_3s_archive():
@@ -77,3 +77,34 @@ def test_manifest_frame_hashes_every_file_but_the_manifest(tmp_path: Path):
     assert frame["file"].to_list() == ["bls/page.htm", "source-catalog.csv"]
     assert frame["sha256"].str.len_chars().eq(64).all()
     assert frame.schema["bytes"] == pl.Int64
+
+
+def test_html_tables_keep_caption_rows_and_nested_text():
+    page = """
+    <table><caption>Table 5. Benchmark <em>revisions</em></caption>
+      <tr><th>Year</th><th>Final</th></tr>
+      <tr><td>2025<sup>(12)</sup></td><td>−861</td></tr>
+    </table>
+    """
+    table = html_tables.find_table(page, r"Table 5\. Benchmark")
+    assert table.caption == "Table 5. Benchmark revisions"
+    assert table.rows == (("Year", "Final"), ("2025 (12)", "−861"))
+
+
+def test_find_table_requires_exactly_one_matching_caption():
+    page = "<table><caption>A</caption></table><table><caption>A</caption></table>"
+    with pytest.raises(ValueError, match="expected one table"):
+        html_tables.find_table(page, "A")
+
+
+def test_table_raw_cells_preserve_printed_text():
+    table = html_tables.HtmlTable("Table 1", (("Industry", "Coverage"), ("00", "26")))
+    cells = html_tables.table_raw_cells(
+        table, source="bls", file="bls/cestn.htm", table_key="coverage_2025"
+    )
+    assert cells.select("row_key", "column_key", "text").rows() == [
+        ("0", "0", "Industry"),
+        ("0", "1", "Coverage"),
+        ("1", "0", "00"),
+        ("1", "1", "26"),
+    ]
