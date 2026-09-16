@@ -25,3 +25,10 @@ data/panel/
 # Stage 4 annual data: raw sources are committed; cache and built parquet are rebuilt
 data/annual/cache/
 data/annual/panel/
+
+# OpenTofu local state, provider caches, and per-user backend and variable files
+*.tfstate
+*.tfstate.*
+.terraform/
+backend.hcl
+terraform.tfvars
