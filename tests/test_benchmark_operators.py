@@ -86,6 +86,41 @@ def test_fixture_reproduces_each_published_nsa_benchmark_vintage_exactly():
     )
 
 
+def test_public_wedge_api_reproduces_every_fixture_from_explicit_anchor():
+    frame = fixtures()
+    total_nonfarm_2013 = frame.filter(
+        (pl.col("benchmark_year") == 2013) & (pl.col("sector") == "00")
+    )
+    assert total_nonfarm_2013["wedge_anchor_thousands"].unique().to_list() == [
+        134_451.0
+    ]
+    assert (
+        total_nonfarm_2013.filter(pl.col("wedge_weight") == 1.0)[
+            "benchmark_level_thousands"
+        ].item()
+        == 134_917.0
+    )
+
+    for group in frame.partition_by(["benchmark_year", "sector"], maintain_order=True):
+        actual = apply_wedge(
+            jnp.asarray(group["previous_level_thousands"].to_numpy()),
+            benchmark_anchor=group["wedge_anchor_thousands"][0],
+            reconstruction_terms=jnp.asarray(
+                group["reconstruction_term_thousands"].to_numpy()
+            ),
+            reconstruction_support=group["reconstruction_supported"].to_list(),
+            rounding_residuals=jnp.asarray(
+                group["rounding_residual_thousands"].to_numpy()
+            ),
+        )
+        np.testing.assert_allclose(
+            actual,
+            group["benchmark_level_thousands"].to_numpy(),
+            rtol=0.0,
+            atol=1e-9,
+        )
+
+
 def test_march_reconstruction_terms_have_documented_event_support():
     march = fixtures().filter(pl.col("wedge_weight") == 1.0)
     nonzero = march.filter(pl.col("reconstruction_term_thousands") != 0.0)

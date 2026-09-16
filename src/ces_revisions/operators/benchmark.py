@@ -38,17 +38,23 @@ def reconstruction_selector(support: Sequence[bool]) -> BCOO:
 
 def apply_wedge(
     previous_levels: jax.Array,
-    benchmark_level: float | jax.Array,
+    benchmark_anchor: float | jax.Array,
     *,
     reconstruction_terms: jax.Array | None = None,
     reconstruction_support: Sequence[bool] | None = None,
     rounding_residuals: jax.Array | None = None,
 ) -> jax.Array:
+    """Apply Req 10 using the scope-adjusted March anchor before ``R kappa``.
+
+    The archived benchmark-vintage March level may also contain a documented
+    reconstruction.  Callers must pass the pre-reconstruction ``b_fin`` anchor
+    here and supply that reconstruction separately.
+    """
     previous = jnp.asarray(previous_levels, dtype=jnp.float64)
     if previous.shape != (WINDOW_MONTHS,):
         raise ValueError("previous_levels must hold April through March")
     inputs = jnp.concatenate(
-        [previous, jnp.asarray(benchmark_level, dtype=jnp.float64).reshape(1)]
+        [previous, jnp.asarray(benchmark_anchor, dtype=jnp.float64).reshape(1)]
     )
     result = wedge_operator() @ inputs
     if (reconstruction_terms is None) != (reconstruction_support is None):
@@ -93,6 +99,7 @@ BENCHMARK_FIXTURE_SCHEMA = {
     "benchmark_release_month": pl.Date,
     "previous_level_thousands": pl.Float64,
     "benchmark_level_thousands": pl.Float64,
+    "wedge_anchor_thousands": pl.Float64,
     "published_revision_thousands": pl.Float64,
     "effective_revision_thousands": pl.Float64,
     "revision_status": pl.String,
@@ -180,9 +187,11 @@ def build_benchmark_fixtures(
             if old.height != WINDOW_MONTHS or new.height != WINDOW_MONTHS:
                 raise ValueError(f"incomplete benchmark fixture for {year}/{sector}")
             benchmark = _benchmark_row(benchmarks, year, sector)
-            march_gap = float(new[-1, "value_thousands"] - old[-1, "value_thousands"])
+            previous_march = float(old[-1, "value_thousands"])
+            march_gap = float(new[-1, "value_thousands"]) - previous_march
             published = benchmark["revision_thousands"]
             effective = march_gap if published is None else float(published)
+            wedge_anchor = previous_march + effective
             status = "inferred_from_archive" if published is None else "published"
             for index, (old_row, new_row) in enumerate(
                 zip(old.iter_rows(named=True), new.iter_rows(named=True), strict=True),
@@ -195,7 +204,9 @@ def build_benchmark_fixtures(
                     old_row["reference_month"],
                 )
                 weight = index / WINDOW_MONTHS
-                linear = float(old_row["value_thousands"]) + weight * effective
+                linear = float(old_row["value_thousands"]) + weight * (
+                    wedge_anchor - previous_march
+                )
                 residual = float(new_row["value_thousands"]) - linear
                 reconstruction = residual if event_ids else 0.0
                 rounding = 0.0 if event_ids else residual
@@ -208,6 +219,7 @@ def build_benchmark_fixtures(
                         "benchmark_release_month": new_release,
                         "previous_level_thousands": float(old_row["value_thousands"]),
                         "benchmark_level_thousands": float(new_row["value_thousands"]),
+                        "wedge_anchor_thousands": wedge_anchor,
                         "published_revision_thousands": published,
                         "effective_revision_thousands": effective,
                         "revision_status": status,
