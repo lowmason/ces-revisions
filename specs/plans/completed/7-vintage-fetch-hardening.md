@@ -1,5 +1,7 @@
 # Vintage Source Fetch Hardening Implementation Plan
 
+**Status: COMPLETE (2026-09-15)** — executed via executing-plans; nothing deferred
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Make the Stage 3 source refresh safe against partial downloads and error-page payloads, add an offline manifest rehash command for the hand-maintained source, and record the Poppler version that produced the committed historical-release text.
@@ -26,7 +28,7 @@
 
 ## Source and numbering
 
-This spec-less plan implements the selected `/deferred` item **“Review Important and Minors: harden `fetch` before the next refresh”** under `## 5-ces-revisions — 2026-09-14` in [`specs/deferred_items.md`](../deferred_items.md). It is plan **7**, the next integer after completed plan 6.
+This spec-less plan implements the selected `/deferred` item **“Review Important and Minors: harden `fetch` before the next refresh”** under `## 5-ces-revisions — 2026-09-14` in [`specs/deferred_items.md`](../../deferred_items.md). It is plan **7**, the next integer after completed plan 6.
 
 This work is not roadmap Stage 5. Stage 5 builds benchmark, aggregation, and seasonal-mapping operators and does not fetch Stage 3 sources. On completion, do not tick or edit a roadmap stage. The Plan Completion Protocol must tick the source item as:
 
@@ -85,7 +87,7 @@ None. The change stays within the existing Stage 3 acquisition boundary.
 - Consumes: a source URL and downloaded `bytes`; the installed `pdftotext` executable.
 - Produces: `validate_payload(url: str, payload: bytes) -> None`, `pdftotext_version() -> str`, and `convert_pdf(source: Path, target: Path) -> None`.
 
-- [ ] **Step 1: Write failing payload-signature and Poppler-helper tests**
+- [x] **Step 1: Write failing payload-signature and Poppler-helper tests**
 
 Add `subprocess` and `from pathlib import Path` to the imports in
 `tests/test_vintage_sources.py`, then add:
@@ -165,7 +167,7 @@ def test_pdf_conversion_rejects_empty_derived_text(monkeypatch, tmp_path):
         vintage_sources.convert_pdf(source, target)
 ```
 
-- [ ] **Step 2: Run the focused tests and confirm the missing-interface failure**
+- [x] **Step 2: Run the focused tests and confirm the missing-interface failure**
 
 Run:
 
@@ -180,7 +182,7 @@ uv run pytest \
 
 Expected: FAIL because `validate_payload`, `pdftotext_version`, and `convert_pdf` do not exist.
 
-- [ ] **Step 3: Implement the file guards and Poppler helpers**
+- [x] **Step 3: Implement the file guards and Poppler helpers**
 
 Add these constants and functions to `scripts/vintage_sources.py` after `MANIFEST_COLUMNS`:
 
@@ -232,7 +234,7 @@ def convert_pdf(source: Path, target: Path) -> None:
 
 Append `"tool_version"` to `MANIFEST_COLUMNS`; Task 3 migrates the committed CSV after the fetch path writes the field.
 
-- [ ] **Step 4: Run the focused tests and the existing Stage 3 source tests**
+- [x] **Step 4: Run the focused tests and the existing Stage 3 source tests**
 
 Run:
 
@@ -242,7 +244,7 @@ uv run pytest tests/test_vintage_sources.py -m "not network" -v
 
 Expected: PASS. The current committed manifest may not yet contain `tool_version`; no assertion requires it until Task 3.
 
-- [ ] **Step 5: Lint and commit the validation boundary**
+- [x] **Step 5: Lint and commit the validation boundary**
 
 Run:
 
@@ -270,7 +272,7 @@ Expected: formatting and lint pass; the commit contains only the two named files
 - Consumes: Task 1's `validate_payload()`, `pdftotext_version()`, and `convert_pdf()`; the existing `DOWNLOADS`, comments extractor, release-index parser, and manual reschedule file.
 - Produces: `manifest_row(..., raw_dir: Path)`, `promote_tree(staging_dir: Path, target_dir: Path) -> None`, and `fetch_sources(now, *, raw_dir=..., workbook_path=...) -> int` with an all-validation-before-promotion contract.
 
-- [ ] **Step 1: Write the regression test for a failure after an earlier successful download**
+- [x] **Step 1: Write the regression test for a failure after an earlier successful download**
 
 Add this regression test to `tests/test_vintage_sources.py`:
 
@@ -311,7 +313,7 @@ def test_fetch_validates_every_payload_before_replacing_sources(
     assert not workbook_path.exists()
 ```
 
-- [ ] **Step 2: Run the regression test and verify the destructive partial update**
+- [x] **Step 2: Run the regression test and verify the destructive partial update**
 
 Run:
 
@@ -324,7 +326,7 @@ Expected: FAIL with an unexpected `raw_dir` keyword because the current
 `fetch_sources()` exposes no isolated destination and therefore has no testable
 staging boundary.
 
-- [ ] **Step 3: Make manifest rows and promotion operate on explicit roots**
+- [x] **Step 3: Make manifest rows and promotion operate on explicit roots**
 
 Import `tempfile` in `scripts/vintage_sources.py`. Replace `manifest_row()` and add `promote_tree()`:
 
@@ -352,7 +354,7 @@ def promote_tree(staging_dir: Path, target_dir: Path) -> None:
         staged.replace(target)
 ```
 
-- [ ] **Step 4: Replace the direct-write fetch with a staged transaction**
+- [x] **Step 4: Replace the direct-write fetch with a staged transaction**
 
 Replace `fetch_sources()` with:
 
@@ -484,7 +486,9 @@ def fetch_sources(
 
 This implementation deliberately validates and derives everything before the two promotion calls. Promotion is not expected to recover from a filesystem or power failure; it closes the recorded failure modes of a later download, parser, or conversion invalidating an earlier source.
 
-- [ ] **Step 5: Run the transaction regression and all hermetic source tests**
+- [x] **Step 5: Run the transaction regression and all hermetic source tests**
+
+> Deviation: Whole-plan review added successful-promotion and late-parser-failure coverage beyond the planned early-payload regression.
 
 Run:
 
@@ -494,7 +498,7 @@ uv run pytest tests/test_vintage_sources.py -m "not network" -v
 
 Expected: PASS, including proof that a valid first payload remains staged when a later HTML payload is invalid and that neither the old archive nor its manifest changes.
 
-- [ ] **Step 6: Lint and commit the staged fetch**
+- [x] **Step 6: Lint and commit the staged fetch**
 
 Run:
 
@@ -525,7 +529,7 @@ Expected: formatting and lint pass; the commit contains only the two named files
 - Consumes: the existing `data/raw/manifest.csv` file set and provenance fields.
 - Produces: `refresh_manifest(raw_dir: Path = RAW_DIR) -> int`; `vintage_sources.py manifest`; a manifest with `tool_version`; and command documentation.
 
-- [ ] **Step 1: Write failing offline-rehash, file-set, CLI, and committed-provenance tests**
+- [x] **Step 1: Write failing offline-rehash, file-set, CLI, and committed-provenance tests**
 
 Add these tests to `tests/test_vintage_sources.py`:
 
@@ -586,7 +590,7 @@ def test_historical_release_text_records_its_pdftotext_version():
     )
 ```
 
-- [ ] **Step 2: Run the new tests and confirm the missing command/schema failures**
+- [x] **Step 2: Run the new tests and confirm the missing command/schema failures**
 
 Run:
 
@@ -600,7 +604,9 @@ uv run pytest \
 
 Expected: FAIL because `refresh_manifest()` and the `manifest` command do not exist and the committed CSV lacks `tool_version`.
 
-- [ ] **Step 3: Implement provenance-preserving offline rehashing**
+- [x] **Step 3: Implement provenance-preserving offline rehashing**
+
+> Deviation: Whole-plan review narrowed the manifest exclusion to the root path so a nested `manifest.csv` cannot escape the exact file-set check.
 
 Add this function before `fetch_sources()` in `scripts/vintage_sources.py`:
 
@@ -657,7 +663,7 @@ def main(argv: list[str] | None = None) -> int:
     return build_panel()
 ```
 
-- [ ] **Step 4: Migrate the committed manifest schema and current Poppler provenance**
+- [x] **Step 4: Migrate the committed manifest schema and current Poppler provenance**
 
 Append `tool_version` to the header of `data/raw/manifest.csv`, append an empty field to every other row, and make the historical-release text row exactly:
 
@@ -682,7 +688,7 @@ cmp /tmp/ces-revisions-plan7-manifest.csv data/raw/manifest.csv
 Expected: `manifest: 9 source files`; `cmp` exits 0 because the rehash does
 not alter the already-correct migrated file.
 
-- [ ] **Step 5: Document the three Stage 3 source commands and invariants**
+- [x] **Step 5: Document the three Stage 3 source commands and invariants**
 
 Expand `README.md`'s Getting started command block to:
 
@@ -709,7 +715,7 @@ In `CLAUDE.md`, replace the Stage 3 source-command paragraph with wording that s
 uv run python scripts/vintage_sources.py manifest  # rehash existing data/raw/ after the permitted manual edit (offline)
 ```
 
-- [ ] **Step 6: Run the focused and full hermetic verification gates**
+- [x] **Step 6: Run the focused and full hermetic verification gates**
 
 Run:
 
@@ -724,7 +730,7 @@ git diff --check
 
 Expected: every command passes. The broad pytest run still builds against the unchanged committed Stage 3 bytes; only the manifest schema/provenance changed.
 
-- [ ] **Step 7: Commit the offline command, provenance, and documentation**
+- [x] **Step 7: Commit the offline command, provenance, and documentation**
 
 Run:
 
