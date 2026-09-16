@@ -1,5 +1,7 @@
 # Cloud GPU Environment, Plan 3 — Account, Zone, Quotas, and Repo Changes Implementation Plan
 
+**Status: COMPLETE (2026-09-16)** — executed via executing-plans; nothing deferred
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Spec: specs/cloud-gpu-environment.md, the first of its two implementation plans (Reqs 1, 2, and
@@ -14,7 +16,7 @@
 
 **Tech Stack:** Homebrew (awscli 2.32.0 or later, opentofu 1.10 or later, the `session-manager-plugin` cask, uv 0.12), AWS CLI v2 with `aws login`, the AWS Price List Query, EC2, and Service Quotas APIs, jq, Python 3.14, JAX 0.11.1 (float64; `jax[cuda13]` on Linux), NumPyro 0.21.0, pytest, and ruff 0.16.7.
 
-**Source:** [`specs/cloud-gpu-environment.md`](../cloud-gpu-environment.md) Reqs 1, 2, and 7, Req 3's secrets rule, the Rollout note, and Verification bullets 1 and 13 and the Mac run of bullet 9.
+**Source:** [`specs/cloud-gpu-environment.md`](../../cloud-gpu-environment.md) Reqs 1, 2, and 7, Req 3's secrets rule, the Rollout note, and Verification bullets 1 and 13 and the Mac run of bullet 9.
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/cloud-gpu-environment.md` does **not** retire with it. At Plan Completion Protocol step 5, move only this plan. Plan 4 (`specs/plans/4-cloud-gpu-environment.md`) still implements Reqs 3–6 and 8–10, and the spec retires when Plan 4 completes.
 
@@ -197,7 +199,7 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
 
   Tasks 2–4 call `aws`. Plan 4 calls all three, and its SSH `ProxyCommand` names `aws` by its absolute path.
 
-- [ ] **Step 1: Install the AWS CLI and OpenTofu**
+- [x] **Step 1: Install the AWS CLI and OpenTofu**
 
 ```bash
 brew install awscli opentofu
@@ -205,7 +207,7 @@ brew install awscli opentofu
 
 Expected: both formulae install from bottles, with no password prompt. Underneath: a bottle is a prebuilt binary that Homebrew unpacks under `/opt/homebrew`.
 
-- [ ] **Step 2: STOP — the human partner installs the Session Manager plugin**
+- [x] **Step 2: STOP — the human partner installs the Session Manager plugin**
 
 Ask your human partner to run this in their own terminal:
 
@@ -215,7 +217,7 @@ brew install --cask session-manager-plugin
 
 The cask wraps AWS's signed `.pkg` installer, so macOS asks for their password, and an agent's shell cannot answer that prompt. Wait for them to confirm that it finished. Underneath: the plugin is the local half of a Session Manager connection. The AWS CLI hands it a session, and the plugin relays the shell or SSH stream over HTTPS.
 
-- [ ] **Step 3: Check the versions and the CLI's path**
+- [x] **Step 3: Check the versions and the CLI's path**
 
 ```bash
 aws --version
@@ -250,7 +252,7 @@ No commit: nothing in the repo changed.
   - the AWS CLI profile `ces-revisions`, backed by an `aws login` session for the IAM user, under which every later `aws` command in this plan and in Plan 4 runs;
   - the evidence directory and its README, which Tasks 3 and 4 extend.
 
-- [ ] **Step 1: STOP — the human partner secures the root user**
+- [x] **Step 1: STOP — the human partner secures the root user**
 
 Ask your human partner to sign in to the AWS console as the root user and:
 1. Open the account menu, choose **Security credentials** → **Multi-factor authentication (MFA)**, and assign an MFA device if none is listed.
@@ -259,7 +261,7 @@ Ask your human partner to sign in to the AWS console as the root user and:
 
 The third setting lets the IAM user open Billing. Without it, Plan 4's cost-allocation-tag and budget steps would need root, which is not used after setup. Wait until they confirm all three. Underneath: `aws iam get-account-summary` reports root MFA and root access keys as the flags `AccountMFAEnabled` and `AccountAccessKeysPresent`, which Step 5 checks.
 
-- [ ] **Step 2: STOP — the human partner creates the IAM user**
+- [x] **Step 2: STOP — the human partner creates the IAM user**
 
 Ask your human partner, still in the console, to:
 1. Open **IAM** → **Users** → **Create user** and choose a user name. Tick **Provide user access to the AWS Management Console**, choose **I want to create an IAM user**, and set a custom password.
@@ -269,7 +271,7 @@ Ask your human partner, still in the console, to:
 
 Wait until they confirm. Underneath: an IAM user is a long-lived identity inside the account. Without access keys, its only credentials are its console password and MFA device, and `aws login` turns a console sign-in into temporary CLI credentials.
 
-- [ ] **Step 3: STOP — the human partner signs in the CLI**
+- [x] **Step 3: STOP — the human partner signs in the CLI**
 
 Ask your human partner to run this in their own terminal, because it opens a browser:
 
@@ -281,7 +283,7 @@ At the region prompt, they enter `us-east-1`; Tasks 3 and 4 pass `--region` expl
 
 Underneath: the CLI writes `login_session` (the user's ARN) and `region` under `[profile ces-revisions]` in `~/.aws/config`. It caches temporary credentials in `~/.aws/login/cache` and refreshes them every 15 minutes for up to 12 hours, after which the same command signs in again.
 
-- [ ] **Step 4: Confirm the session belongs to the IAM user**
+- [x] **Step 4: Confirm the session belongs to the IAM user**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -294,7 +296,7 @@ esac
 
 Expected: `IAM user session`. The ARN holds the account ID, so the command prints only the verdict.
 
-- [ ] **Step 5: Record and check the identity evidence**
+- [x] **Step 5: Record and check the identity evidence**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -319,7 +321,7 @@ After a fix, rerun this step. While the first line prints `false`, `iam-list-acc
 
 Underneath: `list-access-keys` without `--user-name` lists the caller's own keys. `get-account-summary` holds only account-wide counts and flags, which is why its full output is safe to commit.
 
-- [ ] **Step 6: Write the evidence README**
+- [x] **Step 6: Write the evidence README**
 
 Create `docs/decisions/cloud-gpu-evidence/README.md`:
 
@@ -337,7 +339,7 @@ No file here holds an account ID, an ARN, an email address, or a token. Outputs 
 - `iam-list-mfa-devices.json` — `aws iam list-mfa-devices`, narrowed to `MFADeviceCount`: how many MFA devices the IAM user has, without their serial-number ARNs.
 ````
 
-- [ ] **Step 7: Scan the evidence, then commit**
+- [x] **Step 7: Scan the evidence, then commit**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -375,7 +377,7 @@ git commit -m "Record the cloud GPU account's identity checks"
 - Consumes: Task 2's `ces-revisions` profile.
 - Produces: `zone-choice.json`, shaped `{"evaluated": [region records, in order], "chosen": {"region": …, "zone": …} or null}`. Each region record is `{"region", "p5_4xlarge_on_demand_usd_per_hour": [numbers], "zones_offering_all_three": [zone names], "qualifies": bool}`. Task 4 reads `.chosen.region`. Plan 4 reads `.chosen.region` and `.chosen.zone` into its OpenTofu variables.
 
-- [ ] **Step 1: Evaluate the candidates in order and record the choice**
+- [x] **Step 1: Evaluate the candidates in order and record the choice**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -445,7 +447,7 @@ Underneath:
 - The Price List Query API is served from a few regions only, us-east-1 among them, so every pricing call goes there with the target region as a filter. It returns each product as a JSON string, which `fromjson` decodes.
 - AWS's August 2025 announcement sold single-GPU P5 On-Demand only outside the US, so a US region may list the type with only a Capacity Block price. The `marketoption` filter keeps such a price from qualifying the region. The first successful p5.4xlarge On-Demand start, in Plan 4, settles that question for good.
 
-- [ ] **Step 2: STOP if no region qualified**
+- [x] **Step 2: STOP if no region qualified**
 
 ```bash
 if jq -e '.chosen == null' docs/decisions/cloud-gpu-evidence/zone-choice.json > /dev/null; then
@@ -471,7 +473,7 @@ aws pricing describe-services --service-code AmazonEC2 --region us-east-1 \
 
 The last line prints `[]` when every filtered attribute exists. If it names an attribute, correct that filter in Step 1 and rerun it. If the attributes all exist, the STOP stands: tell your human partner that work on the environment stops and the provider choice is theirs. Still finish Steps 3 and 4 so the evidence is committed, then skip Task 4 and continue with Task 5.
 
-- [ ] **Step 3: Append the zone section to the evidence README**
+- [x] **Step 3: Append the zone section to the evidence README**
 
 Append to `docs/decisions/cloud-gpu-evidence/README.md`:
 
@@ -490,7 +492,7 @@ For each region evaluated:
 `zone-choice.json` lists the regions evaluated, in order, and `chosen`: the first qualifying region with its first zone, or `null` when none qualified. Each account maps zone names such as `us-east-1a` to physical zones in its own way, so the choice holds for this account only.
 ````
 
-- [ ] **Step 4: Scan the evidence, then commit**
+- [x] **Step 4: Scan the evidence, then commit**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -533,7 +535,7 @@ Expected: `git status` shows only staged (`A`) files before the commit. An untra
 - Consumes: Task 3's `zone-choice.json` (`.chosen.region`).
 - Produces: the request IDs and submission statuses in `service-quotas-request-increase-<region>.json`. Plan 4's `l4` and `h100` steps wait until `get-requested-service-quota-change` reports `APPROVED` for the matching request.
 
-- [ ] **Step 1: Read the prior values and earlier requests**
+- [x] **Step 1: Read the prior values and earlier requests**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -563,7 +565,7 @@ fi
 
 Expected: three lines, for `L-1216C47A` (Standard, default 5), `L-DB2E81BA` (G and VT, default 0), and `L-417A185B` (P, default 0). Underneath: these quotas count the vCPUs of running On-Demand instances, per instance family and region. `--query` drops `QuotaArn`, which contains the account ID.
 
-- [ ] **Step 2: Build the request plan**
+- [x] **Step 2: Build the request plan**
 
 ```bash
 EVIDENCE=docs/decisions/cloud-gpu-evidence
@@ -589,7 +591,7 @@ jq -r '.[] | "\(.QuotaCode) \(.QuotaName): \(.Value) now, \(.DesiredValue) wante
 
 Expected: three lines. On a fresh account, G and VT and P each end in `request`, and Standard ends in `none: already at target`. The targets are one g6.xlarge (4 vCPUs), one p5.4xlarge (16), and one m7i.xlarge (4).
 
-- [ ] **Step 3: STOP — the human partner approves the requests**
+- [x] **Step 3: STOP — the human partner approves the requests**
 
 Show your human partner the chosen region and zone, and Step 2's three lines. Then show the command that Step 4 runs once for each line ending in `request`:
 
@@ -600,7 +602,7 @@ aws service-quotas request-service-quota-increase --region "$REGION" --service-c
 
 Explain that it is outward-facing: AWS may open a support case under the account and email the account's address. Proceed only on a clear yes. If they decline, record nothing further, tell them that Plan 4's GPU steps cannot start without the quotas, and continue with Task 5.
 
-- [ ] **Step 4: Submit the approved requests**
+- [x] **Step 4: Submit the approved requests**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -620,7 +622,7 @@ jq -c '.[] | {QuotaName, DesiredValue, Id, CaseId, Status}' \
 
 Expected: one line for each approved request, each with an `Id` and a `Status` of `PENDING`, `CASE_OPENED`, or `APPROVED`. If a request fails, stop and show the error. Never rerun a request blindly: rerun Step 1 first, because a request that went through appears in the change history, and a second one would be a duplicate. Underneath: `< /dev/null` keeps the CLI from reading the loop's input, and `--query` drops `Requester` and `QuotaArn`, which name the account and the IAM user.
 
-- [ ] **Step 5: Append the quota section to the evidence README**
+- [x] **Step 5: Append the quota section to the evidence README**
 
 Append to `docs/decisions/cloud-gpu-evidence/README.md`:
 
@@ -654,7 +656,7 @@ done
 ```
 ````
 
-- [ ] **Step 6: Scan the evidence, then commit**
+- [x] **Step 6: Scan the evidence, then commit**
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -682,7 +684,7 @@ git add "$EVIDENCE/README.md" \
 git commit -m "Request the cloud GPU quotas and record prior values and request IDs"
 ```
 
-- [ ] **Step 7: Report the requests to the human partner**
+- [x] **Step 7: Report the requests to the human partner**
 
 Tell your human partner:
 - the request IDs and statuses from Step 4;
@@ -715,7 +717,7 @@ automatically when idle and capped by a $150/month budget.
 
   From this commit on, a uv outside the 0.12 series refuses to run in this project. Plan 4's `setup.sh` runs `uv sync --locked --extra cuda` against this lock.
 
-- [ ] **Step 1: Upgrade uv to the pinned series**
+- [x] **Step 1: Upgrade uv to the pinned series**
 
 ```bash
 brew upgrade uv
@@ -724,7 +726,7 @@ uv --version
 
 Expected: `uv 0.12.13` or a later 0.12 release; Homebrew had 0.12.13 on 2026-09-13. If it prints 0.13 or later, stop and ask your human partner, because the spec pins the series that was newest at plan time. Underneath: the upgrade must come before the pin, because once `required-version` lands, every command from the old uv 0.9.5 fails in this project.
 
-- [ ] **Step 2: Record the default environment before the change**
+- [x] **Step 2: Record the default environment before the change**
 
 ```bash
 uv export --frozen --no-hashes --no-header --no-emit-project > /tmp/ces-revisions-export-before.txt
@@ -735,7 +737,7 @@ Expected: about 209 lines on base `08ed203`. Record the observed number; the cor
 Step 5 is equality of the before/after exports, not this historical line count. `--frozen` reads
 `uv.lock` as it stands, without resolving again.
 
-- [ ] **Step 3: Add the extra, the uv pin, and the wider `uv_build` range**
+- [x] **Step 3: Add the extra, the uv pin, and the wider `uv_build` range**
 
 In `pyproject.toml`, replace:
 
@@ -780,7 +782,7 @@ required-version = "~=0.12.13"
 [tool.pytest.ini_options]
 ```
 
-- [ ] **Step 4: Regenerate the lock, once**
+- [x] **Step 4: Regenerate the lock, once**
 
 ```bash
 uv lock
@@ -788,7 +790,7 @@ uv lock
 
 Expected: `Added` lines for `jax-cuda13-plugin`, `jax-cuda13-pjrt`, and the `nvidia-*` CUDA 13 packages, and no `Updated` line for a package that was already locked. Underneath: without `--upgrade`, `uv lock` keeps every existing pin and resolves only what the new extra needs. It writes one universal lock for every platform, and the `sys_platform == 'linux'` marker keeps the CUDA packages off the Mac.
 
-- [ ] **Step 5: Verify the lock, the unchanged default environment, and the Mac's empty extra**
+- [x] **Step 5: Verify the lock, the unchanged default environment, and the Mac's empty extra**
 
 ```bash
 uv lock --check
@@ -814,7 +816,7 @@ Expected:
 - `17`, the count at planning time: `jax-cuda13-plugin`, `jax-cuda13-pjrt`, and 15 `nvidia-*` packages;
 - `no CUDA packages on the Mac`.
 
-- [ ] **Step 6: Run the fast tier under the new uv**
+- [x] **Step 6: Run the fast tier under the new uv**
 
 ```bash
 uv run pytest -m "not slow and not network" -q
@@ -823,7 +825,7 @@ uv run pytest -m "not slow and not network" -q
 Expected on base `08ed203`: `324 passed, 17 deselected`. If the preflight baseline is newer, expect
 that recorded fast count unchanged; Task 5 adds no tests.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -842,7 +844,7 @@ git commit -m "Add a Linux-only cuda extra and pin the uv 0.12 series"
 - Consumes: the four host devices that `tests/conftest.py` sets on CPU hosts.
 - Produces: `ces_revisions.devices.NVIDIA_DEVICE: Path`, `has_nvidia_device() -> bool`, and `chain_method(num_chains: int) -> str`. Task 7 adds `DETERMINISTIC_GPU_FLAG` to the same module.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_devices.py`:
 
@@ -870,7 +872,7 @@ def test_four_chains_run_in_parallel_on_cpu_hosts_and_vectorized_on_one_gpu():
 
 The first two tests cover both branches on any host, because they ask relative to the device count JAX reports. The third pins what Req 7's Verification bullets expect: `"parallel"` on the Mac and on `dev`, and `"vectorized"` on `l4` and `h100`.
 
-- [ ] **Step 2: Run the tests to see them fail**
+- [x] **Step 2: Run the tests to see them fail**
 
 ```bash
 uv run pytest tests/test_devices.py -q
@@ -878,7 +880,7 @@ uv run pytest tests/test_devices.py -q
 
 Expected: a collection error, `ModuleNotFoundError: No module named 'ces_revisions.devices'`.
 
-- [ ] **Step 3: Create the module**
+- [x] **Step 3: Create the module**
 
 Create `src/ces_revisions/devices.py`:
 
@@ -904,7 +906,7 @@ def chain_method(num_chains: int) -> str:
 
 Importing `jax` performs no JAX operation, so `tests/conftest.py` can import this module before it sets `XLA_FLAGS`.
 
-- [ ] **Step 4: Run the tests to see them pass**
+- [x] **Step 4: Run the tests to see them pass**
 
 ```bash
 uv run pytest tests/test_devices.py -q
@@ -912,7 +914,7 @@ uv run pytest tests/test_devices.py -q
 
 Expected: `3 passed`.
 
-- [ ] **Step 5: Switch the pilot's slow tests to `chain_method`**
+- [x] **Step 5: Switch the pilot's slow tests to `chain_method`**
 
 Edit `tests/test_synthetic_pilot.py` so that `git diff` shows exactly:
 
@@ -956,7 +958,7 @@ Edit `tests/test_synthetic_pilot.py` so that `git diff` shows exactly:
 
 The keyword `chain_method=` and the function `chain_method` share a name. Python keeps them apart, and the call reads as the value it supplies.
 
-- [ ] **Step 6: Run the slow tier**
+- [x] **Step 6: Run the slow tier**
 
 ```bash
 uv run pytest -m slow -q
@@ -966,7 +968,7 @@ Expected on base `08ed203`, after Task 6 adds three fast tests: `13 passed, 331 
 30 s. On the Mac, both pilot calls return `"parallel"`, as the literal did; the other 11 selected
 cases are Stage 3 build checks and must remain selected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -985,7 +987,7 @@ git commit -m "Choose NumPyro's chain method from the devices JAX sees"
 - Consumes: Task 6's `NVIDIA_DEVICE` and `has_nvidia_device()`.
 - Produces: `ces_revisions.devices.DETERMINISTIC_GPU_FLAG = "--xla_gpu_deterministic_ops=true"`, which the test session's `XLA_FLAGS` contains on any host with `/dev/nvidia0`. Plan 4's `l4` and `h100` runs of `uv run pytest` take the GPU branch of `test_session_runs_float64_jax_on_the_expected_devices`.
 
-- [ ] **Step 1: Write the failing device-expectation test**
+- [x] **Step 1: Write the failing device-expectation test**
 
 Replace `tests/test_stack.py` with:
 
@@ -1034,7 +1036,7 @@ def test_session_runs_float64_jax_on_the_expected_devices():
         assert jax.local_device_count() == 4
 ```
 
-- [ ] **Step 2: Run the test to see it fail**
+- [x] **Step 2: Run the test to see it fail**
 
 ```bash
 uv run pytest tests/test_stack.py -q
@@ -1042,7 +1044,7 @@ uv run pytest tests/test_stack.py -q
 
 Expected: a collection error, `ImportError: cannot import name 'DETERMINISTIC_GPU_FLAG' from 'ces_revisions.devices'`.
 
-- [ ] **Step 3: Add the flag to the device module**
+- [x] **Step 3: Add the flag to the device module**
 
 Replace `src/ces_revisions/devices.py` with:
 
@@ -1069,7 +1071,7 @@ def chain_method(num_chains: int) -> str:
     return "parallel" if jax.local_device_count() >= num_chains else "vectorized"
 ```
 
-- [ ] **Step 4: Set the flag in the session policy**
+- [x] **Step 4: Set the flag in the session policy**
 
 Replace `tests/conftest.py` with:
 
@@ -1099,7 +1101,7 @@ numpyro.enable_x64()
 
 Underneath: XLA reads `XLA_FLAGS` once, when JAX first touches a device. On a GPU host, the host-device-count flag still applies only to CPU devices, so `jax.local_device_count()` counts the one GPU.
 
-- [ ] **Step 5: Run the fast tier**
+- [x] **Step 5: Run the fast tier**
 
 ```bash
 uv run pytest -m "not slow and not network" -q
@@ -1108,7 +1110,7 @@ uv run pytest -m "not slow and not network" -q
 Expected on base `08ed203`: `327 passed, 17 deselected`. On the Mac, the device test takes its CPU
 branch. Its GPU branch runs in Plan 4.
 
-- [ ] **Step 6: Check the flag's name against the installed XLA**
+- [x] **Step 6: Check the flag's name against the installed XLA**
 
 ```bash
 XLA_FLAGS=--xla_gpu_deterministic_ops=true uv run python -c "import jax.numpy as jnp; print(float(jnp.ones(2).sum()))"
@@ -1117,7 +1119,7 @@ XLA_FLAGS=--xla_no_such_flag=true uv run python -c "import jax.numpy as jnp; pri
 
 Expected: the first prints `2.0`, and the second aborts with `Unknown flag in XLA_FLAGS: --xla_no_such_flag=true`. Together they show that the installed XLA defines the flag, which settles Req 7's open item as far as its name. Whether the flag makes GPU runs deterministic is Plan 4's check.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -1150,7 +1152,7 @@ git commit -m "Enable XLA's deterministic GPU ops on NVIDIA hosts and expect the
 
   Task 9 writes the Mac's record. Plan 4 writes the `dev`, `l4`, and `h100` records and tabulates all four in the decision record.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_engine_probe.py`:
 
@@ -1221,7 +1223,7 @@ def test_probe_module_writes_a_timing_record(tmp_path):
 
 The record test runs the module in a fresh process for two reasons. It exercises the `python -m` entry that every host uses. And the session's `tests/conftest.py` has already enabled float64 in the pytest process, so only a fresh process shows that the probe enables float64 itself: without that, `kalman_filter` raises `TypeError` and the subprocess fails.
 
-- [ ] **Step 2: Run the tests to see them fail**
+- [x] **Step 2: Run the tests to see them fail**
 
 ```bash
 uv run pytest tests/test_engine_probe.py -q
@@ -1229,7 +1231,7 @@ uv run pytest tests/test_engine_probe.py -q
 
 Expected: a collection error, `ModuleNotFoundError: No module named 'ces_revisions.engine_probe'`.
 
-- [ ] **Step 3: Create the probe**
+- [x] **Step 3: Create the probe**
 
 Create `src/ces_revisions/engine_probe.py`:
 
@@ -1450,7 +1452,7 @@ Design notes for the reviewer:
 - **One compile per batch size.** `vmap` over the batch adds a leading axis, so each batch size is a new shape and compiles once. That first call is the reported compile time.
 - **Synchronization.** Converting each result to NumPy blocks until the device finishes, so the steady-state time is honest on a GPU, where JAX dispatches work asynchronously.
 
-- [ ] **Step 4: Run the tests to see them pass**
+- [x] **Step 4: Run the tests to see them pass**
 
 ```bash
 uv run pytest tests/test_engine_probe.py -q
@@ -1459,7 +1461,7 @@ uv run pytest -m "not slow and not network" -q
 
 Expected: `3 passed`, then, on base `08ed203`, `330 passed, 17 deselected`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -1478,7 +1480,7 @@ git commit -m "Add an engine timing probe that writes one JSON record per host"
 - Consumes: Task 8's `python -m ces_revisions.engine_probe`.
 - Produces: the Mac row of the decision record's probe table, at T=280, n=150, p=70, with batch sizes 1, 4, and 16.
 
-- [ ] **Step 1: Run the probe at the decision record's dimensions**
+- [x] **Step 1: Run the probe at the decision record's dimensions**
 
 ```bash
 uv run python -m ces_revisions.engine_probe --steps 280 --states 150 --cells 70 --batch 1 4 16 --label mac --out docs/decisions/cloud-gpu-probe/mac.json
@@ -1486,7 +1488,7 @@ uv run python -m ces_revisions.engine_probe --steps 280 --states 150 --cells 70 
 
 Expected: exits 0 after about 75 s, printing nothing. Batch 16 peaks near 12 GB of resident memory.
 
-- [ ] **Step 2: Check the record**
+- [x] **Step 2: Check the record**
 
 ```bash
 jq -e '.label == "mac" and .backend == "cpu" and .nvidia_driver == null
@@ -1498,7 +1500,7 @@ jq -c '.batches[] | {batch, compile_seconds, median_seconds, iqr_seconds}' docs/
 
 Expected: `true`, then one line per batch size. At planning time, batch 1's median was 0.567 s, and the spec's earlier scratch probe measured 0.54 s. If batch 1's median exceeds about 1.1 s, other work was sharing the CPU: pause it and rerun Step 1.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -1518,7 +1520,7 @@ git commit -m "Record the engine probe's Mac baseline at T=280, n=150, p=70"
 - Produces: the ignore rules that Plan 4's `infra/` relies on, and documentation of the `cuda`
   extra, `devices.py`, and `engine_probe.py`. Plan 4 adds the `infra/` and runbook references.
 
-- [ ] **Step 1: Ignore OpenTofu's local and per-user files**
+- [x] **Step 1: Ignore OpenTofu's local and per-user files**
 
 Append to `.gitignore`:
 
@@ -1532,7 +1534,7 @@ backend.hcl
 terraform.tfvars
 ```
 
-- [ ] **Step 2: Verify the patterns**
+- [x] **Step 2: Verify the patterns**
 
 ```bash
 git check-ignore -v infra/state/terraform.tfstate infra/state/terraform.tfstate.backup \
@@ -1547,7 +1549,9 @@ fi
 
 Expected: six lines, each naming its matching pattern (`*.tfstate`, `*.tfstate.*`, `.terraform/`, `*.tfstate.*`, `backend.hcl`, `terraform.tfvars`), then `backend.hcl.example and .terraform.lock.hcl stay tracked`. Underneath: `git check-ignore` tests paths that need not exist yet. Req 3 commits the provider lock file and the example backend file, and keeps state, provider caches, and personal values out of git.
 
-- [ ] **Step 3: Update CLAUDE.md**
+> Deviation: Git 2.51.0 accepts only one pathname with `git check-ignore -q`, so the two negative checks ran as separate single-path commands; both returned 1 (not ignored).
+
+- [x] **Step 3: Update CLAUDE.md**
 
 Make five edits to `CLAUDE.md`.
 
@@ -1596,7 +1600,7 @@ uv run python -m ces_revisions.engine_probe --help   # time the engine's value a
 
 The `uv sync --extra cuda` line pads its comment to column 49, like its neighbors. The probe command is longer than that column, so its comment follows three spaces, like the single-test line's.
 
-- [ ] **Step 4: Update README.md**
+- [x] **Step 4: Update README.md**
 
 Make three edits to `README.md`.
 
@@ -1642,7 +1646,7 @@ Third, insert this paragraph, followed by a blank line, directly before the para
 On a Linux host with an NVIDIA GPU, `uv sync --extra cuda` also installs JAX's CUDA 13 plugin; the extra is Linux-only, so on the Mac it installs nothing. `src/ces_revisions/devices.py` picks NumPyro's chain method from the devices JAX sees, and `uv run python -m ces_revisions.engine_probe` times the engine's value and gradient on the current host and writes a JSON record like those in [`docs/decisions/cloud-gpu-probe/`](docs/decisions/cloud-gpu-probe/).
 ````
 
-- [ ] **Step 5: Run the final verification**
+- [x] **Step 5: Run the final verification**
 
 ```bash
 uv run pytest -m "not slow and not network" -q
@@ -1661,7 +1665,7 @@ Expected on base `08ed203`:
 
 This discharges Verification bullet 13.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 uv run ruff format && uv run ruff check
