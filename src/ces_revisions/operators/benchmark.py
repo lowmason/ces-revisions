@@ -28,12 +28,18 @@ def wedge_operator() -> BCOO:
         ],
         axis=1,
     )
-    return BCOO.fromdense(dense)
+    stored_elements = 3 * (WINDOW_MONTHS - 1) + 1
+    return BCOO.fromdense(dense, nse=stored_elements)
 
 
 def reconstruction_selector(support: Sequence[bool]) -> BCOO:
     flags = jnp.asarray(support, dtype=jnp.bool_)
-    return BCOO.fromdense(jnp.diag(flags.astype(jnp.float64)))
+    diagonal = jnp.arange(flags.size, dtype=jnp.int32)
+    indices = jnp.stack([diagonal, diagonal], axis=1)
+    return BCOO(
+        (flags.astype(jnp.float64), indices),
+        shape=(flags.size, flags.size),
+    )
 
 
 def apply_wedge(

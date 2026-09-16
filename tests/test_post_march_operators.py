@@ -87,6 +87,20 @@ def test_apply_uses_each_representation_without_mixing_inputs():
     np.testing.assert_array_equal(by_change, [106.0, 107.0])
 
 
+def test_apply_constructs_each_representation_under_jit():
+    revised_bd = jnp.asarray([2.0, 3.0], dtype=jnp.float64)
+    by_link = jax.jit(
+        lambda revised, links: apply_post_march(100.0, revised, link_relatives=links)
+    )(revised_bd, jnp.asarray([1.0, 1.0]))
+    by_change = jax.jit(
+        lambda revised, changes: apply_post_march(
+            100.0, revised, sample_job_changes=changes
+        )
+    )(revised_bd, jnp.asarray([4.0, -2.0]))
+    np.testing.assert_array_equal(by_link, [102.0, 105.0])
+    np.testing.assert_array_equal(by_change, [106.0, 107.0])
+
+
 def test_inferred_cumulative_components_reproduce_every_published_target():
     frame = components()
     assert frame.height == 2_484

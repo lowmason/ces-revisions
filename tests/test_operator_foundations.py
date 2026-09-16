@@ -51,6 +51,13 @@ def test_aggregation_operator_is_sparse_float64_and_jittable():
     np.testing.assert_array_equal(result[1:], values)
 
 
+def test_aggregation_helper_constructs_its_operator_under_jit():
+    values = jnp.arange(1.0, 12.0, dtype=jnp.float64)
+    result = jax.jit(aggregate_sector_states)(values)
+    np.testing.assert_array_equal(result[0], values.sum())
+    np.testing.assert_array_equal(result[1:], values)
+
+
 def test_aggregation_reproduces_every_published_total_nonfarm_level():
     levels = vintage_data.levels().filter(pl.col("value_thousands").is_not_null())
     keys = ["release_month", "seasonal_status", "reference_month"]

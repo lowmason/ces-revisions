@@ -13,7 +13,7 @@ def aggregation_operator() -> BCOO:
     dense = jnp.concatenate(
         [jnp.ones((1, count), dtype=jnp.float64), jnp.eye(count, dtype=jnp.float64)]
     )
-    return BCOO.fromdense(dense)
+    return BCOO.fromdense(dense, nse=2 * count)
 
 
 def aggregate_sector_states(sector_values: jax.Array) -> jax.Array:

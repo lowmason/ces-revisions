@@ -176,3 +176,20 @@ def test_apply_wedge_requires_twelve_months_and_adds_terms_separately():
     )
     np.testing.assert_allclose(reconstructed[:-1], expected[:-1] + 0.25)
     np.testing.assert_allclose(reconstructed[-1], expected[-1] + 1.25)
+
+
+def test_apply_wedge_constructs_its_operators_under_jit():
+    previous = jnp.arange(12.0, dtype=jnp.float64)
+    terms = jnp.ones(12, dtype=jnp.float64)
+    support = jnp.asarray([False] * 11 + [True])
+    actual = jax.jit(
+        lambda old, reconstruction, documented: apply_wedge(
+            old,
+            benchmark_anchor=23.0,
+            reconstruction_terms=reconstruction,
+            reconstruction_support=documented,
+        )
+    )(previous, terms, support)
+    expected = wedge_operator() @ jnp.concatenate([previous, jnp.asarray([23.0])])
+    np.testing.assert_allclose(actual[:-1], expected[:-1])
+    np.testing.assert_allclose(actual[-1], expected[-1] + 1.0)

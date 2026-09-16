@@ -27,7 +27,8 @@ def post_march_link_operator(link_relatives: jax.Array) -> BCOO:
         coefficient = coefficient * links[index]
         coefficient = coefficient.at[index + 1].set(1.0)
         rows.append(coefficient)
-    return BCOO.fromdense(jnp.stack(rows))
+    stored_elements = links.size * (links.size + 3) // 2
+    return BCOO.fromdense(jnp.stack(rows), nse=stored_elements)
 
 
 def post_march_cumulative_operator(month_count: int) -> BCOO:
@@ -38,7 +39,7 @@ def post_march_cumulative_operator(month_count: int) -> BCOO:
     dense = jnp.concatenate(
         [jnp.ones((month_count, 1), dtype=jnp.float64), lower, lower], axis=1
     )
-    return BCOO.fromdense(dense)
+    return BCOO.fromdense(dense, nse=month_count * (month_count + 2))
 
 
 def apply_post_march(
