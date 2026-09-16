@@ -58,7 +58,7 @@ def build_reconstruction_events(
                 "reference_start": _optional_date(row["reference_start"]),
                 "reference_end": _optional_date(row["reference_end"]),
                 "effect_thousands": parse_number(row["effect_thousands_text"] or ""),
-                "footnote": int(row["footnote"]),
+                "footnote": int(row["footnote"]) if row["footnote"] else None,
                 "description": row["description"],
                 "publication_date": publication["publication_date"],
                 "observable_at": publication["observable_at"],
