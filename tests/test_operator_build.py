@@ -1,7 +1,10 @@
 """Stage 5 artifact round trip and deterministic provenance record."""
 
 import json
+import os
 import re
+import subprocess
+import sys
 from dataclasses import fields
 from pathlib import Path
 
@@ -75,6 +78,27 @@ def test_offline_cli_writes_the_same_artifact_set(tmp_path: Path):
     assert {path.name for path in tmp_path.glob("*.parquet")} == {
         f"{field.name}.parquet" for field in fields(operator_data.result())
     }
+
+
+def test_cli_module_enables_x64_in_a_fresh_interpreter():
+    environment = os.environ.copy()
+    environment["JAX_ENABLE_X64"] = "false"
+    command = (
+        "import jax, sys; "
+        "assert not jax.config.x64_enabled; "
+        "sys.path.insert(0, 'scripts'); "
+        "import operator_artifacts; "
+        "assert jax.config.x64_enabled"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", command],
+        cwd=Path(__file__).resolve().parents[1],
+        env=environment,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stderr
 
 
 def test_written_determination_has_one_row_per_year_and_the_selected_contract():
