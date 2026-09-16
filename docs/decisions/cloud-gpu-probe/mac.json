@@ -1,0 +1,38 @@
+{
+  "label": "mac",
+  "dimensions": {
+    "steps": 280,
+    "states": 150,
+    "cells": 70
+  },
+  "missing_share": 0.2,
+  "seed": 0,
+  "repeats": 10,
+  "batches": [
+    {
+      "batch": 1,
+      "compile_seconds": 0.9182326670270413,
+      "median_seconds": 0.5661323749227449,
+      "iqr_seconds": 0.0011190727236680686
+    },
+    {
+      "batch": 4,
+      "compile_seconds": 1.6720390829723328,
+      "median_seconds": 1.3184506664983928,
+      "iqr_seconds": 0.003617385635152459
+    },
+    {
+      "batch": 16,
+      "compile_seconds": 4.099935750011355,
+      "median_seconds": 3.8512632289202884,
+      "iqr_seconds": 0.042151363915763795
+    }
+  ],
+  "backend": "cpu",
+  "versions": {
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1"
+  },
+  "nvidia_driver": null,
+  "timestamp_utc": "2026-09-16T22:48:21+00:00"
+}
