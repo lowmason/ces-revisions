@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+**Status: COMPLETE (2026-09-16)** — executed via executing-plans; nothing deferred
+
 **Goal:** Ship the sparse, float64 JAX operator layer that later CES state-space models use for sector aggregation, benchmark wedge-back, post-March propagation, joint NSA/SA measurement, B→M components, March selection, and missing-vintage masking, with every empirical operator checked against the committed Stage 3 and Stage 4 BLS evidence.
 
 **Architecture:** Add a focused `ces_revisions.operators` package. Small JAX `BCOO` builders express the mathematical maps; separate Polars builders align the committed release-vintage data to those maps and write deterministic diagnostic artifacts under the gitignored `data/operators/`. Benchmark validation is release-centric: for benchmark year `y`, the December `y` vintage is the pre-benchmark input and the January `y+1` vintage is the published benchmark output. Because the public archive contains levels and net birth–death forecasts but no matched-sample link relatives, the chosen post-March representation for all 2003–2025 years is an inferred cumulative job-change operator, with a positive reconstruction-error variance recorded for every year.
@@ -31,8 +33,8 @@
 
 ## Source and numbering
 
-- Source spec: [`specs/ces-revisions.md`](../ces-revisions.md), Req 5, Req 9, Req 10, Req 11, Req 17 step (1), and Verification bullets 2–3.
-- Roadmap stage: [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md), Stage 5.
+- Source spec: [`specs/ces-revisions.md`](../../ces-revisions.md), Req 5, Req 9, Req 10, Req 11, Req 17 step (1), and Verification bullets 2–3.
+- Roadmap stage: [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md), Stage 5.
 - Inputs: completed plans 5 and 6 under `specs/plans/completed/`, the Stage 3 source archive and builders, and the Stage 4 benchmark/reconstruction/birth–death builders.
 - Plan id: existing ids are 1, 2, 5, 6, and 7; therefore this is plan **8**.
 - Retirement: this shared spec does not retire with Stage 5. On completion, tick Stage 5 and add the Stage 5 completion stamp to the spec's Rollout note; then resume the roadmap.
@@ -125,7 +127,7 @@ Stage 3 already implements and tests Req 17's same-release differencing operator
 - Consumes: `annual.reconstructions.build_reconstruction_events(calendar, raw_dir) -> pl.DataFrame` and its existing generic CSV parser.
 - Produces: event ids `2018-wholesale-recoding` and `2018-state-ownership-change`; event support on sectors `40,60` and `65,90`, respectively; a 16-row reconstruction-event table whose publication clock remains the final 2018 benchmark release.
 
-- [ ] **Step 1: Write the failing 2018 event tests**
+- [x] **Step 1: Write the failing 2018 event tests**
 
 In `tests/test_reconstructions.py`, add the two ids to `expected` and add this test:
 
@@ -144,13 +146,15 @@ def test_2018_reconstructions_cover_both_documented_sector_transfers():
 
 Add `from datetime import date` above the Polars import. The complete `expected` set must include the existing fourteen ids plus `"2018-state-ownership-change"` and `"2018-wholesale-recoding"`.
 
-- [ ] **Step 2: Run the focused test to verify it fails**
+- [x] **Step 2: Run the focused test to verify it fails**
 
 Run: `uv run pytest tests/test_reconstructions.py -q`
 
 Expected: `test_expected_documented_events_exist_once` and `test_2018_reconstructions_cover_both_documented_sector_transfers` fail because the built frame has no 2018 rows.
 
-- [ ] **Step 3: Append the exact source rows**
+- [x] **Step 3: Append the exact source rows**
+
+> Deviation: The two description fields were CSV-quoted because their source text contains commas; blank footnote fields are normalized to null and pinned by tests.
 
 Append these rows to `data/annual/raw/manual/reconstruction-events.csv`, keeping the file sorted by benchmark year and event id:
 
@@ -161,13 +165,13 @@ Append these rows to `data/annual/raw/manual/reconstruction-events.csv`, keeping
 
 Do not assign a Table 5 footnote: the 2018 article documents the events directly and its Table 3 footnote says the reconstruction is already incorporated.
 
-- [ ] **Step 4: Refresh the Stage 4 manifest offline**
+- [x] **Step 4: Refresh the Stage 4 manifest offline**
 
 Run: `uv run python scripts/annual_sources.py manifest`
 
 Expected: exit 0; `data/annual/raw/manifest.csv` is rewritten, and its row for `manual/reconstruction-events.csv` has a new SHA-256. No network request occurs.
 
-- [ ] **Step 5: Run the focused and Stage 4 contract tests**
+- [x] **Step 5: Run the focused and Stage 4 contract tests**
 
 Run:
 
@@ -179,7 +183,7 @@ uv run ruff check tests/test_reconstructions.py src/ces_revisions/annual
 
 Expected: all focused tests pass; `build_reconstruction_events()` returns 16 unique ids, the 2018 rows use the final-benchmark publication timestamp, and the manifest test passes.
 
-- [ ] **Step 6: Commit the completed event inventory**
+- [x] **Step 6: Commit the completed event inventory**
 
 ```bash
 git add tests/test_reconstructions.py data/annual/raw/manual/reconstruction-events.csv data/annual/raw/manifest.csv
@@ -202,7 +206,7 @@ git commit -m "fix(annual): record 2018 benchmark reconstructions"
   - `aggregate_sector_states(sector_values: jax.Array) -> jax.Array`, preserving arbitrary leading dimensions and replacing the last 11-sector axis with the 12-row observation axis.
   - `observed_mask(statuses) -> jax.Array`, `mask_values(values, statuses) -> jax.Array`, `selection_operator(mask) -> BCOO`, `march_mask(reference_months) -> jax.Array`, and `march_selection_operator(reference_months) -> BCOO`.
 
-- [ ] **Step 1: Write the failing sparse-foundation tests**
+- [x] **Step 1: Write the failing sparse-foundation tests**
 
 Create `tests/test_operator_foundations.py`:
 
@@ -303,13 +307,13 @@ def test_march_selection_is_sparse_and_keeps_only_march_rows():
     )
 ```
 
-- [ ] **Step 2: Run the tests to verify import failure**
+- [x] **Step 2: Run the tests to verify import failure**
 
 Run: `uv run pytest tests/test_operator_foundations.py -q`
 
 Expected: collection fails with `ModuleNotFoundError: No module named 'ces_revisions.operators'`.
 
-- [ ] **Step 3: Create the package boundary and aggregation operator**
+- [x] **Step 3: Create the package boundary and aggregation operator**
 
 Create `src/ces_revisions/operators/__init__.py`:
 
@@ -355,7 +359,7 @@ def aggregate_sector_states(sector_values: jax.Array) -> jax.Array:
     return aggregated.reshape((*values.shape[:-1], len(SECTOR_ORDER) + 1))
 ```
 
-- [ ] **Step 4: Implement explicit observation and March masks**
+- [x] **Step 4: Implement explicit observation and March masks**
 
 Create `src/ces_revisions/operators/masks.py`:
 
@@ -409,7 +413,7 @@ def march_selection_operator(reference_months: Sequence[date]) -> BCOO:
     return selection_operator(march_mask(reference_months))
 ```
 
-- [ ] **Step 5: Run and format the foundation tests**
+- [x] **Step 5: Run and format the foundation tests**
 
 Run:
 
@@ -421,7 +425,7 @@ uv run ruff check src/ces_revisions/operators tests/test_operator_foundations.py
 
 Expected: 5 tests pass; the full 496,310-cell aggregation test has zero residual; Ruff is clean.
 
-- [ ] **Step 6: Commit the sparse foundation**
+- [x] **Step 6: Commit the sparse foundation**
 
 ```bash
 git add src/ces_revisions/operators tests/test_operator_foundations.py
@@ -441,7 +445,7 @@ git commit -m "feat(operators): add aggregation and observation masks"
   - `reconstruction_selector(support) -> BCOO`.
   - `build_benchmark_fixtures(levels, benchmarks, reconstruction_events) -> pl.DataFrame`, exactly 3,312 rows with release/source lineage and separate reconstruction and aggregate-rounding terms.
 
-- [ ] **Step 1: Write the failing wedge and fixture tests**
+- [x] **Step 1: Write the failing wedge and fixture tests**
 
 Create `tests/test_benchmark_operators.py`:
 
@@ -591,13 +595,13 @@ def test_apply_wedge_requires_twelve_months_and_adds_terms_separately():
     np.testing.assert_allclose(reconstructed[-1], expected[-1] + 1.25)
 ```
 
-- [ ] **Step 2: Run the tests to verify the missing module**
+- [x] **Step 2: Run the tests to verify the missing module**
 
 Run: `uv run pytest tests/test_benchmark_operators.py -q`
 
 Expected: collection fails because `ces_revisions.operators.benchmark` does not exist.
 
-- [ ] **Step 3: Implement the sparse wedge and release clock**
+- [x] **Step 3: Implement the sparse wedge and release clock**
 
 Create `src/ces_revisions/operators/benchmark.py` with the imports, constants, and public numerical functions below:
 
@@ -689,7 +693,7 @@ def benchmark_release_month(year: int) -> date:
     return date(year + 1, 1, 1)
 ```
 
-- [ ] **Step 4: Implement the audited benchmark fixture builder**
+- [x] **Step 4: Implement the audited benchmark fixture builder**
 
 In the same module, add the schema and builder. Use Python records deliberately: there are only 3,312 rows, and the explicit loop makes the release clock and source lineage reviewable.
 
@@ -839,7 +843,7 @@ def build_benchmark_fixtures(
     )
 ```
 
-- [ ] **Step 5: Run the fixture tests and inspect only named discrepancies**
+- [x] **Step 5: Run the fixture tests and inspect only named discrepancies**
 
 Run:
 
@@ -851,7 +855,7 @@ uv run ruff check src/ces_revisions/operators tests/test_benchmark_operators.py
 
 Expected: 7 tests pass. If the 215/3,097 support split, 21.0 rounding envelope, 469.1666667 supported maximum, or 2023/sector-10 inferred cell changes, stop and report the exact source rows; do not widen a tolerance or relabel a non-event residual as reconstruction.
 
-- [ ] **Step 6: Commit the wedge and fixture**
+- [x] **Step 6: Commit the wedge and fixture**
 
 ```bash
 git add src/ces_revisions/operators/benchmark.py tests/test_benchmark_operators.py
@@ -873,7 +877,7 @@ git commit -m "feat(operators): add benchmark wedge fixtures"
   - `build_post_march_components(levels, birth_death) -> pl.DataFrame`, 2,484 April–December rows.
   - `build_recoverability(levels, birth_death) -> pl.DataFrame`, one row per 2003–2025 benchmark year, with the formula and values pinned in Planning evidence plus the complete failed-attempt residual vector and source lineage.
 
-- [ ] **Step 1: Write the failing numerical and exclusivity tests**
+- [x] **Step 1: Write the failing numerical and exclusivity tests**
 
 Create `tests/test_post_march_operators.py` with the imports and first four tests:
 
@@ -967,7 +971,7 @@ def test_apply_uses_each_representation_without_mixing_inputs():
     np.testing.assert_array_equal(by_change, [106.0, 107.0])
 ```
 
-- [ ] **Step 2: Add the failing empirical component and determination tests**
+- [x] **Step 2: Add the failing empirical component and determination tests**
 
 Append to `tests/test_post_march_operators.py`:
 
@@ -1079,13 +1083,13 @@ def test_nonzero_variance_is_equivalent_to_inferred_status():
     ).all()
 ```
 
-- [ ] **Step 3: Run the tests to verify the missing module**
+- [x] **Step 3: Run the tests to verify the missing module**
 
 Run: `uv run pytest tests/test_post_march_operators.py -q`
 
 Expected: collection fails because `ces_revisions.operators.post_march` does not exist.
 
-- [ ] **Step 4: Implement the two sparse representations and the exclusive application API**
+- [x] **Step 4: Implement the two sparse representations and the exclusive application API**
 
 Create `src/ces_revisions/operators/post_march.py` with:
 
@@ -1159,7 +1163,7 @@ def apply_post_march(
     return post_march_cumulative_operator(revised.size) @ inputs
 ```
 
-- [ ] **Step 5: Implement inferred cumulative components with source lineage**
+- [x] **Step 5: Implement inferred cumulative components with source lineage**
 
 Add this schema, indexing helper, and builder to `post_march.py`:
 
@@ -1274,7 +1278,7 @@ def build_post_march_components(
     )
 ```
 
-- [ ] **Step 6: Implement the per-year link attempt and variance rule**
+- [x] **Step 6: Implement the per-year link attempt and variance rule**
 
 Add to `post_march.py`:
 
@@ -1405,7 +1409,7 @@ def build_recoverability(
     return pl.DataFrame(records, schema=RECOVERABILITY_SCHEMA).sort("benchmark_year")
 ```
 
-- [ ] **Step 7: Run the post-March gate**
+- [x] **Step 7: Run the post-March gate**
 
 Run:
 
@@ -1417,7 +1421,7 @@ uv run ruff check src/ces_revisions/operators tests/test_post_march_operators.py
 
 Expected: all tests pass; 23 recoverability rows select one representation; the 1,932 April–October cells and 552 November/December cells reproduce exactly; every variance is positive.
 
-- [ ] **Step 8: Commit the post-March determination code**
+- [x] **Step 8: Commit the post-March determination code**
 
 ```bash
 git add src/ces_revisions/operators/post_march.py tests/test_post_march_operators.py
@@ -1439,7 +1443,7 @@ git commit -m "feat(operators): determine post-March representation"
 
 The component table is release-specific. NSA `M` is the second benchmark after `T`; SA `M` is the first benchmark vintage after the reference month leaves the five-year SA window. The paired NSA value used beside an SA `M` therefore comes from the SA-M release, not from the earlier NSA-M stage.
 
-- [ ] **Step 1: Write the failing seasonal matrix tests**
+- [x] **Step 1: Write the failing seasonal matrix tests**
 
 Create `tests/test_seasonal_operators.py`:
 
@@ -1554,13 +1558,13 @@ def test_sa_and_nsa_m_horizons_remain_distinct():
     assert release_by_status["NSA"] != release_by_status["SA"]
 ```
 
-- [ ] **Step 2: Run the tests to verify the missing module**
+- [x] **Step 2: Run the tests to verify the missing module**
 
 Run: `uv run pytest tests/test_seasonal_operators.py -q`
 
 Expected: collection fails because `ces_revisions.operators.seasonal` does not exist.
 
-- [ ] **Step 3: Implement the two sparse seasonal maps**
+- [x] **Step 3: Implement the two sparse seasonal maps**
 
 Create `src/ces_revisions/operators/seasonal.py`:
 
@@ -1584,7 +1588,7 @@ def implied_adjustment_operator() -> BCOO:
     return BCOO.fromdense(jnp.asarray([[1.0, -1.0]], dtype=jnp.float64))
 ```
 
-- [ ] **Step 4: Implement the release-specific B→M table**
+- [x] **Step 4: Implement the release-specific B→M table**
 
 Append the complete schema and builder below to `seasonal.py`:
 
@@ -1749,7 +1753,7 @@ def build_b_to_m_components(
 
 The explicit branch above is intentional: it keeps the NSA and SA identities auditable and avoids conditional-expression precedence hiding which residual is being tested.
 
-- [ ] **Step 5: Run the seasonal and B→M tests**
+- [x] **Step 5: Run the seasonal and B→M tests**
 
 Run:
 
@@ -1761,7 +1765,7 @@ uv run ruff check src/ces_revisions/operators tests/test_seasonal_operators.py
 
 Expected: 7 tests pass; every observed SA B→M row satisfies the accounting identity exactly; right-censored M rows remain null; only NSA April–October rows carry a next-wedge coefficient and variance.
 
-- [ ] **Step 6: Commit the seasonal and B→M components**
+- [x] **Step 6: Commit the seasonal and B→M components**
 
 ```bash
 git add src/ces_revisions/operators/seasonal.py tests/test_seasonal_operators.py
@@ -1791,7 +1795,7 @@ git commit -m "feat(operators): add seasonal and B-to-M maps"
   - `data/operators/{benchmark_fixtures,post_march_components,recoverability,b_to_m_components}.parquet` plus deterministic `operator-test-results.json`.
   - `scripts/operator_artifacts.py build [--out-dir PATH]`.
 
-- [ ] **Step 1: Write the failing build, record, CLI, and decision tests**
+- [x] **Step 1: Write the failing build, record, CLI, and decision tests**
 
 Create `tests/operator_data.py`:
 
@@ -1914,13 +1918,13 @@ def test_written_determination_has_one_row_per_year_and_the_selected_contract():
         assert f"| {row['benchmark_year']} | cumulative job change | inferred |" in text
 ```
 
-- [ ] **Step 2: Run the tests to verify the missing build module**
+- [x] **Step 2: Run the tests to verify the missing build module**
 
 Run: `uv run pytest tests/test_operator_build.py -q`
 
 Expected: collection fails because `ces_revisions.operators.build` does not exist.
 
-- [ ] **Step 3: Implement the Stage 5 assembly and summaries**
+- [x] **Step 3: Implement the Stage 5 assembly and summaries**
 
 Create `src/ces_revisions/operators/build.py` with the assembly types and helpers:
 
@@ -2070,7 +2074,7 @@ def _checks(result: OperatorBuild, levels: pl.DataFrame) -> dict:
     }
 ```
 
-- [ ] **Step 4: Implement deterministic hashing and writing**
+- [x] **Step 4: Implement deterministic hashing and writing**
 
 Append to `operators/build.py`:
 
@@ -2113,7 +2117,9 @@ def write(
 
 If `annual_raw.content_sha256()` proves sensitive to a Polars struct/list serialization change, keep that shared function and fix the shared test; do not invent a second hashing convention for Stage 5.
 
-- [ ] **Step 5: Add the offline CLI and output ignore rule**
+- [x] **Step 5: Add the offline CLI and output ignore rule**
+
+> Deviation: The standalone CLI enables JAX float64 before importing the operator build because it cannot inherit pytest's process-level initialization; a fresh-interpreter test pins the ordering.
 
 Create `scripts/operator_artifacts.py`:
 
@@ -2154,7 +2160,7 @@ Append to `.gitignore`:
 data/operators/
 ```
 
-- [ ] **Step 6: Write the accepted link-relative determination**
+- [x] **Step 6: Write the accepted link-relative determination**
 
 Create `docs/decisions/link-relatives.md` with the following complete decision. Keep the six-decimal values below aligned with the generated parquet; the test record retains full float64 values.
 
@@ -2248,7 +2254,7 @@ For 2004–2025 the variance is the mean squared residual from the failed aggreg
 Revisit if BLS supplies historical matched-sample weighted link relatives or sample-only job-change contributions with a documented vintage clock. A later source may replace a year's `inferred` row with `recovered` only if the link-relative operator reproduces every April–October published level within ±0.5 thousand and its reconstruction-error variance becomes exactly zero.
 ````
 
-- [ ] **Step 7: Document the package, command, and downstream contract**
+- [x] **Step 7: Document the package, command, and downstream contract**
 
 In `README.md`, add this section after “Annual benchmark-source tables”:
 
@@ -2285,7 +2291,7 @@ Add this layout/tooling bullet in both files immediately after the Kalman bullet
 
 Add `uv run python scripts/operator_artifacts.py build` to each file's command block.
 
-- [ ] **Step 8: Run the focused artifact and document tests**
+- [x] **Step 8: Run the focused artifact and document tests**
 
 Run:
 
@@ -2296,7 +2302,7 @@ uv run python scripts/operator_artifacts.py build
 
 Expected: all focused tests pass; the CLI prints four artifact row counts and writes `data/operators/operator-test-results.json`; its five `checks` blocks equal the dictionary pinned in `test_operator_test_record_is_deterministic_and_complete`.
 
-- [ ] **Step 9: Run the full Stage 5 verification gate**
+- [x] **Step 9: Run the full Stage 5 verification gate**
 
 Run:
 
@@ -2311,12 +2317,54 @@ git diff --check
 
 Expected: Ruff and `git diff --check` are clean; every fast hermetic test and every slow test passes; no network test runs; no file under `data/operators/` appears in `git status`.
 
-- [ ] **Step 10: Commit the assembled Stage 5 deliverable**
+- [x] **Step 10: Commit the assembled Stage 5 deliverable**
 
 ```bash
 git add .gitignore README.md AGENTS.md CLAUDE.md docs/decisions/link-relatives.md scripts/operator_artifacts.py src/ces_revisions/operators/build.py tests/operator_data.py tests/test_operator_build.py
 git commit -m "feat(operators): assemble Stage 5 artifacts"
 ```
+
+## Completion record — 2026-09-16
+
+All six tasks and all 42 tracked steps are complete. The implementation commits are:
+
+- `333885a` — record the two omitted 2018 reconstruction events.
+- `64d5379` — establish aggregation, missingness, and March-selection contracts.
+- `13f02d7` — add the benchmark wedge and audited 2003–2025 fixtures.
+- `bad6129` — implement both post-March maps and the all-years-inferred determination.
+- `aa43c4b` — add joint NSA/SA and release-specific B→M maps.
+- `08e7b5e` — assemble the artifacts, provenance record, CLI, decision, and documentation.
+
+### Approved deviations
+
+1. The two appended reconstruction-event descriptions are CSV-quoted because they contain
+   commas. The generic parser also normalizes their blank footnote fields to null, which is
+   pinned by the reconstruction tests.
+2. `scripts/operator_artifacts.py` enables JAX float64 before importing the operator build.
+   Pytest still enables float64 centrally, but the standalone CLI cannot rely on pytest's
+   process initialization. A fresh-interpreter regression test pins this ordering.
+
+### Whole-plan review resolution
+
+The post-implementation review found no critical issues. Its three important findings and one
+minor finding were resolved in four additional commits:
+
+- `d4e29d0` separates the scope-adjusted `b_fin` wedge anchor from the archived post-
+  reconstruction March level and runs every year/sector fixture through the public API.
+- `f522b69` gives every traced sparse constructor fixed structural metadata and adds direct JIT
+  tests for aggregation, wedge reconstruction, and both post-March representations.
+- `ad54bad` constructs observation selectors directly from sparse coordinates, avoiding the
+  quadratic dense identity allocation on the 37,032-cell panel.
+- `40e3aaa` verifies the CLI's float64 initialization in a fresh interpreter.
+
+### Roadmap and deferred-item audit
+
+Stages 6 and 7 remain valid unchanged. Stage 8 now consumes positive reconstruction-error
+variance for all 23 inferred benchmark years and routes directly to `writing-plans`; Stage 9
+must preserve those terms through the joint NSA/SA map. Stages 17, 20, 23, and 24 now explicitly
+carry, audit, cite, or disclose the all-years-inferred determination. No Stage 5 work was skipped,
+no review finding remains unresolved, and no new deferred item was created. Existing deferred
+items remain assigned to their documented future stages or revisit triggers.
 
 ## Completion gate
 
