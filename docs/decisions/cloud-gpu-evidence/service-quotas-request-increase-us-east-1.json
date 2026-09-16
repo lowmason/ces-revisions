@@ -1,0 +1,20 @@
+[
+  {
+    "Id": "bcb43297407c4adcbb202cdcbbbf55b3yTCBLhKC",
+    "CaseId": null,
+    "QuotaName": "Running On-Demand G and VT instances",
+    "QuotaCode": "L-DB2E81BA",
+    "DesiredValue": 4.0,
+    "Status": "PENDING",
+    "Created": "2026-09-16T18:13:44.895000-04:00"
+  },
+  {
+    "Id": "5d4513c78e30444c9c0a5a24096ac1b3SK5dUw95",
+    "CaseId": null,
+    "QuotaName": "Running On-Demand P instances",
+    "QuotaCode": "L-417A185B",
+    "DesiredValue": 16.0,
+    "Status": "PENDING",
+    "Created": "2026-09-16T18:13:45.339000-04:00"
+  }
+]

@@ -21,3 +21,30 @@ For each region evaluated:
 - `region-<region>.json` — derived from the two files above. It holds the positive On-Demand hourly prices of products whose `marketoption` attribute is absent or `OnDemand`, so a Capacity Block price does not count. It also lists the zones that offer all three types, and says whether the region qualifies.
 
 `zone-choice.json` lists the regions evaluated, in order, and `chosen`: the first qualifying region with its first zone, or `null` when none qualified. Each account maps zone names such as `us-east-1a` to physical zones in its own way, so the choice holds for this account only.
+
+## Req 2: GPU quota requests
+
+EC2 On-Demand quotas count the vCPUs of running instances, per instance family and region. Req 2 asks for:
+
+- "Running On-Demand G and VT instances" (`L-DB2E81BA`) of at least 4, enough for one g6.xlarge;
+- "Running On-Demand P instances" (`L-417A185B`) of at least 16, enough for one p5.4xlarge.
+
+"Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances" (`L-1216C47A`) covers the m7i.xlarge `dev` size, which needs 4. It was read to confirm that, and would have been requested only if it were below 4.
+
+- `service-quotas-get-service-quota-<region>.json` — `aws service-quotas get-service-quota` for the three codes, before any request: the prior values.
+- `service-quotas-change-history-<region>.json` — `aws service-quotas list-requested-service-quota-change-history-by-quota` for the three codes: earlier requests and their statuses.
+- `service-quotas-request-plan-<region>.json` — derived from the two files above. It gives each quota's target, any open request that already covers it, and whether a new request was needed.
+- `service-quotas-request-increase-<region>.json` — `aws service-quotas request-service-quota-increase` for each quota the plan marked `request`, run after the user approved it. It records the request `Id`, the support `CaseId` once AWS opens a case, and the status at submission.
+
+A request's status moves from `PENDING` or `CASE_OPENED` to `APPROVED`, `DENIED`, `NOT_APPROVED`, or `CASE_CLOSED`. Run from the repo root, this prints each request's current status:
+
+```bash
+export AWS_PROFILE=ces-revisions
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+REGION=$(jq -r '.chosen.region' "$EVIDENCE/zone-choice.json")
+for ID in $(jq -r '.[].Id' "$EVIDENCE/service-quotas-request-increase-$REGION.json"); do
+  aws service-quotas get-requested-service-quota-change --region "$REGION" --request-id "$ID" \
+    --query 'RequestedQuota.{QuotaName: QuotaName, DesiredValue: DesiredValue, Status: Status}' \
+    --output json
+done
+```
