@@ -34,10 +34,14 @@ Use `cumulative_job_change` for all 23 benchmark years. Every series is `inferre
 and represent the path as the sparse cumulative map
 
 ```math
-E^B_{s,m}=b^{fin}_{s,y}
+E^B_{s,m}=E^B_{s,\mathrm{Mar}(y)}
 +\sum_{h=\mathrm{Apr}(y)}^m
 \left(\widehat{SC}_{s,h}+BD^{new}_{s,h}\right).
 ```
+
+Here $`E^B_{s,\mathrm{Mar}(y)}`$ is the archived published March level after any
+documented reconstruction and rounding residual. It is distinct in those cases from the
+scope-comparable benchmark anchor $`b^{fin}_{s,y}`$ consumed by the backward wedge.
 
 This identity reproduces the published April–December benchmark vintage and explicitly consumes revised birth–death values. It is an operator reconstruction of the published path, not an observation of BLS's private matched-sample link relatives. Later fits propagate the per-year reconstruction-error variance below rather than fixing the inferred components as error-free.
 

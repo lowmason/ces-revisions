@@ -17,7 +17,7 @@
 - **JAX policy:** Every numerical operator consumes and returns float64 JAX arrays. `tests/conftest.py` remains the one place that calls `numpyro.enable_x64()` before JAX work. The public operator constructors return `jax.experimental.sparse.BCOO`; tests may densify only to inspect a small matrix.
 - **Axis contracts:** Sector-state input order is exactly `("10", "20", "30", "40", "50", "55", "60", "65", "70", "80", "90")`; reconciled observation order is exactly `("00", *SECTOR_ORDER)`. NSA/SA observation order is exactly `("NSA", "SA")`; latent seasonal-state order is exactly `("x", "q")`.
 - **Benchmark-year clock:** For benchmark year `y`, use the April `y-1` through March `y` backward window, the December `y` pre-benchmark vintage, and the January `y+1` benchmark vintage. The post-March window is April through December `y`; November and December carry `additional_sample_receipts=True` and are not counted in the April–October recoverability gate.
-- **Req 10 wedge:** The sparse map is `(I - W e_March') y_old + W b_fin`, with `W=(1/12,...,1)`. `Rκ` may be nonzero only where a row of Stage 4's `reconstruction_events` names that benchmark year and sector and its closed `reference_start`/`reference_end` interval contains the month; a null bound is open. The aggregate residual left by applying a basic-cell BLS procedure to rounded supersector data is stored separately as `rounding_residual_thousands`.
+- **Req 10 wedge:** The sparse map is `(I - W e_March') y_old + W b_fin`, with `W=(1/12,...,1)`, where `b_fin` is the scope-comparable benchmark anchor before separately documented reconstruction. `Rκ` may be nonzero only where a row of Stage 4's `reconstruction_events` names that benchmark year and sector and its closed `reference_start`/`reference_end` interval contains the month; a null bound is open. The aggregate residual left by applying a basic-cell BLS procedure to rounded supersector data is stored separately as `rounding_residual_thousands`; the resulting published March level, not `b_fin`, initializes the post-March map.
 - **Req 10 representation decision:** The selected empirical representation is `cumulative_job_change` for every benchmark year 2003–2025, and every selected series is `inferred`. The link-relative representation remains a tested public JAX interface, but no empirical year is assigned to it. Exactly one representation may be supplied to an application call.
 - **Reconstruction variance:** `ROUNDING_VARIANCE_THOUSANDS2 = 1 / 6`, the variance of the difference of two independently rounded whole-thousand levels. For 2004–2025 use `max(mean(link_attempt_residual**2), 1/6)` over the 84 April–October sector cells; use `1/6` for 2003, whose old forecast table is absent. The value is positive exactly when `series_status == "inferred"`.
 - **Req 11:** Birth–death quantities are NSA thousands. Revised (`post_benchmark`) birth–death values enter the selected post-March operator; never add them to an SA change. Government remains a structural zero supplied by Stage 4.
@@ -2201,10 +2201,13 @@ Use `cumulative_job_change` for all 23 benchmark years. Every series is `inferre
 and represent the path as the sparse cumulative map
 
 ```math
-E^B_{s,m}=b^{fin}_{s,y}
+E^B_{s,m}=E^B_{s,\mathrm{Mar}(y)}
 +\sum_{h=\mathrm{Apr}(y)}^m
 \left(\widehat{SC}_{s,h}+BD^{new}_{s,h}\right).
 ```
+
+Here $`E^B_{s,\mathrm{Mar}(y)}`$ is the archived published March level after any
+documented reconstruction and rounding residual, rather than the scope-comparable wedge anchor.
 
 This identity reproduces the published April–December benchmark vintage and explicitly consumes revised birth–death values. It is an operator reconstruction of the published path, not an observation of BLS's private matched-sample link relatives. Later fits propagate the per-year reconstruction-error variance below rather than fixing the inferred components as error-free.
 
@@ -2357,14 +2360,22 @@ minor finding were resolved in four additional commits:
   quadratic dense identity allocation on the 37,032-cell panel.
 - `40e3aaa` verifies the CLI's float64 initialization in a fresh interpreter.
 
+A follow-up review also resolved two gaps in that first fix pass: every public seasonal
+constructor now has trace-stable sparse metadata, and reconstruction support uses structural
+BCOO exclusion so unsupported NaN terms cannot contaminate eager or JIT results. The spec,
+decision record, and a 276-series cross-artifact test now distinguish the scope-comparable wedge
+anchor from the published post-reconstruction March level. Stage 8 remains routed to
+`brainstorming` because probabilistic B→M composition and variance injection are outside Stage 5.
+
 ### Roadmap and deferred-item audit
 
 Stages 6 and 7 remain valid unchanged. Stage 8 now consumes positive reconstruction-error
-variance for all 23 inferred benchmark years and routes directly to `writing-plans`; Stage 9
-must preserve those terms through the joint NSA/SA map. Stages 17, 20, 23, and 24 now explicitly
-carry, audit, cite, or disclose the all-years-inferred determination. No Stage 5 work was skipped,
-no review finding remains unresolved, and no new deferred item was created. Existing deferred
-items remain assigned to their documented future stages or revisit triggers.
+variance for all 23 inferred benchmark years but remains routed to `brainstorming` for its
+probabilistic B→M composition and variance-injection design; Stage 9 must preserve those terms
+through the joint NSA/SA map. Stages 17, 20, 23, and 24 now explicitly carry, audit, cite, or
+disclose the all-years-inferred determination. No Stage 5 work was skipped, no review finding
+remains unresolved, and no new deferred item was created. Existing deferred items remain
+assigned to their documented future stages or revisit triggers.
 
 ## Completion gate
 

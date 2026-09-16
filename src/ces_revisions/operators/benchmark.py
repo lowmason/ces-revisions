@@ -35,9 +35,10 @@ def wedge_operator() -> BCOO:
 def reconstruction_selector(support: Sequence[bool]) -> BCOO:
     flags = jnp.asarray(support, dtype=jnp.bool_)
     diagonal = jnp.arange(flags.size, dtype=jnp.int32)
-    indices = jnp.stack([diagonal, diagonal], axis=1)
+    columns = jnp.where(flags, diagonal, flags.size)
+    indices = jnp.stack([diagonal, columns], axis=1)
     return BCOO(
-        (flags.astype(jnp.float64), indices),
+        (jnp.ones(flags.size, dtype=jnp.float64), indices),
         shape=(flags.size, flags.size),
     )
 
@@ -50,11 +51,12 @@ def apply_wedge(
     reconstruction_support: Sequence[bool] | None = None,
     rounding_residuals: jax.Array | None = None,
 ) -> jax.Array:
-    """Apply Req 10 using the scope-adjusted March anchor before ``R kappa``.
+    """Apply Req 10 using the scope-comparable March anchor before ``R kappa``.
 
     The archived benchmark-vintage March level may also contain a documented
-    reconstruction.  Callers must pass the pre-reconstruction ``b_fin`` anchor
-    here and supply that reconstruction separately.
+    reconstruction. Callers pass the benchmark anchor here and supply that
+    reconstruction separately; post-March propagation starts from this
+    function's published March output, not from ``benchmark_anchor`` itself.
     """
     previous = jnp.asarray(previous_levels, dtype=jnp.float64)
     if previous.shape != (WINDOW_MONTHS,):

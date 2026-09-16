@@ -8,6 +8,7 @@ import sys
 from dataclasses import fields
 from pathlib import Path
 
+import numpy as np
 import operator_artifacts
 import operator_data
 import polars as pl
@@ -23,6 +24,46 @@ def test_assembled_artifacts_have_the_stage_gate_rows():
     assert result.recoverability.height == 23
     assert result.b_to_m_components.height > 0
     assert result.recoverability["benchmark_year"].to_list() == list(range(2003, 2026))
+
+
+def test_post_march_starts_from_the_published_output_of_the_wedge():
+    result = operator_data.result()
+    march = result.benchmark_fixtures.filter(pl.col("wedge_weight") == 1.0).select(
+        "benchmark_year",
+        "sector",
+        "wedge_anchor_thousands",
+        "benchmark_level_thousands",
+        "reconstruction_term_thousands",
+        "rounding_residual_thousands",
+    )
+    post_march_anchors = result.post_march_components.select(
+        "benchmark_year", "sector", "march_anchor_thousands"
+    ).unique()
+    handoffs = march.join(
+        post_march_anchors,
+        on=["benchmark_year", "sector"],
+        validate="1:1",
+    )
+
+    assert handoffs.height == 23 * 12
+    assert (
+        handoffs.filter(
+            pl.col("wedge_anchor_thousands") != pl.col("benchmark_level_thousands")
+        ).height
+        == 18
+    )
+    np.testing.assert_allclose(
+        handoffs["benchmark_level_thousands"],
+        handoffs["wedge_anchor_thousands"]
+        + handoffs["reconstruction_term_thousands"]
+        + handoffs["rounding_residual_thousands"],
+        rtol=0.0,
+        atol=1e-9,
+    )
+    np.testing.assert_array_equal(
+        handoffs["march_anchor_thousands"],
+        handoffs["benchmark_level_thousands"],
+    )
 
 
 def test_operator_test_record_is_deterministic_and_complete():

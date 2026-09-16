@@ -46,6 +46,17 @@ def test_implied_adjustment_is_published_nsa_minus_sa():
     np.testing.assert_array_equal(result, [12.0])
 
 
+def test_public_seasonal_operator_constructors_are_jittable():
+    pair = jax.jit(lambda state: seasonal_measurement_operator() @ state)(
+        jnp.asarray([150.0, 12.0], dtype=jnp.float64)
+    )
+    adjustment = jax.jit(lambda published: implied_adjustment_operator() @ published)(
+        pair
+    )
+    np.testing.assert_array_equal(pair, [150.0, 138.0])
+    np.testing.assert_array_equal(adjustment, [12.0])
+
+
 def test_b_to_m_components_have_one_unique_row_per_axis_cell():
     frame = components()
     key = ["sector", "reference_month", "seasonal_status"]

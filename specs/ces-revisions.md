@@ -333,7 +333,9 @@ source). BLS's 2017+ public aggregate QCEW revision sequence informs the maturat
 and the preliminary/final correlation only; total QCEW error is prior- and
 sensitivity-identified because no external truth series exists. For the ordinary backward window
 $`I_y=(\mathrm{Apr}(y-1),\ldots,\mathrm{Mar}(y))`$, $`W=(1/12,\ldots,11/12,1)'`$, and
-$`e_{\mathrm{Mar}}`$ selecting March, the published NSA vector is the known affine operator
+$`e_{\mathrm{Mar}}`$ selecting March, $`b^{fin}`$ is the scope-comparable benchmark anchor
+(the prior March level plus the published benchmark revision), before any separately documented
+scope reconstruction. The published NSA vector is the known affine operator
 
 ```math
 \mathbf y^B_{s,I_y}
@@ -348,7 +350,9 @@ as a deterministic recursion in the previously published matched-sample link rel
 $`R^{old}_{s,m}`$ and the updated birth–death values,
 
 ```math
-E^B_{s,\mathrm{Mar}(y)}=b^{fin}_{s,y},\qquad
+E^B_{s,\mathrm{Mar}(y)}=y^B_{s,\mathrm{Mar}(y)}
+=b^{fin}_{s,y}+(R_{s,y}\kappa_{s,y})_{\mathrm{Mar}}
++\epsilon^{round}_{s,\mathrm{Mar}(y)},\qquad
 E^B_{s,m}=E^B_{s,m-1}R^{old}_{s,m}+BD^{new}_{s,m},\quad m>\mathrm{Mar}(y),
 ```
 

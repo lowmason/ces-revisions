@@ -161,6 +161,19 @@ def test_reconstruction_selector_cannot_emit_outside_documented_support():
     np.testing.assert_array_equal(result, [0.0, 4.0, 0.0, 6.0])
 
 
+def test_reconstruction_selector_structurally_excludes_unsupported_nan_terms():
+    terms = jnp.asarray([jnp.nan, 4.0, jnp.nan, 6.0], dtype=jnp.float64)
+    support = jnp.asarray([False, True, False, True])
+
+    eager = reconstruction_selector(support) @ terms
+    compiled = jax.jit(lambda flags, values: reconstruction_selector(flags) @ values)(
+        support, terms
+    )
+
+    np.testing.assert_array_equal(eager, [0.0, 4.0, 0.0, 6.0])
+    np.testing.assert_array_equal(compiled, eager)
+
+
 def test_apply_wedge_requires_twelve_months_and_adds_terms_separately():
     previous = jnp.arange(12.0, dtype=jnp.float64)
     support = [False] * 11 + [True]
@@ -193,3 +206,33 @@ def test_apply_wedge_constructs_its_operators_under_jit():
     expected = wedge_operator() @ jnp.concatenate([previous, jnp.asarray([23.0])])
     np.testing.assert_allclose(actual[:-1], expected[:-1])
     np.testing.assert_allclose(actual[-1], expected[-1] + 1.0)
+
+
+def test_apply_wedge_ignores_unsupported_nan_reconstruction_terms():
+    previous = jnp.arange(12.0, dtype=jnp.float64)
+    terms = jnp.full(12, jnp.nan, dtype=jnp.float64).at[-1].set(2.0)
+    support = jnp.asarray([False] * 11 + [True])
+    expected = apply_wedge(
+        previous,
+        benchmark_anchor=23.0,
+        reconstruction_terms=jnp.zeros(12, dtype=jnp.float64).at[-1].set(2.0),
+        reconstruction_support=support,
+    )
+
+    eager = apply_wedge(
+        previous,
+        benchmark_anchor=23.0,
+        reconstruction_terms=terms,
+        reconstruction_support=support,
+    )
+    compiled = jax.jit(
+        lambda old, reconstruction, documented: apply_wedge(
+            old,
+            benchmark_anchor=23.0,
+            reconstruction_terms=reconstruction,
+            reconstruction_support=documented,
+        )
+    )(previous, terms, support)
+
+    np.testing.assert_allclose(eager, expected)
+    np.testing.assert_allclose(compiled, expected)

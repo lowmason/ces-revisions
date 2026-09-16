@@ -9,12 +9,14 @@ from jax.experimental.sparse import BCOO
 
 def seasonal_measurement_operator() -> BCOO:
     """Map mature `(x, q)` to `(NSA, SA) = (x, x-q)`."""
-    return BCOO.fromdense(jnp.asarray([[1.0, 0.0], [1.0, -1.0]], dtype=jnp.float64))
+    return BCOO.fromdense(
+        jnp.asarray([[1.0, 0.0], [1.0, -1.0]], dtype=jnp.float64), nse=3
+    )
 
 
 def implied_adjustment_operator() -> BCOO:
     """Map a published `(NSA, SA)` pair to its additive adjustment."""
-    return BCOO.fromdense(jnp.asarray([[1.0, -1.0]], dtype=jnp.float64))
+    return BCOO.fromdense(jnp.asarray([[1.0, -1.0]], dtype=jnp.float64), nse=2)
 
 
 B_TO_M_SCHEMA = {
