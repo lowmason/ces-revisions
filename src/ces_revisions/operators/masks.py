@@ -33,8 +33,16 @@ def mask_values(values: jax.Array, statuses: Sequence[str]) -> jax.Array:
 
 def selection_operator(mask: Sequence[bool] | jax.Array) -> BCOO:
     flags = np.asarray(mask, dtype=bool)
-    dense = jnp.eye(flags.size, dtype=jnp.float64)[flags]
-    return BCOO.fromdense(dense)
+    selected_columns = np.flatnonzero(flags).astype(np.int32, copy=False)
+    selected_rows = np.arange(selected_columns.size, dtype=np.int32)
+    indices = jnp.asarray(
+        np.column_stack((selected_rows, selected_columns)), dtype=jnp.int32
+    )
+    data = jnp.ones(selected_columns.size, dtype=jnp.float64)
+    return BCOO(
+        (data, indices),
+        shape=(selected_columns.size, flags.size),
+    )
 
 
 def march_mask(reference_months: Sequence[date]) -> jax.Array:

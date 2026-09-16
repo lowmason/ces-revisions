@@ -90,6 +90,26 @@ def test_masks_preserve_each_missingness_reason_and_never_zero_fill():
     np.testing.assert_array_equal(selected, [0.0])
 
 
+def test_selection_operator_scales_with_selected_cells_not_panel_area(monkeypatch):
+    panel_cell_count = 37_032
+    selected_cells = np.asarray([0, 12_345, panel_cell_count - 1])
+    mask = np.zeros(panel_cell_count, dtype=bool)
+    mask[selected_cells] = True
+
+    def reject_dense_identity(*_args, **_kwargs):
+        raise AssertionError("selection_operator must not allocate a dense identity")
+
+    monkeypatch.setattr(jnp, "eye", reject_dense_identity)
+    operator = selection_operator(mask)
+
+    assert operator.shape == (selected_cells.size, panel_cell_count)
+    assert operator.nse == selected_cells.size
+    np.testing.assert_array_equal(
+        operator @ jnp.arange(panel_cell_count, dtype=jnp.float64),
+        selected_cells,
+    )
+
+
 def test_march_selection_is_sparse_and_keeps_only_march_rows():
     months = [date(2024, 2, 1), date(2024, 3, 1), date(2025, 3, 1)]
     np.testing.assert_array_equal(march_mask(months), [False, True, True])
