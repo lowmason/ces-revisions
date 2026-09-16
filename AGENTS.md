@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Purpose
 
-Research project on the **magnitude** (scale, not mean bias) of U.S. CES payroll revisions across four stages — first → second print, second → third, third → annual benchmark, and post-benchmark wedge-back — plus a Bayesian state-space design in which collection-interval, seasonal-adjustment, sample, BLS-funding, and staffing covariates enter the revision *variance*. The Python package so far holds the marginalized Kalman engine (`src/ces_revisions/kalman.py`); the design lives in `specs/` (the spec `specs/ces-revisions.md`, staged by `specs/ces-revisions-roadmap.md`), decision records in `docs/decisions/`, and the Req 20 written finding in `docs/ces-revisions-review.md`, with its evidence in `docs/inventory/`.
+Research project on the **magnitude** (scale, not mean bias) of U.S. CES payroll revisions across four stages — first → second print, second → third, third → annual benchmark, and post-benchmark wedge-back — plus a Bayesian state-space design in which collection-interval, seasonal-adjustment, sample, BLS-funding, and staffing covariates enter the revision *variance*. The Python package holds the marginalized Kalman engine (`src/ces_revisions/kalman.py`), the Stage 3 vintage panel (`src/ces_revisions/vintages/`), the Stage 4 annual-source tables (`src/ces_revisions/annual/`), and the sparse deterministic operator layer (`src/ces_revisions/operators/`). The design lives in `specs/` (the spec `specs/ces-revisions.md`, staged by `specs/ces-revisions-roadmap.md`), decision records in `docs/decisions/`, and the Req 20 written finding in `docs/ces-revisions-review.md`, with its evidence in `docs/inventory/`.
 
 ## Specs
 
@@ -23,6 +23,7 @@ Markdown in `specs/` is kept GitHub-renderable. Freshly pasted AI output usually
 - `src/ces_revisions/` is an installable package (src layout, `uv_build` backend). `main()` in `__init__.py` is exposed as the `ces-revisions` console script via `[project.scripts]`. `uv_build` expects the module at `src/ces_revisions`, matching `name = "ces-revisions"` in `pyproject.toml`; rename both together.
 - Python 3.14 (`.python-version`; `requires-python = ">=3.14"`). Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), and Polars; Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
 - `src/ces_revisions/kalman.py` is the hand-written, NaN-masked Kalman filter and smoother chosen in `docs/decisions/engine.md`. Models add its log likelihood with `kalman_factor`, so states are never sampled sites. All JAX work is float64: `numpyro.enable_x64()` (and `numpyro.set_host_device_count`) must run before the first JAX operation, which `tests/conftest.py` does for the test session. BlackJAX waits for the sampler benchmark (roadmap Stage 17); confirm Python 3.14 support for any package you add.
+- `src/ces_revisions/operators/` owns only deterministic preprocessing and sparse float64 JAX maps. Axis order is fixed in `operators/__init__.py`; benchmark years use December-to-January adjacent vintages; the selected public post-March representation is recorded in `docs/decisions/link-relatives.md`. Rebuild its gitignored parquet and `operator-test-results.json` with `uv run python scripts/operator_artifacts.py build`; every later run copies that record into provenance.
 - `scripts/` holds research tools outside the package; `pythonpath = ["scripts"]` in `[tool.pytest.ini_options]` lets tests import them by bare name. `scripts/archive_inventory.py captures` (network) records every Employment Situation release and every BLS and Internet Archive copy of the seasonal-adjustment files in `docs/inventory/`, and `scripts/archive_inventory.py inventory` (offline) derives the archive inventory from that evidence and regenerates its tables in `docs/ces-revisions-review.md`. Never hand-edit those CSVs or the generated blocks.
 
 ## Commands
@@ -37,6 +38,7 @@ uv run pytest tests/test_smoke.py::test_main_prints_greeting   # run a single te
 uv run ruff check                               # lint (--fix applies safe fixes)
 uv run ruff format                              # format (--check to verify without writing)
 uv run python scripts/archive_inventory.py inventory   # rebuild the archive inventory from docs/inventory/ (offline)
+uv run python scripts/operator_artifacts.py build
 uv add <package>                                # add a runtime dependency (updates pyproject.toml + uv.lock)
 uv add --dev <package>                          # add to the `dev` dependency group
 ```
