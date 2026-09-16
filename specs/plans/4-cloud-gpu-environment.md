@@ -1,8 +1,9 @@
-# Cloud GPU Environment, Plan 2 — Infrastructure, VM Setup, Cost Guards, and Decision Record Implementation Plan
+# Cloud GPU Environment, Plan 4 — Infrastructure, VM Setup, Cost Guards, and Decision Record Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> Spec: specs/cloud-gpu-environment.md, the second of its two plans (Reqs 3–6 and 8–10). The spec
+> Spec: specs/cloud-gpu-environment.md, the second of its two implementation plans (Reqs 3–6 and
+> 8–10). The spec
 > sits outside specs/ces-revisions-roadmap.md, so no roadmap stage is ticked.
 
 **Goal:** Build the cloud GPU development environment with OpenTofu (Reqs 3–5), set up the VM with the Mac's Claude Code and git configuration (Req 6), guard its cost (Req 8), operate it through `infra/bin/vm` and a runbook (Req 9), time the engine on `dev`, `l4`, and `h100`, and write the decision record (Req 10), ending with project memory cut over to the VM.
@@ -32,11 +33,19 @@ else
   echo "STOP: plan 3 is not complete and retired"
 fi
 jq -e '.chosen.region and .chosen.zone' docs/decisions/cloud-gpu-evidence/zone-choice.json
-if git merge-base --is-ancestor b7e2a85 HEAD; then echo "roadmap amendment present"; fi
+if rg -Fq 'Outside this roadmap: the cloud GPU environment and its decision record.' \
+  specs/ces-revisions-roadmap.md; then
+  echo "roadmap Stage 6 cloud dependency present"
+else
+  echo "STOP: roadmap Stage 6 no longer consumes the cloud environment"
+fi
 command -v tofu aws session-manager-plugin jq
 ```
 
-Expected: `plan 3 complete and retired`, `true`, `roadmap amendment present`, and four paths. If `zone-choice.json` names no zone, stop: Req 2 returned the provider choice to the human partner, and this plan does not apply.
+Expected: `plan 3 complete and retired`, `true`, `roadmap Stage 6 cloud dependency present`, and
+four paths. If `zone-choice.json` names no zone, stop: Req 2 returned the provider choice to the
+human partner, and this plan does not apply. The semantic roadmap check deliberately replaces the
+stale branch-only `b7e2a85` ancestry check.
 
 Then check the text this plan builds on:
 
@@ -50,8 +59,11 @@ from pathlib import Path
 ANCHORS = [
     ("pyproject.toml", 'required-version = "~=0.12.13"\n'),
     ("pyproject.toml", "cuda = [\"jax[cuda13]>=0.11.1; sys_platform == 'linux'\"]\n"),
+    ("pyproject.toml", '    "fastexcel>=0.21.0",\n'),
+    ("pyproject.toml", '    "python-dotenv>=1.0",\n'),
     ("pyproject.toml", "[tool.ruff.lint]\n"),
     (".gitignore", "backend.hcl\nterraform.tfvars\n"),
+    (".gitignore", "data/annual/cache/\ndata/annual/panel/\n"),
     ("src/ces_revisions/devices.py", "def has_nvidia_device() -> bool:\n"),
     ("src/ces_revisions/engine_probe.py", "import json\nimport shutil\nimport subprocess\n"),
     ("src/ces_revisions/engine_probe.py", "from ces_revisions.kalman import LinearGaussianSSM, kalman_filter\n"),
@@ -63,18 +75,21 @@ ANCHORS = [
     ("tests/test_engine_probe.py", "from ces_revisions.engine_probe import synthetic_problem\n"),
     ("tests/test_engine_probe.py", '    assert (record["nvidia_driver"] is None) == (shutil.which("nvidia-smi") is None)\n'),
     ("tests/test_stack.py", "def test_session_runs_float64_jax_on_the_expected_devices("),
+    ("tests/test_stack.py", '    "fastexcel",\n'),
     (
         "docs/decisions/cloud-gpu-evidence/README.md",
-        "Command outputs recorded by plan 3, the first plan of [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which the spec's second plan writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.\n",
+        "Command outputs recorded by Plan 3, the first implementation plan for [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which Plan 4 writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.\n",
     ),
     ("docs/decisions/cloud-gpu-evidence/README.md", "Before each commit, this directory was searched for the account ID, for ARNs, and for at signs.\n"),
     ("CLAUDE.md", "- `src/ces_revisions/engine_probe.py` times the engine's value and gradient on the current host"),
+    ("CLAUDE.md", "- `src/ces_revisions/annual/` implements roadmap Stage 4."),
     ("CLAUDE.md", "uv run python -m ces_revisions.engine_probe --help   # time the engine's value and gradient on this host; writes a JSON record\n"),
     ("CLAUDE.md", "and reformats Python code blocks inside it.\n"),
     (
         "README.md",
         "docs/decisions/                       decision records (engine.md: the Kalman engine)\n  cloud-gpu-evidence/                 AWS account, zone, and quota evidence for the cloud GPU environment\n  cloud-gpu-probe/                    engine timing records, starting with the Mac baseline\n",
     ),
+    ("README.md", "### Annual benchmark-source tables\n"),
     ("README.md", "The modeling stack is JAX"),
 ]
 problems = []
@@ -100,16 +115,55 @@ EOF
 uv run pytest -m "not slow and not network" -q | tail -n 1
 ```
 
-Expected: `all 19 anchors found once, and plan 3's evidence files exist`, then `36 passed, 2 deselected`.
+Expected on the reconciled `08ed203` baseline after Plan 3: `all 25 anchors found once, and plan
+3's evidence files exist`, then `330 passed, 17 deselected`.
 
-Underneath: Tasks 1, 2, 4, 6, and 16 edit text that plan 3 committed, by exact replacement, and Tasks 6, 7, 8, 15, and 16 read its evidence. This plan was written against a scratch clone of plan 3's intended result, so a line that plan 3's execution reworded would otherwise stop a task halfway through. If the script reports a STOP, show your human partner: the fix is to change the matching step's text to what plan 3 committed, noted as a deviation. If the fast tier's count is not 36, plan 3 landed with a different number of tests; add the difference to every later test count in this plan, and note it as a deviation in Task 1.
+Underneath: Tasks 1, 2, 4, 6, and 16 edit text that Plan 3 committed, by exact replacement, and
+Tasks 6, 7, 8, 15, and 16 read its evidence. The anchors now describe Plan 3's reconciled output,
+including Stage 3's `fastexcel` stack import and the Stage 3/4 README and CLAUDE.md material. If the
+script reports a STOP, show your human partner: compare the live file with the intended edit and
+revise the matching step, noted as a deviation. Do not restore an old anchor. If a newer `main`
+changes the preflight count, collect the live fast/slow/network baseline and recompute this plan's
+totals from its explicit additions: Task 1 `+13`, Task 2 `+16`, Task 3 `+4`, and Task 4 `+2` fast
+tests.
 
-## Planning evidence (2026-09-13)
+## Current-main reconciliation (2026-09-16)
+
+Plan 3 leaves 330 fast tests on the `08ed203` baseline. Plan 4 adds 35 fast tests and no marked
+tests:
+
+| After task | Added in task | Fast-tier total | Fast-tier deselected |
+|---|---:|---:|---:|
+| Plan 3 precondition | — | 330 | 17 |
+| Task 1: cost guards | 13 | 343 | 17 |
+| Task 2: operations wrapper | 16 | 359 | 17 |
+| Task 3: VM setup | 4 | 363 | 17 |
+| Task 4: probe driver check | 2 | 365 | 17 |
+
+The final repository collects 382 cases: 365 fast, 13 slow, and 4 network. Therefore the final
+slow selection is `13 passed, 369 deselected`, while each required full VM run expects 382 passed
+when the four live network canaries are reachable and unchanged. A network-canary failure is a
+live-source signal to diagnose, not a reason to remove the test or relabel it.
+
+The original cloud branch hard-coded its own branch name and the 2026-09-13 counts of personal
+Claude configuration links. This reconciliation makes the execution branch and link counts runtime
+values: the branch comes from `git branch --show-current`, and the VM counts must equal a Mac-side
+snapshot taken immediately before `sync-config`.
+
+Current main has none of Plan 4's created `infra/`, guard, wrapper, VM-setup, or cloud-decision
+paths, so those tasks have no path collision with Stages 2–4. Its only existing-file edits are the
+Plan 3 outputs plus `pyproject.toml`, `.gitignore`, README, and CLAUDE.md; the 25-anchor precondition
+protects the Stage 3/4 additions before any replacement runs.
+
+### Original planning evidence (2026-09-13)
 
 This plan's scripts and tests ran before the plan was written, in a scratch clone holding plan 3's code. Its HCL, and everything that runs on AWS or Ubuntu, did not. Treat a deviation from these outcomes as a signal, not noise.
 
 - **What ran.**
-  - `tests/test_idle_stop.py`, `tests/test_vm_wrapper.py`, and `tests/test_vm_setup.py` passed their 33 tests, and Task 4's two probe tests passed. The fast tier passed 71 tests, where plan 3 leaves 36.
+  - `tests/test_idle_stop.py`, `tests/test_vm_wrapper.py`, and `tests/test_vm_setup.py` passed their
+    33 tests, and Task 4's two probe tests passed. In that scratch clone the fast tier passed 71
+    tests, where Plan 3 left 36; those historical totals are superseded by the current-main table
+    above, while the `+35` delta remains valid.
   - `ruff check` and `ruff format --check` were clean.
   - `bash -n` passed for each shell script under Homebrew's bash 5 and macOS's bash 3.2.
   - Task 13's determinism script printed the same SHA-256 twice on the Mac's CPU.
@@ -150,7 +204,10 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
 
 ## Execution notes
 
-- **Where.** Execute in the worktree `.claude/worktrees/cloud-gpu-ces-revisions-ee5804` on branch `claude/cloud-gpu-ces-revisions-ee5804`. Never commit in the main checkout (`/Users/lowell/Projects/ces-revisions`), because other sessions switch its branch without notice. Run `infra/` from the Mac only.
+- **Where.** Continue from completed Plan 3 in its isolated execution worktree and `codex/` feature
+  branch, or create a fresh worktree from that completed branch. Do not reuse
+  `.claude/worktrees/cloud-gpu-ces-revisions-ee5804` or assume its branch name. Run `infra/` from
+  the Mac only.
 - **Who runs what.**
   - Tasks 1–5 suit subagent-driven-development. They need no AWS credentials; Task 5 needs `tofu`, which downloads the AWS provider.
   - Tasks 6–14 and 16 are operations with the human partner. The controller runs them itself, in order, and dispatches no implementer subagent for them. **STOP** marks a gate: say what the human partner must do or approve, wait for their answer, then run the check that follows.
@@ -701,7 +758,7 @@ Expected: `install.sh parses`. Underneath: `install.sh` runs at first boot, from
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected: `49 passed, 2 deselected`.
+Expected on base `08ed203`: `343 passed, 17 deselected`.
 
 - [ ] **Step 9: Commit**
 
@@ -1238,13 +1295,17 @@ else
 fi
 ```
 
-Expected: `.gitignore:21:size.auto.tfvars	infra/env/size.auto.tfvars`, then `pinned.auto.tfvars and backend.hcl.example stay tracked`. Underneath: `git check-ignore` prints only the paths it ignores. With `-q` it refuses more than one path, which is why this check reads its output instead.
+Expected: one line naming `.gitignore`'s `size.auto.tfvars` rule and
+`infra/env/size.auto.tfvars`, then `pinned.auto.tfvars and backend.hcl.example stay tracked`. Do
+not assert a `.gitignore` line number: Stages 2–4 added rules before the cloud block. Underneath:
+`git check-ignore` prints only the paths it ignores. With `-q` it refuses more than one path, which
+is why this check reads its output instead.
 
 - [ ] **Step 7: Run the fast tier**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected: `65 passed, 2 deselected`.
+Expected on base `08ed203`: `359 passed, 17 deselected`.
 
 - [ ] **Step 8: Commit**
 
@@ -1284,7 +1345,7 @@ from pathlib import Path
 import pytest
 
 SETUP = Path(__file__).resolve().parents[1] / "infra" / "vm" / "setup.sh"
-BRANCH = "claude/cloud-gpu-ces-revisions-ee5804"
+BRANCH = "test/cloud-gpu-environment"
 LOG = r"""#!/bin/sh
 printf '%s\n' "$(basename "$0") $*" >> "$CALL_LOG"
 """
@@ -1598,7 +1659,7 @@ Expected: `first-boot.sh parses`. Underneath:
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected: `69 passed, 2 deselected`.
+Expected on base `08ed203`: `363 passed, 17 deselected`.
 
 - [ ] **Step 7: Commit**
 
@@ -1762,7 +1823,7 @@ Expected: `5 passed`.
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected: `71 passed, 2 deselected`.
+Expected on base `08ed203`: `365 passed, 17 deselected`.
 
 - [ ] **Step 6: Commit**
 
@@ -2567,7 +2628,7 @@ Expected: `256 SHA256:… ces-revisions-vm (ED25519)`, then `600`.
 In `docs/decisions/cloud-gpu-evidence/README.md`, replace:
 
 ````markdown
-Command outputs recorded by plan 3, the first plan of [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which the spec's second plan writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.
+Command outputs recorded by Plan 3, the first implementation plan for [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which Plan 4 writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.
 ````
 
 with:
@@ -2730,7 +2791,8 @@ printf 'bucket = "%s"\nkey    = "env/terraform.tfstate"\nregion = "%s"\n' "$BUCK
 git check-ignore -v infra/env/backend.hcl
 ```
 
-Expected: `.gitignore:19:backend.hcl	infra/env/backend.hcl`.
+Expected: one line naming `.gitignore`'s `backend.hcl` rule and `infra/env/backend.hcl`; the line
+number is intentionally unconstrained.
 
 - [ ] **Step 8: Back up the operational files**
 
@@ -2790,7 +2852,8 @@ grep -c '^budget_email = ".*@.*"$' infra/env/terraform.tfvars
 cp infra/env/terraform.tfvars ~/.config/ces-revisions/infra/terraform.tfvars
 ```
 
-Expected: `.gitignore:20:terraform.tfvars	infra/env/terraform.tfvars`, then `1`.
+Expected: one line naming `.gitignore`'s `terraform.tfvars` rule and
+`infra/env/terraform.tfvars`, then `1`; the line number is intentionally unconstrained.
 
 - [ ] **Step 3: Initialize the S3 backend**
 
@@ -3124,7 +3187,8 @@ git commit -m "Record access to the cloud VM through Session Manager and SSH"
   - the commits of Tasks 1–5;
   - Task 2's `infra/bin/vm sync-config` and Task 3's `infra/vm/setup.sh`.
 - Produces, on the VM:
-  - `~/Projects/ces-revisions` on branch `claude/cloud-gpu-ces-revisions-ee5804`, synced with the `cuda` extra;
+  - `~/Projects/ces-revisions` on the current execution branch, derived with
+    `git branch --show-current`, and synced with the `cuda` extra;
   - `~/Projects/agent-skills`, uv in `~/.local/bin`, and the links in `~/.claude/`;
   - `gh` signed in with the human partner's token, and set up as git's credential helper.
 
@@ -3188,13 +3252,18 @@ If a driver package or `linux-image-aws` is not held, stop: first boot did not f
 - [ ] **Step 3: STOP — the human partner approves pushing the branch**
 
 ```bash
+CLOUD_BRANCH="$(git branch --show-current)"
+if [ -z "$CLOUD_BRANCH" ]; then echo "STOP: detached HEAD has no branch to push"; fi
 git log --oneline main..HEAD
 ```
 
-Show your human partner that list, and ask them to approve pushing `claude/cloud-gpu-ces-revisions-ee5804` to `origin`, the public `lowmason/ces-revisions`, so the VM can clone it. The branch is public once pushed. On a clear yes:
+Show your human partner that list and the value of `CLOUD_BRANCH`, and ask them to approve pushing
+that branch to `origin`, the public `lowmason/ces-revisions`, so the VM can clone it. The branch is
+public once pushed. On a clear yes, recompute the name so the command does not depend on shell state:
 
 ```bash
-git push -u origin claude/cloud-gpu-ces-revisions-ee5804
+CLOUD_BRANCH="$(git branch --show-current)"
+git push -u origin "$CLOUD_BRANCH"
 ```
 
 Underneath: the VM clones over HTTPS without credentials, because the repository is public. The token in Step 6 is only for pushing from the VM.
@@ -3203,16 +3272,30 @@ Underneath: the VM clones over HTTPS without credentials, because the repository
 
 ```bash
 export AWS_PROFILE=ces-revisions
-infra/bin/vm sync-config
+MAC_LINK_COUNTS=/tmp/ces-revisions-mac-link-counts.txt
+VM_LINK_COUNTS=/tmp/ces-revisions-vm-link-counts.txt
+: > "$MAC_LINK_COUNTS"
 for link_set in skills agents commands hooks; do
-  printf '%s on the Mac: %s links\n' "$link_set" "$(find ~/.claude/$link_set -maxdepth 1 -type l | wc -l | tr -d ' ')"
+  links="$(find ~/.claude/$link_set -maxdepth 1 -type l | wc -l | tr -d ' ')"
+  broken="$(find -L ~/.claude/$link_set -maxdepth 1 -type l | wc -l | tr -d ' ')"
+  if [ "$broken" -ne 0 ]; then echo "STOP: $link_set has $broken broken links"; fi
+  printf '%s %s\n' "$link_set" "$links" | tee -a "$MAC_LINK_COUNTS"
 done
-ssh ces-revisions-vm 'wc -l .config/ces-revisions/links/*.txt; ls .claude'
+infra/bin/vm sync-config
+ssh ces-revisions-vm 'for link_set in skills agents commands hooks; do
+  links=$(wc -l < ".config/ces-revisions/links/$link_set.txt" | tr -d " ")
+  printf "%s %s\n" "$link_set" "$links"
+done' > "$VM_LINK_COUNTS"
+cat "$VM_LINK_COUNTS"
+diff "$MAC_LINK_COUNTS" "$VM_LINK_COUNTS"
+ssh ces-revisions-vm 'ls .claude/CLAUDE.md .claude/settings.json'
 ```
 
 Expected:
 - the `+ ssh` and `+ rsync` lines, with no `skipping` line, ending with `gh is not signed in on the VM yet; after gh auth login there, run gh auth setup-git`;
-- the Mac's link counts (32, 7, 3, and 1 on 2026-09-13), which the `wc -l` counts on the VM match;
+- four Mac link-count lines with no `STOP`, the same four counts from the VM's copied link lists,
+  and a silent successful `diff`; the actual counts are deliberately captured at execution time
+  rather than fixed to the 2026-09-13 values;
 - `CLAUDE.md` and `settings.json`.
 
 - [ ] **Step 5: Run `setup.sh` for the first time**
@@ -3220,14 +3303,17 @@ Expected:
 Run in the background:
 
 ```bash
-ssh ces-revisions-vm 'CES_REVISIONS_BRANCH=claude/cloud-gpu-ces-revisions-ee5804 bash -s' < infra/vm/setup.sh
+CLOUD_BRANCH="$(git branch --show-current)"
+if [ -z "$CLOUD_BRANCH" ]; then echo "STOP: detached HEAD has no branch to clone"; fi
+ssh ces-revisions-vm "CES_REVISIONS_BRANCH=$CLOUD_BRANCH bash -s" < infra/vm/setup.sh
 ```
 
 Expected, in order:
 - `== clone the repositories into /home/ubuntu/Projects`, with two `Cloning into` lines;
 - `== install uv from the series that pyproject.toml pins`, with the installer naming `/home/ubuntu/.local/bin`;
 - `== install Python 3.14 and sync the environment with the cuda extra`, then `uv sync` installing packages that include `jax-cuda13-plugin` and the `nvidia-*` wheels;
-- `== link the personal skills, agents, commands, and hooks into ~/.claude`, with `skills: 32 links`, `agents: 7 links`, `commands: 3 links`, and `hooks: 1 links` (the Mac's counts);
+- `== link the personal skills, agents, commands, and hooks into ~/.claude`, with each count equal
+  to the Mac snapshot from Step 4;
 - `== reinstall the cost guards from the checkout`, with no error.
 
 Underneath: piping the script through `bash -s` runs the Mac's copy, because the VM has no checkout yet. From here on, `setup.sh` runs from the VM's own checkout.
@@ -3280,9 +3366,18 @@ done
 ls ~/.claude/CLAUDE.md ~/.claude/settings.json | sed "s|^$HOME|~|"
 git -C ~/Projects/ces-revisions branch --show-current
 EOF
+sed -n '1,4p' docs/decisions/cloud-gpu-evidence/vm-carried-config.txt \
+  | sed -E 's/^([^:]+): ([0-9]+) links, 0 broken$/\1 \2/' \
+  > /tmp/ces-revisions-vm-carried-link-counts.txt
+diff /tmp/ces-revisions-mac-link-counts.txt /tmp/ces-revisions-vm-carried-link-counts.txt
+CLOUD_BRANCH="$(git branch --show-current)"
+test "$(tail -n 1 docs/decisions/cloud-gpu-evidence/vm-carried-config.txt)" = "$CLOUD_BRANCH"
 ```
 
-Expected: `skills: 32 links, 0 broken`, `agents: 7 links, 0 broken`, `commands: 3 links, 0 broken`, and `hooks: 1 links, 0 broken` (the Mac's counts); then `~/.claude/CLAUDE.md` and `~/.claude/settings.json`; then `claude/cloud-gpu-ces-revisions-ee5804`. Underneath: `find -L` follows links, so a link it still reports as type `l` is one whose target is missing.
+Expected: the four link lines exactly match the Mac snapshot and report zero broken links; then
+`~/.claude/CLAUDE.md` and `~/.claude/settings.json`; then the current execution branch. Both
+`diff` and `test` exit 0. Underneath: `find -L` follows links, so a link it still reports as type
+`l` is one whose target is missing.
 
 - [ ] **Step 10: Append to the evidence README, scan the evidence, and commit**
 
@@ -3348,7 +3443,10 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: a line reporting the packages audited, then `73 passed`, with any warnings. `test_session_runs_float64_jax_on_the_expected_devices` asserts the `cpu` backend and four host devices here, so a full pass discharges bullet 6.
+Expected: a line reporting the packages audited, then `382 passed`, with any warnings. Four of
+those cases are live network canaries and 13 are slow cases added before the cloud plans;
+`test_session_runs_float64_jax_on_the_expected_devices` asserts the `cpu` backend and four host
+devices here, so a full pass discharges bullet 6.
 
 - [ ] **Step 3: Run the probe on `dev` (bullet 9)**
 
@@ -3774,7 +3872,9 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: `73 passed`, with any warnings. `tests/test_stack.py` asserts the `gpu` backend and the deterministic flag in `XLA_FLAGS` here, and the slow pilot tests run with `chain_method(4)`'s `"vectorized"`, so a full pass discharges bullet 7 on `l4`.
+Expected: `382 passed`, with any warnings. `tests/test_stack.py` asserts the `gpu` backend and the
+deterministic flag in `XLA_FLAGS` here, and the slow pilot tests run with `chain_method(4)`'s
+`"vectorized"`, so a full pass discharges bullet 7 on `l4`.
 
 - [ ] **Step 8: Compare two GPU runs bit for bit**
 
@@ -4032,7 +4132,7 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: `73 passed`, with any warnings.
+Expected: `382 passed`, with any warnings.
 
 - [ ] **Step 8: Compare two GPU runs bit for bit**
 
@@ -5052,7 +5152,9 @@ uv lock --check
 tofu fmt -check -recursive infra && echo "HCL formatted"
 ```
 
-Expected: `71 passed, 2 deselected`, `2 passed, 71 deselected`, `All checks passed!`, every file already formatted, `uv lock --check` exiting 0, and `HCL formatted`. Then confirm that both roots still match AWS:
+Expected on base `08ed203`: `365 passed, 17 deselected`, `13 passed, 369 deselected`, `All checks
+passed!`, every file already formatted, `uv lock --check` exiting 0, and `HCL formatted`. Then
+confirm that both roots still match AWS:
 
 ```bash
 export AWS_PROFILE=ces-revisions

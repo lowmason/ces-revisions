@@ -72,9 +72,10 @@ Verification bullets in file order (1–14). Decision records live under `docs/d
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
 run them alongside. The cloud GPU environment that later fits run on is its own brainstorming cycle
 outside this roadmap (user decision, 2026-09-13) — no spec requirement covers it — running
-alongside Stages 3–5 and gating Stage 6. On 2026-09-14 its spec and plans 3 and 4 were on branch
-`claude/cloud-gpu-ces-revisions-ee5804`, unexecuted, so a stage plan takes the next free id. Once
-Stage 3 ships, Stages 4, 12, and 13 need nothing further and may run alongside one another. If BLS
+alongside Stages 3–5 and gating Stage 6. Its spec and unexecuted plans 3 and 4 were reconciled onto
+current `main` on 2026-09-16; Plan 3 should start before or alongside Stage 5, and Plan 4 must finish
+before Stage 6. Once Stage 3 ships, Stages 4, 12, and 13 need nothing further and may run alongside
+one another. If BLS
 answers the request in `specs/deferred_items.md` (first-closing dates, matched-sample counts, lapse
 values), resume re-validates Stages 4, 12, and 13 before routing them.
 

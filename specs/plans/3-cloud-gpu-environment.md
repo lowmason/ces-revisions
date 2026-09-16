@@ -1,13 +1,14 @@
-# Cloud GPU Environment, Plan 1 — Account, Zone, Quotas, and Repo Changes Implementation Plan
+# Cloud GPU Environment, Plan 3 — Account, Zone, Quotas, and Repo Changes Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> Spec: specs/cloud-gpu-environment.md, the first of its two plans (Reqs 1, 2, and 7). The spec
+> Spec: specs/cloud-gpu-environment.md, the first of its two implementation plans (Reqs 1, 2, and
+> 7). The spec
 > sits outside specs/ces-revisions-roadmap.md, so no roadmap stage is ticked.
 
 **Goal:** Prepare the AWS account and the Mac (Req 1), choose the region and availability zone by evidence and file the GPU quota requests (Req 2), and make the repo run on GPU hosts (Req 7). Req 7 brings a Linux-only `cuda` extra under a pinned uv series, device-aware tests and chain method, and an engine timing probe with its Mac baseline. No AWS resource is created.
 
-**Architecture:** Tasks 1–4 are operations run with the human partner. Each human step is a gate followed by a machine check. Every AWS command output lands in `docs/decisions/cloud-gpu-evidence/`, narrowed so that no account identifier is committed. The GPU quota requests go out in Task 4, as soon as credentials and the zone choice exist, because approval may take days and sets the second plan's timeline. Tasks 5–10 need no AWS access and run while approval is pending:
+**Architecture:** Tasks 1–4 are operations run with the human partner. Each human step is a gate followed by a machine check. Every AWS command output lands in `docs/decisions/cloud-gpu-evidence/`, narrowed so that no account identifier is committed. The GPU quota requests go out in Task 4, as soon as credentials and the zone choice exist, because approval may take days and sets Plan 4's timeline. Tasks 5–10 need no AWS access and run while approval is pending:
 - `src/ces_revisions/devices.py` holds the device facts that `tests/conftest.py`, `tests/test_stack.py`, and the synthetic pilot consult.
 - `src/ces_revisions/engine_probe.py` times `jax.value_and_grad` of the Kalman filter's log likelihood and writes one JSON record per host.
 
@@ -15,13 +16,46 @@
 
 **Source:** [`specs/cloud-gpu-environment.md`](../cloud-gpu-environment.md) Reqs 1, 2, and 7, Req 3's secrets rule, the Rollout note, and Verification bullets 1 and 13 and the Mac run of bullet 9.
 
-**Retirement:** When this plan retires to `specs/plans/completed/`, `specs/cloud-gpu-environment.md` does **not** retire with it. At Plan Completion Protocol step 5, move only this plan, even though no other live plan in `specs/plans/` implements the spec yet. The spec's second plan (Reqs 3–6 and 8–10) has not run, and the spec retires when that plan completes.
+**Retirement:** When this plan retires to `specs/plans/completed/`, `specs/cloud-gpu-environment.md` does **not** retire with it. At Plan Completion Protocol step 5, move only this plan. Plan 4 (`specs/plans/4-cloud-gpu-environment.md`) still implements Reqs 3–6 and 8–10, and the spec retires when Plan 4 completes.
 
-## Planning evidence (2026-09-13)
+## Current-main reconciliation (2026-09-16)
+
+This plan was transplanted without the stale roadmap commit from
+`claude/cloud-gpu-ces-revisions-ee5804` onto `main` at `08ed203`. The current-main baseline was
+measured before this file was revised:
+
+| Selection | Current-main result | Plan 3 final result |
+|---|---:|---:|
+| `pytest -m "not slow and not network"` | 324 passed, 17 deselected | 330 passed, 17 deselected |
+| `pytest --collect-only -m slow` | 13 selected, 328 deselected | 13 selected, 334 deselected |
+| `pytest --collect-only -m network` | 4 selected, 337 deselected | 4 selected, 343 deselected |
+| All collected tests | 341 | 347 |
+
+The six new fast tests are three in `tests/test_devices.py` and three in
+`tests/test_engine_probe.py`; this plan adds no slow or network tests. Stage 3 added `fastexcel` to
+the stack-import parametrization and Stage 4 added `python-dotenv`, annual-source code, and more
+slow/network tests. Task 7 therefore preserves every current stack module instead of replacing the
+file with the six-module 2026-09-13 version. Tasks 5 and 10 anchor against the current
+`pyproject.toml`, `.gitignore`, README, and CLAUDE.md text and preserve all Stage 2–4 documentation.
+The path-level diff from the original `cd835c5` base through `08ed203` confirms that
+`src/ces_revisions/kalman.py`, `tests/conftest.py`, and `tests/test_synthetic_pilot.py` did not
+change, so their code-level plan anchors remain current; `tests/test_stack.py` did change and is
+the whole-file example revised below.
+
+These exact counts are evidence for base `08ed203`, not magic constants. If execution starts after
+another roadmap stage lands, first rerun the three collection commands above, record the new
+baseline in the deviation note, and recompute each later total from the explicit `+3`, `+3`,
+`+13`, `+16`, `+4`, and `+2` test deltas in Plans 3 and 4. Never delete, deselect, or loosen an
+unrelated test to recover a historical count.
+
+The roadmap now carries the Stage 6 dependency semantically. No cloud-branch commit hash is a
+precondition: Plan 4 checks the live Stage 6 `Consumes` text instead.
+
+### Original planning evidence (2026-09-13)
 
 This plan's code was run before the plan was written, in a scratch clone of `cd835c5` under uv 0.9.5, and its filters were run against synthetic AWS outputs. Deviations from these outcomes are signals, not noise:
 
-- **Roadmap amendment.** The Stage 2 session's roadmap resume makes Stage 6 consume this environment. It is committed on this branch as `b7e2a85`, cherry-picked from `d13592b` on `stage-2-inventory`, which meets the second plan's precondition.
+- **Roadmap amendment.** The Stage 2 session's roadmap resume made Stage 6 consume this environment. The current-main reconciliation preserves that dependency in `specs/ces-revisions-roadmap.md`; the old cloud-branch commit identity is deliberately not a precondition.
 - **Versions.** Homebrew offered:
   - awscli 2.36.44;
   - opentofu 1.12.6;
@@ -30,11 +64,13 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
 
   uv 0.12.0's changelog lists no build-backend configuration change and says to raise any `uv_build` upper bound to allow 0.12.
 - **The `cuda` extra.** jax 0.11.1's `cuda13` extra pins `jaxlib==0.11.1` and `jax-cuda13-plugin[with-cuda]==0.11.1`, which has cp314 manylinux wheels for x86_64. With the extra, `uv lock` added 17 CUDA packages: `jax-cuda13-plugin`, `jax-cuda13-pjrt`, and 15 `nvidia-*` packages. The default environment's `uv export` was unchanged, and `uv sync --locked --extra cuda` installed nothing on the Mac.
-- **XLA's determinism flag.** jaxlib 0.11.1 pins openxla/xla `dcf304bc`. Its `xla/debug_options_flags.cc` defines `xla_gpu_deterministic_ops`, described as "Guarantees run-to-run determinism on GPU." On the Mac, a JAX operation ran under `XLA_FLAGS=--xla_gpu_deterministic_ops=true`, while an unknown flag aborted with `Unknown flag in XLA_FLAGS`. That settles the flag's name. Whether the flag makes GPU runs deterministic is the second plan's check on `l4` and `h100`.
+- **XLA's determinism flag.** jaxlib 0.11.1 pins openxla/xla `dcf304bc`. Its `xla/debug_options_flags.cc` defines `xla_gpu_deterministic_ops`, described as "Guarantees run-to-run determinism on GPU." On the Mac, a JAX operation ran under `XLA_FLAGS=--xla_gpu_deterministic_ops=true`, while an unknown flag aborted with `Unknown flag in XLA_FLAGS`. That settles the flag's name. Whether the flag makes GPU runs deterministic is Plan 4's check on `l4` and `h100`.
 - **NumPyro.** `numpyro.set_host_device_count` rewrites `XLA_FLAGS` by removing only its own flag and prepending it, so a flag set beforehand survives.
-- **Tests and lint.** With the code of Tasks 6–8:
-  - the fast tier passed 36 tests (30 before);
-  - the slow tier passed 2 tests in 16 s;
+- **Tests and lint.** In the original scratch clone, with the code of Tasks 6–8:
+  - the fast tier passed 36 tests (30 before); these are historical counts, superseded by the
+    current-main table above;
+  - the then-two-test slow tier passed in 16 s; current main has 13 slow cases because Stage 3's
+    build cases also carry the marker;
   - `ruff check` and `ruff format --check` were clean.
 
   Ruff formats Python blocks inside Markdown, including this plan's.
@@ -46,7 +82,7 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
   | 4 | 1.33 s | 1.78 s |
   | 16 | 3.77 s | 6.02 s |
 
-  The run took 77 s of wall time. Batch 16 peaked at 11.9 GB resident memory, a figure the second plan needs for its `dev` size, which has 16 GiB.
+  The run took 77 s of wall time. Batch 16 peaked at 11.9 GB resident memory, a figure Plan 4 needs for its `dev` size, which has 16 GiB.
 - **Filters.** Task 3's region filter was run on synthetic outputs:
   - it rejected a region whose only p5.4xlarge price was a Capacity Block price;
   - it rejected a region with no zone offering all three types;
@@ -58,18 +94,24 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
 
 ## Execution notes
 
-- **Where.** Execute in the worktree `.claude/worktrees/cloud-gpu-ces-revisions-ee5804` on branch `claude/cloud-gpu-ces-revisions-ee5804`, where the spec lives. Never commit in the main checkout (`/Users/lowell/Projects/ces-revisions`), because other sessions switch its branch without notice.
+- **Where.** After this reconciled plan is on `main`, execute it in a fresh isolated worktree and a
+  new `codex/` feature branch created from then-current `main`; do not reuse
+  `.claude/worktrees/cloud-gpu-ces-revisions-ee5804` or its detached checkout. Record the execution
+  branch with `git branch --show-current`; Plan 4 derives that name at runtime rather than assuming
+  one.
 - **Who runs what.** Tasks 1–4 contain the human partner's steps and an approval gate:
   - The controller runs them itself, in order, with the human partner present, and dispatches no implementer subagent for them.
   - **STOP** marks a gate. Say what the human partner must do, wait for their confirmation, then run the check that follows.
   - Tasks 5–10 suit subagent-driven-development.
 - **Ordering.** Credentials (Task 2) come before any AWS call, and the quota requests (Task 4) follow the zone choice (Task 3) with nothing in between. If Task 3 finds no qualifying region, skip Task 4, report to the human partner (Req 2 returns the provider choice to them), and continue with Task 5.
-- **Heads-ups.** Before dispatching Task 5, tell the human partner that it upgrades Homebrew's uv. Every checkout on this Mac shares it, including the main checkout, where the Stage 2 plan may be running. Before Task 9, ask them to pause other heavy work on the Mac, because the probe's baseline is a timing.
+- **Heads-ups.** Before dispatching Task 5, tell the human partner that it upgrades Homebrew's uv,
+  which every checkout on this Mac shares. Before Task 9, ask them to pause other heavy work on the
+  Mac, because the probe's baseline is a timing.
 - **AWS commands.** Shell state does not persist between commands, so every block that calls `aws` starts with `export AWS_PROFILE=ces-revisions`. When a command fails because the credentials expired, ask the human partner to run `aws login --profile ces-revisions` again.
 - **Secrets.** Never write an account ID, ARN, email address, or token into a repo file. For that reason the evidence commands narrow their outputs with `--query`, and every evidence commit first runs the scan in Task 2, Step 7.
 - **Commits.** Every commit step first runs `uv run ruff format` and `uv run ruff check`, then stages files by explicit path. Never run `git add -A`.
 - **Additions to the spec.** Each is small, and each is flagged here:
-  - Task 2 has the human partner activate IAM access to Billing information while signed in as root, so the second plan's cost-allocation-tag and budget steps never need root again.
+  - Task 2 has the human partner activate IAM access to Billing information while signed in as root, so Plan 4's cost-allocation-tag and budget steps never need root again.
   - Task 2 also checks the IAM user's MFA device count, and that root has no access keys.
   - Task 4 reads the Standard On-Demand quota that `dev` (m7i.xlarge) needs, and requests 4 vCPUs only if the quota is below that.
   - `devices.py` exposes `has_nvidia_device()` and `DETERMINISTIC_GPU_FLAG` beside the spec's `chain_method`, so `tests/conftest.py` and `tests/test_stack.py` share one device path and one flag string.
@@ -108,7 +150,7 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
   - hard line breaks as a trailing `\`;
   - pseudo-math containing `_` in code spans;
   - no bare `$…$` math.
-- **Scope:** Reqs 1, 2, and 7 only. The second plan owns:
+- **Scope:** Reqs 1, 2, and 7 only. Plan 4 owns:
   - `infra/`, the guards, and `setup.sh`;
   - the runbook, and the decision record `docs/decisions/cloud-gpu.md`;
   - the probe runs on `dev`, `l4`, and `h100`;
@@ -153,7 +195,7 @@ This plan's code was run before the plan was written, in a scratch clone of `cd8
   - `tofu` (1.10 or later);
   - `session-manager-plugin` on `PATH`.
 
-  Tasks 2–4 call `aws`. The second plan calls all three, and its SSH `ProxyCommand` names `aws` by its absolute path.
+  Tasks 2–4 call `aws`. Plan 4 calls all three, and its SSH `ProxyCommand` names `aws` by its absolute path.
 
 - [ ] **Step 1: Install the AWS CLI and OpenTofu**
 
@@ -205,7 +247,7 @@ No commit: nothing in the repo changed.
 **Interfaces:**
 - Consumes: Task 1's `aws`.
 - Produces:
-  - the AWS CLI profile `ces-revisions`, backed by an `aws login` session for the IAM user, under which every later `aws` command in this plan and in the second plan runs;
+  - the AWS CLI profile `ces-revisions`, backed by an `aws login` session for the IAM user, under which every later `aws` command in this plan and in Plan 4 runs;
   - the evidence directory and its README, which Tasks 3 and 4 extend.
 
 - [ ] **Step 1: STOP — the human partner secures the root user**
@@ -215,7 +257,7 @@ Ask your human partner to sign in to the AWS console as the root user and:
 2. On the same page, under **Access keys**, delete any root access keys.
 3. Open the account menu, choose **Account** → **IAM user and role access to Billing information** → **Edit**, select **Activate IAM Access**, and choose **Update**.
 
-The third setting lets the IAM user open Billing. Without it, the second plan's cost-allocation-tag and budget steps would need root, which is not used after setup. Wait until they confirm all three. Underneath: `aws iam get-account-summary` reports root MFA and root access keys as the flags `AccountMFAEnabled` and `AccountAccessKeysPresent`, which Step 5 checks.
+The third setting lets the IAM user open Billing. Without it, Plan 4's cost-allocation-tag and budget steps would need root, which is not used after setup. Wait until they confirm all three. Underneath: `aws iam get-account-summary` reports root MFA and root access keys as the flags `AccountMFAEnabled` and `AccountAccessKeysPresent`, which Step 5 checks.
 
 - [ ] **Step 2: STOP — the human partner creates the IAM user**
 
@@ -284,7 +326,7 @@ Create `docs/decisions/cloud-gpu-evidence/README.md`:
 ````markdown
 # Cloud GPU environment: account and zone evidence
 
-Command outputs recorded by plan 3, the first plan of [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which the spec's second plan writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.
+Command outputs recorded by Plan 3, the first implementation plan for [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which Plan 4 writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.
 
 No file here holds an account ID, an ARN, an email address, or a token. Outputs that carry one were narrowed with `--query` before they were written. Before each commit, this directory was searched for the account ID, for ARNs, and for at signs.
 
@@ -331,7 +373,7 @@ git commit -m "Record the cloud GPU account's identity checks"
 
 **Interfaces:**
 - Consumes: Task 2's `ces-revisions` profile.
-- Produces: `zone-choice.json`, shaped `{"evaluated": [region records, in order], "chosen": {"region": …, "zone": …} or null}`. Each region record is `{"region", "p5_4xlarge_on_demand_usd_per_hour": [numbers], "zones_offering_all_three": [zone names], "qualifies": bool}`. Task 4 reads `.chosen.region`. The second plan reads `.chosen.region` and `.chosen.zone` into its OpenTofu variables.
+- Produces: `zone-choice.json`, shaped `{"evaluated": [region records, in order], "chosen": {"region": …, "zone": …} or null}`. Each region record is `{"region", "p5_4xlarge_on_demand_usd_per_hour": [numbers], "zones_offering_all_three": [zone names], "qualifies": bool}`. Task 4 reads `.chosen.region`. Plan 4 reads `.chosen.region` and `.chosen.zone` into its OpenTofu variables.
 
 - [ ] **Step 1: Evaluate the candidates in order and record the choice**
 
@@ -401,7 +443,7 @@ A failed AWS call stops the loop before it can skip past an unevaluated region, 
 
 Underneath:
 - The Price List Query API is served from a few regions only, us-east-1 among them, so every pricing call goes there with the target region as a filter. It returns each product as a JSON string, which `fromjson` decodes.
-- AWS's August 2025 announcement sold single-GPU P5 On-Demand only outside the US, so a US region may list the type with only a Capacity Block price. The `marketoption` filter keeps such a price from qualifying the region. The first successful p5.4xlarge On-Demand start, in the second plan, settles that question for good.
+- AWS's August 2025 announcement sold single-GPU P5 On-Demand only outside the US, so a US region may list the type with only a Capacity Block price. The `marketoption` filter keeps such a price from qualifying the region. The first successful p5.4xlarge On-Demand start, in Plan 4, settles that question for good.
 
 - [ ] **Step 2: STOP if no region qualified**
 
@@ -489,7 +531,7 @@ Expected: `git status` shows only staged (`A`) files before the commit. An untra
 
 **Interfaces:**
 - Consumes: Task 3's `zone-choice.json` (`.chosen.region`).
-- Produces: the request IDs and submission statuses in `service-quotas-request-increase-<region>.json`. The second plan's `l4` and `h100` steps wait until `get-requested-service-quota-change` reports `APPROVED` for the matching request.
+- Produces: the request IDs and submission statuses in `service-quotas-request-increase-<region>.json`. Plan 4's `l4` and `h100` steps wait until `get-requested-service-quota-change` reports `APPROVED` for the matching request.
 
 - [ ] **Step 1: Read the prior values and earlier requests**
 
@@ -556,7 +598,7 @@ aws service-quotas request-service-quota-increase --region "$REGION" --service-c
   --quota-code "$CODE" --desired-value "$DESIRED"
 ```
 
-Explain that it is outward-facing: AWS may open a support case under the account and email the account's address. Proceed only on a clear yes. If they decline, record nothing further, tell them that the second plan's GPU steps cannot start without the quotas, and continue with Task 5.
+Explain that it is outward-facing: AWS may open a support case under the account and email the account's address. Proceed only on a clear yes. If they decline, record nothing further, tell them that Plan 4's GPU steps cannot start without the quotas, and continue with Task 5.
 
 - [ ] **Step 4: Submit the approved requests**
 
@@ -644,7 +686,7 @@ git commit -m "Request the cloud GPU quotas and record prior values and request 
 
 Tell your human partner:
 - the request IDs and statuses from Step 4;
-- that the `dev` half of the second plan can start without them, and its `l4` and `h100` steps wait for `APPROVED`;
+- that the `dev` half of Plan 4 can start without them, and its `l4` and `h100` steps wait for `APPROVED`;
 - that the status loop in the evidence README checks progress.
 
 If AWS emails the account's address asking for a use case, the reply is theirs to send. They might adapt:
@@ -671,7 +713,7 @@ automatically when idle and capped by a $150/month budget.
   - `uv_build>=0.9.5,<0.13.0`;
   - a lock that resolves the extra.
 
-  From this commit on, a uv outside the 0.12 series refuses to run in this project. The second plan's `setup.sh` runs `uv sync --locked --extra cuda` against this lock.
+  From this commit on, a uv outside the 0.12 series refuses to run in this project. Plan 4's `setup.sh` runs `uv sync --locked --extra cuda` against this lock.
 
 - [ ] **Step 1: Upgrade uv to the pinned series**
 
@@ -689,7 +731,9 @@ uv export --frozen --no-hashes --no-header --no-emit-project > /tmp/ces-revision
 wc -l < /tmp/ces-revisions-export-before.txt
 ```
 
-Expected: about 205 lines. `--frozen` reads `uv.lock` as it stands, without resolving again.
+Expected: about 209 lines on base `08ed203`. Record the observed number; the correctness check in
+Step 5 is equality of the before/after exports, not this historical line count. `--frozen` reads
+`uv.lock` as it stands, without resolving again.
 
 - [ ] **Step 3: Add the extra, the uv pin, and the wider `uv_build` range**
 
@@ -776,7 +820,8 @@ Expected:
 uv run pytest -m "not slow and not network" -q
 ```
 
-Expected: `30 passed, 2 deselected`.
+Expected on base `08ed203`: `324 passed, 17 deselected`. If the preflight baseline is newer, expect
+that recorded fast count unchanged; Task 5 adds no tests.
 
 - [ ] **Step 7: Commit**
 
@@ -917,7 +962,9 @@ The keyword `chain_method=` and the function `chain_method` share a name. Python
 uv run pytest -m slow -q
 ```
 
-Expected: `2 passed` in about 15 s. On the Mac, both calls return `"parallel"`, as the literal did.
+Expected on base `08ed203`, after Task 6 adds three fast tests: `13 passed, 331 deselected` in about
+30 s. On the Mac, both pilot calls return `"parallel"`, as the literal did; the other 11 selected
+cases are Stage 3 build checks and must remain selected.
 
 - [ ] **Step 7: Commit**
 
@@ -936,7 +983,7 @@ git commit -m "Choose NumPyro's chain method from the devices JAX sees"
 
 **Interfaces:**
 - Consumes: Task 6's `NVIDIA_DEVICE` and `has_nvidia_device()`.
-- Produces: `ces_revisions.devices.DETERMINISTIC_GPU_FLAG = "--xla_gpu_deterministic_ops=true"`, which the test session's `XLA_FLAGS` contains on any host with `/dev/nvidia0`. The second plan's `l4` and `h100` runs of `uv run pytest` take the GPU branch of `test_session_runs_float64_jax_on_the_expected_devices`.
+- Produces: `ces_revisions.devices.DETERMINISTIC_GPU_FLAG = "--xla_gpu_deterministic_ops=true"`, which the test session's `XLA_FLAGS` contains on any host with `/dev/nvidia0`. Plan 4's `l4` and `h100` runs of `uv run pytest` take the GPU branch of `test_session_runs_float64_jax_on_the_expected_devices`.
 
 - [ ] **Step 1: Write the failing device-expectation test**
 
@@ -956,13 +1003,15 @@ import pytest
 from ces_revisions.devices import DETERMINISTIC_GPU_FLAG, has_nvidia_device
 
 # One importable module per pinned distribution: runtime jax, numpy, numpyro, arviz,
-# and polars; dynamax from the dev group, as engine-determination evidence only.
+# polars, and fastexcel, the Excel reader behind Stage 3's workbooks; dynamax from the dev
+# group, as engine-determination evidence only.
 STACK_MODULES = [
     "jax",
     "numpy",
     "numpyro",
     "arviz",
     "polars",
+    "fastexcel",
     "dynamax.linear_gaussian_ssm",
 ]
 
@@ -1056,7 +1105,8 @@ Underneath: XLA reads `XLA_FLAGS` once, when JAX first touches a device. On a GP
 uv run pytest -m "not slow and not network" -q
 ```
 
-Expected: `33 passed, 2 deselected`. On the Mac, the device test takes its CPU branch. Its GPU branch runs in the second plan.
+Expected on base `08ed203`: `327 passed, 17 deselected`. On the Mac, the device test takes its CPU
+branch. Its GPU branch runs in Plan 4.
 
 - [ ] **Step 6: Check the flag's name against the installed XLA**
 
@@ -1065,7 +1115,7 @@ XLA_FLAGS=--xla_gpu_deterministic_ops=true uv run python -c "import jax.numpy as
 XLA_FLAGS=--xla_no_such_flag=true uv run python -c "import jax.numpy as jnp; print(float(jnp.ones(2).sum()))"
 ```
 
-Expected: the first prints `2.0`, and the second aborts with `Unknown flag in XLA_FLAGS: --xla_no_such_flag=true`. Together they show that the installed XLA defines the flag, which settles Req 7's open item as far as its name. Whether the flag makes GPU runs deterministic is the second plan's check.
+Expected: the first prints `2.0`, and the second aborts with `Unknown flag in XLA_FLAGS: --xla_no_such_flag=true`. Together they show that the installed XLA defines the flag, which settles Req 7's open item as far as its name. Whether the flag makes GPU runs deterministic is Plan 4's check.
 
 - [ ] **Step 7: Commit**
 
@@ -1098,7 +1148,7 @@ git commit -m "Enable XLA's deterministic GPU ops on NVIDIA hosts and expect the
   - `nvidia_driver`, null where `nvidia-smi` is absent;
   - `timestamp_utc`, the run's start in ISO 8601 with its offset.
 
-  Task 9 writes the Mac's record. The second plan writes the `dev`, `l4`, and `h100` records and tabulates all four in the decision record.
+  Task 9 writes the Mac's record. Plan 4 writes the `dev`, `l4`, and `h100` records and tabulates all four in the decision record.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1407,7 +1457,7 @@ uv run pytest tests/test_engine_probe.py -q
 uv run pytest -m "not slow and not network" -q
 ```
 
-Expected: `3 passed`, then `36 passed, 2 deselected`.
+Expected: `3 passed`, then, on base `08ed203`, `330 passed, 17 deselected`.
 
 - [ ] **Step 5: Commit**
 
@@ -1465,7 +1515,8 @@ git commit -m "Record the engine probe's Mac baseline at T=280, n=150, p=70"
 
 **Interfaces:**
 - Consumes: everything Tasks 5–9 produced.
-- Produces: the ignore rules that the second plan's `infra/` relies on, and documentation of the `cuda` extra, `devices.py`, and `engine_probe.py`. The second plan adds the `infra/` and runbook references.
+- Produces: the ignore rules that Plan 4's `infra/` relies on, and documentation of the `cuda`
+  extra, `devices.py`, and `engine_probe.py`. Plan 4 adds the `infra/` and runbook references.
 
 - [ ] **Step 1: Ignore OpenTofu's local and per-user files**
 
@@ -1503,13 +1554,13 @@ Make five edits to `CLAUDE.md`.
 First, under **Layout and tooling**, replace the Python bullet:
 
 ````markdown
-- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`). Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), and Polars; Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
+- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`). Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), Polars, and fastexcel (Polars' Excel reader, for Stage 3's workbooks); Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
 ````
 
 with:
 
 ````markdown
-- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`) and uv 0.12: `[tool.uv] required-version = "~=0.12.13"` holds the Mac and the cloud VM to one uv series, so `uv.lock` is written one way. Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), and Polars. The `cuda` extra adds `jax[cuda13]` on Linux only: on an NVIDIA host `uv sync --extra cuda` installs JAX's CUDA 13 plugin, and on the Mac it installs nothing. Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
+- Python 3.14 (`.python-version`; `requires-python = ">=3.14"`) and uv 0.12: `[tool.uv] required-version = "~=0.12.13"` holds the Mac and the cloud VM to one uv series, so `uv.lock` is written one way. Runtime dependencies are JAX, NumPy, NumPyro, ArviZ 1.x (`az.from_numpyro` returns an xarray `DataTree`), Polars, fastexcel (Polars' Excel reader, for Stage 3's workbooks), and python-dotenv (the Stage 4 network-command contact configuration). The `cuda` extra adds `jax[cuda13]` on Linux only: on an NVIDIA host `uv sync --extra cuda` installs JAX's CUDA 13 plugin, and on the Mac it installs nothing. Dynamax is a dev-only dependency kept as evidence for `docs/decisions/engine.md`.
 ````
 
 Second, in the Kalman engine bullet, replace:
@@ -1554,7 +1605,8 @@ First, in the Status tree, replace:
 ````text
   plans/                              implementation plans, one per roadmap stage
 docs/decisions/                       decision records (engine.md: the Kalman engine)
-src/ces_revisions/                    Python package (src layout); kalman.py is the state-space engine
+src/ces_revisions/                    Python package (src layout); kalman.py is the state-space engine, vintages/ the vintage panel
+data/raw/                             committed source files for the vintage panel, with a manifest of their hashes
 ````
 
 with:
@@ -1566,7 +1618,10 @@ docs/decisions/                       decision records (engine.md: the Kalman en
   cloud-gpu-evidence/                 AWS account, zone, and quota evidence for the cloud GPU environment
   cloud-gpu-probe/                    engine timing records, starting with the Mac baseline
 src/ces_revisions/                    Python package (src layout): kalman.py is the state-space engine,
+                                      vintages/ and annual/ build the Stage 3/4 inputs,
                                       devices.py picks the chain method, engine_probe.py times the engine
+data/raw/                             committed source files for the vintage panel, with a manifest of their hashes
+data/annual/raw/                      committed annual benchmark, birth-death, QCEW, and sample sources
 ````
 
 Second, in **Getting started**, replace:
@@ -1597,9 +1652,9 @@ uv run ruff format --check
 uv lock --check
 ```
 
-Expected:
-- `36 passed, 2 deselected`;
-- `2 passed, 36 deselected`;
+Expected on base `08ed203`:
+- `330 passed, 17 deselected`;
+- `13 passed, 334 deselected`;
 - `All checks passed!`;
 - every file already formatted, including Markdown;
 - `uv lock --check` exits 0.
@@ -1614,20 +1669,22 @@ git add .gitignore CLAUDE.md README.md
 git commit -m "Document the cuda extra, device module, and engine probe, and ignore OpenTofu state"
 ```
 
-## Handoff to the second plan
+## Handoff to Plan 4
 
-The spec's second plan (Reqs 3–6 and 8–10) consumes this plan's results:
+Plan 4 (Reqs 3–6 and 8–10) consumes this plan's results:
 
 - **Credentials.** The `ces-revisions` profile from Task 2. Whether OpenTofu reads that `aws login` session natively or through `credential_process` is still open (Verification bullet 3).
 - **Location.** `.chosen.region` and `.chosen.zone` in `docs/decisions/cloud-gpu-evidence/zone-choice.json`, from Task 3.
-- **Quotas.** The request IDs in `service-quotas-request-increase-<region>.json`, from Task 4. The second plan's `l4` and `h100` steps wait for `APPROVED`; its `dev` steps do not.
-- **Repo.** The second plan builds on these pieces:
+- **Quotas.** The request IDs in `service-quotas-request-increase-<region>.json`, from Task 4. Plan
+  4's `l4` and `h100` steps wait for `APPROVED`; its `dev` steps do not.
+- **Repo.** Plan 4 builds on these pieces:
   - the `cuda` extra and the uv 0.12 pin, since `setup.sh` installs uv from that series and runs `uv sync --locked --extra cuda`;
   - `chain_method` and the device expectation in `tests/test_stack.py`;
   - the probe, with its Mac record at `docs/decisions/cloud-gpu-probe/mac.json`.
 - **Evidence for the decision record.** Everything under `docs/decisions/cloud-gpu-evidence/`, plus this plan's planning evidence. That includes the 11.9 GB peak at batch 16, which the `dev` size's 16 GiB must accommodate.
-- **Precondition.** The roadmap amendment that makes Stage 6 consume this environment is already committed on this branch, as `b7e2a85`.
-- **Open items the second plan discharges.**
+- **Precondition.** The live roadmap makes Stage 6 consume this environment and its decision record;
+  Plan 4 checks that semantic text and does not depend on the stale cloud branch's commit hash.
+- **Open items Plan 4 discharges.**
   - Req 1: how OpenTofu reads the `aws login` session.
   - Req 2: the first p5.4xlarge On-Demand start.
   - Req 4: the desktop app's SSH connection.

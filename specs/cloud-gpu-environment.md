@@ -1,9 +1,11 @@
 # Cloud GPU development environment — Design Spec
 
-> For agentic workers: REQUIRED NEXT SKILL: writing-plans — plan this spec as two plans, split
-> where the Rollout note says: plan 1 covers Reqs 1, 2, and 7 and creates no AWS resource; plan 2
-> covers Reqs 3–6 and 8–10. It sits outside
-> [`specs/ces-revisions-roadmap.md`](ces-revisions-roadmap.md); do not route it through
+> Implementation is split between
+> [`specs/plans/3-cloud-gpu-environment.md`](plans/3-cloud-gpu-environment.md), which covers Reqs 1,
+> 2, and 7 and creates no AWS resource, and
+> [`specs/plans/4-cloud-gpu-environment.md`](plans/4-cloud-gpu-environment.md), which covers Reqs 3–6
+> and 8–10. Execute Plan 3 before Plan 4, following each plan's required sub-skill. This spec sits
+> outside [`specs/ces-revisions-roadmap.md`](ces-revisions-roadmap.md); do not route it through
 > derive-roadmap.
 
 A remote development environment for ces-revisions on AWS: one EC2 instance on one EBS disk whose
@@ -20,6 +22,13 @@ several sizes. Facts about AWS, NVIDIA hardware, and the tools were checked on 2
 the sources listed at the end; prices are us-east-1 On-Demand on that date. **(open — resolved by
 verification)** marks a fact documentation could not settle; a named Verification bullet
 discharges each.
+
+Current-main reconciliation: on 2026-09-16 the spec and its two unexecuted plans were transplanted
+from `claude/cloud-gpu-ces-revisions-ee5804` onto current `main` at `08ed203`, after roadmap Stages
+2–4 had shipped. The plan documents preserve the 2026-09-13 cloud research as dated evidence but
+replace the old branch, test-count, dependency, README, and CLAUDE.md assumptions with contracts
+against that current-main snapshot. Dynamic AWS offerings, quotas, prices, package versions, and
+personal-configuration counts remain execution-time checks rather than rebasing assumptions.
 
 ## Motivation
 
@@ -305,9 +314,11 @@ roadmap assigns it, not in this record.
 
 ## Rollout note
 
-This spec sits outside the roadmap and carries no stage stamp. It runs alongside roadmap Stages 2–5
-and gates Stage 6. The roadmap committed on this spec's branch predates the Stage 2 session's
-amendment that makes Stage 6 consume this environment; this spec does not edit the roadmap.
+This spec sits outside the roadmap and carries no stage stamp. It was designed to run alongside
+roadmap Stages 2–5 and gates Stage 6. At the 2026-09-16 current-main reconciliation, Stages 2–4 were
+complete and Stage 5 had a committed implementation plan but had not run. Plan 3 should therefore
+start before or alongside Stage 5, Plan 4 may overlap Stage 5 after Plan 3 completes, and neither
+plan changes the Stage 6 gate recorded in the roadmap.
 
 GPU quota approval is the critical path, so its request goes out first and nothing on the CPU path
 waits for it:
@@ -319,8 +330,8 @@ waits for it:
 5. The `l4` bullets, then the `h100` bullets, each once its quota is approved.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
 
-Plan 1 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
-documents the `cuda` extra, `devices.py`, and `engine_probe.py`. Plan 2 is steps 4–6. It adds the
+Plan 3 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
+documents the `cuda` extra, `devices.py`, and `engine_probe.py`. Plan 4 is steps 4–6. It adds the
 `infra/` and runbook references to CLAUDE.md and the README and discharges the remaining bullets;
 its GPU steps wait on quota approval, and its `dev` steps do not.
 
