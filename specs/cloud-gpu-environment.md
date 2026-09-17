@@ -1,7 +1,7 @@
 # Cloud GPU development environment — Design Spec
 
 > Implementation is split between
-> [`specs/plans/3-cloud-gpu-environment.md`](plans/3-cloud-gpu-environment.md), which covers Reqs 1,
+> [`specs/plans/completed/3-cloud-gpu-environment.md`](plans/completed/3-cloud-gpu-environment.md), which covers Reqs 1,
 > 2, and 7 and creates no AWS resource, and
 > [`specs/plans/4-cloud-gpu-environment.md`](plans/4-cloud-gpu-environment.md), which covers Reqs 3–6
 > and 8–10. Execute Plan 3 before Plan 4, following each plan's required sub-skill. This spec sits

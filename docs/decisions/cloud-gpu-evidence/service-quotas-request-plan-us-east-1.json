@@ -1,0 +1,26 @@
+[
+  {
+    "QuotaName": "Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances",
+    "QuotaCode": "L-1216C47A",
+    "Value": 5.0,
+    "DesiredValue": 4,
+    "OpenRequestId": null,
+    "Action": "none: already at target"
+  },
+  {
+    "QuotaName": "Running On-Demand G and VT instances",
+    "QuotaCode": "L-DB2E81BA",
+    "Value": 0.0,
+    "DesiredValue": 4,
+    "OpenRequestId": null,
+    "Action": "request"
+  },
+  {
+    "QuotaName": "Running On-Demand P instances",
+    "QuotaCode": "L-417A185B",
+    "Value": 0.0,
+    "DesiredValue": 16,
+    "OpenRequestId": null,
+    "Action": "request"
+  }
+]

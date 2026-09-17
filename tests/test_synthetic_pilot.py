@@ -21,6 +21,7 @@ from synthetic_pilot import (
     simulate_panel,
 )
 
+from ces_revisions.devices import chain_method
 from ces_revisions.kalman import kalman_filter
 
 SEED = sum(map(ord, "ces-revisions-stage-1-synthetic-pilot"))
@@ -83,7 +84,7 @@ def test_pilot_fit_meets_mcmc_thresholds_and_recovers_the_truth(panel):
         num_warmup=NUM_DRAWS,
         num_samples=NUM_DRAWS,
         num_chains=NUM_CHAINS,
-        chain_method="parallel",
+        chain_method=chain_method(NUM_CHAINS),
         progress_bar=False,
     )
     fields = ("diverging", "energy", "num_steps")
@@ -112,13 +113,15 @@ def test_pilot_fit_meets_mcmc_thresholds_and_recovers_the_truth(panel):
 
 @pytest.mark.slow
 def test_pilot_draws_are_identical_under_a_fixed_seed(panel):
+    num_chains = 2
+
     def draws():
         mcmc = MCMC(
             NUTS(pilot_model),
             num_warmup=50,
             num_samples=50,
-            num_chains=2,
-            chain_method="parallel",
+            num_chains=num_chains,
+            chain_method=chain_method(num_chains),
             progress_bar=False,
         )
         mcmc.run(jax.random.PRNGKey(SEED), panel)

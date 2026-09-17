@@ -17,11 +17,16 @@ dependencies = [
     "python-dotenv>=1.0",
 ]
 
+[project.optional-dependencies]
+# JAX's CUDA 13 plugin for the cloud GPU sizes. Linux-only, so the Mac's
+# `uv sync --extra cuda` installs nothing new.
+cuda = ["jax[cuda13]>=0.11.1; sys_platform == 'linux'"]
+
 [project.scripts]
 ces-revisions = "ces_revisions:main"
 
 [build-system]
-requires = ["uv_build>=0.9.5,<0.10.0"]
+requires = ["uv_build>=0.9.5,<0.13.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
@@ -30,6 +35,10 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.7",
 ]
+
+[tool.uv]
+# The Mac and the cloud VM run one uv series, so uv.lock is written one way.
+required-version = "~=0.12.13"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

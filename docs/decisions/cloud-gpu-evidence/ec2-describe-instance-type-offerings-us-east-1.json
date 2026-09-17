@@ -1,0 +1,84 @@
+{
+    "InstanceTypeOfferings": [
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1e"
+        },
+        {
+            "InstanceType": "m7i.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1c"
+        },
+        {
+            "InstanceType": "m7i.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1b"
+        },
+        {
+            "InstanceType": "g6.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1a"
+        },
+        {
+            "InstanceType": "g6.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1b"
+        },
+        {
+            "InstanceType": "m7i.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1f"
+        },
+        {
+            "InstanceType": "m7i.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1a"
+        },
+        {
+            "InstanceType": "g6.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1f"
+        },
+        {
+            "InstanceType": "g6.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1c"
+        },
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1f"
+        },
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1a"
+        },
+        {
+            "InstanceType": "g6.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1d"
+        },
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1c"
+        },
+        {
+            "InstanceType": "m7i.xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1d"
+        },
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1d"
+        },
+        {
+            "InstanceType": "p5.4xlarge",
+            "LocationType": "availability-zone",
+            "Location": "us-east-1b"
+        }
+    ]
+}

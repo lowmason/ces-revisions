@@ -1,0 +1,22 @@
+{
+  "evaluated": [
+    {
+      "region": "us-east-1",
+      "p5_4xlarge_on_demand_usd_per_hour": [
+        6.8800000000
+      ],
+      "zones_offering_all_three": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c",
+        "us-east-1d",
+        "us-east-1f"
+      ],
+      "qualifies": true
+    }
+  ],
+  "chosen": {
+    "region": "us-east-1",
+    "zone": "us-east-1a"
+  }
+}
