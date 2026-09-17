@@ -90,6 +90,23 @@ the long QCEW sequence remains in jobs. Its observation clock distinguishes the
 early quarter-end value in a QCEW news release from prior-quarter revisions and
 other current-quarter months that first appear with the full-data update.
 
+### Deterministic operators
+
+Roadmap Stage 5 turns the Stage 3 vintage panel and Stage 4 annual tables into
+sparse float64 JAX operators and audited Polars fixtures. Rebuild the gitignored
+artifacts with:
+
+```bash
+uv run python scripts/operator_artifacts.py build
+```
+
+The build writes the 2003–2025 benchmark-wedge fixtures, inferred post-March
+components, the link-relative recoverability table, release-specific B→M
+components, and `operator-test-results.json` under `data/operators/`. The
+[link-relative decision](docs/decisions/link-relatives.md) records why every
+public year uses an inferred cumulative job-change representation. Later model
+runs copy the JSON record into their provenance.
+
 On a Linux host with an NVIDIA GPU, `uv sync --extra cuda` also installs JAX's CUDA 13 plugin; the extra is Linux-only, so on the Mac it installs nothing. `src/ces_revisions/devices.py` picks NumPyro's chain method from the devices JAX sees, and `uv run python -m ces_revisions.engine_probe` times the engine's value and gradient on the current host and writes a JSON record like those in [`docs/decisions/cloud-gpu-probe/`](docs/decisions/cloud-gpu-probe/).
 
 The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).

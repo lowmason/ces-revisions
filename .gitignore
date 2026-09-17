@@ -26,6 +26,9 @@ data/panel/
 data/annual/cache/
 data/annual/panel/
 
+# Stage 5 deterministic operator artifacts are rebuilt from the committed Stage 3/4 sources
+data/operators/
+
 # OpenTofu local state, provider caches, and per-user backend and variable files
 *.tfstate
 *.tfstate.*
