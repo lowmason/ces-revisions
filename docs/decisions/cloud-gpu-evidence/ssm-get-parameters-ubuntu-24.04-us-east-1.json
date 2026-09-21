@@ -1,0 +1,11 @@
+{
+  "Parameters": [
+    {
+      "Name": "/aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id",
+      "Value": "ami-025d99823a4caad37",
+      "Version": 76,
+      "LastModifiedDate": "2026-09-04T08:19:02.807000-04:00"
+    }
+  ],
+  "InvalidParameters": []
+}

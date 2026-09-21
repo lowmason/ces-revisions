@@ -1,8 +1,8 @@
 # Cloud GPU environment: account and zone evidence
 
-Command outputs recorded by Plan 3, the first implementation plan for [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1 and 2. The decision record `docs/decisions/cloud-gpu.md`, which Plan 4 writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile.
+Command outputs recorded by plans 3 and 4, the two plans of [`specs/cloud-gpu-environment.md`](../../../specs/cloud-gpu-environment.md), for its Reqs 1–6 and 8. The decision record `docs/decisions/cloud-gpu.md`, which plan 4 writes, cites them. Every `aws` command ran as the IAM user through the `ces-revisions` profile, and every command on the VM ran through the `ces-revisions-vm` SSH host entry.
 
-No file here holds an account ID, an ARN, an email address, or a token. Outputs that carry one were narrowed with `--query` before they were written. Before each commit, this directory was searched for the account ID, for ARNs, and for at signs.
+No file here holds an account ID, an ARN, an email address, or a token. Outputs that carry one were narrowed with `--query` before they were written. Before each commit, this directory and `../cloud-gpu-probe/` were searched for the account ID, the state bucket's name, ARNs, and at signs.
 
 ## Req 1: identity
 
@@ -48,3 +48,8 @@ for ID in $(jq -r '.[].Id' "$EVIDENCE/service-quotas-request-increase-$REGION.js
     --output json
 done
 ```
+
+## Reqs 4 and 5: image
+
+- `ssm-get-parameters-ubuntu-24.04-<region>.json` — `aws ssm get-parameters` for Canonical's parameter that names the current Ubuntu 24.04 LTS amd64 gp3 image, narrowed to its name, value, version, and date. The value is the image pinned in `infra/env/pinned.auto.tfvars`.
+- `ec2-describe-images-<region>.json` — `aws ec2 describe-images` for that image, narrowed to its ID, name, creation date, architecture, root device type, virtualization type, and boot mode. The owner's account ID is left out.
