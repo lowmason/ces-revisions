@@ -10,7 +10,6 @@ writes one JSON record, so runs on the Mac and on each cloud size compare field 
 import argparse
 import importlib.metadata
 import json
-import shutil
 import subprocess
 import time
 from collections.abc import Callable
@@ -22,6 +21,7 @@ import jax.numpy as jnp
 import numpy as np
 import numpyro
 
+from ces_revisions.devices import has_nvidia_device
 from ces_revisions.kalman import LinearGaussianSSM, kalman_filter
 
 # Each transition matrix is this multiple of a random orthogonal matrix, so every
@@ -196,8 +196,9 @@ def _jax_versions() -> dict[str, str]:
 
 
 def _nvidia_driver() -> str | None:
-    """The NVIDIA driver version, or None on a host without nvidia-smi."""
-    if shutil.which("nvidia-smi") is None:
+    """The NVIDIA driver version, or None on a host without an NVIDIA device."""
+    # A CPU size can have the driver's nvidia-smi, which fails there without a GPU.
+    if not has_nvidia_device():
         return None
     query = ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"]
     output = subprocess.run(query, capture_output=True, text=True, check=True).stdout
