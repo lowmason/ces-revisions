@@ -1,0 +1,5 @@
+# Partial backend configuration for infra/env. Copy this file to backend.hcl, which git
+# ignores, and set bucket to the output of: tofu -chdir=infra/state output -raw bucket
+bucket = "ces-revisions-tofu-state-example"
+key    = "env/terraform.tfstate"
+region = "us-east-1"
