@@ -1,0 +1,6 @@
+{
+  "session_manager_shell": true,
+  "ssh_through_session_manager": true,
+  "ssh_host_key_matched_session_manager": true,
+  "desktop_app": "host-entry"
+}

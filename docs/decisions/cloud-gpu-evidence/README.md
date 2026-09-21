@@ -63,3 +63,8 @@ done
 - `opentofu-credentials.json` — the OpenTofu and AWS provider versions, and the AWS profile OpenTofu used: `ces-revisions` when it read the `aws login` session directly, or `ces-revisions-process` when it needed a `credential_process` profile.
 - `ec2-instance-dev.json` — `aws ec2 describe-instances`, `describe-instance-attribute`, and `describe-volumes`, with `aws iam list-attached-role-policies` and `list-role-policies`, for the instance at `dev`. It records the type, zone, image, IMDSv2 setting, whether a public address and an instance profile exist, the shutdown behavior, the root volume, and the role's policies. The address and the profile's ARN are left out.
 - `ec2-network-dev.json` — `aws ec2 describe-security-groups`, `describe-nat-gateways`, `describe-vpc-endpoints`, and `describe-addresses`. It records the security group's ingress rule count and egress rules, the counts of NAT gateways and VPC endpoints in the VPC, and the count of Elastic IPs tagged `project = ces-revisions`.
+
+## Req 4: access
+
+- `ssm-instance-information.json` — `aws ssm describe-instance-information` for the instance after first boot: the agent's ping status and version, and the platform.
+- `access.json` — which access methods opened a session on the VM. It covers a Session Manager shell; SSH through the `ces-revisions-vm` host entry, with the host key checked against the fingerprint read through Session Manager; and how the Claude Code desktop app connected: `host-entry`, `port-forward`, or `neither`.
