@@ -51,6 +51,11 @@ markers = [
     "slow: MCMC or end-to-end runs taking seconds to minutes; deselect with -m 'not slow'",
 ]
 
+[tool.ruff]
+# The cloud VM runs its cost guards with Ubuntu 24.04's system Python, so ruff must not
+# rewrite them into Python 3.14-only syntax.
+per-file-target-version = { "infra/vm/guards/*.py" = "py312" }
+
 [tool.ruff.lint]
 # Enable every isort (I), flake8-bugbear (B), and pyupgrade (UP) rule on top of ruff's
 # default rule set; `select` would replace the defaults instead of extending them.

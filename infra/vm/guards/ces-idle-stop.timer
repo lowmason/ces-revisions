@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for idleness every 5 minutes (ces-revisions cost guard)
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

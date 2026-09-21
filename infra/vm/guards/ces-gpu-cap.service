@@ -1,0 +1,16 @@
+[Unit]
+Description=Power off 8 hours after boot on hosts with an NVIDIA GPU (ces-revisions cost guard)
+# shutdown powers off at once when it cannot reach logind, so logind comes first.
+Wants=systemd-logind.service
+After=systemd-logind.service dbus.socket
+
+[Service]
+Type=oneshot
+# Skip hosts without an NVIDIA PCI device (vendor 0x10de), whatever the driver's state.
+ExecCondition=/bin/sh -c 'grep -qs 0x10de /sys/bus/pci/devices/*/vendor'
+# nvidia-smi creates the /dev/nvidia* files that devices.py and the idle stop look for.
+ExecStartPre=-/usr/bin/nvidia-smi -L
+ExecStart=/usr/sbin/shutdown -h +480
+
+[Install]
+WantedBy=multi-user.target

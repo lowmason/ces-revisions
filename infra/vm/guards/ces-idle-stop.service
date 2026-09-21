@@ -1,0 +1,7 @@
+[Unit]
+Description=Power off after a whole idle window (ces-revisions cost guard)
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/ces-revisions/idle-stop.env
+ExecStart=/usr/bin/python3 /usr/local/lib/ces-revisions/idle_stop.py
