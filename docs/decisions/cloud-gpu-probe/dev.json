@@ -1,0 +1,40 @@
+{
+  "label": "dev",
+  "dimensions": {
+    "steps": 280,
+    "states": 150,
+    "cells": 70
+  },
+  "missing_share": 0.2,
+  "seed": 0,
+  "repeats": 10,
+  "batches": [
+    {
+      "batch": 1,
+      "compile_seconds": 2.380880343000001,
+      "median_seconds": 1.2969581325000092,
+      "iqr_seconds": 0.027018159999997238
+    },
+    {
+      "batch": 4,
+      "compile_seconds": 8.172530308000034,
+      "median_seconds": 6.86559623550005,
+      "iqr_seconds": 0.12259854124994263
+    },
+    {
+      "batch": 16,
+      "compile_seconds": 27.361182321,
+      "median_seconds": 26.483268135499998,
+      "iqr_seconds": 0.25308925499993506
+    }
+  ],
+  "backend": "cpu",
+  "versions": {
+    "jax": "0.11.1",
+    "jax-cuda13-pjrt": "0.11.1",
+    "jax-cuda13-plugin": "0.11.1",
+    "jaxlib": "0.11.1"
+  },
+  "nvidia_driver": null,
+  "timestamp_utc": "2026-09-21T15:57:40+00:00"
+}

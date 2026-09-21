@@ -73,3 +73,10 @@ done
 
 - `vm-first-boot.txt` — on the VM after cloud-init finished: the release and kernels, the held packages, the driver packages' versions, the git and gh versions, the guards' unit states and `systemd-analyze verify`, and `nvidia-smi`'s exit status on `dev`.
 - `vm-carried-config.txt` — on the VM after `setup.sh` and the GitHub token: the skill, agent, command, and hook link counts, with broken links counted; the copied `CLAUDE.md` and `settings.json`; and the checkout's branch.
+
+## Reqs 6 and 8 on `dev`
+
+- `vm-dev-checks.txt` — on `dev`: JAX's backend and device count with the `cuda` extra installed and no GPU, the number of stderr lines, and the first message from JAX's CUDA plugin if any; then `uv sync --locked --extra cuda` and the full test run's summary line.
+- `bls-canary.json` — one by-hand fetch of `https://download.bls.gov/pub/time.series/ce/ce.datatype` from the VM, recorded as its HTTP status and whether BLS allowed it. The User-Agent is not recorded.
+- `vm-idle-stop.txt` — the wait for the idle stop with its window shortened to 10 minutes, its journal line from the boot it ended, and the window restored to 45 minutes.
+- `../cloud-gpu-probe/dev.json` — the engine probe on `dev` at T=280, n=150, p=70, with batch sizes 1, 4, and 16.

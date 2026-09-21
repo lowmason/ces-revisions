@@ -1,0 +1,8 @@
+== waiting for the idle stop, with a 10-minute window
+started 2026-09-21T16:15:16Z
+state stopped after 8 minutes, 2026-09-21T16:22:21Z
+== the idle stop's message in the boot it ended
+2026-09-21T16:21:39+00:00 ip-10-42-1-136 python3[2688]: idle-stop: idle since 1790007016; shutting down
+idle-since UTC 2026-09-21T16:10:16Z
+== the window, restored
+IDLE_WINDOW_MINUTES=45
