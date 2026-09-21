@@ -53,3 +53,7 @@ done
 
 - `ssm-get-parameters-ubuntu-24.04-<region>.json` — `aws ssm get-parameters` for Canonical's parameter that names the current Ubuntu 24.04 LTS amd64 gp3 image, narrowed to its name, value, version, and date. The value is the image pinned in `infra/env/pinned.auto.tfvars`.
 - `ec2-describe-images-<region>.json` — `aws ec2 describe-images` for that image, narrowed to its ID, name, creation date, architecture, root device type, virtualization type, and boot mode. The owner's account ID is left out.
+
+## Req 3: state bucket
+
+- `s3-state-bucket.json` — `aws s3api get-bucket-versioning`, `get-public-access-block`, and `get-bucket-encryption` for the bucket that `infra/state` created, combined without the bucket's name: versioning enabled, all four public access blocks on, and AES256 default encryption. A destroy plan for `infra/state` failed with `Resource instance cannot be destroyed`, which confirms `prevent_destroy`.
