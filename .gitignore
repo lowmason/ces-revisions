@@ -35,3 +35,4 @@ data/operators/
 .terraform/
 backend.hcl
 terraform.tfvars
+size.auto.tfvars

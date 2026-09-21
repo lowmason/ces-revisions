@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+# Operate the ces-revisions cloud GPU VM from the Mac; docs/cloud-gpu-runbook.md explains
+# each command. Every AWS CLI, OpenTofu, ssh, and rsync command is printed before it runs.
+# Written for macOS's bash 3.2: ${@+"$@"} guards empty argument lists under set -u.
+set -euo pipefail
+
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ENV_DIR="${CES_INFRA_ENV_DIR:-$REPO_ROOT/infra/env}"
+VM_MARKER="${CES_VM_MARKER:-/etc/ces-revisions/vm}"
+VM_HOST="${CES_VM_SSH_HOST:-ces-revisions-vm}"
+AWS_PROFILE_NAME="${CES_AWS_PROFILE:-ces-revisions}"
+TOFU_PROFILE_NAME="${CES_TOFU_PROFILE:-$AWS_PROFILE_NAME}"
+VM_PROJECT_KEY="-home-ubuntu-Projects-ces-revisions"
+LINK_SETS="skills agents commands hooks"
+STAGING=""
+
+usage() {
+  cat >&2 <<'EOF'
+usage: infra/bin/vm <command>
+  start                       start the instance and wait until it is running
+  stop                        stop the instance
+  status                      show the instance's state, type, and zone
+  connect                     open a Session Manager shell on the instance
+  forward                     forward the instance's SSH port to localhost:2222
+  size <dev|l4|h100> [ARGS]   switch the instance type with tofu apply (ARGS go to apply)
+  sync-config [--cutover]     copy Claude Code and git settings to the VM
+                              (--cutover also copies this project's memory, once)
+EOF
+  exit 2
+}
+
+run() {
+  printf '+ %s\n' "$*" >&2
+  "$@"
+}
+
+tofu_env() { run env AWS_PROFILE="$TOFU_PROFILE_NAME" tofu -chdir="$ENV_DIR" "$@"; }
+output() { tofu_env output -raw "$1"; }
+
+# The directory name Claude Code gives a project: every character other than a letter,
+# digit, or hyphen becomes a hyphen.
+project_key() { printf '%s' "$1" | sed 's/[^A-Za-z0-9-]/-/g'; }
+
+# Claude Code keys a worktree's memory by its main checkout.
+main_checkout() {
+  dirname "$(git -C "$REPO_ROOT" rev-parse --path-format=absolute --git-common-dir)"
+}
+
+sync_config() {
+  local cutover=false link_set link name target
+  case "${1:-}" in
+    "") ;;
+    --cutover) cutover=true ;;
+    *) usage ;;
+  esac
+  STAGING="$(mktemp -d)"
+  trap 'rm -rf "$STAGING"' EXIT
+  for link_set in $LINK_SETS; do
+    : > "$STAGING/$link_set.txt"
+    for link in "$HOME/.claude/$link_set"/*; do
+      [ -e "$link" ] || [ -L "$link" ] || continue
+      name="$(basename "$link")"
+      target="$(readlink "$link" || true)"
+      if [ "$target" = "$HOME/Projects/agent-skills/$link_set/$name" ]; then
+        printf '%s\n' "$name" >> "$STAGING/$link_set.txt"
+      else
+        echo "skipping $link_set/$name: not a link into ~/Projects/agent-skills/$link_set" >&2
+      fi
+    done
+  done
+  run ssh "$VM_HOST" mkdir -p .claude .config/ces-revisions/links
+  run rsync -a "$HOME/.claude/CLAUDE.md" "$HOME/.claude/settings.json" "$VM_HOST:.claude/"
+  run rsync -a "$HOME/.gitconfig" "$VM_HOST:"
+  # The Mac's gitconfig names the Mac's gh as git's credential helper; the VM's gh
+  # takes that role back once it holds a token.
+  run ssh "$VM_HOST" gh auth setup-git ||
+    echo "gh is not signed in on the VM yet; after gh auth login there, run gh auth setup-git" >&2
+  run rsync -a "$STAGING/" "$VM_HOST:.config/ces-revisions/links/"
+  if [ "$cutover" = true ]; then
+    local memory remote_memory
+    memory="$HOME/.claude/projects/$(project_key "$(main_checkout)")/memory/"
+    remote_memory=".claude/projects/$VM_PROJECT_KEY/memory/"
+    if [ ! -f "${memory}MEMORY.md" ]; then
+      echo "no project memory at $memory" >&2
+      exit 1
+    fi
+    if run ssh "$VM_HOST" test -e "${remote_memory}MEMORY.md"; then
+      echo "the VM already has this project's memory; the cutover copy runs once" >&2
+      exit 1
+    fi
+    run ssh "$VM_HOST" mkdir -p "$remote_memory"
+    run rsync -a "$memory" "$VM_HOST:$remote_memory"
+  fi
+}
+
+if [ -e "$VM_MARKER" ]; then
+  echo "infra/bin/vm runs on the Mac, never on the VM: resizing stops the instance, which" \
+    "would kill an apply running on it, and the instance role has no AWS permission" \
+    "beyond Systems Manager." >&2
+  exit 1
+fi
+
+command="${1:-}"
+[ $# -eq 0 ] || shift
+case "$command" in
+  start)
+    id="$(output instance_id)"
+    region="$(output region)"
+    run aws ec2 start-instances --profile "$AWS_PROFILE_NAME" --region "$region" \
+      --instance-ids "$id" --query 'StartingInstances[0].CurrentState.Name' --output text
+    run aws ec2 wait instance-running --profile "$AWS_PROFILE_NAME" --region "$region" \
+      --instance-ids "$id"
+    ;;
+  stop)
+    id="$(output instance_id)"
+    region="$(output region)"
+    run aws ec2 stop-instances --profile "$AWS_PROFILE_NAME" --region "$region" \
+      --instance-ids "$id" --query 'StoppingInstances[0].CurrentState.Name' --output text
+    ;;
+  status)
+    id="$(output instance_id)"
+    region="$(output region)"
+    run aws ec2 describe-instances --profile "$AWS_PROFILE_NAME" --region "$region" \
+      --instance-ids "$id" --output table \
+      --query 'Reservations[0].Instances[0].{State: State.Name, Type: InstanceType, Zone: Placement.AvailabilityZone}'
+    ;;
+  connect)
+    id="$(output instance_id)"
+    region="$(output region)"
+    run aws ssm start-session --profile "$AWS_PROFILE_NAME" --region "$region" --target "$id"
+    ;;
+  forward)
+    id="$(output instance_id)"
+    region="$(output region)"
+    run aws ssm start-session --profile "$AWS_PROFILE_NAME" --region "$region" --target "$id" \
+      --document-name AWS-StartPortForwardingSession \
+      --parameters 'portNumber=22,localPortNumber=2222'
+    ;;
+  size)
+    [ $# -ge 1 ] || usage
+    size="$1"
+    shift
+    case "$size" in
+      dev | l4 | h100) ;;
+      *)
+        echo "unknown size: $size (expected dev, l4, or h100)" >&2
+        exit 2
+        ;;
+    esac
+    tofu_env apply -var "size=$size" ${@+"$@"}
+    # Recorded only after a successful apply, so a later plain tofu plan keeps this size.
+    printf 'size = "%s"\n' "$size" > "$ENV_DIR/size.auto.tfvars"
+    ;;
+  sync-config) sync_config ${@+"$@"} ;;
+  *) usage ;;
+esac
