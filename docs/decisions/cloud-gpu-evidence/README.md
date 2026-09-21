@@ -68,3 +68,8 @@ done
 
 - `ssm-instance-information.json` — `aws ssm describe-instance-information` for the instance after first boot: the agent's ping status and version, and the platform.
 - `access.json` — which access methods opened a session on the VM. It covers a Session Manager shell; SSH through the `ces-revisions-vm` host entry, with the host key checked against the fingerprint read through Session Manager; and how the Claude Code desktop app connected: `host-entry`, `port-forward`, or `neither`.
+
+## Req 6: machine setup
+
+- `vm-first-boot.txt` — on the VM after cloud-init finished: the release and kernels, the held packages, the driver packages' versions, the git and gh versions, the guards' unit states and `systemd-analyze verify`, and `nvidia-smi`'s exit status on `dev`.
+- `vm-carried-config.txt` — on the VM after `setup.sh` and the GitHub token: the skill, agent, command, and hook link counts, with broken links counted; the copied `CLAUDE.md` and `settings.json`; and the checkout's branch.
