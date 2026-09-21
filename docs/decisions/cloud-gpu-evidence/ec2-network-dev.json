@@ -1,0 +1,17 @@
+{
+  "security_group": {
+    "GroupName": "ces-revisions-vm",
+    "IngressRuleCount": 0,
+    "Egress": [
+      {
+        "Protocol": "-1",
+        "Ranges": [
+          "0.0.0.0/0"
+        ]
+      }
+    ]
+  },
+  "nat_gateways": 0,
+  "vpc_endpoints": 0,
+  "elastic_ips": 0
+}

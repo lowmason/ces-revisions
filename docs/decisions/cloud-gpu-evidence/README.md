@@ -57,3 +57,9 @@ done
 ## Req 3: state bucket
 
 - `s3-state-bucket.json` — `aws s3api get-bucket-versioning`, `get-public-access-block`, and `get-bucket-encryption` for the bucket that `infra/state` created, combined without the bucket's name: versioning enabled, all four public access blocks on, and AES256 default encryption. A destroy plan for `infra/state` failed with `Resource instance cannot be destroyed`, which confirms `prevent_destroy`.
+
+## Reqs 3 to 5: the environment at `dev`
+
+- `opentofu-credentials.json` — the OpenTofu and AWS provider versions, and the AWS profile OpenTofu used: `ces-revisions` when it read the `aws login` session directly, or `ces-revisions-process` when it needed a `credential_process` profile.
+- `ec2-instance-dev.json` — `aws ec2 describe-instances`, `describe-instance-attribute`, and `describe-volumes`, with `aws iam list-attached-role-policies` and `list-role-policies`, for the instance at `dev`. It records the type, zone, image, IMDSv2 setting, whether a public address and an instance profile exist, the shutdown behavior, the root volume, and the role's policies. The address and the profile's ARN are left out.
+- `ec2-network-dev.json` — `aws ec2 describe-security-groups`, `describe-nat-gateways`, `describe-vpc-endpoints`, and `describe-addresses`. It records the security group's ingress rule count and egress rules, the counts of NAT gateways and VPC endpoints in the VPC, and the count of Elastic IPs tagged `project = ces-revisions`.
