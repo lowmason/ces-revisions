@@ -48,7 +48,7 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_security_group" "vm" {
   name        = "ces-revisions-vm"
-  description = "No ingress: Session Manager connects over the agent's outbound connection"
+  description = "No ingress: Session Manager uses an outbound connection from the agent"
   vpc_id      = aws_vpc.main.id
 
   tags = {
