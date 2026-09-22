@@ -80,3 +80,12 @@ done
 - `bls-canary.json` — one by-hand fetch of `https://download.bls.gov/pub/time.series/ce/ce.datatype` from the VM, recorded as its HTTP status and whether BLS allowed it. The User-Agent is not recorded.
 - `vm-idle-stop.txt` — the wait for the idle stop with its window shortened to 10 minutes, its journal line from the boot it ended, and the window restored to 45 minutes.
 - `../cloud-gpu-probe/dev.json` — the engine probe on `dev` at T=280, n=150, p=70, with batch sizes 1, 4, and 16.
+
+## Req 8: budget and snapshots
+
+- `ec2-dlm-snapshots.json` — `aws ec2 describe-snapshots` for the root volume's lifecycle snapshots, narrowed to their IDs, start times, states, and copied `project` tags.
+- `ce-cost-allocation-tags.json` — `aws ce list-cost-allocation-tags` for `project`: its type and status after activation.
+- `budgets-budget.json` — `aws budgets describe-budget`: the name, type, period, limit, and tag filter.
+- `budgets-notifications.json` — `aws budgets describe-notifications-for-budget`: each alert's type and threshold, without its subscriber.
+- `budgets-actions.json` — `aws budgets describe-budget-actions-for-budget`: the action's type, sub-type, approval model, threshold, status, and instance count, without its role ARN.
+- `iam-simulate-budget-action-role.json` — `aws iam simulate-principal-policy` for the action's role, called through Systems Manager. Stopping this VM and starting the stop automation are allowed; stopping another instance and terminating this one are not.

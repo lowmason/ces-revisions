@@ -3707,7 +3707,7 @@ decision() {
 }
 jq -n \
   --arg stop_this_vm "$(decision ec2:StopInstances "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_ID")" \
-  --arg run_stop_automation "$(decision ssm:StartAutomationExecution "arn:aws:ssm:$REGION:$ACCOUNT_ID:automation-definition/AWS-StopEC2Instance:\$DEFAULT")" \
+  --arg run_stop_automation "$(decision ssm:StartAutomationExecution "arn:aws:ssm:$REGION::automation-definition/AWS-StopEC2Instance:\$DEFAULT")" \
   --arg stop_another_instance "$(decision ec2:StopInstances "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/i-00000000000000000")" \
   --arg terminate_this_vm "$(decision ec2:TerminateInstances "arn:aws:ec2:$REGION:$ACCOUNT_ID:instance/$INSTANCE_ID")" \
   '{stop_this_vm: $stop_this_vm, run_stop_automation: $run_stop_automation, stop_another_instance: $stop_another_instance, terminate_this_vm: $terminate_this_vm}' \

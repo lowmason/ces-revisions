@@ -1,0 +1,9 @@
+[
+    {
+        "SnapshotId": "snap-0563acbc9a584cbb0",
+        "VolumeId": "vol-0d6573248f2e7d99e",
+        "StartTime": "2026-09-22T05:36:49.815000+00:00",
+        "State": "completed",
+        "ProjectTag": "ces-revisions"
+    }
+]

@@ -1,0 +1,6 @@
+{
+  "stop_this_vm": "allowed",
+  "run_stop_automation": "allowed",
+  "stop_another_instance": "implicitDeny",
+  "terminate_this_vm": "implicitDeny"
+}

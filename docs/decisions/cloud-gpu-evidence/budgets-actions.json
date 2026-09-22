@@ -1,0 +1,14 @@
+[
+    {
+        "ActionType": "RUN_SSM_DOCUMENTS",
+        "ApprovalModel": "AUTOMATIC",
+        "NotificationType": "ACTUAL",
+        "Status": "STANDBY",
+        "ActionThreshold": {
+            "ActionThresholdValue": 100.0,
+            "ActionThresholdType": "PERCENTAGE"
+        },
+        "ActionSubType": "STOP_EC2_INSTANCES",
+        "InstanceCount": 1
+    }
+]
