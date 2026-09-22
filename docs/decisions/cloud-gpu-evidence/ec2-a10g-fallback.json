@@ -1,0 +1,16 @@
+{
+  "checked": "2026-09-22",
+  "instance_type": "g5.xlarge",
+  "availability_zone": "us-east-1a",
+  "offered": true,
+  "default_vcpus": 4,
+  "memory_mib": 16384,
+  "gpu_name": "A10G",
+  "gpu_count": 1,
+  "gpu_memory_mib": 22888,
+  "quota": {
+    "code": "L-DB2E81BA",
+    "value": 4.0
+  },
+  "on_demand_usd_per_hour": "1.006"
+}

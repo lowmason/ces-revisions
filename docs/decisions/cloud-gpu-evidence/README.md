@@ -26,8 +26,8 @@ For each region evaluated:
 
 EC2 On-Demand quotas count the vCPUs of running instances, per instance family and region. Req 2 asks for:
 
-- "Running On-Demand G and VT instances" (`L-DB2E81BA`) of at least 4, enough for one g6.xlarge or
-  one g6e.xlarge;
+- "Running On-Demand G and VT instances" (`L-DB2E81BA`) of at least 4, enough for one g6.xlarge,
+  one g6e.xlarge, or one g5.xlarge;
 - "Running On-Demand P instances" (`L-417A185B`) of at least 16, enough for one p5.4xlarge.
 
 "Running On-Demand Standard (A, C, D, H, I, M, R, T, Z) instances" (`L-1216C47A`) covers the m7i.xlarge `dev` size, which needs 4. It was read to confirm that, and would have been requested only if it were below 4.
@@ -91,11 +91,17 @@ done
 - `budgets-actions.json` — `aws budgets describe-budget-actions-for-budget`: the action's type, sub-type, approval model, threshold, status, and instance count, without its role ARN.
 - `iam-simulate-budget-action-role.json` — `aws iam simulate-principal-policy` for the action's role, called through Systems Manager. Stopping this VM and starting the stop automation are allowed; stopping another instance and terminating this one are not.
 
-## Req 5: `l4` capacity and the `l40s` fallback
+## Req 5: `l4` and `l40s` capacity, and the `a10g` fallback
 
 - `ec2-l4-capacity-failure.json` — the first attempt to start the stopped instance as a
   g6.xlarge, reduced to the date, size, instance type, `InsufficientInstanceCapacity` error code,
   and stopped state afterward.
 - `ec2-l40s-fallback.json` — a 2026-09-22 check of the chosen zone's g6e.xlarge offering, public
+  instance metadata, the G and VT quota value, and the Linux On-Demand hourly price. It contains no
+  account-scoped identifier.
+- `ec2-l40s-capacity-failure.json` — the first attempt to start the stopped instance as a
+  g6e.xlarge, reduced to the date, size, instance type, `InsufficientInstanceCapacity` error code,
+  and stopped state afterward.
+- `ec2-a10g-fallback.json` — a 2026-09-22 check of the chosen zone's g5.xlarge offering, public
   instance metadata, the G and VT quota value, and the Linux On-Demand hourly price. It contains no
   account-scoped identifier.

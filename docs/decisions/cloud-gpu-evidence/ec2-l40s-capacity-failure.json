@@ -1,0 +1,7 @@
+{
+  "date": "2026-09-22",
+  "size": "l40s",
+  "instance_type": "g6e.xlarge",
+  "error_code": "InsufficientInstanceCapacity",
+  "state_after": "stopped"
+}

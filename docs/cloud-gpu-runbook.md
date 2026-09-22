@@ -1,6 +1,6 @@
 # Cloud GPU environment runbook
 
-How to build, use, and take down the ces-revisions cloud GPU development environment: one EC2 instance on one disk, whose instance type switches between a CPU size for daily work and three GPU sizes for fits. The decision behind it, with its evidence, is [`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
+How to build, use, and take down the ces-revisions cloud GPU development environment: one EC2 instance on one disk, whose instance type switches between a CPU size for daily work and four GPU sizes for fits. The decision behind it, with its evidence, is [`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
 
 Everything under `infra/` runs on the Mac, from the repository root, never on the VM. Resizing stops the instance, which would kill an apply running on it, and the instance's role has no AWS permission beyond Systems Manager. `infra/bin/vm` refuses to run on the VM.
 
@@ -12,10 +12,11 @@ Everything under `infra/` runs on the Mac, from the repository root, never on th
   - `dev` is m7i.xlarge: 4 vCPU and 16 GiB, \$0.20/hr.
   - `l4` is g6.xlarge: an NVIDIA L4 with 24 GB, \$0.81/hr.
   - `l40s` is g6e.xlarge: an NVIDIA L40S with 48 GB, \$1.861/hr.
+  - `a10g` is g5.xlarge: an NVIDIA A10G with 24 GB, \$1.006/hr.
   - `h100` is p5.4xlarge: an NVIDIA H100 with 80 GB, \$6.88/hr.
 
-  The `dev`, `l4`, and `h100` prices were checked in us-east-1 on 2026-09-13; `l40s` was checked
-  on 2026-09-22.
+  The `dev`, `l4`, and `h100` prices were checked in us-east-1 on 2026-09-13; `l40s` and `a10g`
+  were checked on 2026-09-22.
 
 ## One-time setup
 
@@ -204,13 +205,17 @@ export AWS_PROFILE=ces-revisions
 infra/bin/vm size l4
 ```
 
-Review the plan, which should change only `aws_instance.vm`'s `instance_type`, and answer `yes`. Switch back with `infra/bin/vm size dev`, or switch to `l40s` or `h100` the same way. When `l4` fails with `InsufficientInstanceCapacity`, `l40s` is the qualified fallback in the pinned zone.
+Review the plan, which should change only `aws_instance.vm`'s `instance_type`, and answer `yes`.
+Switch back with `infra/bin/vm size dev`, or switch to `l40s`, `a10g`, or `h100` the same way. The
+first `l4` and `l40s` starts both failed with `InsufficientInstanceCapacity`; `a10g` is the next
+qualified fallback in the pinned zone.
 
 Underneath:
 - OpenTofu stops the instance, changes its type, and starts it again, even if it was stopped. A switch to a GPU size therefore starts billing at that size's rate.
 - The instance ID, its root volume, and everything on it stay.
 - `infra/bin/vm` records the size in `infra/env/size.auto.tfvars` after a successful apply, so a later `tofu plan` keeps it.
-- A GPU size needs its vCPU quota in the region: 4 in "Running On-Demand G and VT instances" for `l4` or `l40s`, and 16 in "Running On-Demand P instances" for `h100`.
+- A GPU size needs its vCPU quota in the region: 4 in "Running On-Demand G and VT instances" for
+  `l4`, `l40s`, or `a10g`, and 16 in "Running On-Demand P instances" for `h100`.
 - A stop erases any local NVMe instance-store disk on the selected GPU size; nothing here uses
   those disks.
 
@@ -411,7 +416,11 @@ Underneath:
 
 ### Insufficient capacity
 
-A size switch fails with `InsufficientInstanceCapacity`: AWS has no spare instance of that type in the zone at the moment. The instance is left stopped, possibly with the new type already set. Switch back with `infra/bin/vm size dev`, try the GPU size again later, or use the qualified `l40s` fallback when `l4` is unavailable.
+A size switch fails with `InsufficientInstanceCapacity`: AWS has no spare instance of that type in
+the zone at the moment. The instance is left stopped, possibly with the new type already set.
+Switch back with `infra/bin/vm size dev`, try the GPU size again later, or try another configured
+GPU tier. The first `l4` and `l40s` starts both failed this way, so `a10g` is the next qualified
+fallback.
 
 Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request that finds none. The environment stays in one zone, because its subnet and its volume do.
 
@@ -430,7 +439,10 @@ aws service-quotas list-requested-service-quota-change-history --region "$REGION
   --query 'RequestedQuotas[].{Quota: QuotaName, Desired: DesiredValue, Status: Status}' --output table
 ```
 
-`l4` and `l40s` each need at least 4 in `L-DB2E81BA` ("Running On-Demand G and VT instances"), and `h100` needs at least 16 in `L-417A185B` ("Running On-Demand P instances"). Request an increase in the Service Quotas console, and switch back to `dev` meanwhile. Underneath: EC2 quotas count the vCPUs of running instances per family, not the instances themselves.
+`l4`, `l40s`, and `a10g` each need at least 4 in `L-DB2E81BA` ("Running On-Demand G and VT
+instances"), and `h100` needs at least 16 in `L-417A185B` ("Running On-Demand P instances").
+Request an increase in the Service Quotas console, and switch back to `dev` meanwhile. Underneath:
+EC2 quotas count the vCPUs of running instances per family, not the instances themselves.
 
 ### Session Manager not connecting
 

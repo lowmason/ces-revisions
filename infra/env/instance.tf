@@ -5,6 +5,7 @@ locals {
     dev  = "m7i.xlarge"
     l4   = "g6.xlarge"
     l40s = "g6e.xlarge"
+    a10g = "g5.xlarge"
     h100 = "p5.4xlarge"
   }
 

@@ -187,7 +187,7 @@ def test_size_rejects_an_unknown_size(vm, tmp_path):
     assert not (tmp_path / "env" / "size.auto.tfvars").exists()
 
 
-@pytest.mark.parametrize("size", ["l4", "l40s"])
+@pytest.mark.parametrize("size", ["l4", "l40s", "a10g"])
 def test_size_applies_and_then_records_the_size(vm, tmp_path, size):
     env_dir = tmp_path / "env"
 
