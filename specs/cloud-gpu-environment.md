@@ -9,7 +9,7 @@
 > derive-roadmap.
 
 A remote development environment for ces-revisions on AWS: one EC2 instance on one EBS disk whose
-instance type switches between a CPU size for daily work and two GPU sizes for fits. It is built
+instance type switches between a CPU size for daily work and three GPU sizes for fits. It is built
 with OpenTofu, reached through AWS Systems Manager with no inbound port, guarded by an idle stop, a
 GPU runtime cap, and a \$150/month budget, and documented by a runbook and a decision record. The
 same checkout runs on the Mac and on every size, so the repo gains a Linux-only CUDA extra,
@@ -29,6 +29,12 @@ from `claude/cloud-gpu-ces-revisions-ee5804` onto current `main` at `08ed203`, a
 replace the old branch, test-count, dependency, README, and CLAUDE.md assumptions with contracts
 against that current-main snapshot. Dynamic AWS offerings, quotas, prices, package versions, and
 personal-configuration counts remain execution-time checks rather than rebasing assumptions.
+
+Capacity amendment: on 2026-09-22, the first `l4` start failed with
+`InsufficientInstanceCapacity` in the pinned zone. A separate live check found `g6e.xlarge`
+offered in that zone at \$1.861/hr, with 4 vCPUs under the already-approved G and VT quota. The
+user chose `l40s` as a permanent fallback tier. Plan 4 records the failed `l4` attempt and runs
+the GPU verification on `l40s`; `l4` remains available for a later retry.
 
 ## Motivation
 
@@ -128,6 +134,7 @@ variable (default `dev`):
 |---|---|---|---|---|
 | `dev` | m7i.xlarge | 4 / 16 GiB | none | \$0.20/hr |
 | `l4` | g6.xlarge | 4 / 16 GiB | L4, 24 GB | \$0.81/hr |
+| `l40s` | g6e.xlarge | 4 / 32 GiB | L40S, 48 GB | \$1.861/hr |
 | `h100` | p5.4xlarge | 16 / 256 GiB | H100, 80 GB | \$6.88/hr |
 
 - Changing `size` updates the instance in place (stop, modify, start); the instance ID and root
@@ -233,7 +240,7 @@ variable (default `dev`):
   kill an apply running on it, and the instance role has no AWS permission beyond Systems Manager.
   `infra/bin/vm` exits with that explanation when run on the VM.
 - `infra/bin/vm` provides `start`, `stop`, `status`, `connect` (a Session Manager shell),
-  `size <dev|l4|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config`
+  `size <dev|l4|l40s|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config`
   (Req 6). Every subcommand prints the AWS CLI or OpenTofu command it runs before running it.
 - `docs/cloud-gpu-runbook.md` covers one-time setup, daily use, switching sizes, running a long GPU
   job, checking spend, snapshots and restore, token rotation, updating the held driver or pinned image,
@@ -249,15 +256,16 @@ bullets pass, from their recorded evidence, and contains no placeholder.
 
 - Context: the float64 mandate and FP64 facts from Motivation, the Stage 6 dependency, and the Mac
   probe.
-- Decision: AWS in the Req 2 zone with its evidence; the three sizes; the image and driver versions;
+- Decision: AWS in the Req 2 zone with its evidence; the four sizes; the image and driver versions;
   the access method that worked; OpenTofu; the guards and budget.
-- Evidence: prior and requested quota values; a probe table for the Mac, `dev`, `l4`, and `h100` at
-  T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files
-  under `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its
-  HTTP status).
+- Evidence: prior and requested quota values; the failed `l4` capacity attempt and the separately
+  qualified `l40s` fallback; a probe table for the Mac, `dev`, `l40s`, and `h100` at T=280, n=150,
+  p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files under
+  `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its HTTP
+  status).
 - Alternatives considered: Azure NC24ads A100 v4; the dev-box-plus-runners and Mac-dev topologies;
   the Deep Learning Base AMI; IAM Identity Center; a private subnet with a NAT gateway; SageMaker
-  and AWS Batch; an L40S size.
+  and AWS Batch; and T4 and A10G fallback sizes.
 - Revisit triggers: Stage 6's measurement, which also revisits the budget and the default GPU size;
   a later stage needing parallel fits (the dev-box-plus-runners topology); p5.4xlarge losing
   On-Demand availability in the chosen zone; the probe showing `dev` competitive with the GPU sizes.
@@ -282,16 +290,16 @@ roadmap assigns it, not in this record.
 - [ ] On `dev`, `uv sync --locked --extra cuda` succeeds and `uv run pytest` passes in full,
       including `slow`, with the `cpu` backend and four host devices (discharges Req 6's open
       item).
-- [ ] On `l4` and on `h100`, `nvidia-smi` reports the GPU with a driver numbered 580 or later, and
+- [ ] On `l40s` and on `h100`, `nvidia-smi` reports the GPU with a driver numbered 580 or later, and
       `uv run pytest` passes in full with the `gpu` backend and `chain_method(4) == "vectorized"`
       (discharges Req 7's open item).
-- [ ] Switching `size` from `dev` to `l4` to `h100` and back keeps the instance ID and root volume
-      ID, checked with the AWS CLI; the first successful p5.4xlarge On-Demand start discharges
-      Req 2's open item.
-- [ ] Probe JSON exists for the Mac, `dev`, `l4`, and `h100` at T=280, n=150, p=70 with batch sizes
+- [ ] Switching `size` from `dev` through the failed `l4` attempt, then to `l40s`, `h100`, and back
+      keeps the instance ID and root volume ID, checked with the AWS CLI; the first successful
+      p5.4xlarge On-Demand start discharges Req 2's open item.
+- [ ] Probe JSON exists for the Mac, `dev`, `l40s`, and `h100` at T=280, n=150, p=70 with batch sizes
       1, 4, and 16 everywhere and 64 on `h100`, committed under `docs/decisions/cloud-gpu-probe/`.
 - [ ] Idle stop stops the instance under a shortened test window, the GPU cap is scheduled after an
-      `l4` boot, the budget and its action exist, and at least one lifecycle snapshot exists.
+      `l40s` boot, the budget and its action exist, and at least one lifecycle snapshot exists.
 - [ ] On the VM, `~/.claude/CLAUDE.md`, `~/.claude/settings.json`, and the skill, agent, and command
       links exist, and a Claude Code session there lists the personal skills and reads the project
       memory.
@@ -308,7 +316,7 @@ roadmap assigns it, not in this record.
 - Building anything on Azure; Req 2's stopping rule is its only role.
 - A CPU dev box plus disposable GPU runners, and moving run artifacts through S3.
 - Spot instances, Capacity Blocks, and Savings Plans.
-- Containers, GPU continuous integration, multi-GPU instances, and an L40S size.
+- Containers, GPU continuous integration, and multi-GPU instances.
 - Stage 6's measurement at Stage 7–9 dimensions, and Stage 3's data layout and fetch location.
 - Editing `specs/ces-revisions-roadmap.md`.
 
@@ -327,7 +335,8 @@ waits for it:
 2. Req 2: zone choice and quota requests.
 3. Req 7 on the Mac, test-first, with the probe's Mac baseline; no AWS resource is needed.
 4. Reqs 3–6, 8, and 9 at `size = dev`, and the `dev` Verification bullets.
-5. The `l4` bullets, then the `h100` bullets, each once its quota is approved.
+5. Try `l4`; if the pinned zone lacks capacity, qualify and run `l40s`; then run the `h100`
+   bullets once its quota is approved.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
 
 Plan 3 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
@@ -345,7 +354,7 @@ size. On plan completion this spec retires to `specs/completed/` under the plan-
 
 ## Sources
 
-Checked 2026-09-13.
+Checked 2026-09-13, with the G6e fallback checked 2026-09-22.
 
 - NVIDIA, [Ada Lovelace professional GPU architecture whitepaper v1.1](https://images.nvidia.com/aem-dam/en-zz/Solutions/technologies/NVIDIA-ADA-GPU-PROVIZ-Architecture-Whitepaper_1.1.pdf)
   and [Ampere GA102 GPU architecture whitepaper v2.1](https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.1.pdf)
@@ -358,6 +367,7 @@ Checked 2026-09-13.
   launches on GPU) and [installation](https://docs.jax.dev/en/latest/installation.html) (driver
   minimums).
 - AWS, [single-GPU P5 announcement](https://aws.amazon.com/about-aws/whats-new/2025/08/amazon-p5-single-gpu-instances-now-available/),
+  [G6e instances](https://aws.amazon.com/ec2/instance-types/g6e/),
   [EC2 instance-type quotas](https://docs.aws.amazon.com/ec2/latest/instancetypes/ec2-instance-quotas.html),
   [Deep Learning Base OSS Nvidia Driver GPU AMI (Ubuntu 24.04) release notes](https://docs.aws.amazon.com/dlami/latest/devguide/aws-deep-learning-ami-gpubaseoss-ul2404-2026-09-02.html),
   [login with console credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sign-in.html),

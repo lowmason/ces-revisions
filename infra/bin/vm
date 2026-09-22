@@ -22,7 +22,8 @@ usage: infra/bin/vm <command>
   status                      show the instance's state, type, and zone
   connect                     open a Session Manager shell on the instance
   forward                     forward the instance's SSH port to localhost:2222
-  size <dev|l4|h100> [ARGS]   switch the instance type with tofu apply (ARGS go to apply)
+  size <dev|l4|l40s|h100> [ARGS]
+                              switch the instance type with tofu apply (ARGS go to apply)
   sync-config [--cutover]     copy Claude Code and git settings to the VM
                               (--cutover also copies this project's memory, once)
 EOF
@@ -141,9 +142,9 @@ case "$command" in
     size="$1"
     shift
     case "$size" in
-      dev | l4 | h100) ;;
+      dev | l4 | l40s | h100) ;;
       *)
-        echo "unknown size: $size (expected dev, l4, or h100)" >&2
+        echo "unknown size: $size (expected dev, l4, l40s, or h100)" >&2
         exit 2
         ;;
     esac

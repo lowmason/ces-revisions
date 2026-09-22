@@ -14,13 +14,13 @@ variable "ami_id" {
 }
 
 variable "size" {
-  description = "dev (m7i.xlarge), l4 (g6.xlarge), or h100 (p5.4xlarge). infra/bin/vm size records the last applied size in the gitignored size.auto.tfvars."
+  description = "dev (m7i.xlarge), l4 (g6.xlarge), l40s (g6e.xlarge), or h100 (p5.4xlarge). infra/bin/vm size records the last applied size in the gitignored size.auto.tfvars."
   type        = string
   default     = "dev"
 
   validation {
-    condition     = contains(["dev", "l4", "h100"], var.size)
-    error_message = "The size must be dev, l4, or h100."
+    condition     = contains(["dev", "l4", "l40s", "h100"], var.size)
+    error_message = "The size must be dev, l4, l40s, or h100."
   }
 }
 

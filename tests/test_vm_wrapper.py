@@ -187,17 +187,18 @@ def test_size_rejects_an_unknown_size(vm, tmp_path):
     assert not (tmp_path / "env" / "size.auto.tfvars").exists()
 
 
-def test_size_applies_and_then_records_the_size(vm, tmp_path):
+@pytest.mark.parametrize("size", ["l4", "l40s"])
+def test_size_applies_and_then_records_the_size(vm, tmp_path, size):
     env_dir = tmp_path / "env"
 
-    result, calls = vm("size", "l4", "-auto-approve")
+    result, calls = vm("size", size, "-auto-approve")
 
     assert result.returncode == 0, result.stderr
     assert calls == [
-        f"env AWS_PROFILE=ces-revisions tofu -chdir={env_dir} apply -var size=l4 -auto-approve"
+        f"env AWS_PROFILE=ces-revisions tofu -chdir={env_dir} apply -var size={size} -auto-approve"
     ]
     assert _printed(result) == calls
-    assert (env_dir / "size.auto.tfvars").read_text() == 'size = "l4"\n'
+    assert (env_dir / "size.auto.tfvars").read_text() == f'size = "{size}"\n'
 
 
 def test_a_failed_apply_keeps_the_recorded_size(vm, tmp_path):

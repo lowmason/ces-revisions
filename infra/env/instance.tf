@@ -4,6 +4,7 @@ locals {
   instance_types = {
     dev  = "m7i.xlarge"
     l4   = "g6.xlarge"
+    l40s = "g6e.xlarge"
     h100 = "p5.4xlarge"
   }
 

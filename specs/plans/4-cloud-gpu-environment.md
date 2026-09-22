@@ -6,12 +6,12 @@
 > 8–10). The spec
 > sits outside specs/ces-revisions-roadmap.md, so no roadmap stage is ticked.
 
-**Goal:** Build the cloud GPU development environment with OpenTofu (Reqs 3–5), set up the VM with the Mac's Claude Code and git configuration (Req 6), guard its cost (Req 8), operate it through `infra/bin/vm` and a runbook (Req 9), time the engine on `dev`, `l4`, and `h100`, and write the decision record (Req 10), ending with project memory cut over to the VM.
+**Goal:** Build the cloud GPU development environment with OpenTofu (Reqs 3–5), set up the VM with the Mac's Claude Code and git configuration (Req 6), guard its cost (Req 8), operate it through `infra/bin/vm` and a runbook (Req 9), time the engine on `dev`, the `l40s` fallback, and `h100`, and write the decision record (Req 10), ending with project memory cut over to the VM. The permanent `l4` tier remains available for a later capacity retry.
 
 **Architecture:** The work runs in four phases:
 - Tasks 1–5 write and test the repo side with no AWS access: the cost guards, the operations wrapper, the VM's first-boot and setup scripts, the probe's driver check, and the two OpenTofu roots.
 - Tasks 6–11 build the environment at `size = dev` with the human partner. They pin the location and image, create the state bucket, apply `infra/env`, open access, set up the VM, and run the `dev` checks.
-- Tasks 12–14 wait on the calendar: the cost allocation tag and the first snapshot (Task 12), the G and VT quota (Task 13), and the P quota (Task 14).
+- Tasks 12–14 wait on the calendar: the cost allocation tag and the first snapshot (Task 12), the G and VT quota and the `l4`/`l40s` capacity path (Task 13), and the P quota (Task 14).
 - Tasks 15 and 16 write the runbook and the decision record, update the documentation, and cut project memory over to the VM.
 
 Every AWS or VM output that the decision record cites lands in `docs/decisions/cloud-gpu-evidence/` or `docs/decisions/cloud-gpu-probe/`, narrowed so that no account identifier is committed.
@@ -140,8 +140,8 @@ tests:
 | Task 3: VM setup | 4 | 363 | 17 |
 | Task 4: probe driver check | 2 | 365 | 17 |
 
-The final repository collects 382 cases: 365 fast, 13 slow, and 4 network. Therefore the final
-slow selection is `13 passed, 369 deselected`, while each required full VM run expects 382 passed
+The reconciled 2026-09-16 repository collected 382 cases: 365 fast, 13 slow, and 4 network. Its
+slow selection was `13 passed, 369 deselected`, while each required full VM run expected 382 passed
 when the four live network canaries are reachable and unchanged. A network-canary failure is a
 live-source signal to diagnose, not a reason to remove the test or relabel it.
 
@@ -155,6 +155,22 @@ paths, so those tasks have no path collision with Stages 2–4. Its only existin
 Plan 3 outputs plus `pyproject.toml`, `.gitignore`, README, and CLAUDE.md; the 25-anchor precondition
 protects the Stage 3/4 additions before any replacement runs.
 
+## Capacity fallback amendment (2026-09-22)
+
+Task 13's first `l4` start reached EC2 after the G and VT quota became 4 vCPUs, but EC2 returned
+`InsufficientInstanceCapacity` for g6.xlarge in the pinned zone and left the instance stopped. The
+user approved a permanent `l40s` tier backed by g6e.xlarge. A fresh, narrowed AWS check established
+that the pinned zone offers g6e.xlarge, that it needs the same 4-vCPU G and VT quota, and that its
+Linux On-Demand price is \$1.861/hr.
+
+This amendment preserves the failed `l4` attempt as evidence and inserts a separate reviewed plan
+and apply gate for `l40s`. Task 13's GPU checks, determinism comparison, and probe now run on
+`l40s`; `l4` remains a supported tier for a later retry. Task 16 compares the Mac, `dev`, `l40s`,
+and `h100`, and explains why `l40s` supplied the completed mid-tier measurement. Intervening
+roadmap work had raised the live branch to 432 cases before this amendment: 415 fast, 13 slow, and
+4 network, matching the 432-test `dev` evidence. The one added wrapper test raises the current
+total to 433 cases: 416 fast, 13 slow, and 4 network.
+
 ### Original planning evidence (2026-09-13)
 
 This plan's scripts and tests ran before the plan was written, in a scratch clone holding plan 3's code. Its HCL, and everything that runs on AWS or Ubuntu, did not. Treat a deviation from these outcomes as a signal, not noise.
@@ -163,7 +179,7 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
   - `tests/test_idle_stop.py`, `tests/test_vm_wrapper.py`, and `tests/test_vm_setup.py` passed their
     33 tests, and Task 4's two probe tests passed. In that scratch clone the fast tier passed 71
     tests, where Plan 3 left 36; those historical totals are superseded by the current-main table
-    above, while the `+35` delta remains valid.
+    above; the capacity amendment adds one more wrapper case, for a `+36` delta.
   - `ruff check` and `ruff format --check` were clean.
   - `bash -n` passed for each shell script under Homebrew's bash 5 and macOS's bash 3.2.
   - Task 13's determinism script printed the same SHA-256 twice on the Mac's CPU.
@@ -264,6 +280,7 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
   |---|---|---|---|---|
   | `dev` (default) | m7i.xlarge | 4 / 16 GiB | none | \$0.20/hr |
   | `l4` | g6.xlarge | 4 / 16 GiB | L4, 24 GB | \$0.81/hr |
+  | `l40s` | g6e.xlarge | 4 / 32 GiB | L40S, 48 GB | \$1.861/hr |
   | `h100` | p5.4xlarge | 16 / 256 GiB | H100, 80 GB | \$6.88/hr |
 
 - **Instance (Req 5):**
@@ -280,9 +297,9 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
 - **GPU cap (Req 8):** "at boot with an NVIDIA device present, a unit schedules `shutdown -h +480`. The runbook shows how to inspect, cancel, and reschedule it."
 - **Budget (Req 8):** "an AWS Budgets monthly cost budget of \$150, filtered on the cost allocation tag `project = ces-revisions` (activated once in the Billing console), emails at 50% and 80% of forecast spend and at 100% of actual spend. At 100% of actual spend, an `aws_budgets_budget_action` of type `RUN_SSM_DOCUMENTS` with sub-type `STOP_EC2_INSTANCES` and `approval_model = "AUTOMATIC"` stops the instance through an execution role limited to that action. Instance-targeted actions do not reset at the next budget period, so the runbook resets it."
 - **Snapshots (Req 8):** "an `aws_dlm_lifecycle_policy` snapshots the project's volume daily, keeps 7 snapshots, and copies tags. Restoring uses EC2's replace-root-volume task with a snapshot."
-- **Wrapper (Req 9):** "`infra/` is operated from the Mac, never from the VM: resizing stops the instance, which would kill an apply running on it, and the instance role has no AWS permission beyond Systems Manager. `infra/bin/vm` exits with that explanation when run on the VM." It "provides `start`, `stop`, `status`, `connect` (a Session Manager shell), `size <dev|l4|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config` (Req 6). Every subcommand prints the AWS CLI or OpenTofu command it runs before running it."
+- **Wrapper (Req 9):** "`infra/` is operated from the Mac, never from the VM: resizing stops the instance, which would kill an apply running on it, and the instance role has no AWS permission beyond Systems Manager. `infra/bin/vm` exits with that explanation when run on the VM." It "provides `start`, `stop`, `status`, `connect` (a Session Manager shell), `size <dev|l4|l40s|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config` (Req 6). Every subcommand prints the AWS CLI or OpenTofu command it runs before running it."
 - **Runbook (Req 9):** "`docs/cloud-gpu-runbook.md` covers one-time setup, daily use, switching sizes, running a long GPU job, checking spend, snapshots and restore, token rotation, updating the held driver or pinned image, recovery after a budget stop, teardown (removing `prevent_destroy`, then destroying `infra/env` and `infra/state`), and troubleshooting (insufficient capacity, quota errors, Session Manager not connecting, JAX not seeing the GPU). Each step gives its commands and a short note on what happens underneath. The document follows CLAUDE.md's Markdown conventions."
-- **Decision record (Req 10):** "`docs/decisions/cloud-gpu.md` takes the shape of `docs/decisions/engine.md`. It is written after the Verification bullets pass, from their recorded evidence, and contains no placeholder." Its Context, Decision, Evidence, Alternatives considered, and Revisit triggers hold what Req 10 lists. The probe table covers the Mac, `dev`, `l4`, and `h100` "at T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`". "Stage 6's measurement at Stage 7–9 dimensions belongs in `docs/decisions/seasonal-state.md`, as the roadmap assigns it, not in this record."
+- **Decision record (Req 10):** "`docs/decisions/cloud-gpu.md` takes the shape of `docs/decisions/engine.md`. It is written after the Verification bullets pass, from their recorded evidence, and contains no placeholder." Its Context, Decision, Evidence, Alternatives considered, and Revisit triggers hold what Req 10 lists. The probe table covers the Mac, `dev`, `l40s`, and `h100` "at T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`". It records the failed `l4` capacity attempt separately. "Stage 6's measurement at Stage 7–9 dimensions belongs in `docs/decisions/seasonal-state.md`, as the roadmap assigns it, not in this record."
 - **Who does what (Rollout note):** "Steps that enter credentials or change account security belong to the user: root MFA, creating the IAM user and registering its MFA device, the `aws login` browser sign-in, activating the cost allocation tag, and creating and entering the GitHub token."
 - **BLS (Verification bullet 12):** "One small `download.bls.gov` fetch, run once by hand from a VM shell with a User-Agent naming the project and a contact, is recorded in the decision record only as allowed or blocked with its HTTP status; no committed file holds the User-Agent string."
 - **Tests:** the fast hermetic tier is `uv run pytest -m "not slow and not network"`. MCMC tests carry the `slow` marker, and an unregistered marker is a collection error.
@@ -297,7 +314,7 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
   - Azure;
   - the dev-box-plus-runners topology and S3 artifacts;
   - Spot instances, Capacity Blocks, and Savings Plans;
-  - containers, GPU continuous integration, multi-GPU instances, and an L40S size;
+  - containers, GPU continuous integration, and multi-GPU instances;
   - Stage 6's measurement and Stage 3's data layout;
   - editing `specs/ces-revisions-roadmap.md`.
 
@@ -327,7 +344,7 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
 | `infra/env/.terraform.lock.hcl`, `infra/env/backend.hcl.example` | The provider lock and the backend file's shape | 5 |
 | `infra/state/pinned.auto.tfvars`, `infra/env/pinned.auto.tfvars` | Region, zone, and image ID, pinned from evidence | 6 |
 | `docs/decisions/cloud-gpu-evidence/` (new files and README sections) | Command outputs for the decision record | 6–14 |
-| `docs/decisions/cloud-gpu-probe/{dev,l4,h100}.json` | Probe records for each size | 11, 13, 14 |
+| `docs/decisions/cloud-gpu-probe/{dev,l40s,h100}.json` | Probe records for each measured size | 11, 13, 14 |
 | `docs/cloud-gpu-runbook.md` | The runbook | 15 |
 | `docs/decisions/cloud-gpu.md` | The decision record | 16 |
 | `CLAUDE.md`, `README.md` | `infra/`, the runbook, and the decision record | 16 |
@@ -781,7 +798,7 @@ git commit -m "Add the cloud VM's idle stop and GPU runtime cap"
 **Interfaces:**
 - Consumes: Task 5's `infra/env` outputs `instance_id` and `region`, read with `tofu -chdir=infra/env output -raw`. The tests stub them.
 - Produces:
-  - `infra/bin/vm start | stop | status | connect | forward | size <dev|l4|h100> [apply arguments] | sync-config [--cutover]`, exiting 2 on a usage error and 1 on the VM or a refused cutover;
+  - `infra/bin/vm start | stop | status | connect | forward | size <dev|l4|l40s|h100> [apply arguments] | sync-config [--cutover]`, exiting 2 on a usage error and 1 on the VM or a refused cutover;
   - the overrides `CES_INFRA_ENV_DIR`, `CES_VM_MARKER`, `CES_VM_SSH_HOST` (default `ces-revisions-vm`), `CES_AWS_PROFILE` (default `ces-revisions`), and `CES_TOFU_PROFILE` (default the AWS profile);
   - `infra/env/size.auto.tfvars`, written after each successful size apply;
   - on the VM, `~/.config/ces-revisions/links/skills.txt`, `agents.txt`, `commands.txt`, and `hooks.txt`, one link name per line, which Task 3's `setup.sh` reads;
@@ -981,17 +998,18 @@ def test_size_rejects_an_unknown_size(vm, tmp_path):
     assert not (tmp_path / "env" / "size.auto.tfvars").exists()
 
 
-def test_size_applies_and_then_records_the_size(vm, tmp_path):
+@pytest.mark.parametrize("size", ["l4", "l40s"])
+def test_size_applies_and_then_records_the_size(vm, tmp_path, size):
     env_dir = tmp_path / "env"
 
-    result, calls = vm("size", "l4", "-auto-approve")
+    result, calls = vm("size", size, "-auto-approve")
 
     assert result.returncode == 0, result.stderr
     assert calls == [
-        f"env AWS_PROFILE=ces-revisions tofu -chdir={env_dir} apply -var size=l4 -auto-approve"
+        f"env AWS_PROFILE=ces-revisions tofu -chdir={env_dir} apply -var size={size} -auto-approve"
     ]
     assert _printed(result) == calls
-    assert (env_dir / "size.auto.tfvars").read_text() == 'size = "l4"\n'
+    assert (env_dir / "size.auto.tfvars").read_text() == f'size = "{size}"\n'
 
 
 def test_a_failed_apply_keeps_the_recorded_size(vm, tmp_path):
@@ -1075,7 +1093,7 @@ def test_cutover_refuses_without_project_memory_on_the_mac(vm, tmp_path):
 
 Run: `uv run pytest tests/test_vm_wrapper.py -q`
 
-Expected: `16 failed`, each with `FileNotFoundError: [Errno 2] No such file or directory: PosixPath('…/infra/bin/vm')`.
+Expected: `17 failed`, each with `FileNotFoundError: [Errno 2] No such file or directory: PosixPath('…/infra/bin/vm')`.
 
 - [ ] **Step 3: Write the wrapper**
 
@@ -1106,7 +1124,8 @@ usage: infra/bin/vm <command>
   status                      show the instance's state, type, and zone
   connect                     open a Session Manager shell on the instance
   forward                     forward the instance's SSH port to localhost:2222
-  size <dev|l4|h100> [ARGS]   switch the instance type with tofu apply (ARGS go to apply)
+  size <dev|l4|l40s|h100> [ARGS]
+                              switch the instance type with tofu apply (ARGS go to apply)
   sync-config [--cutover]     copy Claude Code and git settings to the VM
                               (--cutover also copies this project's memory, once)
 EOF
@@ -1225,9 +1244,9 @@ case "$command" in
     size="$1"
     shift
     case "$size" in
-      dev | l4 | h100) ;;
+      dev | l4 | l40s | h100) ;;
       *)
-        echo "unknown size: $size (expected dev, l4, or h100)" >&2
+        echo "unknown size: $size (expected dev, l4, l40s, or h100)" >&2
         exit 2
         ;;
     esac
@@ -1256,7 +1275,7 @@ Underneath:
 
 Run: `uv run pytest tests/test_vm_wrapper.py -q`
 
-Expected: `16 passed`.
+Expected: `17 passed`.
 
 - [ ] **Step 5: Run them again under macOS's bash 3.2**
 
@@ -1265,7 +1284,7 @@ Expected: `16 passed`.
 PATH="/bin:$PATH" uv run pytest tests/test_vm_wrapper.py -q
 ```
 
-Expected: `parses under bash 3.2` and `16 passed`. Underneath: `#!/usr/bin/env bash` runs whichever bash comes first on `PATH`, and putting `/bin` first selects macOS's bash 3.2. Under `set -u`, bash before 4.4 treats an empty `"$@"` as unbound, which `${@+"$@"}` avoids.
+Expected: `parses under bash 3.2` and `17 passed`. Underneath: `#!/usr/bin/env bash` runs whichever bash comes first on `PATH`, and putting `/bin` first selects macOS's bash 3.2. Under `set -u`, bash before 4.4 treats an empty `"$@"` as unbound, which `${@+"$@"}` avoids.
 
 - [ ] **Step 6: Ignore the recorded size**
 
@@ -1305,7 +1324,7 @@ is why this check reads its output instead.
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected on base `08ed203`: `359 passed, 17 deselected`.
+Expected after the capacity amendment: `360 passed, 17 deselected`.
 
 - [ ] **Step 8: Commit**
 
@@ -1659,7 +1678,7 @@ Expected: `first-boot.sh parses`. Underneath:
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected on base `08ed203`: `363 passed, 17 deselected`.
+Expected after the capacity amendment: `364 passed, 17 deselected`.
 
 - [ ] **Step 7: Commit**
 
@@ -1823,7 +1842,7 @@ Expected: `5 passed`.
 
 Run: `uv run pytest -m "not slow and not network" -q`
 
-Expected on base `08ed203`: `365 passed, 17 deselected`.
+Expected after the capacity amendment: `366 passed, 17 deselected`.
 
 - [ ] **Step 6: Commit**
 
@@ -1987,13 +2006,13 @@ variable "ami_id" {
 }
 
 variable "size" {
-  description = "dev (m7i.xlarge), l4 (g6.xlarge), or h100 (p5.4xlarge). infra/bin/vm size records the last applied size in the gitignored size.auto.tfvars."
+  description = "dev (m7i.xlarge), l4 (g6.xlarge), l40s (g6e.xlarge), or h100 (p5.4xlarge). infra/bin/vm size records the last applied size in the gitignored size.auto.tfvars."
   type        = string
   default     = "dev"
 
   validation {
-    condition     = contains(["dev", "l4", "h100"], var.size)
-    error_message = "The size must be dev, l4, or h100."
+    condition     = contains(["dev", "l4", "l40s", "h100"], var.size)
+    error_message = "The size must be dev, l4, l40s, or h100."
   }
 }
 
@@ -2107,6 +2126,7 @@ locals {
   instance_types = {
     dev  = "m7i.xlarge"
     l4   = "g6.xlarge"
+    l40s = "g6e.xlarge"
     h100 = "p5.4xlarge"
   }
 
@@ -3443,7 +3463,7 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: a line reporting the packages audited, then `382 passed`, with any warnings. Four of
+Execution recorded a line reporting the packages audited, then `432 passed`, with warnings. Four of
 those cases are live network canaries and 13 are slow cases added before the cloud plans;
 `test_session_runs_float64_jax_on_the_expected_devices` asserts the `cpu` backend and four host
 devices here, so a full pass discharges bullet 6.
@@ -3806,7 +3826,7 @@ infra/bin/vm size l4 -auto-approve
 cat infra/env/size.auto.tfvars
 ```
 
-Expected: the printed `+ env AWS_PROFILE=ces-revisions tofu -chdir=… apply -var size=l4 -auto-approve`, then `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`, then `size = "l4"`. If the apply fails with `InsufficientInstanceCapacity` or `VcpuLimitExceeded`, stop and report; the runbook's troubleshooting section covers both.
+Expected: the printed `+ env AWS_PROFILE=ces-revisions tofu -chdir=… apply -var size=l4 -auto-approve`, then `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`, then `size = "l4"`. If the apply fails with `VcpuLimitExceeded`, stop and report. If it fails with `InsufficientInstanceCapacity`, leave the instance stopped, record the reduced failure evidence, skip Steps 5–11, and continue at Task 13A only after the human partner chooses the permanent `l40s` fallback. The runbook's troubleshooting section covers both errors.
 
 - [ ] **Step 5: Confirm that the instance and its root volume kept their IDs (bullet 8)**
 
@@ -3872,7 +3892,7 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: `382 passed`, with any warnings. `tests/test_stack.py` asserts the `gpu` backend and the
+Expected after the capacity amendment: `433 passed`, with any warnings. `tests/test_stack.py` asserts the `gpu` backend and the
 deterministic flag in `XLA_FLAGS` here, and the slow pilot tests run with `chain_method(4)`'s
 `"vectorized"`, so a full pass discharges bullet 7 on `l4`.
 
@@ -4013,6 +4033,175 @@ git commit -m "Record the cloud VM's switch back to dev"
 
 Expected: `size = "dev"` in `infra/env/size.auto.tfvars`, `true`, and the printed stop command.
 
+### Task 13A: `l40s` capacity fallback (Verification bullets 7–10)
+
+**Mode:** the controller runs this task inline after an `l4` start fails with
+`InsufficientInstanceCapacity` and the human partner chooses the fallback. Steps 2 and 5 are
+separate push and apply gates even when the user already approved adding the tier.
+
+**Files:**
+- Modify: `infra/bin/vm`, `infra/env/variables.tf`, `infra/env/instance.tf`
+- Modify: `tests/test_vm_wrapper.py`
+- Modify: `specs/cloud-gpu-environment.md`, this plan, `docs/cloud-gpu-runbook.md`
+- Create: `docs/decisions/cloud-gpu-evidence/ec2-l4-capacity-failure.json`
+- Create: `docs/decisions/cloud-gpu-evidence/ec2-l40s-fallback.json`
+- Create after the run: `docs/decisions/cloud-gpu-probe/l40s.json`
+- Create after the run: `docs/decisions/cloud-gpu-evidence/vm-l40s-checks.txt`,
+  `size-switches.json`
+- Modify: `docs/decisions/cloud-gpu-evidence/README.md`
+
+**Interfaces:**
+- Consumes: Task 13's approved G and VT quota and its failed g6.xlarge start.
+- Produces: `size = "l40s"`, backed by g6e.xlarge; the same checks and probe Task 13 would have
+  produced for `l4`; and dated evidence for the capacity decision. `l4` remains a supported tier.
+
+- [ ] **Step 1: Qualify and implement the fallback, test first**
+
+Record the failed start without the request ID, and query the chosen zone for g6e.xlarge's
+offering, public instance metadata, the G and VT quota, and its Linux On-Demand price. Reduce those
+facts to `ec2-l4-capacity-failure.json` and `ec2-l40s-fallback.json`; neither file may contain an
+account ID, bucket name, ARN, email address, or token.
+
+Parameterize the wrapper's successful-size test over `l4` and `l40s`; observe the `l40s` case fail
+because the wrapper rejects it. Then add `l40s` to the wrapper, variable validation, and instance
+map as g6e.xlarge. Update the spec, runbook, active plan, evidence README, and Task 16's decision
+generator and template. Historical Plan 3 evidence and its original three-type location rule stay
+unchanged.
+
+Run:
+
+```bash
+uv run pytest tests/test_vm_wrapper.py -q
+tofu fmt -check infra/env/*.tf infra/env/pinned.auto.tfvars
+tofu -chdir=infra/env validate
+uv run ruff format --check
+uv run ruff check
+```
+
+Expected: `17 passed`, `Success! The configuration is valid.`, and clean formatter and linter
+results. Run the evidence scan from Task 6, Step 7. Expected: `evidence scan clean`.
+
+Commit the supported tier and its qualification evidence before planning the live switch:
+
+```bash
+git add infra/bin/vm infra/env/variables.tf infra/env/instance.tf tests/test_vm_wrapper.py \
+  specs/cloud-gpu-environment.md specs/plans/4-cloud-gpu-environment.md \
+  docs/cloud-gpu-runbook.md docs/decisions/cloud-gpu-evidence/README.md \
+  docs/decisions/cloud-gpu-evidence/ec2-l4-capacity-failure.json \
+  docs/decisions/cloud-gpu-evidence/ec2-l40s-fallback.json
+git commit -m "Add the L40S capacity fallback"
+```
+
+- [ ] **Step 2: STOP — the human partner approves pushing the fallback commit**
+
+Show the commit and its verification. Explain that pushing updates the existing feature branch so
+the VM can run the exact amended code during the GPU checks. Proceed only on a clear yes that names
+this push; it does not approve the later OpenTofu apply.
+
+- [ ] **Step 3: Push the fallback commit**
+
+```bash
+BRANCH=$(git branch --show-current)
+git push -u origin "$BRANCH"
+```
+
+Expected: the remote feature branch advances to the fallback commit.
+
+- [ ] **Step 4: Plan the `l40s` switch**
+
+```bash
+export AWS_PROFILE=ces-revisions
+tofu -chdir=infra/env plan -input=false -var size=l40s -out=/tmp/ces-revisions-size.tfplan
+tofu -chdir=infra/env show -json /tmp/ces-revisions-size.tfplan |
+  jq -r '.resource_changes[] | select(.mode == "managed" and .change.actions != ["no-op"]) | "\(.change.actions | join(",")) \(.address) \(.change.before.instance_type // "") -> \(.change.after.instance_type // "")"'
+rm /tmp/ces-revisions-size.tfplan
+```
+
+Expected: `Plan: 0 to add, 1 to change, 0 to destroy.`, then
+`update aws_instance.vm g6.xlarge -> g6e.xlarge`. A different resource change stops the task.
+
+- [ ] **Step 5: STOP — the human partner approves the concrete apply**
+
+Show the Step 4 summary. Explain that the apply changes only the stopped instance from g6.xlarge
+to g6e.xlarge, starts it at \$1.861/hr, and leaves the instance ID and root volume in place. The
+checks, full test suite, determinism comparison, and probe take about an hour; the GPU cap and idle
+stop remain active. Proceed only on a clear yes given after this plan is shown.
+
+- [ ] **Step 6: Switch to `l40s`**
+
+Run in the background:
+
+```bash
+export AWS_PROFILE=ces-revisions
+infra/bin/vm size l40s -auto-approve
+cat infra/env/size.auto.tfvars
+```
+
+Expected: `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`, then
+`size = "l40s"`. If EC2 returns a capacity or quota error, stop and report it.
+
+- [ ] **Step 7: Update the VM checkout, then run Task 13's checks on `l40s`**
+
+Before the checks, update the VM to the pushed commit. Task 11 generated `dev.json` on the VM
+before the Mac committed it, so verify that any untracked copy is byte-identical, move it aside,
+pull, and compare it with the tracked copy:
+
+```bash
+ssh ces-revisions-vm bash -l -s <<'EOF'
+set -euo pipefail
+cd ~/Projects/ces-revisions
+BRANCH=$(git branch --show-current)
+PROBE=docs/decisions/cloud-gpu-probe/dev.json
+BACKUP=/tmp/ces-revisions-dev-probe.json
+rm -f "$BACKUP"
+git fetch origin
+if [ -e "$PROBE" ] && ! git ls-files --error-unmatch "$PROBE" > /dev/null 2>&1; then
+  git show "origin/$BRANCH:$PROBE" > "$BACKUP"
+  cmp "$PROBE" "$BACKUP"
+  mv "$PROBE" "$BACKUP"
+fi
+if [ -n "$(git status --porcelain)" ]; then
+  echo "STOP: the VM checkout has changes other than the verified generated probe"
+  git status --short
+  exit 1
+fi
+git pull --ff-only
+if [ -e "$BACKUP" ]; then
+  cmp "$BACKUP" "$PROBE"
+  rm "$BACKUP"
+fi
+git rev-parse --short HEAD
+EOF
+```
+
+Expected: both comparisons succeed, the pull fast-forwards, and the printed commit is the pushed
+fallback commit. Any other checkout change stops the task for review.
+
+Run Task 13, Steps 5–10 with this exact substitution table:
+
+| Task 13 value | Task 13A value |
+|---|---|
+| `SIZE=l4` | `SIZE=l40s` |
+| `TYPE=g6.xlarge` | `TYPE=g6e.xlarge` |
+| `NVIDIA L4` | `NVIDIA L40S` |
+| `vm-l4-checks.txt` | `vm-l40s-checks.txt` |
+| `cloud-gpu-probe/l4.json` | `cloud-gpu-probe/l40s.json` |
+| `--label l4` and `.label == "l4"` | `--label l40s` and `.label == "l40s"` |
+| evidence heading ``## Sizes: `l4` `` | evidence heading ``## Sizes: `l40s` `` |
+| commit message's `l4` | `l40s` |
+
+The batch sizes remain 1, 4, and 16. Expected: the instance and root volume IDs remain constant;
+`nvidia-smi` reports L40S with a 580-series driver; JAX reports one GPU and a vectorized
+four-chain method; all 433 tests pass; all four determinism lines report `gpu float64`; and the
+probe JSON passes the same schema and dimension checks.
+
+- [ ] **Step 8: Leave `l40s`**
+
+Run Task 13, Step 11 from `l40s`. If the P quota is at least 16 and the human partner proceeds to
+Task 14, its plan must show `g6e.xlarge -> p5.4xlarge`. Otherwise plan `g6e.xlarge ->
+m7i.xlarge`, obtain the existing explicit apply approval, switch to `dev`, record the switch, and
+stop the instance.
+
 ### Task 14: `h100` (Verification bullets 7–9; Req 2's open item)
 
 **Mode:** the controller runs this task inline once the P quota is approved. Step 2 and the switch in Step 10 are approval gates.
@@ -4023,7 +4212,7 @@ Expected: `size = "dev"` in `infra/env/size.auto.tfvars`, `true`, and the printe
 - Modify: `docs/decisions/cloud-gpu-evidence/size-switches.json`, `docs/decisions/cloud-gpu-evidence/README.md` (append a section)
 
 **Interfaces:**
-- Consumes: plan 3's request for `L-417A185B`, and Task 13's `size-switches.json` and `~/ces-determinism.py`.
+- Consumes: plan 3's request for `L-417A185B`, and Task 13A's `size-switches.json` and `~/ces-determinism.py`.
 - Produces: `h100.json`; the first p5.4xlarge On-Demand start in the account, dated in `size-switches.json`; and the environment back at `dev`, stopped.
 
 - [ ] **Step 1: Check the quota**
@@ -4059,7 +4248,7 @@ tofu -chdir=infra/env show -json /tmp/ces-revisions-size.tfplan |
 rm /tmp/ces-revisions-size.tfplan
 ```
 
-Expected: `Plan: 0 to add, 1 to change, 0 to destroy.`, then `update aws_instance.vm m7i.xlarge -> p5.4xlarge`, or `g6.xlarge -> p5.4xlarge` when coming straight from Task 13.
+Expected: `Plan: 0 to add, 1 to change, 0 to destroy.`, then `update aws_instance.vm m7i.xlarge -> p5.4xlarge`, or `g6e.xlarge -> p5.4xlarge` when coming straight from Task 13A.
 
 - [ ] **Step 4: Switch to `h100` (Req 2's open item)**
 
@@ -4132,7 +4321,7 @@ uv run pytest -q -p no:cacheprovider 2>&1 | tail -n 1
 EOF
 ```
 
-Expected: `382 passed`, with any warnings.
+Expected: `433 passed`, with any warnings.
 
 - [ ] **Step 8: Compare two GPU runs bit for bit**
 
@@ -4211,10 +4400,10 @@ rm /tmp/ces-revisions-instance.json
 jq -e --arg type "$TYPE" '(map(.InstanceId) | unique | length == 1) and (map(.RootVolumeId) | unique | length == 1) and .[-1].InstanceType == $type' "$SWITCHES"
 infra/bin/vm stop
 jq -r 'map(.size) | join(" -> ")' "$SWITCHES"
-jq -e '(map(.size) | index("l4") != null and index("h100") != null) and .[-1].size == "dev"' "$SWITCHES"
+jq -e '(map(.size) | index("l40s") != null and index("h100") != null) and .[-1].size == "dev"' "$SWITCHES"
 ```
 
-Expected: `true`, the printed stop command, a sequence such as `dev -> l4 -> h100 -> dev`, and `true`. With every entry sharing one instance ID and one root volume ID, this discharges Verification bullet 8.
+Expected: `true`, the printed stop command, a sequence such as `dev -> l40s -> h100 -> dev`, and `true`. The separate capacity evidence records the unsuccessful `l4` attempt. With every successful entry sharing one instance ID and one root volume ID, this discharges Verification bullet 8.
 
 - [ ] **Step 11: Append to the evidence README, scan the evidence, and commit**
 
@@ -4224,7 +4413,7 @@ Append to `docs/decisions/cloud-gpu-evidence/README.md`:
 
 ## Sizes: `h100`
 
-- `vm-h100-checks.txt` — the checks of `vm-l4-checks.txt`, on `h100`.
+- `vm-h100-checks.txt` — the checks of `vm-l40s-checks.txt`, on `h100`.
 - `../cloud-gpu-probe/h100.json` — the engine probe on `h100` at T=280, n=150, p=70, with batch sizes 1, 4, 16, and 64.
 - `size-switches.json` gains the switch to `h100`, the account's first p5.4xlarge On-Demand start, and the switch back to `dev`.
 ````
@@ -4261,7 +4450,7 @@ Create `docs/cloud-gpu-runbook.md`:
 ````markdown
 # Cloud GPU environment runbook
 
-How to build, use, and take down the ces-revisions cloud GPU development environment: one EC2 instance on one disk, whose instance type switches between a CPU size for daily work and two GPU sizes for fits. The decision behind it, with its evidence, is [`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
+How to build, use, and take down the ces-revisions cloud GPU development environment: one EC2 instance on one disk, whose instance type switches between a CPU size for daily work and three GPU sizes for fits. The decision behind it, with its evidence, is [`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
 
 Everything under `infra/` runs on the Mac, from the repository root, never on the VM. Resizing stops the instance, which would kill an apply running on it, and the instance's role has no AWS permission beyond Systems Manager. `infra/bin/vm` refuses to run on the VM.
 
@@ -4272,9 +4461,11 @@ Everything under `infra/` runs on the Mac, from the repository root, never on th
 - The sizes:
   - `dev` is m7i.xlarge: 4 vCPU and 16 GiB, \$0.20/hr.
   - `l4` is g6.xlarge: an NVIDIA L4 with 24 GB, \$0.81/hr.
+  - `l40s` is g6e.xlarge: an NVIDIA L40S with 48 GB, \$1.861/hr.
   - `h100` is p5.4xlarge: an NVIDIA H100 with 80 GB, \$6.88/hr.
 
-  These are On-Demand prices in us-east-1 on 2026-09-13.
+  The `dev`, `l4`, and `h100` prices were checked in us-east-1 on 2026-09-13; `l40s` was checked
+  on 2026-09-22.
 
 ## One-time setup
 
@@ -4460,14 +4651,15 @@ export AWS_PROFILE=ces-revisions
 infra/bin/vm size l4
 ```
 
-Review the plan, which should change only `aws_instance.vm`'s `instance_type`, and answer `yes`. Switch back with `infra/bin/vm size dev`, or to `h100` the same way.
+Review the plan, which should change only `aws_instance.vm`'s `instance_type`, and answer `yes`. Switch back with `infra/bin/vm size dev`, or switch to `l40s` or `h100` the same way. When `l4` fails with `InsufficientInstanceCapacity`, `l40s` is the qualified fallback in the pinned zone.
 
 Underneath:
 - OpenTofu stops the instance, changes its type, and starts it again, even if it was stopped. A switch to a GPU size therefore starts billing at that size's rate.
 - The instance ID, its root volume, and everything on it stay.
 - `infra/bin/vm` records the size in `infra/env/size.auto.tfvars` after a successful apply, so a later `tofu plan` keeps it.
-- A GPU size needs its vCPU quota in the region: 4 in "Running On-Demand G and VT instances" for `l4`, and 16 in "Running On-Demand P instances" for `h100`.
-- A stop erases p5.4xlarge's local NVMe disk, which nothing here uses.
+- A GPU size needs its vCPU quota in the region: 4 in "Running On-Demand G and VT instances" for `l4` or `l40s`, and 16 in "Running On-Demand P instances" for `h100`.
+- A stop erases any local NVMe instance-store disk on the selected GPU size; nothing here uses
+  those disks.
 
 ## Running a long GPU job
 
@@ -4664,7 +4856,7 @@ Underneath:
 
 ### Insufficient capacity
 
-A size switch fails with `InsufficientInstanceCapacity`: AWS has no spare instance of that type in the zone at the moment. The instance is left stopped, possibly with the new type already set. Switch back with `infra/bin/vm size dev`, or try the GPU size again later.
+A size switch fails with `InsufficientInstanceCapacity`: AWS has no spare instance of that type in the zone at the moment. The instance is left stopped, possibly with the new type already set. Switch back with `infra/bin/vm size dev`, try the GPU size again later, or use the qualified `l40s` fallback when `l4` is unavailable.
 
 Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request that finds none. The environment stays in one zone, because its subnet and its volume do.
 
@@ -4683,7 +4875,7 @@ aws service-quotas list-requested-service-quota-change-history --region "$REGION
   --query 'RequestedQuotas[].{Quota: QuotaName, Desired: DesiredValue, Status: Status}' --output table
 ```
 
-`l4` needs at least 4 in `L-DB2E81BA` ("Running On-Demand G and VT instances"), and `h100` needs at least 16 in `L-417A185B` ("Running On-Demand P instances"). Request an increase in the Service Quotas console, and switch back to `dev` meanwhile. Underneath: EC2 quotas count the vCPUs of running instances per family, not the instances themselves.
+`l4` and `l40s` each need at least 4 in `L-DB2E81BA` ("Running On-Demand G and VT instances"), and `h100` needs at least 16 in `L-417A185B` ("Running On-Demand P instances"). Request an increase in the Service Quotas console, and switch back to `dev` meanwhile. Underneath: EC2 quotas count the vCPUs of running instances per family, not the instances themselves.
 
 ### Session Manager not connecting
 
@@ -4828,7 +5020,8 @@ from pathlib import Path
 
 EVIDENCE = Path("docs/decisions/cloud-gpu-evidence")
 PROBE = Path("docs/decisions/cloud-gpu-probe")
-HOSTS = ("mac", "dev", "l4", "h100")
+HOSTS = ("mac", "dev", "l40s", "h100")
+GPU_HOSTS = ("l40s", "h100")
 
 
 def load(name):
@@ -4865,11 +5058,13 @@ image = load(f"ec2-describe-images-{region}.json")
 credentials = load("opentofu-credentials.json")
 switches = load("size-switches.json")
 bls = load("bls-canary.json")
+capacity_failure = load("ec2-l4-capacity-failure.json")
+l40s_fallback = load("ec2-l40s-fallback.json")
 records = {host: json.loads((PROBE / f"{host}.json").read_text()) for host in HOSTS}
-l4_checks = (EVIDENCE / "vm-l4-checks.txt").read_text()
+l40s_checks = (EVIDENCE / "vm-l40s-checks.txt").read_text()
 dev_checks = (EVIDENCE / "vm-dev-checks.txt").read_text()
 idle = re.search(r"^state stopped after (\d+) minutes", (EVIDENCE / "vm-idle-stop.txt").read_text(), re.MULTILINE)
-drivers = {records[host]["nvidia_driver"] for host in ("l4", "h100")}
+drivers = {records[host]["nvidia_driver"] for host in GPU_HOSTS}
 access = {
     "host-entry": "The Claude Code desktop app connects through the `ces-revisions-vm` SSH host entry, whose `ProxyCommand` opens Session Manager's `AWS-StartSSHSession`.",
     "port-forward": "The Claude Code desktop app could not use the host entry's `ProxyCommand`, so it connects to `localhost:2222`, which `infra/bin/vm forward` forwards to the VM's SSH port through `AWS-StartPortForwardingSession`.",
@@ -4882,10 +5077,12 @@ print("region:", region)
 print("regions evaluated:", listing(r["region"] for r in choice["evaluated"]))
 print("p5 price:", f"{min(chosen['p5_4xlarge_on_demand_usd_per_hour']):.2f}")
 print("zones offering all three:", listing(f"`{z}`" for z in chosen["zones_offering_all_three"]))
+print("l4 capacity date:", capacity_failure["date"])
+print("l40s price:", l40s_fallback["on_demand_usd_per_hour"])
 print("image name:", image["Name"])
 print("ami id:", image["ImageId"])
-print("kernel:", re.search(r"^\S+-aws$", l4_checks, re.MULTILINE).group(0))
-print("driver:", drivers.pop() if len(drivers) == 1 else f"{records['l4']['nvidia_driver']} on `l4` and {records['h100']['nvidia_driver']} on `h100`")
+print("kernel:", re.search(r"^\S+-aws$", l40s_checks, re.MULTILINE).group(0))
+print("driver:", drivers.pop() if len(drivers) == 1 else listing(f"{records[host]['nvidia_driver']} on `{host}`" for host in GPU_HOSTS))
 print("opentofu version:", credentials["opentofu"].removeprefix("OpenTofu v"))
 print("provider version:", credentials["aws_provider"])
 print("credential phrase:", "through a `credential_process` profile that runs `aws configure export-credentials`" if credentials["credential_process_needed"] else "directly")
@@ -4893,7 +5090,7 @@ print("access sentence:", access[load("access.json")["desktop_app"]])
 print("first p5 start date:", next(s["date"] for s in switches if s["InstanceType"] == "p5.4xlarge"))
 print("switch sequence:", " → ".join(f"`{s['size']}`" for s in switches))
 print("jax sentence:", "ran on the CPU without a message from its CUDA plugin" if "no CUDA message on stderr" in dev_checks else "logged an error from its CUDA plugin, then ran on the CPU")
-print("determinism sentence:", "; ".join(determinism(host) for host in ("l4", "h100")))
+print("determinism sentence:", "; ".join(determinism(host) for host in GPU_HOSTS))
 print("idle stop minutes:", idle.group(1))
 print("bls sentence:", f"was {bls['outcome']} (HTTP {bls['http_status']}) on {bls['date']}")
 print("mac batch 1:", f"{median('mac', 1):.3g}")
@@ -4921,7 +5118,7 @@ Expected: one line for each slot named in Step 4, then three `quota row` lines a
 Create `docs/decisions/cloud-gpu.md` from the text below. Replace each `{{name}}` slot with the text Step 3 printed after `name:`. Replace the `{{quota rows}}` slot with the `quota row` lines and the `{{probe rows}}` slot with the `probe row` lines, in each case without the prefix.
 
 ````markdown
-# Develop on one AWS instance that switches between a CPU size and two GPU sizes
+# Develop on one AWS instance that switches between a CPU size and three GPU sizes
 
 - **Status:** Accepted
 - **Date:** {{date}}
@@ -4930,7 +5127,7 @@ Create `docs/decisions/cloud-gpu.md` from the text below. Replace each `{{name}}
 
 ## Context
 
-The engine runs in float64 by mandate: Req 17 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) requires it, and `tests/conftest.py` enables it for every test. NVIDIA's Ampere (GA102) and Ada (AD102) architecture whitepapers state that those chips carry two FP64 units per streaming multiprocessor and run FP64 at 1/64 of their FP32 rate. NVIDIA rates the A100 at 9.7 and the H100 at 34 FP64 TFLOPS, and by the 1/64 rule the L4 runs float64 at about 0.5.
+The engine runs in float64 by mandate: Req 17 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) requires it, and `tests/conftest.py` enables it for every test. NVIDIA's Ampere (GA102) and Ada (AD102) architecture whitepapers state that those chips carry two FP64 units per streaming multiprocessor and run FP64 at 1/64 of their FP32 rate. NVIDIA rates the A100 at 9.7 and the H100 at 34 FP64 TFLOPS, and by the 1/64 rule the L4 and L40S run float64 at about 0.5 and 1.4.
 
 A single chain's `lax.scan` launches each operation as its own GPU kernel, so a cheap GPU may keep pace there. Batched work, `vmap` over chains or simulation-based calibration replicates, multiplies the arithmetic in each kernel, and there the FP64 rating decides. The design of [`specs/cloud-gpu-environment.md`](../../specs/cloud-gpu-environment.md) left that crossover to measurement.
 
@@ -4942,13 +5139,16 @@ Learning the cloud stack is also a project goal, so [`docs/cloud-gpu-runbook.md`
 
 ## Decision
 
-We will develop on one EC2 instance in `{{zone}}` ({{region}}), built with OpenTofu, whose instance type switches among three sizes on one root volume:
+We will develop on one EC2 instance in `{{zone}}` ({{region}}), built with OpenTofu, whose instance type switches among four sizes on one root volume:
 
-| Size | Instance type | GPU | On-Demand in us-east-1, 2026-09-13 |
+| Size | Instance type | GPU | On-Demand in us-east-1 |
 |---|---|---|---|
 | `dev` | m7i.xlarge | none | \$0.20/hr |
 | `l4` | g6.xlarge | L4, 24 GB | \$0.81/hr |
+| `l40s` | g6e.xlarge | L40S, 48 GB | \${{l40s price}}/hr |
 | `h100` | p5.4xlarge | H100, 80 GB | \$6.88/hr |
+
+The original three prices were checked on 2026-09-13; `l40s` was checked on 2026-09-22.
 
 - **Image and driver:** Canonical's `{{image name}}` (`{{ami id}}`), pinned, with Ubuntu's NVIDIA 580 server driver {{driver}} and NVIDIA's open kernel modules on kernel `{{kernel}}`, held with `apt-mark hold`.
 - **Access:** Session Manager, with no inbound port. {{access sentence}}
@@ -4965,7 +5165,7 @@ The command outputs are in [`docs/decisions/cloud-gpu-evidence/`](cloud-gpu-evid
 
 ### Location and quotas
 
-Req 2's rule evaluated {{regions evaluated}} and chose `{{zone}}`. In {{region}}, the Price List API had a Linux On-Demand p5.4xlarge price of \${{p5 price}} per hour, and {{zones offering all three}} offered all three instance types. The account's first p5.4xlarge On-Demand start succeeded on {{first p5 start date}}, which settles the question AWS's August 2025 announcement raised about single-GPU P5 On-Demand in US regions.
+Req 2's original rule evaluated {{regions evaluated}} and chose `{{zone}}`. In {{region}}, the Price List API had a Linux On-Demand p5.4xlarge price of \${{p5 price}} per hour, and {{zones offering all three}} offered the original three instance types. On {{l4 capacity date}}, the first g6.xlarge start failed with `InsufficientInstanceCapacity`; a separate live check established that the chosen zone offered g6e.xlarge at \${{l40s price}} per hour under the approved 4-vCPU G and VT quota. The account's first p5.4xlarge On-Demand start succeeded on {{first p5 start date}}, which settles the question AWS's August 2025 announcement raised about single-GPU P5 On-Demand in US regions.
 
 | Quota | Prior value (vCPUs) | Requested |
 |---|---|---|
@@ -4984,7 +5184,7 @@ At T=280, n=150, p=70, with 20% of panel cells missing, each batch size ran one 
 ### Machine checks
 
 - On `dev`, with the `cuda` extra installed and no GPU, JAX {{jax sentence}}. No separate CPU environment was needed, and the full test suite passed with the `cpu` backend and four host devices.
-- On `l4` and `h100`, `nvidia-smi` reported the GPU with driver {{driver}}. The full test suite passed with the `gpu` backend and `chain_method(4) == "vectorized"`, and the GPU cap scheduled a poweroff 8 hours after boot.
+- On `l40s` and `h100`, `nvidia-smi` reported the GPU with driver {{driver}}. The full test suite passed with the `gpu` backend and `chain_method(4) == "vectorized"`, and the GPU cap scheduled a poweroff 8 hours after boot. The `l4` tier remains configured for a later capacity retry.
 - Repeated runs of one batched value and gradient at batch 16: {{determinism sentence}}.
 - The size switches {{switch sequence}} kept one instance ID and one root volume ID.
 - With its window shortened to 10 minutes, the idle stop stopped the instance within {{idle stop minutes}} minutes of the VM going idle.
@@ -5004,7 +5204,7 @@ One by-hand fetch of a small file from `download.bls.gov`, run from the VM with 
 - **Negative:**
   - A size switch stops the VM and whatever runs on it, and a switch to a GPU size starts billing as soon as the instance starts.
   - The budget sees only costs tagged since the tag's activation. Public IPv4 hours, data transfer, and tax fall outside it.
-  - GPU capacity is per zone. A p5.4xlarge start can fail for lack of capacity, and the environment cannot move zones without a rebuild.
+  - GPU capacity is per zone and per instance type. The first g6.xlarge start failed for lack of capacity, and any GPU type can do the same; the environment cannot move zones without a rebuild.
   - The held driver and kernel receive no security updates until someone updates them by hand.
 - **Neutral / follow-on:**
   - Roadmap Stage 6 measures the engine at Stage 7–9 dimensions on this environment, and revisits the budget and the default GPU size.
@@ -5018,7 +5218,7 @@ One by-hand fetch of a small file from `download.bls.gov`, run from the VM with 
 - **IAM Identity Center.** Rejected: it would make the account an AWS Organizations management account, while an IAM user with MFA and `aws login` already gives temporary credentials.
 - **A private subnet with a NAT gateway.** Rejected: about \$33 a month, or Systems Manager VPC endpoints, for no benefit when nothing listens on the public subnet.
 - **SageMaker and AWS Batch.** Rejected: both run jobs rather than a development machine, and neither keeps a checkout and a Claude Code session between fits.
-- **An L40S size (g6e, about 1.4 FP64 TFLOPS).** Not built: the spec left it out of scope. It sits between `l4` and `h100` and returns if Stage 6's measurement calls for it.
+- **T4 (g4dn) and A10G (g5) fallback sizes.** Rejected for this capacity fallback: both have less GPU memory and lower estimated float64 throughput than L40S, while L40S fits the existing 4-vCPU G and VT quota.
 
 ## Trade-offs & reversibility
 
@@ -5050,7 +5250,7 @@ grep -c '^| `' docs/decisions/cloud-gpu.md
 uv run ruff format --check docs/decisions/cloud-gpu.md
 ```
 
-Expected: `no unfilled slots`, `dollar amounts escaped`, `16` (the three size rows plus the 13 probe rows), and `1 file already formatted`.
+Expected: `no unfilled slots`, `dollar amounts escaped`, `17` (the four size rows plus the 13 probe rows), and `1 file already formatted`.
 
 - [ ] **Step 6: Name the verified connection method in the runbook**
 
@@ -5127,7 +5327,7 @@ infra/                                OpenTofu roots, VM scripts and cost guards
 Second, insert this paragraph, followed by a blank line, directly before the paragraph that begins `The modeling stack is JAX`:
 
 ````markdown
-The cloud GPU development environment is one AWS instance that switches between a CPU size and two GPU sizes. It is built and operated from the Mac with `infra/`, as [`docs/cloud-gpu-runbook.md`](docs/cloud-gpu-runbook.md) describes, and [`docs/decisions/cloud-gpu.md`](docs/decisions/cloud-gpu.md) records why, with engine timings for each size.
+The cloud GPU development environment is one AWS instance that switches between a CPU size and three GPU sizes. It is built and operated from the Mac with `infra/`, as [`docs/cloud-gpu-runbook.md`](docs/cloud-gpu-runbook.md) describes, and [`docs/decisions/cloud-gpu.md`](docs/decisions/cloud-gpu.md) records why, with engine timings for each measured size.
 ````
 
 - [ ] **Step 9: Append to the evidence README**
@@ -5152,7 +5352,7 @@ uv lock --check
 tofu fmt -check -recursive infra && echo "HCL formatted"
 ```
 
-Expected on base `08ed203`: `365 passed, 17 deselected`, `13 passed, 369 deselected`, `All checks
+Expected after the capacity amendment: `416 passed, 17 deselected`, `13 passed, 420 deselected`, `All checks
 passed!`, every file already formatted, `uv lock --check` exiting 0, and `HCL formatted`. Then
 confirm that both roots still match AWS:
 
