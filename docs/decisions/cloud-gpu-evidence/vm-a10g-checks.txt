@@ -1,0 +1,18 @@
+== kernel, GPU, and driver
+7.0.0-1012-aws
+NVIDIA A10G, 580.178.04, 23028 MiB
+crw-rw-rw- 1 root root 195, 0 Sep 23 00:10 /dev/nvidia0
+== GPU cap
+Shutdown scheduled for Wed 2026-09-23 08:10:15 UTC, use 'shutdown -c' to cancel.
+Result=success
+ExecMainStatus=0
+== JAX
+backend gpu devices 1 chain_method(4) vectorized
+== uv run pytest
+434 passed, 2 warnings in 1655.31s (0:27:35)
+== determinism at T=280, n=150, p=70, batch 16, with --xla_gpu_deterministic_ops=true
+gpu float64 8758b968885042b0b63dc2ee09a3dba3b69d25fcbddb03292a4e1e247be550b7
+gpu float64 8758b968885042b0b63dc2ee09a3dba3b69d25fcbddb03292a4e1e247be550b7
+== the same, without the flag
+gpu float64 90e0c8107343df4f498a07a900b2461f29e6b572f615327307ceef234bceb176
+gpu float64 90e0c8107343df4f498a07a900b2461f29e6b572f615327307ceef234bceb176

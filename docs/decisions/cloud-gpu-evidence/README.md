@@ -105,3 +105,16 @@ done
 - `ec2-a10g-fallback.json` — a 2026-09-22 check of the chosen zone's g5.xlarge offering, public
   instance metadata, the G and VT quota value, and the Linux On-Demand hourly price. It contains no
   account-scoped identifier.
+
+## Sizes: `a10g`
+
+- `size-switches.json` — after each size switch, `aws ec2 describe-instances` narrowed to the
+  instance ID, type, and root volume ID, with the size and date. The first entry is the `dev`
+  instance from `ec2-instance-dev.json`. Every entry has the same instance ID and the same root
+  volume ID.
+- `vm-a10g-checks.txt` — on `a10g`: the kernel; the GPU and driver from `nvidia-smi`; the device
+  file; the GPU cap's scheduled poweroff; JAX's backend, device count, and `chain_method(4)`; the
+  full test run's summary; and four hashes of one batched value and gradient, two with XLA's
+  deterministic flag and two without.
+- `../cloud-gpu-probe/a10g.json` — the engine probe on `a10g` at T=280, n=150, p=70, with batch
+  sizes 1, 4, and 16.
