@@ -99,6 +99,18 @@ The command outputs are kept for the decision record. Immediately after the choi
 increases are requested in that region: "Running On-Demand G and VT instances" to at least 4 vCPUs
 and "Running On-Demand P instances" to at least 16, recording the prior values and the request IDs.
 
+**US and Canada H100 fallback amendment (2026-09-24).** The original first-qualified choice and
+the deployed environment remain in us-east-1. For regional readiness, evaluate every standard
+commercial AWS Region in the United States and Canada: us-east-1, us-east-2, us-west-1, us-west-2,
+ca-central-1, and ca-west-1. GovCloud, Local Zones, and Mexico are outside this list. Keep
+`p5.4xlarge` as a hard requirement, require a positive Linux Shared On-Demand price and at least
+one Availability Zone offering it, and rank eligible Regions by price and measured endpoint
+proximity from the current workstation, using the existing environment as a final tie-breaker.
+Record opt-in status, the Canonical Ubuntu parameter, P-family quota, and P-quota request history.
+Build a request plan for 16 P-family vCPUs only in eligible fallback Regions. A separate approval
+is required before submitting those regional requests. The readiness survey does not move or copy
+the environment; a cross-region deployment requires a separate reviewed plan and state.
+
 **Req 3 — OpenTofu layout and state.**
 
 - `infra/state/` creates the state bucket with versioning on, all public access blocked, default
@@ -262,11 +274,13 @@ bullets pass, from their recorded evidence, and contains no placeholder.
   probe.
 - Decision: AWS in the Req 2 zone with its evidence; the five sizes; the image and driver versions;
   the access method that worked; OpenTofu; the guards and budget.
-- Evidence: prior and requested quota values; the failed `l4` and `l40s` capacity attempts and the
-  separately qualified `a10g` fallback; a probe table for the Mac, `dev`, `a10g`, and `h100` at
-  T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files
-  under `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with
-  its HTTP status).
+- Evidence: prior and requested quota values; the dated US and Canada `p5.4xlarge` readiness survey,
+  its ranked eligible Regions, and the fact that the fallback regional P-quota actions reserved no
+  capacity and created no deployment; the failed `l4` and `l40s` capacity attempts and the separately
+  qualified `a10g` fallback; a probe table for the Mac, `dev`, `a10g`, and `h100` at T=280, n=150,
+  p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files under
+  `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its HTTP
+  status).
 - Alternatives considered: Azure NC24ads A100 v4; the dev-box-plus-runners and Mac-dev topologies;
   the Deep Learning Base AMI; IAM Identity Center; a private subnet with a NAT gateway; SageMaker
   and AWS Batch; and the T4 fallback size.

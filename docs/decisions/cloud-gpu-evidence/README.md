@@ -58,6 +58,34 @@ for REQUEST_FILE in \
 done
 ```
 
+## Req 2: US and Canada H100 fallback readiness
+
+The original selection and the deployed environment remain in us-east-1. On 2026-09-24, a
+read-only fallback survey evaluated all six standard commercial AWS Regions in the United States
+and Canada, with `p5.4xlarge` as the required target. GovCloud, Local Zones, and Mexico were
+excluded. A Region qualified when the Price List API returned a positive Linux Shared On-Demand
+price and `describe-instance-type-offerings` returned at least one Availability Zone for
+`p5.4xlarge`.
+
+- `us-canada-p5-readiness-2026-09-24.json` records each Region's opt-in status, narrowed pricing
+  and offering results, zones that offer all five configured project types, the public Canonical
+  Ubuntu parameter's version and date, effective P-family quota, request statuses without request
+  IDs, the actual UTC collection timestamp, and endpoint connection times for eligible Regions. It
+  ranks us-east-1, us-east-2, and us-west-2; all three were priced at \$6.88 per hour. Catalog
+  offerings do not guarantee current launch capacity.
+- `service-quotas-request-plan-p-fallbacks-2026-09-24.json` converts the survey into actions. It
+  waits on the existing us-east-1 request, proposes 16 P-family vCPUs in us-east-2 and us-west-2,
+  and proposes no request where `p5.4xlarge` is absent. Submitting the two proposed requests is a
+  separate approval gate.
+
+`infra/bin/p5-region-readiness` regenerates the matrix from the narrowed AWS CLI calls and five
+HTTPS connection-time samples per eligible Region. It stops if the live standard US and Canada
+Region set differs from the six recorded here.
+
+The survey does not change `zone-choice.json`, the region and zone pins, the backend, or any live
+resource. EC2 quotas, AMIs, networks, and volumes are regional, so any later deployment in a
+fallback Region needs separate infrastructure and state.
+
 ## Reqs 4 and 5: image
 
 - `ssm-get-parameters-ubuntu-24.04-<region>.json` — `aws ssm get-parameters` for Canonical's parameter that names the current Ubuntu 24.04 LTS amd64 gp3 image, narrowed to its name, value, version, and date. The value is the image pinned in `infra/env/pinned.auto.tfvars`.

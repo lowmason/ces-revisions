@@ -1,0 +1,45 @@
+{
+  "created": "2026-09-24",
+  "quota_name": "Running On-Demand P instances",
+  "quota_code": "L-417A185B",
+  "desired_vcpus": 16,
+  "approval_required": true,
+  "regions": [
+    {
+      "region": "us-east-1",
+      "effective_vcpus": 8.0,
+      "action": "wait",
+      "reason": "An existing 16-vCPU request is CASE_OPENED."
+    },
+    {
+      "region": "us-east-2",
+      "effective_vcpus": 0.0,
+      "action": "request",
+      "reason": "Ranked p5.4xlarge fallback with no existing 16-vCPU request."
+    },
+    {
+      "region": "us-west-2",
+      "effective_vcpus": 0.0,
+      "action": "request",
+      "reason": "Ranked p5.4xlarge fallback with no existing 16-vCPU request."
+    },
+    {
+      "region": "us-west-1",
+      "effective_vcpus": 0.0,
+      "action": "none",
+      "reason": "p5.4xlarge has no positive Linux Shared On-Demand price or Availability Zone offering."
+    },
+    {
+      "region": "ca-central-1",
+      "effective_vcpus": 0.0,
+      "action": "none",
+      "reason": "p5.4xlarge has no positive Linux Shared On-Demand price or Availability Zone offering."
+    },
+    {
+      "region": "ca-west-1",
+      "effective_vcpus": null,
+      "action": "none",
+      "reason": "The Region is not opted in and the Price List has no p5.4xlarge Linux Shared On-Demand product."
+    }
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "checked": "2026-09-24",
+  "collected_at": "2026-09-24T23:02:59Z",
+  "scope": "Standard commercial AWS Regions in the United States and Canada; GovCloud, Local Zones, and Mexico are excluded.",
+  "hard_target": "p5.4xlarge",
+  "ranking_rule": "Require a positive Linux Shared On-Demand price and at least one Availability Zone offering p5.4xlarge; then prefer a lower price and lower measured endpoint latency from the current workstation, using the existing environment as the final tie-breaker.",
+  "latency_method": "Median of five HTTPS connection times to each eligible Region EC2 endpoint from the current workstation.",
+  "eligible_order": [
+    "us-east-1",
+    "us-east-2",
+    "us-west-2"
+  ],
+  "regions": [
+    {
+      "region": "us-east-1",
+      "location": "US East (N. Virginia)",
+      "opt_in_status": "opt-in-not-required",
+      "p5_4xlarge_on_demand_usd_per_hour": [
+        6.8800000000
+      ],
+      "p5_4xlarge_zones": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c",
+        "us-east-1d",
+        "us-east-1e",
+        "us-east-1f"
+      ],
+      "zones_offering_all_project_types": [
+        "us-east-1a",
+        "us-east-1b",
+        "us-east-1c",
+        "us-east-1d"
+      ],
+      "ubuntu_24_04_parameter": {
+        "version": 77,
+        "last_modified": "2026-09-23T08:21:20.627000-04:00",
+        "resolved": true
+      },
+      "p_quota_vcpus": 8.0,
+      "p_request_statuses": [
+        {
+          "desired_vcpus": 16.0,
+          "status": "CASE_OPENED",
+          "created": "2026-09-24T08:56:25.237000-04:00"
+        },
+        {
+          "desired_vcpus": 16.0,
+          "status": "CASE_CLOSED",
+          "created": "2026-09-16T18:13:45.339000-04:00"
+        }
+      ],
+      "eligible": true,
+      "endpoint_connect_seconds": [
+        0.021661,
+        0.021837,
+        0.022397,
+        0.023582,
+        0.024383
+      ],
+      "median_endpoint_connect_seconds": 0.022397,
+      "rank": 1
+    },
+    {
+      "region": "us-east-2",
+      "location": "US East (Ohio)",
+      "opt_in_status": "opt-in-not-required",
+      "p5_4xlarge_on_demand_usd_per_hour": [
+        6.8800000000
+      ],
+      "p5_4xlarge_zones": [
+        "us-east-2a",
+        "us-east-2b",
+        "us-east-2c"
+      ],
+      "zones_offering_all_project_types": [
+        "us-east-2a",
+        "us-east-2b",
+        "us-east-2c"
+      ],
+      "ubuntu_24_04_parameter": {
+        "version": 76,
+        "last_modified": "2026-09-23T08:21:30.445000-04:00",
+        "resolved": true
+      },
+      "p_quota_vcpus": 0.0,
+      "p_request_statuses": [],
+      "eligible": true,
+      "endpoint_connect_seconds": [
+        0.031140,
+        0.033852,
+        0.034093,
+        0.034434,
+        0.035583
+      ],
+      "median_endpoint_connect_seconds": 0.034093,
+      "rank": 2
+    },
+    {
+      "region": "us-west-2",
+      "location": "US West (Oregon)",
+      "opt_in_status": "opt-in-not-required",
+      "p5_4xlarge_on_demand_usd_per_hour": [
+        6.8800000000
+      ],
+      "p5_4xlarge_zones": [
+        "us-west-2a",
+        "us-west-2b",
+        "us-west-2c",
+        "us-west-2d"
+      ],
+      "zones_offering_all_project_types": [
+        "us-west-2a",
+        "us-west-2b",
+        "us-west-2c"
+      ],
+      "ubuntu_24_04_parameter": {
+        "version": 77,
+        "last_modified": "2026-09-23T08:20:34.050000-04:00",
+        "resolved": true
+      },
+      "p_quota_vcpus": 0.0,
+      "p_request_statuses": [],
+      "eligible": true,
+      "endpoint_connect_seconds": [
+        0.077693,
+        0.079384,
+        0.079531,
+        0.081117,
+        0.081638
+      ],
+      "median_endpoint_connect_seconds": 0.079531,
+      "rank": 3
+    },
+    {
+      "region": "us-west-1",
+      "location": "US West (N. California)",
+      "opt_in_status": "opt-in-not-required",
+      "p5_4xlarge_on_demand_usd_per_hour": [],
+      "p5_4xlarge_zones": [],
+      "zones_offering_all_project_types": [],
+      "ubuntu_24_04_parameter": {
+        "version": 77,
+        "last_modified": "2026-09-23T08:20:31.530000-04:00",
+        "resolved": true
+      },
+      "p_quota_vcpus": 0.0,
+      "p_request_statuses": [],
+      "eligible": false,
+      "reason": "p5.4xlarge has no positive Linux Shared On-Demand price or Availability Zone offering.",
+      "rank": null
+    },
+    {
+      "region": "ca-central-1",
+      "location": "Canada (Central)",
+      "opt_in_status": "opt-in-not-required",
+      "p5_4xlarge_on_demand_usd_per_hour": [],
+      "p5_4xlarge_zones": [],
+      "zones_offering_all_project_types": [],
+      "ubuntu_24_04_parameter": {
+        "version": 78,
+        "last_modified": "2026-09-23T08:20:19.798000-04:00",
+        "resolved": true
+      },
+      "p_quota_vcpus": 0.0,
+      "p_request_statuses": [],
+      "eligible": false,
+      "reason": "p5.4xlarge has no positive Linux Shared On-Demand price or Availability Zone offering.",
+      "rank": null
+    },
+    {
+      "region": "ca-west-1",
+      "location": "Canada West (Calgary)",
+      "opt_in_status": "not-opted-in",
+      "p5_4xlarge_on_demand_usd_per_hour": [],
+      "p5_4xlarge_zones": [],
+      "zones_offering_all_project_types": [],
+      "ubuntu_24_04_parameter": {
+        "resolved": false
+      },
+      "p_quota_vcpus": null,
+      "p_request_statuses": [],
+      "eligible": false,
+      "reason": "The Region is not opted in and the Price List has no p5.4xlarge Linux Shared On-Demand product.",
+      "rank": null
+    }
+  ]
+}

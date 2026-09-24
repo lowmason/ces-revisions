@@ -219,6 +219,31 @@ Underneath:
 - A stop erases any local NVMe instance-store disk on the selected GPU size; nothing here uses
   those disks.
 
+## Regional H100 readiness
+
+The live environment remains pinned to us-east-1. The dated readiness matrix in
+`docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-2026-09-24.json` evaluates all standard
+commercial AWS Regions in the United States and Canada while keeping `p5.4xlarge` as the required
+target. At that check, the eligible order was us-east-1, us-east-2, then us-west-2. All three had
+the same \$6.88 hourly Linux Shared On-Demand price; endpoint proximity and the existing environment
+put the two eastern Regions first.
+
+Refresh the read-only matrix with:
+
+```bash
+export AWS_PROFILE=ces-revisions
+infra/bin/p5-region-readiness \
+  docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-$(date -u +%F).json
+```
+
+Quotas do not move with the instance. The us-east-1 request covers only us-east-1; Ohio and Oregon
+each need their own 16-vCPU P-family quota before they can launch `p5.4xlarge`. An offering means
+AWS lists the type in an Availability Zone, not that capacity is free at the moment of launch.
+
+Do not change `infra/env/pinned.auto.tfvars` or the backend to try another Region. The subnet, AMI,
+instance, EBS volume, snapshots, and quotas are regional, so a fallback deployment needs a separate
+reviewed OpenTofu root and state. Keep the current environment stopped while preparing one.
+
 ## Running a long GPU job
 
 On a GPU size, `ces-gpu-cap.service` schedules a poweroff 8 hours after boot. Before a longer job, run on the VM:

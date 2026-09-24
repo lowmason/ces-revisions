@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+profile="${AWS_PROFILE:-ces-revisions}"
+output="${1:-docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-$(date -u +%F).json}"
+checked="${CES_READINESS_DATE:-$(date -u +%F)}"
+collected_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+temporary_directory="$(mktemp -d)"
+trap 'rm -rf "$temporary_directory"' EXIT
+
+run_aws() {
+  error_file="$temporary_directory/aws-error.txt"
+  : > "$error_file"
+  if aws "$@" 2> "$error_file"; then
+    return 0
+  fi
+  if grep -Eiq \
+    'expired|ExpiredToken|InvalidClientTokenId|Unable to locate credentials|NoCredentialsError|aws login' \
+    "$error_file"; then
+    printf 'STOP: AWS authentication requires refresh. Run: aws login --profile %s\n' \
+      "$profile" >&2
+  else
+    printf 'STOP: a read-only AWS query failed; verify profile %s permissions and rerun.\n' \
+      "$profile" >&2
+  fi
+  return 1
+}
+
+regions="us-east-1 us-east-2 us-west-1 us-west-2 ca-central-1 ca-west-1"
+rows="$temporary_directory/rows.json"
+printf '[]\n' > "$rows"
+
+run_aws ec2 describe-regions --profile "$profile" --region us-east-1 --all-regions \
+  --query 'Regions[].{Region:RegionName,OptInStatus:OptInStatus}' --output json \
+  > "$temporary_directory/region-catalog.json"
+
+actual_regions="$(jq -c '
+  [
+    .[].Region
+    | select(
+        test("^(us-|ca-)")
+        and (test("^us-(gov|iso|isob|isoe|isof)-") | not)
+      )
+  ] | sort
+' "$temporary_directory/region-catalog.json")"
+expected_regions='["ca-central-1","ca-west-1","us-east-1","us-east-2","us-west-1","us-west-2"]'
+if [ "$actual_regions" != "$expected_regions" ]; then
+  echo "STOP: the live US and Canada Region catalog changed: $actual_regions" >&2
+  exit 1
+fi
+
+for region in $regions; do
+  case "$region" in
+    us-east-1) location="US East (N. Virginia)" ;;
+    us-east-2) location="US East (Ohio)" ;;
+    us-west-1) location="US West (N. California)" ;;
+    us-west-2) location="US West (Oregon)" ;;
+    ca-central-1) location="Canada (Central)" ;;
+    ca-west-1) location="Canada West (Calgary)" ;;
+    *) echo "STOP: no location label for $region" >&2; exit 1 ;;
+  esac
+
+  opt_in_status="$(jq -r --arg region "$region" \
+    '.[] | select(.Region == $region) | .OptInStatus' \
+    "$temporary_directory/region-catalog.json")"
+
+  run_aws pricing get-products --profile "$profile" --region us-east-1 \
+    --service-code AmazonEC2 \
+    --filters Type=TERM_MATCH,Field=instanceType,Value=p5.4xlarge \
+    Type=TERM_MATCH,Field=regionCode,Value="$region" \
+    Type=TERM_MATCH,Field=operatingSystem,Value=Linux \
+    Type=TERM_MATCH,Field=tenancy,Value=Shared \
+    Type=TERM_MATCH,Field=preInstalledSw,Value=NA \
+    Type=TERM_MATCH,Field=capacitystatus,Value=Used \
+    --query PriceList --output json |
+    jq '[
+      .[] | fromjson
+      | select((.product.attributes.marketoption // "OnDemand") == "OnDemand")
+      | (.terms.OnDemand // {})[]
+      | .priceDimensions[]
+      | .pricePerUnit.USD | tonumber
+      | select(. > 0)
+    ] | unique | sort' > "$temporary_directory/prices-$region.json"
+
+  if [ "$opt_in_status" = "not-opted-in" ]; then
+    printf '{"InstanceTypeOfferings":[]}\n' > "$temporary_directory/offerings-$region.json"
+    printf '{"resolved":false}\n' > "$temporary_directory/parameter-$region.json"
+    printf 'null\n' > "$temporary_directory/quota-$region.json"
+    printf '[]\n' > "$temporary_directory/history-$region.json"
+  else
+    run_aws ec2 describe-instance-type-offerings --profile "$profile" --region "$region" \
+      --location-type availability-zone \
+      --filters Name=instance-type,Values=m7i.xlarge,g5.xlarge,g6.xlarge,g6e.xlarge,p5.4xlarge \
+      --output json > "$temporary_directory/offerings-$region.json"
+
+    run_aws ssm get-parameter --profile "$profile" --region "$region" \
+      --name /aws/service/canonical/ubuntu/server/24.04/stable/current/amd64/hvm/ebs-gp3/ami-id \
+      --query 'Parameter.{version:Version,last_modified:LastModifiedDate}' --output json |
+      jq '. + {resolved: true}' > "$temporary_directory/parameter-$region.json"
+
+    run_aws service-quotas get-service-quota --profile "$profile" --region "$region" \
+      --service-code ec2 --quota-code L-417A185B --query Quota.Value --output json \
+      > "$temporary_directory/quota-$region.json"
+
+    run_aws service-quotas list-requested-service-quota-change-history-by-quota \
+      --profile "$profile" --region "$region" --service-code ec2 --quota-code L-417A185B \
+      --query 'RequestedQuotas[].{desired_vcpus:DesiredValue,status:Status,created:Created}' \
+      --output json > "$temporary_directory/history-$region.json"
+  fi
+
+  jq '[.InstanceTypeOfferings[] | select(.InstanceType == "p5.4xlarge") | .Location]
+      | unique | sort' "$temporary_directory/offerings-$region.json" \
+    > "$temporary_directory/p5-zones-$region.json"
+  jq '[
+        .InstanceTypeOfferings
+        | group_by(.Location)[]
+        | select((map(.InstanceType) | unique | sort) ==
+                 ["g5.xlarge", "g6.xlarge", "g6e.xlarge", "m7i.xlarge", "p5.4xlarge"])
+        | .[0].Location
+      ] | sort' "$temporary_directory/offerings-$region.json" \
+    > "$temporary_directory/all-zones-$region.json"
+
+  eligible="$(jq -n \
+    --slurpfile prices "$temporary_directory/prices-$region.json" \
+    --slurpfile zones "$temporary_directory/p5-zones-$region.json" \
+    '($prices[0] | length) > 0 and ($zones[0] | length) > 0')"
+  if [ "$eligible" = "true" ]; then
+    for sample in 1 2 3 4 5; do
+      curl --silent --show-error --output /dev/null --connect-timeout 5 --max-time 10 \
+        --write-out '%{time_connect}\n' "https://ec2.$region.amazonaws.com"
+    done | jq -Rsc 'split("\n") | map(select(length > 0) | tonumber) | sort' \
+      > "$temporary_directory/latency-$region.json"
+  else
+    printf '[]\n' > "$temporary_directory/latency-$region.json"
+  fi
+
+  jq -n \
+    --arg region "$region" \
+    --arg location "$location" \
+    --arg opt_in_status "$opt_in_status" \
+    --argjson eligible "$eligible" \
+    --slurpfile prices "$temporary_directory/prices-$region.json" \
+    --slurpfile p5_zones "$temporary_directory/p5-zones-$region.json" \
+    --slurpfile all_zones "$temporary_directory/all-zones-$region.json" \
+    --slurpfile parameter "$temporary_directory/parameter-$region.json" \
+    --slurpfile quota "$temporary_directory/quota-$region.json" \
+    --slurpfile history "$temporary_directory/history-$region.json" \
+    --slurpfile latency "$temporary_directory/latency-$region.json" '
+      {
+        region: $region,
+        location: $location,
+        opt_in_status: $opt_in_status,
+        p5_4xlarge_on_demand_usd_per_hour: $prices[0],
+        p5_4xlarge_zones: $p5_zones[0],
+        zones_offering_all_project_types: $all_zones[0],
+        ubuntu_24_04_parameter: $parameter[0],
+        p_quota_vcpus: $quota[0],
+        p_request_statuses: $history[0],
+        eligible: $eligible
+      }
+      + if $eligible then
+          {
+            endpoint_connect_seconds: $latency[0],
+            median_endpoint_connect_seconds: $latency[0][($latency[0] | length) / 2 | floor]
+          }
+        else
+          {
+            reason: if $opt_in_status == "not-opted-in" then
+              "The Region is not opted in and the Price List has no p5.4xlarge Linux Shared On-Demand product."
+            else
+              "p5.4xlarge has no positive Linux Shared On-Demand price or Availability Zone offering."
+            end
+          }
+        end
+    ' > "$temporary_directory/row-$region.json"
+
+  jq --slurpfile row "$temporary_directory/row-$region.json" '. + [$row[0]]' "$rows" \
+    > "$temporary_directory/next-rows.json"
+  mv "$temporary_directory/next-rows.json" "$rows"
+done
+
+jq -n \
+  --arg checked "$checked" \
+  --arg collected_at "$collected_at" \
+  --slurpfile rows "$rows" '
+    def eligible_sort:
+      sort_by(.p5_4xlarge_on_demand_usd_per_hour[0],
+              .median_endpoint_connect_seconds,
+              (if .region == "us-east-1" then 0 else 1 end));
+    ($rows[0] | map(select(.eligible)) | eligible_sort) as $eligible
+    | ($rows[0] | map(select(.eligible | not))) as $ineligible
+    | {
+        checked: $checked,
+        collected_at: $collected_at,
+        scope: "Standard commercial AWS Regions in the United States and Canada; GovCloud, Local Zones, and Mexico are excluded.",
+        hard_target: "p5.4xlarge",
+        ranking_rule: "Require a positive Linux Shared On-Demand price and at least one Availability Zone offering p5.4xlarge; then prefer a lower price and lower measured endpoint latency from the current workstation, using the existing environment as the final tie-breaker.",
+        latency_method: "Median of five HTTPS connection times to each eligible Region EC2 endpoint from the current workstation.",
+        eligible_order: ($eligible | map(.region)),
+        regions: (
+          [range(0; $eligible | length) as $index | $eligible[$index] + {rank: $index + 1}]
+          + [$ineligible[] + {rank: null}]
+        )
+      }
+  ' > "$temporary_directory/output.json"
+
+jq -e '
+  .hard_target == "p5.4xlarge"
+  and (.regions | length) == 6
+  and all(.regions[]; has("eligible"))
+' "$temporary_directory/output.json" > /dev/null
+mkdir -p "$(dirname "$output")"
+mv "$temporary_directory/output.json" "$output"
+printf 'true\n'

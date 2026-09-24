@@ -185,6 +185,23 @@ run on `a10g`; `l4` and `l40s` remain supported for later retries. Task 16 compa
 `a10g`, and `h100`, and explains why `a10g` supplied the completed mid-tier measurement. The new
 wrapper case raises the current total to 434 cases: 417 fast, 13 slow, and 4 network.
 
+## US and Canada H100 fallback amendment (2026-09-24)
+
+The effective us-east-1 P-family quota reached only 8 vCPUs after the first request, and a separately
+approved retry for 16 is open. The user expanded the search to every standard commercial AWS Region
+in the United States and Canada, preferring a close, inexpensive Region while keeping
+`p5.4xlarge` as the hard target.
+
+Task 13C records a read-only readiness matrix without changing the existing us-east-1 environment.
+It evaluates us-east-1, us-east-2, us-west-1, us-west-2, ca-central-1, and ca-west-1; rejects Regions
+without a positive Linux Shared On-Demand price or an Availability Zone offering `p5.4xlarge`; and
+ranks eligible Regions by price and measured endpoint proximity, using the existing environment as
+a final tie-breaker. It then creates an exact regional P-quota request plan and stops for approval
+before any request.
+Changing the deployed Region is not part of this amendment: the current subnet, volume, snapshots,
+AMI, state, and same-ID verification remain in us-east-1. A launch-capacity failure in Task 14 may
+justify a later, separately reviewed regional deployment plan.
+
 ### Original planning evidence (2026-09-13)
 
 This plan's scripts and tests ran before the plan was written, in a scratch clone holding plan 3's code. Its HCL, and everything that runs on AWS or Ubuntu, did not. Treat a deviation from these outcomes as a signal, not noise.
@@ -315,6 +332,8 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
 - **Wrapper (Req 9):** "`infra/` is operated from the Mac, never from the VM: resizing stops the instance, which would kill an apply running on it, and the instance role has no AWS permission beyond Systems Manager. `infra/bin/vm` exits with that explanation when run on the VM." It "provides `start`, `stop`, `status`, `connect` (a Session Manager shell), `size <dev|l4|l40s|a10g|h100>` (runs `tofu apply` in `infra/env` with that size), and `sync-config` (Req 6). Every subcommand prints the AWS CLI or OpenTofu command it runs before running it."
 - **Runbook (Req 9):** "`docs/cloud-gpu-runbook.md` covers one-time setup, daily use, switching sizes, running a long GPU job, checking spend, snapshots and restore, token rotation, updating the held driver or pinned image, recovery after a budget stop, teardown (removing `prevent_destroy`, then destroying `infra/env` and `infra/state`), and troubleshooting (insufficient capacity, quota errors, Session Manager not connecting, JAX not seeing the GPU). Each step gives its commands and a short note on what happens underneath. The document follows CLAUDE.md's Markdown conventions."
 - **Decision record (Req 10):** "`docs/decisions/cloud-gpu.md` takes the shape of `docs/decisions/engine.md`. It is written after the Verification bullets pass, from their recorded evidence, and contains no placeholder." Its Context, Decision, Evidence, Alternatives considered, and Revisit triggers hold what Req 10 lists. The probe table covers the Mac, `dev`, `a10g`, and `h100` "at T=280, n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`". It records the failed `l4` and `l40s` capacity attempts separately. "Stage 6's measurement at Stage 7–9 dimensions belongs in `docs/decisions/seasonal-state.md`, as the roadmap assigns it, not in this record."
+- **Regional readiness evidence:** The decision record also records Task 13C's dated US and Canada
+  `p5.4xlarge` ranking and that its fallback P-quota actions created no regional deployment.
 - **Who does what (Rollout note):** "Steps that enter credentials or change account security belong to the user: root MFA, creating the IAM user and registering its MFA device, the `aws login` browser sign-in, activating the cost allocation tag, and creating and entering the GitHub token."
 - **BLS (Verification bullet 12):** "One small `download.bls.gov` fetch, run once by hand from a VM shell with a User-Agent naming the project and a contact, is recorded in the decision record only as allowed or blocked with its HTTP status; no committed file holds the User-Agent string."
 - **Tests:** the fast hermetic tier is `uv run pytest -m "not slow and not network"`. MCMC tests carry the `slow` marker, and an unregistered marker is a collection error.
@@ -2682,7 +2701,9 @@ Before each commit, this directory was searched for the account ID, for ARNs, an
 with:
 
 ````markdown
-Before each commit, this directory and `../cloud-gpu-probe/` were searched for the account ID, the state bucket's name, ARNs, and at signs.
+Before each commit, this directory and `../cloud-gpu-probe/` were searched for the account ID, the
+state bucket's name, ARNs, at signs, private-key markers, and token-shaped values. The scan prints
+only a clean or stop label, never the matching value.
 ````
 
 Then append:
@@ -2699,19 +2720,64 @@ Scan the evidence. This is the evidence scan that every later evidence commit ru
 
 ```bash
 export AWS_PROFILE=ces-revisions
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-BUCKET=$(tofu -chdir=infra/state output -raw bucket 2> /dev/null)
+SCAN_TEMPORARY_DIRECTORY="$(mktemp -d)"
+trap 'rm -rf "$SCAN_TEMPORARY_DIRECTORY"' EXIT
+if ! ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text \
+  2> "$SCAN_TEMPORARY_DIRECTORY/aws-error.txt"); then
+  if rg -qi \
+    'expired|ExpiredToken|InvalidClientTokenId|Unable to locate credentials|NoCredentialsError|aws login' \
+    "$SCAN_TEMPORARY_DIRECTORY/aws-error.txt"; then
+    echo "STOP: AWS authentication requires refresh. Run: aws login --profile ces-revisions" >&2
+  else
+    echo "STOP: the read-only AWS identity check failed" >&2
+  fi
+  exit 1
+fi
+BUCKET_STATUS=0
+BUCKET=$(tofu -chdir=infra/state output -raw bucket 2> /dev/null) || BUCKET_STATUS=$?
+if [ -f infra/env/backend.hcl ]; then
+  if [ "$BUCKET_STATUS" -ne 0 ] || [ -z "$BUCKET" ]; then
+    echo "STOP: the state bucket exists but its name could not be read; restore infra/state/terraform.tfstate and rerun" >&2
+    exit 1
+  fi
+elif [ "$BUCKET_STATUS" -ne 0 ]; then
+  BUCKET=""
+fi
 if [ -z "$ACCOUNT_ID" ]; then
-  echo "STOP: no account ID (expired credentials?), so the scan cannot run"
-elif grep -rn -e "$ACCOUNT_ID" -e "${BUCKET:-no-state-bucket-yet}" -e "arn:aws" -e "@" \
-  docs/decisions/cloud-gpu-evidence docs/decisions/cloud-gpu-probe; then
-  echo "STOP: the lines above hold an account ID, bucket name, ARN, or address; remove them first"
+  echo "STOP: no account ID. Run: aws login --profile ces-revisions" >&2
+  exit 1
 else
-  echo "evidence scan clean"
+  SCAN_STATUS=0
+  rg -q -F -e "$ACCOUNT_ID" -e "${BUCKET:-no-state-bucket-yet}" -e "arn:aws" -e "@" \
+    docs/decisions/cloud-gpu-evidence docs/decisions/cloud-gpu-probe || SCAN_STATUS=$?
+  if [ "$SCAN_STATUS" -eq 0 ]; then
+    echo "STOP: evidence holds an account ID, bucket name, ARN, or address; remove it first" >&2
+    exit 1
+  elif [ "$SCAN_STATUS" -ne 1 ]; then
+    echo "STOP: the evidence identifier scan failed" >&2
+    exit 1
+  else
+    SCAN_STATUS=0
+    rg -q -e 'AKIA[0-9A-Z]{16}|ASIA[0-9A-Z]{16}|github_pat_[A-Za-z0-9_]+' \
+      -e 'gh[pousr]_[A-Za-z0-9]+|-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' \
+      -e 'eyJ[A-Za-z0-9_-]+[.]eyJ[A-Za-z0-9_-]+' \
+      docs/decisions/cloud-gpu-evidence docs/decisions/cloud-gpu-probe || SCAN_STATUS=$?
+    if [ "$SCAN_STATUS" -eq 0 ]; then
+      echo "STOP: evidence holds a credential or token-shaped value; remove it first" >&2
+      exit 1
+    elif [ "$SCAN_STATUS" -ne 1 ]; then
+      echo "STOP: the evidence credential scan failed" >&2
+      exit 1
+    else
+      echo "evidence scan clean"
+    fi
+  fi
 fi
 ```
 
-Expected: `evidence scan clean`. Before Task 7 creates the bucket, `BUCKET` is empty and the scan searches for a string that never occurs instead. Then commit:
+Expected: `evidence scan clean`. Before Task 7 creates the bucket, `BUCKET` is empty and the scan
+searches for a string that never occurs instead. Once Task 7 creates `infra/env/backend.hcl`, an
+empty or failed bucket output stops the scan rather than silently omitting that check. Then commit:
 
 ```bash
 uv run ruff format && uv run ruff check
@@ -4356,10 +4422,300 @@ passes the same schema and dimension checks.
 
 - [ ] **Step 8: Leave `a10g`**
 
-Run Task 13, Step 11 from `a10g`. If the P quota is at least 16 and the human partner proceeds to
-Task 14, its plan must show `g5.xlarge -> p5.4xlarge`. Otherwise plan `g5.xlarge -> m7i.xlarge`,
-obtain the existing explicit apply approval, switch to `dev`, record the switch, and stop the
-instance.
+Run Task 13, Step 11's return-to-`dev` branch from `a10g` regardless of the P-quota state: plan
+`g5.xlarge -> m7i.xlarge`, obtain the existing explicit apply approval, switch to `dev`, record the
+switch, and stop the instance. Then run Task 13C before any Task 14 work. If the human partner later
+proceeds to Task 14, its plan must show `m7i.xlarge -> p5.4xlarge`.
+
+### Task 13C: US and Canada `p5.4xlarge` fallback readiness (Req 2 amendment)
+
+**Mode:** the controller runs this task inline. Steps 1–3 are read-only or local. Step 4 is an
+explicit approval gate for the two named regional quota requests. This task does not move, copy,
+start, stop, or replace an AWS resource, and it does not change the existing OpenTofu pins or state.
+
+**Files:**
+- Create: `infra/bin/p5-region-readiness`
+- Create: `docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-2026-09-24.json`
+- Create: `docs/decisions/cloud-gpu-evidence/service-quotas-request-plan-p-fallbacks-2026-09-24.json`
+- Create after approval: `docs/decisions/cloud-gpu-evidence/service-quotas-request-increase-p-fallbacks-2026-09-24.json`
+- Modify: `specs/cloud-gpu-environment.md`
+- Modify: `docs/decisions/cloud-gpu-evidence/README.md`
+- Modify: `docs/cloud-gpu-runbook.md`
+- Modify: `specs/plans/4-cloud-gpu-environment.md`
+
+**Interfaces:**
+- Consumes: the AWS Region catalog; Price List results for `p5.4xlarge`; EC2 Availability Zone
+  offerings for all five configured instance types; the Canonical Ubuntu 24.04 public SSM
+  parameter; P-family quotas and request history; and five HTTPS connection times to each eligible
+  Region's EC2 endpoint.
+- Produces: a six-Region readiness matrix and an exact quota-request plan. Task 14 continues against
+  the existing us-east-1 environment and request; these fallbacks are warm quota options only.
+
+- [ ] **Step 1: Collect and verify the narrowed readiness evidence**
+
+```bash
+export AWS_PROFILE=ces-revisions
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+CES_READINESS_DATE=2026-09-24 infra/bin/p5-region-readiness \
+  "$EVIDENCE/us-canada-p5-readiness-2026-09-24.json"
+jq -e '
+  .checked == "2026-09-24"
+  and (.collected_at | startswith("2026-09-24T"))
+  and .hard_target == "p5.4xlarge"
+  and ([.regions[].region] | sort) ==
+      (["ca-central-1", "ca-west-1", "us-east-1", "us-east-2", "us-west-1", "us-west-2"] | sort)
+  and .eligible_order == ["us-east-1", "us-east-2", "us-west-2"]
+  and all(.regions[] | select(.eligible); .p5_4xlarge_on_demand_usd_per_hour == [6.88]
+          and (.p5_4xlarge_zones | length) > 0
+          and .ubuntu_24_04_parameter.resolved)
+  and (.regions[] | select(.region == "ca-west-1") | .opt_in_status) == "not-opted-in"
+' "$EVIDENCE/us-canada-p5-readiness-2026-09-24.json"
+```
+
+Expected: `true`. The AWS calls were narrowed before recording: `describe-regions --all-regions`
+for the six commercial `us-*` and `ca-*` Regions; `pricing get-products` for positive Linux Shared
+On-Demand `p5.4xlarge` prices; `describe-instance-type-offerings` for the five configured types;
+`ssm get-parameter` without its AMI value; and `service-quotas` without quota ARNs or request IDs.
+The latency values are five HTTPS connection times to each eligible Region's EC2 endpoint. They rank
+proximity from this workstation but do not predict GPU compute performance or capacity. The actual
+UTC collection timestamp must match the dated artifact; a later refresh uses new dated filenames
+and a corresponding plan amendment rather than backdating new observations.
+
+- [ ] **Step 2: Derive and verify the exact quota-request plan**
+
+```bash
+set -euo pipefail
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+MATRIX="$EVIDENCE/us-canada-p5-readiness-2026-09-24.json"
+PLAN="$EVIDENCE/service-quotas-request-plan-p-fallbacks-2026-09-24.json"
+jq '
+  {
+    created: .checked,
+    quota_name: "Running On-Demand P instances",
+    quota_code: "L-417A185B",
+    desired_vcpus: 16,
+    approval_required: true,
+    regions: [
+      .regions[]
+      | . as $row
+      | ($row.p_request_statuses
+          | map(select(
+              .desired_vcpus >= 16
+              and (.status == "PENDING" or .status == "CASE_OPENED"
+                   or .status == "APPROVED")))
+          | sort_by(.created)
+          | last // null) as $open
+      | {
+          region: $row.region,
+          effective_vcpus: $row.p_quota_vcpus,
+          action: (
+            if $row.eligible and (($row.p_quota_vcpus // 0) >= 16) then "ready"
+            elif $row.eligible and $open != null then "wait"
+            elif $row.eligible then "request"
+            else "none"
+            end
+          ),
+          reason: (
+            if $row.eligible and (($row.p_quota_vcpus // 0) >= 16) then
+              "The effective P quota already meets the 16-vCPU target."
+            elif $row.eligible and $open != null then
+              "An existing 16-vCPU request is " + $open.status + "."
+            elif $row.eligible then
+              "Ranked p5.4xlarge fallback with no existing 16-vCPU request."
+            else $row.reason
+            end
+          )
+        }
+    ]
+  }
+' "$MATRIX" > "$PLAN.tmp"
+jq -e '
+  .quota_code == "L-417A185B" and .desired_vcpus == 16
+  and [.regions[] | select(.action == "request") | .region] == ["us-east-2", "us-west-2"]
+  and (.regions[] | select(.region == "us-east-1") | .action) == "wait"
+  and all(.regions[] | select(.action == "request"); .effective_vcpus == 0)
+' "$PLAN.tmp"
+mv "$PLAN.tmp" "$PLAN"
+```
+
+Expected: `true`. us-east-1 already has a 16-vCPU request at `CASE_OPENED`, so this plan does not
+duplicate it. ca-central-1, ca-west-1, and us-west-1 get no request because the hard target is not
+offered there. The plan is regenerated from Step 1's refreshed matrix before every approval review.
+
+- [ ] **Step 3: Scan, verify, and commit the read-only amendment**
+
+Use Task 6, Step 7's account-ID, ARN, address, bucket-name, and token scan. Then:
+
+```bash
+jq empty docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-2026-09-24.json \
+  docs/decisions/cloud-gpu-evidence/service-quotas-request-plan-p-fallbacks-2026-09-24.json
+uv run ruff format
+uv run ruff check
+git diff --check
+git add specs/cloud-gpu-environment.md specs/plans/4-cloud-gpu-environment.md \
+  docs/cloud-gpu-runbook.md docs/decisions/cloud-gpu-evidence/README.md \
+  infra/bin/p5-region-readiness \
+  docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-2026-09-24.json \
+  docs/decisions/cloud-gpu-evidence/service-quotas-request-plan-p-fallbacks-2026-09-24.json
+git commit -m "Add US and Canada H100 fallback readiness"
+```
+
+- [ ] **Step 4: STOP — the human partner approves the two regional P-quota requests**
+
+Show the human partner the request plan. Approval covers exactly these account mutations:
+
+- us-east-2: raise "Running On-Demand P instances" from 0 to 16 vCPUs;
+- us-west-2: raise "Running On-Demand P instances" from 0 to 16 vCPUs.
+
+The requests create no instance and incur no compute cost. They may open support cases, and approval
+does not guarantee launch capacity. This approval does not cover a cross-region deployment, a
+push, or any OpenTofu apply.
+
+- [ ] **Step 5: Submit and record the approved requests**
+
+```bash
+set -euo pipefail
+export AWS_PROFILE=ces-revisions
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+PLAN="$EVIDENCE/service-quotas-request-plan-p-fallbacks-2026-09-24.json"
+OUT="$EVIDENCE/service-quotas-request-increase-p-fallbacks-2026-09-24.json"
+TEMPORARY_DIRECTORY="$(mktemp -d)"
+trap 'rm -rf "$TEMPORARY_DIRECTORY"' EXIT
+run_aws() {
+  ERROR_FILE="$TEMPORARY_DIRECTORY/aws-error.txt"
+  : > "$ERROR_FILE"
+  if aws "$@" 2> "$ERROR_FILE"; then
+    return 0
+  fi
+  if rg -qi \
+    'expired|ExpiredToken|InvalidClientTokenId|Unable to locate credentials|NoCredentialsError|aws login' \
+    "$ERROR_FILE"; then
+    echo "STOP: AWS authentication requires refresh. Run: aws login --profile ces-revisions" >&2
+  else
+    echo "STOP: an AWS Service Quotas call failed; verify the ces-revisions profile's Service Quotas permissions, then rerun" >&2
+  fi
+  return 1
+}
+jq -e '
+  .quota_code == "L-417A185B"
+  and .desired_vcpus == 16
+  and ([.regions[] | select(.action == "request") | .region] | sort) ==
+      ["us-east-2", "us-west-2"]
+  and all(.regions[] | select(.action == "request");
+          (.region | test("^[a-z]{2}-[a-z]+-[0-9]+$")))
+' "$PLAN" > /dev/null
+if [ -f "$OUT" ]; then
+  jq -e '
+    type == "array"
+    and ([.[].Region] | length) == ([.[].Region] | unique | length)
+    and all(.[];
+      (.Region == "us-east-2" or .Region == "us-west-2")
+      and if .Action == "requested" then
+        .QuotaCode == "L-417A185B" and .DesiredValue >= 16 and
+        (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+      elif .Action == "skipped-open" then
+        .DesiredValue >= 16 and
+        (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+      elif .Action == "skipped-effective" then .EffectiveValue >= 16
+      else false end)
+  ' "$OUT" > /dev/null
+else
+  printf '[]\n' > "$TEMPORARY_DIRECTORY/initial-output.json"
+fi
+while IFS= read -r REGION; do
+  case "$REGION" in
+    us-east-2|us-west-2) ;;
+    *) echo "STOP: $REGION is outside the approved regional request scope" >&2; exit 1 ;;
+  esac
+  if [ -f "$OUT" ]; then
+    CURRENT_OUT="$OUT"
+  else
+    CURRENT_OUT="$TEMPORARY_DIRECTORY/initial-output.json"
+  fi
+  if jq -e --arg region "$REGION" \
+    'any(.[]; .Region == $region and (.Action == "requested" or .Action == "skipped-effective"))' \
+    "$CURRENT_OUT" > /dev/null; then
+    continue
+  fi
+
+  CURRENT=$(run_aws service-quotas get-service-quota --region "$REGION" --service-code ec2 \
+    --quota-code L-417A185B --query Quota.Value --output json)
+  HISTORY=$(run_aws service-quotas list-requested-service-quota-change-history-by-quota \
+    --region "$REGION" --service-code ec2 --quota-code L-417A185B \
+    --query 'RequestedQuotas[].{DesiredValue:DesiredValue,Status:Status,Created:Created}' \
+    --output json)
+  OPEN=$(jq '[.[] | select(.DesiredValue >= 16 and
+    (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED"))]
+    | sort_by(.Created) | last // null' <<< "$HISTORY")
+  ROW="$TEMPORARY_DIRECTORY/$REGION.json"
+
+  if jq -e -n --argjson current "$CURRENT" '$current >= 16' > /dev/null; then
+    jq -n --arg region "$REGION" --argjson current "$CURRENT" \
+      '{Region: $region, Action: "skipped-effective", EffectiveValue: $current}' > "$ROW"
+  elif [ "$OPEN" != "null" ]; then
+    jq -n --arg region "$REGION" --argjson open "$OPEN" \
+      '{Region: $region, Action: "skipped-open"} + $open' > "$ROW"
+  else
+    RESPONSE="$TEMPORARY_DIRECTORY/$REGION-response.json"
+    if ! run_aws service-quotas request-service-quota-increase --region "$REGION" \
+      --service-code ec2 --quota-code L-417A185B --desired-value 16 \
+      --query 'RequestedQuota.{QuotaName:QuotaName,QuotaCode:QuotaCode,DesiredValue:DesiredValue,Status:Status,Created:Created}' \
+      --output json > "$RESPONSE"; then
+      echo "STOP: the P-quota request failed in $REGION; $OUT is unchanged for that Region" >&2
+      exit 1
+    fi
+    if ! jq -e '
+      type == "object"
+      and .QuotaCode == "L-417A185B"
+      and .DesiredValue == 16
+      and (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+      and (.Created != null)
+    ' "$RESPONSE" > /dev/null; then
+      echo "STOP: AWS returned an invalid P-quota response in $REGION; $OUT is unchanged for that Region" >&2
+      exit 1
+    fi
+    jq --arg region "$REGION" \
+      '. + {Region: $region, Action: "requested"}' "$RESPONSE" > "$ROW"
+  fi
+  jq -e '
+    if .Action == "requested" or .Action == "skipped-open" then
+      .DesiredValue >= 16 and
+      (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+    elif .Action == "skipped-effective" then .EffectiveValue >= 16
+    else false end
+  ' "$ROW" > /dev/null
+  jq --slurpfile row "$ROW" \
+    'map(select(.Region != $row[0].Region)) + [$row[0]]' "$CURRENT_OUT" > "$OUT.tmp"
+  mv "$OUT.tmp" "$OUT"
+done < <(jq -r '.regions[] | select(.action == "request") | .region' "$PLAN")
+jq -e '
+  length == 2
+  and ([.[].Region] | sort) == ["us-east-2", "us-west-2"]
+  and all(.[];
+    if .Action == "requested" then
+      .QuotaCode == "L-417A185B" and .DesiredValue >= 16 and
+      (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+    elif .Action == "skipped-open" then
+      .DesiredValue >= 16 and
+      (.Status == "PENDING" or .Status == "CASE_OPENED" or .Status == "APPROVED")
+    elif .Action == "skipped-effective" then .EffectiveValue >= 16
+    else false end)
+' "$OUT"
+```
+
+Expected: `true`. Each response names its Region. The loop rechecks effective quota and open
+requests immediately before mutation, and an existing successful row makes a retry skip that
+Region. If one request succeeds and the other fails, keep the successful response, rerun the block,
+and diagnose only the failed Region. Before its first AWS call, the block validates the exact two
+approved Regions and any existing output rows. AWS stderr stays in the private temporary directory;
+an authentication error prints only the exact `aws login --profile ces-revisions` recovery action.
+
+- [ ] **Step 6: Document, scan, and commit the submitted requests**
+
+Append the new evidence filename and statuses to the evidence README. Run Task 6, Step 7's secret
+scan, `jq empty`, `uv run ruff format`, `uv run ruff check`, and `git diff --check`. Stage only the
+README and the new response file, then commit them as `Request P quota in the ranked US fallbacks`.
+Do not push without a separate explicit approval.
 
 ### Task 14: `h100` (Verification bullets 7–9; Req 2's open item)
 
@@ -5236,6 +5592,10 @@ capacity_failure = load("ec2-l4-capacity-failure.json")
 l40s_fallback = load("ec2-l40s-fallback.json")
 l40s_capacity_failure = load("ec2-l40s-capacity-failure.json")
 a10g_fallback = load("ec2-a10g-fallback.json")
+p5_readiness = load("us-canada-p5-readiness-2026-09-24.json")
+p5_fallback_actions = load(
+    "service-quotas-request-increase-p-fallbacks-2026-09-24.json"
+)
 records = {host: json.loads((PROBE / f"{host}.json").read_text()) for host in HOSTS}
 a10g_checks = (EVIDENCE / "vm-a10g-checks.txt").read_text()
 dev_checks = (EVIDENCE / "vm-dev-checks.txt").read_text()
@@ -5252,6 +5612,20 @@ print("zone:", zone)
 print("region:", region)
 print("regions evaluated:", listing(r["region"] for r in choice["evaluated"]))
 print("p5 price:", f"{min(chosen['p5_4xlarge_on_demand_usd_per_hour']):.2f}")
+print("p5 readiness date:", p5_readiness["checked"])
+print(
+    "p5 eligible regions:",
+    listing(f"`{region}`" for region in p5_readiness["eligible_order"]),
+)
+fallback_regions = {entry["Region"] for entry in p5_fallback_actions}
+print(
+    "p5 fallback quota regions:",
+    listing(
+        f"`{region}`"
+        for region in p5_readiness["eligible_order"]
+        if region in fallback_regions
+    ),
+)
 print("zones offering all three:", listing(f"`{z}`" for z in chosen["zones_offering_all_three"]))
 print("l4 capacity date:", capacity_failure["date"])
 print("l40s capacity date:", l40s_capacity_failure["date"])
@@ -5345,6 +5719,8 @@ The command outputs are in [`docs/decisions/cloud-gpu-evidence/`](cloud-gpu-evid
 ### Location and quotas
 
 Req 2's original rule evaluated {{regions evaluated}} and chose `{{zone}}`. In {{region}}, the Price List API had a Linux On-Demand p5.4xlarge price of \${{p5 price}} per hour, and {{zones offering all three}} offered the original three instance types. On {{l4 capacity date}}, the first g6.xlarge start failed with `InsufficientInstanceCapacity`; a live check established that the chosen zone offered g6e.xlarge at \${{l40s price}} per hour under the approved 4-vCPU G and VT quota. Its first start failed with the same error on {{l40s capacity date}}. A second live check established that the zone offered g5.xlarge at \${{a10g price}} per hour under that quota. The account's first p5.4xlarge On-Demand start succeeded on {{first p5 start date}}, which settles the question AWS's August 2025 announcement raised about single-GPU P5 On-Demand in US regions.
+
+On {{p5 readiness date}}, a read-only survey of the standard commercial AWS Regions in the United States and Canada kept `p5.4xlarge` as a hard requirement and ranked the eligible Regions {{p5 eligible regions}}. The fallback P-quota actions covered {{p5 fallback quota regions}} only to make those Regions ready for a later attempt; they reserved no capacity and created no instance, network, volume, or other deployment. The live environment and OpenTofu state remained in {{region}}, and any cross-region launch requires a separate reviewed plan and state.
 
 | Quota | Prior value (vCPUs) | Requested |
 |---|---|---|
