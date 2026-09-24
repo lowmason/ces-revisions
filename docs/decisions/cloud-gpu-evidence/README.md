@@ -36,6 +36,10 @@ EC2 On-Demand quotas count the vCPUs of running instances, per instance family a
 - `service-quotas-change-history-<region>.json` — `aws service-quotas list-requested-service-quota-change-history-by-quota` for the three codes: earlier requests and their statuses.
 - `service-quotas-request-plan-<region>.json` — derived from the two files above. It gives each quota's target, any open request that already covers it, and whether a new request was needed.
 - `service-quotas-request-increase-<region>.json` — `aws service-quotas request-service-quota-increase` for each quota the plan marked `request`, run after the user approved it. It records the request `Id`, the support `CaseId` once AWS opens a case, and the status at submission.
+- `service-quotas-request-increase-p-retry-2026-09-24-<region>.json` — the approved retry for
+  16 P-family vCPUs after AWS closed the original request with an effective quota of 8. The
+  response is narrowed to the quota, desired value, status, creation time, request ID, and support
+  case ID.
 
 A request's status moves from `PENDING` or `CASE_OPENED` to `APPROVED`, `DENIED`, `NOT_APPROVED`, or `CASE_CLOSED`. Run from the repo root, this prints each request's current status:
 
@@ -43,10 +47,14 @@ A request's status moves from `PENDING` or `CASE_OPENED` to `APPROVED`, `DENIED`
 export AWS_PROFILE=ces-revisions
 EVIDENCE=docs/decisions/cloud-gpu-evidence
 REGION=$(jq -r '.chosen.region' "$EVIDENCE/zone-choice.json")
-for ID in $(jq -r '.[].Id' "$EVIDENCE/service-quotas-request-increase-$REGION.json"); do
-  aws service-quotas get-requested-service-quota-change --region "$REGION" --request-id "$ID" \
-    --query 'RequestedQuota.{QuotaName: QuotaName, DesiredValue: DesiredValue, Status: Status}' \
-    --output json
+for REQUEST_FILE in \
+  "$EVIDENCE/service-quotas-request-increase-$REGION.json" \
+  "$EVIDENCE/service-quotas-request-increase-p-retry-2026-09-24-$REGION.json"; do
+  for ID in $(jq -r '.[].Id' "$REQUEST_FILE"); do
+    aws service-quotas get-requested-service-quota-change --region "$REGION" --request-id "$ID" \
+      --query 'RequestedQuota.{QuotaName: QuotaName, DesiredValue: DesiredValue, Status: Status}' \
+      --output json
+  done
 done
 ```
 
