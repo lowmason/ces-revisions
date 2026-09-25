@@ -5160,14 +5160,15 @@ jq -e --arg ami "$AMI_ID" '
       == "STOP_EC2_INSTANCES"
     and $budget_action.change.after.definition[0].ssm_action_definition[0].region
       == "us-east-1"
-    and ($budget_action.change.after.definition[0].ssm_action_definition[0].instance_ids
-      | length) == 1
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].instance_ids == null
+    and ($budget_action.change.after_unknown.definition[0].ssm_action_definition[0].instance_ids
+      // false) == true
     and $budget_action.change.after.subscriber == $budget_action.change.before.subscriber
     and ($budget_action.change.after.subscriber | length) == 1
     and $budget_action.change.after.subscriber[0].subscription_type == "EMAIL"
     and ($budget_action.change.after.subscriber[0].address | type) == "string"
     and ($budget_action.change.after.subscriber[0].address | length) > 0
-    and (refs($budget_action_config) | index("aws_instance.vm.id") != null)
+    and ((refs($budget_action_config) | map(select(. == "aws_instance.vm.id")) | length) == 1)
     and (refs($budget_action_config)
       | index("aws_iam_role.budget_action[0].arn") != null)
     and (refs($budget_action_config)
@@ -5186,6 +5187,10 @@ echo "invariants: budget remains automatic at 100% actual spend with SSM stop-on
 
 Expected: the preflight summary prints, the strict `jq` check prints `true`, the five redacted
 changes print, and the four sanitized invariant summaries print. The changes are exactly:
+
+OpenTofu represents the new instance ID list as `after = null` with `after_unknown = true` because
+the ID does not exist yet. The predicate also requires exactly one configuration reference to
+`aws_instance.vm.id`; Step 7 verifies that this resolves to exactly one live target after apply.
 
 - replace the empty `aws_subnet.public` in us-east-1a with one in us-east-1b;
 - replace `aws_route_table_association.public` for that subnet;
