@@ -5225,7 +5225,8 @@ PLAN=/tmp/ces-revisions-h100-us-east-1b.tfplan
 APPLY_LOG=/tmp/ces-revisions-h100-us-east-1b-apply.log
 test -f "$PLAN"
 rm -f "$APPLY_LOG"
-if tofu -chdir=infra/env apply -input=false -no-color "$PLAN" > "$APPLY_LOG" 2>&1; then
+if tofu -chdir=infra/env apply -input=false -no-color -var size=h100 "$PLAN" \
+  > "$APPLY_LOG" 2>&1; then
   echo "approved saved plan applied"
 else
   if ! ACTIVE_INSTANCE_IDS_JSON=$(aws ec2 describe-instances --region us-east-1 \
@@ -5270,7 +5271,10 @@ If capacity is available, expect two resources replaced, one instance created, a
 updated, with no other action. If EC2 returns `InsufficientInstanceCapacity` or another error, the
 failure branch first confirms that any partially created project instance is stopped. Then stop,
 retain the error only as reduced evidence, and report it; do not loop, choose another zone, or claim
-the fallback succeeded. Delete the saved plan only after a successful apply and verification.
+the fallback succeeded. The matching `-var size=h100` is required because OpenTofu automatically
+loads the ignored `size.auto.tfvars`, which still records the last verified size as `dev`; Step 7
+advances that marker only after the replacement passes verification. Delete the saved plan only
+after a successful apply and verification.
 
 - [ ] **Step 7: Verify generation 2, set up the clean machine, and resume Task 14**
 
