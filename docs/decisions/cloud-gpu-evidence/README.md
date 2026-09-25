@@ -77,6 +77,9 @@ price and `describe-instance-type-offerings` returned at least one Availability 
   waits on the existing us-east-1 request, proposes 16 P-family vCPUs in us-east-2 and us-west-2,
   and proposes no request where `p5.4xlarge` is absent. Submitting the two proposed requests is a
   separate approval gate.
+- `service-quotas-request-increase-p-fallbacks-2026-09-24.json` records the approved 16-vCPU
+  requests in us-east-2 and us-west-2. AWS accepted both with `PENDING` status. The file omits
+  request IDs, case IDs, quota ARNs, account identifiers, and caller details.
 
 `infra/bin/p5-region-readiness` regenerates the matrix from the narrowed AWS CLI calls and five
 HTTPS connection-time samples per eligible Region. It stops if the live standard US and Canada
