@@ -71,6 +71,17 @@ resource "aws_instance" "vm" {
   instance_initiated_shutdown_behavior = "stop"
   user_data                            = local.user_data
 
+  # Keep all eight physical CPU cores on p5.4xlarge, but expose one thread per
+  # core. EC2 still counts the instance type's 16 default vCPUs against quota.
+  dynamic "cpu_options" {
+    for_each = var.size == "h100" ? [true] : []
+
+    content {
+      core_count       = 8
+      threads_per_core = 1
+    }
+  }
+
   metadata_options {
     http_tokens = "required"
   }

@@ -8,11 +8,12 @@
 > outside [`specs/ces-revisions-roadmap.md`](ces-revisions-roadmap.md); do not route it through
 > derive-roadmap.
 
-A remote development environment for ces-revisions on AWS: one EC2 instance on one EBS disk whose
-instance type switches between a CPU size for daily work and four GPU sizes for fits. It is built
-with OpenTofu, reached through AWS Systems Manager with no inbound port, guarded by an idle stop, a
-GPU runtime cap, and a \$150/month budget, and documented by a runbook and a decision record. The
-same checkout runs on the Mac and on every size, so the repo gains a Linux-only CUDA extra,
+A remote development environment for ces-revisions on AWS: one managed EC2 instance generation on
+one EBS disk at a time, whose instance type switches between a CPU size for daily work and four GPU
+sizes for fits. Within a generation, size switches preserve the instance and root volume. It is
+built with OpenTofu, reached through AWS Systems Manager with no inbound port, guarded by an idle
+stop, a GPU runtime cap, and a \$150/month budget, and documented by a runbook and a decision record.
+The same checkout runs on the Mac and on every size, so the repo gains a Linux-only CUDA extra,
 device-aware tests, a chain-method rule, and an engine timing probe.
 
 Design provenance: brainstormed 2026-09-13 in a session that ran alongside roadmap Stage 2. The
@@ -37,6 +38,16 @@ user chose `l40s` as a permanent fallback tier. Its first start returned the sam
 A second live check found `g5.xlarge` offered in the zone at \$1.006/hr under the same quota, and
 the user chose `a10g` as the next permanent fallback. Plan 4 preserves both failures as evidence
 and runs the GPU verification on `a10g`; `l4` and `l40s` remain available for later retries.
+
+Same-region H100 recovery amendment: on 2026-09-25, the original managed VM was terminated through
+the AWS Management Console. Its delete-on-termination root volume is gone, so instance and root
+volume identity cannot continue across that boundary. Four completed, encrypted, project-tagged
+DLM snapshots remain. A replacement `p5.4xlarge` launch in `us-east-1a`, from the pinned clean image
+with 8 cores and 1 thread per core, exhausted 25 attempts with `InsufficientInstanceCapacity`.
+Those CPU options expose 8 active vCPUs, while EC2 still counts the type's 16 default vCPUs against
+the P-family quota. AWS named `us-east-1b` through `us-east-1f` as alternatives. The recovery pins
+`us-east-1b`, the first alphabetic same-region alternative that offers every configured instance
+type, and creates a clean replacement generation. No successful fallback apply is assumed.
 
 ## Motivation
 
@@ -65,7 +76,7 @@ and runs the GPU verification on `a10g`; `l4` and `l40s` remain available for la
 | Decision | Choice | Why |
 |---|---|---|
 | Provider | AWS, the user's existing personal account **(chosen)** | An account with billing history is the better bet for quick GPU quota approval, and p5.4xlarge (H100, \$6.88/hr) gives the most float64 per dollar in either cloud. Azure's NC24ads A100 v4 (\$3.67/hr) returns only under Req 2's stopping rule. |
-| Topology | One instance, one disk, instance type as a variable **(chosen)** | One environment to keep current, and the type stays a variable for Stage 6. Rejected: a CPU dev box plus disposable GPU runners (two environments and an S3 job flow before any stage needs them) and the Mac as the dev machine (reverses the move to remote development). |
+| Topology | One managed instance generation, one disk, instance type as a variable **(chosen)** | One environment to keep current within each generation, and the type stays a variable for Stage 6. Rejected: a CPU dev box plus disposable GPU runners (two environments and an S3 job flow before any stage needs them) and the Mac as the dev machine (reverses the move to remote development). |
 | Infrastructure as code | OpenTofu **(chosen)** | Plan, apply, and destroy against a state record; in Homebrew core; the same HCL and AWS provider as Terraform. |
 | Learning artifacts | Runbook plus decision record **(chosen)** | Explanations persist beside the infrastructure they describe. |
 | Budget | \$150/month, revisited at Stage 6 **(chosen)** | Covers the CPU size and disk (about \$40–60/month) plus about 13 H100-hours or 120 L4-hours. |
@@ -111,6 +122,16 @@ Build a request plan for 16 P-family vCPUs only in eligible fallback Regions. A 
 is required before submitting those regional requests. The readiness survey does not move or copy
 the environment; a cross-region deployment requires a separate reviewed plan and state.
 
+**Same-region H100 zone recovery amendment (2026-09-25).** Preserve the original `us-east-1a`
+choice and its evidence as the historical first-qualified result. After the failed 25-attempt
+replacement launch there, select `us-east-1b` as the first alphabetic Availability Zone among the
+alternatives AWS reported that also offers `m7i.xlarge`, `g5.xlarge`, `g6.xlarge`, `g6e.xlarge`,
+and `p5.4xlarge`. Keep `us-east-1`, its price and quota, and the existing VPC, IAM, DLM, budget, and
+state architecture. Replace the empty public subnet and its route-table association because a
+subnet belongs to one Availability Zone. Create the replacement instance and root volume from the
+pinned Canonical image. This offering check does not reserve capacity, so the apply can still fail
+with `InsufficientInstanceCapacity`.
+
 **Req 3 — OpenTofu layout and state.**
 
 - `infra/state/` creates the state bucket with versioning on, all public access blocked, default
@@ -126,10 +147,11 @@ the environment; a cross-region deployment requires a separate reviewed plan and
 
 **Req 4 — Network and access.**
 
-- A dedicated VPC has one public subnet in the Req 2 zone, an internet gateway, and a route table.
-  The instance gets an auto-assigned public IPv4 address, used only for outbound traffic. Its
-  security group has no ingress rules and unrestricted egress. No NAT gateway, VPC endpoint, or
-  Elastic IP exists.
+- A dedicated VPC has one public subnet in the currently pinned Req 2 zone, an internet gateway,
+  and a route table. A same-region zone recovery replaces an empty subnet and its route-table
+  association while retaining the VPC, gateway, route table, and security group. The instance gets
+  an auto-assigned public IPv4 address, used only for outbound traffic. Its security group has no
+  ingress rules and unrestricted egress. No NAT gateway, VPC endpoint, or Elastic IP exists.
 - An IAM instance profile grants only `AmazonSSMManagedInstanceCore`. The instance requires IMDSv2.
 - Shell access is `aws ssm start-session`. SSH runs through Session Manager's `AWS-StartSSHSession`
   document from a `~/.ssh/config` host entry that uses `ProxyCommand` (the desktop app does not
@@ -150,10 +172,14 @@ variable (default `dev`):
 | `l4` | g6.xlarge | 4 / 16 GiB | L4, 24 GB | \$0.81/hr |
 | `l40s` | g6e.xlarge | 4 / 32 GiB | L40S, 48 GB | \$1.861/hr |
 | `a10g` | g5.xlarge | 4 / 16 GiB | A10G, 24 GB | \$1.006/hr |
-| `h100` | p5.4xlarge | 16 / 256 GiB | H100, 80 GB | \$6.88/hr |
+| `h100` | p5.4xlarge | 8 active, 16 default / 256 GiB | H100, 80 GB | \$6.88/hr |
 
-- Changing `size` updates the instance in place (stop, modify, start); the instance ID and root
-  volume do not change.
+- Within one instance generation, changing `size` updates the instance in place (stop, modify,
+  start); the instance ID and root volume do not change. A terminated instance begins a new
+  generation with a new instance and root volume.
+- On `h100`, CPU options keep all 8 physical cores and expose 1 thread per core, for 8 active vCPUs.
+  EC2 still applies the P-family quota requirement based on the instance type's 16 default vCPUs
+  and charges the full hourly price.
 - The AMI is Canonical Ubuntu 24.04 LTS for amd64. Its ID is read once from Canonical's public
   Systems Manager parameter and pinned as a variable, never looked up at plan time, so no kernel or
   driver change arrives between measurements.
@@ -188,6 +214,10 @@ variable (default `dev`):
 - The user creates a fine-grained GitHub token scoped to `lowmason/ces-revisions` (contents and pull
   requests, read and write) and enters it on the VM with `gh auth login --with-token`;
   `gh auth setup-git` makes `git push` use it. The agent never handles the token.
+- A replacement generation starts from the pinned clean image and repeats `sync-config` and
+  `setup.sh` after the new instance becomes reachable. Its public clone is sufficient through the
+  H100 checks. The interactive GitHub token entry waits for final cutover; a token stored only on a
+  terminated root volume does not carry forward.
 - The desktop app installs Claude Code on the VM at its first SSH connection.
 
 ### Repo changes
@@ -247,7 +277,10 @@ variable (default `dev`):
   the instance through an execution role limited to that action. Instance-targeted actions do not
   reset at the next budget period, so the runbook resets it.
 - Snapshots: an `aws_dlm_lifecycle_policy` snapshots the project's volume daily, keeps 7 snapshots,
-  and copies tags. Restoring uses EC2's replace-root-volume task with a snapshot.
+  and copies tags. Restoring within an instance generation uses EC2's replace-root-volume task with
+  a snapshot from that generation. Completed snapshots can outlive a terminated source volume; the
+  four retained generation-1 snapshots remain recovery evidence while generation 2 starts from the
+  pinned clean image.
 
 **Req 9 — Operations wrapper and runbook.**
 
@@ -277,8 +310,10 @@ bullets pass, from their recorded evidence, and contains no placeholder.
 - Evidence: prior and requested quota values; the dated US and Canada `p5.4xlarge` readiness survey,
   its ranked eligible Regions, and the fact that the fallback regional P-quota actions reserved no
   capacity and created no deployment; the failed `l4` and `l40s` capacity attempts and the separately
-  qualified `a10g` fallback; a probe table for the Mac, `dev`, `a10g`, and `h100` at T=280, n=150,
-  p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files under
+  qualified `a10g` fallback; the generation-1 console termination and four retained DLM snapshots;
+  the 25 failed `p5.4xlarge` launch attempts in `us-east-1a`; the AWS-reported alternatives and
+  `us-east-1b` same-region selection; a probe table for the Mac, `dev`, `a10g`, and `h100` at T=280,
+  n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files under
   `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its HTTP
   status).
 - Alternatives considered: Azure NC24ads A100 v4; the dev-box-plus-runners and Mac-dev topologies;
@@ -311,9 +346,11 @@ roadmap assigns it, not in this record.
 - [ ] On `a10g` and on `h100`, `nvidia-smi` reports the GPU with a driver numbered 580 or later, and
       `uv run pytest` passes in full with the `gpu` backend and `chain_method(4) == "vectorized"`
       (discharges Req 7's open item).
-- [ ] Switching `size` from `dev` through the failed `l4` and `l40s` attempts, then to `a10g`,
-      `h100`, and back keeps the instance ID and root volume ID, checked with the AWS CLI; the first
-      successful p5.4xlarge On-Demand start discharges Req 2's open item.
+- [ ] Within each generation, successful `size` switches keep the instance ID and root volume ID,
+      checked with the AWS CLI. The lineage evidence records that the console termination ended
+      generation 1, its four completed DLM snapshots survived, and the failed `us-east-1a` H100
+      replacement created neither an instance nor a root volume. The first successful p5.4xlarge
+      On-Demand start in a replacement generation discharges Req 2's open item.
 - [ ] Probe JSON exists for the Mac, `dev`, `a10g`, and `h100` at T=280, n=150, p=70 with batch sizes
       1, 4, and 16 everywhere and 64 on `h100`, committed under `docs/decisions/cloud-gpu-probe/`.
 - [ ] Idle stop stops the instance under a shortened test window, the GPU cap is scheduled after an
@@ -354,7 +391,10 @@ waits for it:
 3. Req 7 on the Mac, test-first, with the probe's Mac baseline; no AWS resource is needed.
 4. Reqs 3–6, 8, and 9 at `size = dev`, and the `dev` Verification bullets.
 5. Try `l4`; if it lacks capacity, try `l40s`; if that also lacks capacity, qualify and run
-   `a10g`; then run the `h100` bullets once its quota is approved.
+   `a10g`; then run the `h100` bullets once its quota is approved. If a clean H100 replacement
+   exhausts capacity attempts in `us-east-1a`, recover in the first qualifying alphabetic
+   same-region alternative, currently `us-east-1b`, without treating its offering as reserved
+   capacity.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
 
 Plan 3 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
@@ -372,7 +412,8 @@ size. On plan completion this spec retires to `specs/completed/` under the plan-
 
 ## Sources
 
-Checked 2026-09-13, with the G6e fallback checked 2026-09-22.
+Checked 2026-09-13, with the G6e fallback checked 2026-09-22 and the same-region H100 recovery
+checked 2026-09-25.
 
 - NVIDIA, [Ada Lovelace professional GPU architecture whitepaper v1.1](https://images.nvidia.com/aem-dam/en-zz/Solutions/technologies/NVIDIA-ADA-GPU-PROVIZ-Architecture-Whitepaper_1.1.pdf)
   and [Ampere GA102 GPU architecture whitepaper v2.1](https://www.nvidia.com/content/PDF/nvidia-ampere-ga-102-gpu-architecture-whitepaper-v2.1.pdf)

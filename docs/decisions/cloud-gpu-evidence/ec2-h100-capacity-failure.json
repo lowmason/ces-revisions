@@ -1,0 +1,25 @@
+{
+  "date": "2026-09-25",
+  "operation": "create_replacement",
+  "size": "h100",
+  "instance_type": "p5.4xlarge",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1a",
+  "cpu_options": {
+    "core_count": 8,
+    "threads_per_core": 1,
+    "active_vcpus": 8
+  },
+  "default_vcpus_counted_against_quota": 16,
+  "api_attempts": 25,
+  "error_code": "InsufficientInstanceCapacity",
+  "aws_reported_alternate_availability_zones": [
+    "us-east-1b",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "instance_created": false,
+  "root_volume_created": false
+}

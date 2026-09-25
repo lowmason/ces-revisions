@@ -198,9 +198,26 @@ without a positive Linux Shared On-Demand price or an Availability Zone offering
 ranks eligible Regions by price and measured endpoint proximity, using the existing environment as
 a final tie-breaker. It then creates an exact regional P-quota request plan and stops for approval
 before any request.
-Changing the deployed Region is not part of this amendment: the current subnet, volume, snapshots,
-AMI, state, and same-ID verification remain in us-east-1. A launch-capacity failure in Task 14 may
-justify a later, separately reviewed regional deployment plan.
+Changing the deployed Region is not part of this amendment: at the time, the current subnet,
+volume, snapshots, AMI, state, and same-ID verification remained in us-east-1. A launch-capacity
+failure in Task 14 could justify a later, separately reviewed deployment amendment.
+
+## H100 replacement and same-Region zone fallback amendment (2026-09-25)
+
+The original VM was terminated through the AWS Management Console outside OpenTofu. Its deleted
+root volume cannot support the in-place Task 14 switch, but four completed, encrypted DLM snapshots
+with the project tag remain. The replacement deliberately starts from the pinned clean Canonical
+image rather than restoring a snapshot, so the environment now has two identity generations:
+generation 1 is the terminated `dev`/`a10g` machine and generation 2 is the replacement.
+
+The first generation-2 `p5.4xlarge` launch in us-east-1a used 8 active vCPUs (8 cores and 1 thread
+per core), while EC2 correctly counted the type's 16 default vCPUs against the P-family quota. EC2
+returned `InsufficientInstanceCapacity` for all 25 API attempts and created neither an instance nor
+a root volume. AWS named us-east-1b, us-east-1c, us-east-1d, us-east-1e, and us-east-1f as alternate
+Availability Zones. Task 14A chooses us-east-1b by the deterministic rule “first alphabetic
+same-Region alternate that offers every configured project instance type.” It records the
+termination and failed launch before changing the pin, then preserves separate push and apply gates
+for the fallback. No fallback apply has succeeded at the time of this amendment.
 
 ### Original planning evidence (2026-09-13)
 
@@ -313,10 +330,10 @@ This plan's scripts and tests ran before the plan was written, in a scratch clon
   | `l4` | g6.xlarge | 4 / 16 GiB | L4, 24 GB | \$0.81/hr |
   | `l40s` | g6e.xlarge | 4 / 32 GiB | L40S, 48 GB | \$1.861/hr |
   | `a10g` | g5.xlarge | 4 / 16 GiB | A10G, 24 GB | \$1.006/hr |
-  | `h100` | p5.4xlarge | 16 / 256 GiB | H100, 80 GB | \$6.88/hr |
+  | `h100` | p5.4xlarge | 8 active (16 quota) / 256 GiB | H100, 80 GB | \$6.88/hr |
 
 - **Instance (Req 5):**
-  - "Changing `size` updates the instance in place (stop, modify, start); the instance ID and root volume do not change."
+  - "Changing `size` updates the current generation in place (stop, modify, start); within that generation the instance ID and root volume do not change." The 2026-09-25 console termination ends generation 1; Task 14A creates generation 2 from the pinned clean image and records the break explicitly.
   - "The AMI is Canonical Ubuntu 24.04 LTS for amd64. Its ID is read once from Canonical's public Systems Manager parameter and pinned as a variable, never looked up at plan time".
   - "The root volume is gp3, 100 GB, and is deleted with the instance."
   - "`instance_initiated_shutdown_behavior = "stop"`".
@@ -2154,7 +2171,7 @@ resource "aws_vpc_security_group_egress_rule" "all" {
 Create `infra/env/instance.tf`:
 
 ```hcl
-# The VM: one instance on one root volume, whose type follows var.size.
+# The active generation: one instance on one root volume, whose type follows var.size.
 
 locals {
   instance_types = {
@@ -2227,6 +2244,17 @@ resource "aws_instance" "vm" {
   instance_initiated_shutdown_behavior = "stop"
   user_data                            = local.user_data
 
+  # Keep all eight physical CPU cores on p5.4xlarge, but expose one thread per
+  # core. EC2 still counts the instance type's 16 default vCPUs against quota.
+  dynamic "cpu_options" {
+    for_each = var.size == "h100" ? [true] : []
+
+    content {
+      core_count       = 8
+      threads_per_core = 1
+    }
+  }
+
   metadata_options {
     http_tokens = "required"
   }
@@ -2257,6 +2285,8 @@ resource "aws_instance" "vm" {
 
 Underneath:
 - `yamlencode` turns the `cloud_config` object into the YAML cloud-init reads, and every guard file's text is read from `infra/vm/` at plan time.
+- The H100 guest sees 8 active vCPUs, one thread on each of its eight physical cores. EC2 quota
+  accounting still uses p5.4xlarge's 16 default vCPUs.
 - `ignore_changes = [user_data]` keeps later edits to those files from asking to stop the instance. The edits reach the VM through `setup.sh` instead.
 - `prevent_destroy` turns any plan that would replace the instance into an error.
 
@@ -4719,16 +4749,22 @@ Do not push without a separate explicit approval.
 
 ### Task 14: `h100` (Verification bullets 7–9; Req 2's open item)
 
-**Mode:** the controller runs this task inline once the P quota is approved. Step 2 and the switch in Step 10 are approval gates.
+**Mode:** the controller runs this task inline once the P quota is approved. Task 14 Step 2,
+Task 14A Steps 2 and 5, and the switch in Task 14 Step 10 are separate approval gates.
 
 **Files:**
 - Create: `docs/decisions/cloud-gpu-probe/h100.json`
 - Create: `docs/decisions/cloud-gpu-evidence/vm-h100-checks.txt`
 - Modify: `docs/decisions/cloud-gpu-evidence/size-switches.json`, `docs/decisions/cloud-gpu-evidence/README.md` (append a section)
+- Task 14A additionally creates `ec2-h100-capacity-failure.json`,
+  `ec2-h100-zone-fallback.json`, and `environment-lineage.json`, and modifies
+  `infra/env/instance.tf`, `infra/env/pinned.auto.tfvars`, the design spec, the runbook, and this
+  plan.
 
 **Interfaces:**
 - Consumes: plan 3's request for `L-417A185B`, and Task 13B's `size-switches.json` and `~/ces-determinism.py`.
-- Produces: `h100.json`; the first p5.4xlarge On-Demand start in the account, dated in `size-switches.json`; and the environment back at `dev`, stopped.
+- Produces: `h100.json`; the first p5.4xlarge On-Demand start in the account, dated as generation 2
+  in `size-switches.json`; and generation 2 back at `dev`, stopped.
 
 - [ ] **Step 1: Check the quota**
 
@@ -4747,7 +4783,8 @@ Expected: `16.0` or more. While the value is below 16 and the latest request rea
 - [ ] **Step 2: STOP — the human partner approves running `h100`**
 
 Tell your human partner:
-- switching to `h100` starts the instance as a p5.4xlarge at \$6.88 per hour;
+- switching to `h100` starts the instance as a p5.4xlarge at \$6.88 per hour, with 8 active vCPUs
+  (8 cores and 1 thread per core) while its 16 default vCPUs count against quota;
 - the checks, the tests, and the probe take about an hour, roughly \$7–10 with the switches;
 - this is the account's first p5.4xlarge On-Demand start, which can fail for lack of capacity in the zone.
 
@@ -4763,7 +4800,13 @@ tofu -chdir=infra/env show -json /tmp/ces-revisions-size.tfplan |
 rm /tmp/ces-revisions-size.tfplan
 ```
 
-Expected: `Plan: 0 to add, 1 to change, 0 to destroy.`, then `update aws_instance.vm m7i.xlarge -> p5.4xlarge`, or `g5.xlarge -> p5.4xlarge` when coming straight from Task 13B.
+Ordinarily, expect `Plan: 0 to add, 1 to change, 0 to destroy.`, then
+`update aws_instance.vm m7i.xlarge -> p5.4xlarge`, or `g5.xlarge -> p5.4xlarge` when coming straight
+from Task 13B. On 2026-09-25, refresh instead established that the instance had been terminated
+through the console and its root volume was gone. The separately reviewed replacement plan created
+one `aws_instance.vm` from the pinned image and updated only the instance-targeted budget policy and
+action; it destroyed nothing. Record that deviation in `environment-lineage.json` rather than
+pretending it was an in-place switch.
 
 - [ ] **Step 4: Switch to `h100` (Req 2's open item)**
 
@@ -4775,7 +4818,849 @@ infra/bin/vm size h100 -auto-approve
 cat infra/env/size.auto.tfvars
 ```
 
-Expected: `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`, then `size = "h100"`. That success is the first p5.4xlarge On-Demand start, which discharges Req 2's open item. If the apply fails with `InsufficientInstanceCapacity`, stop and report it to your human partner. The instance is then stopped, possibly with the new type already set, and the choices are theirs: retry later, or return to `dev` by planning and applying `-var size=dev` as in Task 13, Step 11.
+For an in-place switch, expect `Apply complete! Resources: 0 added, 1 changed, 0 destroyed.`, then
+`size = "h100"`. A successful replacement instead reports its approved create and budget updates.
+Either success is the first p5.4xlarge On-Demand start and discharges Req 2's open item. On
+2026-09-25, the generation-2 replacement in us-east-1a used 8 cores and 1 thread per core, but all
+25 launch attempts returned `InsufficientInstanceCapacity`; EC2 created no instance or root volume.
+Continue at Task 14A. For any different failure, stop and report it to the human partner.
+
+### Task 14A: Replace the terminated VM in us-east-1b
+
+**Mode:** the controller runs this task inline after Task 14, Step 4's exact 2026-09-25 capacity
+failure. Steps 2 and 5 are separate push and apply gates. Approval for either one does not approve
+the other.
+
+**Files:**
+- Modify: `infra/env/instance.tf`, `infra/env/pinned.auto.tfvars`
+- Modify: `specs/cloud-gpu-environment.md`, this plan, `docs/cloud-gpu-runbook.md`
+- Modify: `docs/decisions/cloud-gpu-evidence/README.md`,
+  `docs/decisions/cloud-gpu-evidence/size-switches.json`
+- Create: `docs/decisions/cloud-gpu-evidence/ec2-h100-capacity-failure.json`,
+  `docs/decisions/cloud-gpu-evidence/ec2-h100-zone-fallback.json`,
+  `docs/decisions/cloud-gpu-evidence/environment-lineage.json`
+
+**Interfaces:**
+- Consumes: the terminated generation-1 instance in refreshed OpenTofu state; the four retained,
+  completed DLM snapshots; Task 14, Step 4's 25 failed p5.4xlarge launch attempts in us-east-1a;
+  EC2's five named same-Region alternate zones; and the effective 16-vCPU P-family quota.
+- Produces, only after the two approvals: a generation-2 p5.4xlarge attempt in us-east-1b from the
+  pinned clean image, with 8 active vCPUs (8 cores and 1 thread per core); an auditable break between
+  generations; and a clean-machine setup ready for Task 14, Step 5. This task does not assert that
+  us-east-1b has capacity before the apply succeeds.
+
+- [ ] **Step 1: Record the deviation, implement the fallback, validate, and commit**
+
+Record only reduced evidence. `ec2-h100-capacity-failure.json` states that all 25 API attempts in
+us-east-1a returned `InsufficientInstanceCapacity`, lists AWS's five named alternates, and confirms
+that neither an instance nor root volume was created. `ec2-h100-zone-fallback.json` records the
+first-alphabetic selection of us-east-1b, confirms that all five configured instance types are
+offered there, records 8 active vCPUs and 16 default vCPUs counted against quota, and records four
+retained completed project snapshots. `environment-lineage.json` records the console termination,
+the missing generation-1 root volume, the retained snapshots, the failed generation-2 launch, and
+the deliberate clean-image replacement. None may contain an account ID, bucket name, ARN, email
+address, token, request ID, instance ID, volume ID, or snapshot ID.
+
+Add `generation: 1` to every existing row in `size-switches.json`. In `instance.tf`, add an `h100`
+only `cpu_options` block with `core_count = 8` and `threads_per_core = 1`; state in the comment and
+documentation that EC2 still counts 16 vCPUs against quota. Change only the Availability Zone pin
+from us-east-1a to us-east-1b, citing `ec2-h100-zone-fallback.json`; keep the Region, AMI, instance
+settings, root-volume settings, tags, guards, access, and budget unchanged. Update the design spec,
+runbook, active plan, and evidence README for the two generations and the same-Region fallback.
+
+Validate the reduced evidence and the implementation:
+
+```bash
+set -euo pipefail
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+jq -e '
+  .date == "2026-09-25"
+  and .region == "us-east-1"
+  and .availability_zone == "us-east-1a"
+  and .instance_type == "p5.4xlarge"
+  and .cpu_options == {core_count: 8, threads_per_core: 1, active_vcpus: 8}
+  and .default_vcpus_counted_against_quota == 16
+  and .api_attempts == 25
+  and .error_code == "InsufficientInstanceCapacity"
+  and .aws_reported_alternate_availability_zones
+    == ["us-east-1b", "us-east-1c", "us-east-1d", "us-east-1e", "us-east-1f"]
+  and (.instance_created | not)
+  and (.root_volume_created | not)
+' "$EVIDENCE/ec2-h100-capacity-failure.json"
+jq -e '
+  .checked == "2026-09-25"
+  and .region == "us-east-1"
+  and .failed_availability_zone == "us-east-1a"
+  and .fallback_availability_zone == "us-east-1b"
+  and .offered_instance_types
+    == ["g5.xlarge", "g6.xlarge", "g6e.xlarge", "m7i.xlarge", "p5.4xlarge"]
+  and .h100.active_vcpus == 8
+  and .h100.core_count == 8
+  and .h100.threads_per_core == 1
+  and .h100.default_vcpus_counted_against_quota == 16
+  and .quota.effective_value >= 16
+  and .recovery.prior_instance_state == "terminated"
+  and .recovery.project_volumes_after_termination == 0
+  and .recovery.completed_project_snapshots == 4
+  and .recovery.replacement_source == "pinned Canonical Ubuntu image"
+' "$EVIDENCE/ec2-h100-zone-fallback.json"
+jq -e '
+  .recorded == "2026-09-25"
+  and ([.events[].generation] | unique) == [1, 2]
+  and (.events | any(.generation == 1 and .event == "terminated_outside_opentofu"
+    and (.root_volume_present_after | not) and .completed_dlm_snapshots_retained_after == 4
+    and .retained_snapshot_set == {count: 4, all_completed: true, all_encrypted: true,
+      all_dlm_managed: true, all_project_tagged: true}))
+  and (.events | any(.generation == 2 and .event == "launch_failed"
+    and .availability_zone == "us-east-1a" and (.instance_created | not)
+    and (.root_volume_created | not)))
+  and (.identity_continuity.instance_across_generations | not)
+  and (.identity_continuity.root_volume_across_generations | not)
+' "$EVIDENCE/environment-lineage.json"
+jq -e '
+  length > 0
+  and all(.[]; .generation == 1)
+  and all(.[];
+    (try (.InstanceId | test("^i-[0-9a-f]{8,17}$")) catch false)
+    and (try (.RootVolumeId | test("^vol-[0-9a-f]{8,17}$")) catch false))
+  and (map(.InstanceId) | unique | length == 1)
+  and (map(.RootVolumeId) | unique | length == 1)
+' "$EVIDENCE/size-switches.json"
+NEW_EVIDENCE=(
+  "$EVIDENCE/ec2-h100-capacity-failure.json"
+  "$EVIDENCE/ec2-h100-zone-fallback.json"
+  "$EVIDENCE/environment-lineage.json"
+)
+NEW_EVIDENCE_SCAN_STATUS=0
+rg -qi \
+  -e '"(request|case)_?id"' \
+  -e 'requestid[[:space:]]*[:=]' \
+  -e '\b(i|vol|snap)-[[:xdigit:]]{8,17}\b' \
+  "${NEW_EVIDENCE[@]}" || NEW_EVIDENCE_SCAN_STATUS=$?
+if [ "$NEW_EVIDENCE_SCAN_STATUS" -eq 0 ]; then
+  echo "STOP: new H100 evidence contains a request, instance, volume, or snapshot ID" >&2
+  exit 1
+elif [ "$NEW_EVIDENCE_SCAN_STATUS" -eq 1 ]; then
+  echo "new H100 evidence identifier scan clean"
+else
+  echo "STOP: new H100 evidence identifier scan failed" >&2
+  exit 1
+fi
+tofu fmt infra/env/instance.tf infra/env/pinned.auto.tfvars
+tofu fmt -check infra/env/*.tf infra/env/pinned.auto.tfvars
+tofu -chdir=infra/env validate
+uv run ruff format
+uv run ruff check
+git diff --check
+```
+
+Expected: the four `jq` commands print `true`, the targeted scan prints `new H100 evidence
+identifier scan clean`, OpenTofu reports `Success! The configuration is valid.`, and the formatting,
+lint, and whitespace checks are clean. Run the evidence scan from Task 6, Step 7; expected:
+`evidence scan clean`. Then stage exactly the fallback implementation, documentation, and reduced
+evidence and commit them before generating a live plan:
+
+```bash
+set -euo pipefail
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+git add infra/env/instance.tf infra/env/pinned.auto.tfvars \
+  specs/cloud-gpu-environment.md specs/plans/4-cloud-gpu-environment.md \
+  docs/cloud-gpu-runbook.md "$EVIDENCE/README.md" "$EVIDENCE/size-switches.json" \
+  "$EVIDENCE/ec2-h100-capacity-failure.json" \
+  "$EVIDENCE/ec2-h100-zone-fallback.json" \
+  "$EVIDENCE/environment-lineage.json"
+git diff --cached --check
+git commit -m "Recover the H100 environment in us-east-1b"
+```
+
+- [ ] **Step 2: STOP — the human partner approves pushing the fallback commit**
+
+Show the commit, its exact file list, and the Step 1 verification. Explain that pushing publishes
+the fallback and lineage on the existing feature branch so a clean replacement can clone the exact
+amended code. Proceed only on a clear yes given after that review. This push approval does not
+approve an OpenTofu apply or start billing.
+
+- [ ] **Step 3: Push the fallback commit**
+
+```bash
+BRANCH=$(git branch --show-current)
+git push -u origin "$BRANCH"
+```
+
+Expected: the remote feature branch advances to the reviewed fallback commit. Stop if the push
+fails; do not plan or apply from code the clean replacement cannot clone.
+
+- [ ] **Step 4: Generate and inspect a fresh saved fallback plan**
+
+Confirm that the old us-east-1a subnet is empty, then generate a new saved plan from the pushed,
+clean commit. Keep the saved plan for Step 6 rather than replanning after approval:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+GIT_STATUS=$(git status --short)
+test -z "$GIT_STATUS"
+BUDGET_DIFF=$(git diff --name-only HEAD^ HEAD -- infra/env/budget.tf)
+test -z "$BUDGET_DIFF"
+REGION=$(tofu -chdir=infra/env output -raw region)
+ZONE=$(sed -n 's/^availability_zone[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)
+AMI_ID=$(sed -n 's/^ami_id[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)
+test "$REGION" = us-east-1
+test "$ZONE" = us-east-1b
+test -n "$AMI_ID"
+STATE_LIST=$(tofu -chdir=infra/env state list)
+STATE_INSTANCE_COUNT=$(printf '%s\n' "$STATE_LIST" | \
+  awk '$0 == "aws_instance.vm" { count++ } END { print count + 0 }')
+if [ "$STATE_INSTANCE_COUNT" -ne 0 ]; then
+  echo "STOP: OpenTofu state unexpectedly contains aws_instance.vm" >&2
+  exit 1
+fi
+SUBNET_ID=$(tofu -chdir=infra/env state show -no-color aws_subnet.public |
+  awk '$1 == "id" && $2 == "=" {print $3}')
+test -n "$SUBNET_ID"
+test "$(aws ec2 describe-network-interfaces --region "$REGION" \
+  --filters Name=subnet-id,Values="$SUBNET_ID" \
+  --query 'length(NetworkInterfaces)' --output text)" = 0
+test "$(aws ec2 describe-instances --region "$REGION" \
+  --filters Name=tag:project,Values=ces-revisions \
+  Name=instance-state-name,Values=pending,running,stopping,stopped \
+  --query 'length(Reservations[].Instances[])' --output text)" = 0
+test "$(aws ec2 describe-volumes --region "$REGION" \
+  --filters Name=tag:project,Values=ces-revisions \
+  --query 'length(Volumes)' --output text)" = 0
+test "$(aws ec2 describe-snapshots --region "$REGION" --owner-ids self \
+  --filters Name=tag:project,Values=ces-revisions Name=status,Values=completed \
+  --query 'length(Snapshots)' --output text)" = 4
+P_QUOTA=$(aws service-quotas get-service-quota --region "$REGION" \
+  --service-code ec2 --quota-code L-417A185B --query 'Quota.Value' --output text)
+awk -v quota="$P_QUOTA" 'BEGIN { exit !(quota >= 16) }'
+test "$(aws ec2 describe-instance-type-offerings --region "$REGION" \
+  --location-type availability-zone \
+  --filters Name=location,Values="$ZONE" Name=instance-type,Values=p5.4xlarge \
+  --query 'length(InstanceTypeOfferings)' --output text)" = 1
+echo "preflight: no managed VM or volume, empty old subnet, four snapshots, quota and offering ready"
+PLAN=/tmp/ces-revisions-h100-us-east-1b.tfplan
+PLAN_JSON=/tmp/ces-revisions-h100-us-east-1b.json
+PLAN_LOG=/tmp/ces-revisions-h100-us-east-1b.log
+rm -f "$PLAN" "$PLAN_JSON" "$PLAN_LOG"
+tofu -chdir=infra/env plan -input=false -no-color -var size=h100 -out="$PLAN" > "$PLAN_LOG"
+tofu -chdir=infra/env show -json "$PLAN" > "$PLAN_JSON"
+jq -e --arg ami "$AMI_ID" '
+  def replacement: . == ["delete", "create"] or . == ["create", "delete"];
+  def rc($address): first(.resource_changes[] | select(.address == $address));
+  def config($address):
+    first(.configuration.root_module.resources[] | select(.address == $address));
+  def refs($resource):
+    [$resource | .. | objects | select(.references? != null) | .references[]];
+  [.resource_changes[]
+    | select(.mode == "managed" and .change.actions != ["no-op"])
+    | {address, actions: .change.actions}] as $changes
+  | rc("aws_subnet.public") as $subnet
+  | rc("aws_route_table_association.public") as $association
+  | rc("aws_instance.vm") as $instance
+  | rc("aws_iam_role_policy.budget_action[0]") as $budget_policy
+  | rc("aws_budgets_budget_action.stop_vm[0]") as $budget_action
+  | config("aws_instance.vm") as $instance_config
+  | config("aws_route_table_association.public") as $association_config
+  | config("aws_iam_role_policy.budget_action") as $budget_policy_config
+  | config("aws_budgets_budget_action.stop_vm") as $budget_action_config
+  | ($budget_policy.change.before.policy | fromjson) as $policy_before
+  | ($policy_before.Statement | map(select(.Sid == "RunTheStopAutomation"))[0]) as $run
+  | ($policy_before.Statement | map(select(.Sid == "StopTheVm"))[0]) as $stop
+  | ($policy_before.Statement | map(select(.Sid == "ReadInstanceStatus"))[0]) as $read
+  | ($changes | length == 5)
+    and ([$changes[] | select(.address == "aws_subnet.public"
+      and (.actions | replacement))] | length == 1)
+    and ([$changes[] | select(.address == "aws_route_table_association.public"
+      and (.actions | replacement))] | length == 1)
+    and ([$changes[] | select(.address == "aws_instance.vm"
+      and .actions == ["create"])] | length == 1)
+    and ([$changes[] | select(.address == "aws_iam_role_policy.budget_action[0]"
+      and .actions == ["update"])] | length == 1)
+    and ([$changes[] | select(.address == "aws_budgets_budget_action.stop_vm[0]"
+      and .actions == ["update"])] | length == 1)
+    and .variables.region.value == "us-east-1"
+    and .variables.availability_zone.value == "us-east-1b"
+    and .variables.ami_id.value == $ami
+    and .variables.size.value == "h100"
+    and .variables.budget_enabled.value == true
+    and .variables.monthly_budget_usd.value == "150"
+    and $subnet.change.after.availability_zone == "us-east-1b"
+    and $subnet.change.after.cidr_block == "10.42.1.0/24"
+    and $subnet.change.after.map_public_ip_on_launch == true
+    and $subnet.change.after.vpc_id == $subnet.change.before.vpc_id
+    and $association.change.after.route_table_id == $association.change.before.route_table_id
+    and ($association_config.expressions.subnet_id.references
+      | index("aws_subnet.public.id") != null)
+    and ($association_config.expressions.route_table_id.references
+      | index("aws_route_table.public.id") != null)
+    and $instance.change.after.ami == $ami
+    and $instance.change.after.instance_type == "p5.4xlarge"
+    and $instance.change.after.iam_instance_profile == "ces-revisions-vm"
+    and $instance.change.after.instance_initiated_shutdown_behavior == "stop"
+    and $instance.change.after.metadata_options[0].http_tokens == "required"
+    and $instance.change.after.cpu_options[0].core_count == 8
+    and $instance.change.after.cpu_options[0].threads_per_core == 1
+    and $instance.change.after.root_block_device[0].volume_type == "gp3"
+    and $instance.change.after.root_block_device[0].volume_size == 100
+    and $instance.change.after.root_block_device[0].encrypted == true
+    and $instance.change.after.root_block_device[0].delete_on_termination == true
+    and $instance.change.after.tags.Name == "ces-revisions-vm"
+    and $instance.change.after.tags_all.project == "ces-revisions"
+    and ($instance_config.expressions.ami.references | index("var.ami_id") != null)
+    and ($instance_config.expressions.subnet_id.references
+      | index("aws_subnet.public.id") != null)
+    and ($instance_config.expressions.vpc_security_group_ids.references
+      | index("aws_security_group.vm.id") != null)
+    and ($instance_config.expressions.iam_instance_profile.references
+      | index("aws_iam_instance_profile.vm.name") != null)
+    and $budget_policy.change.before.name == "stop-the-vm"
+    and $budget_policy.change.after.name == $budget_policy.change.before.name
+    and $budget_policy.change.after.role == $budget_policy.change.before.role
+    and ($budget_policy.change.after_unknown.policy // false) == true
+    and $policy_before.Version == "2012-10-17"
+    and ($policy_before.Statement | length) == 3
+    and ($policy_before.Statement | map(.Sid) | sort)
+      == ["ReadInstanceStatus", "RunTheStopAutomation", "StopTheVm"]
+    and $run.Effect == "Allow"
+    and $run.Action == "ssm:StartAutomationExecution"
+    and ($run.Resource | sort) == [
+      "arn:aws:ssm:*:*:automation-definition/AWS-StopEC2Instance:*",
+      "arn:aws:ssm:*:*:automation-execution/*",
+      "arn:aws:ssm:*:*:document/AWS-StopEC2Instance"
+    ]
+    and $stop.Effect == "Allow"
+    and $stop.Action == "ec2:StopInstances"
+    and ($stop.Resource
+      | test("^arn:aws:ec2:us-east-1:[0-9]{12}:instance/i-[0-9a-f]{8,17}$"))
+    and $stop.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}}
+    and $read.Effect == "Allow"
+    and $read.Action == "ec2:DescribeInstanceStatus"
+    and $read.Resource == "*"
+    and $read.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}}
+    and (refs($budget_policy_config) | index("aws_instance.vm.arn") != null)
+    and $budget_action.change.after.budget_name == "ces-revisions-monthly"
+    and $budget_action.change.after.budget_name == $budget_action.change.before.budget_name
+    and $budget_action.change.after.action_type == "RUN_SSM_DOCUMENTS"
+    and $budget_action.change.after.approval_model == "AUTOMATIC"
+    and $budget_action.change.after.notification_type == "ACTUAL"
+    and $budget_action.change.after.execution_role_arn
+      == $budget_action.change.before.execution_role_arn
+    and ($budget_action.change.after.action_threshold | length) == 1
+    and $budget_action.change.after.action_threshold[0].action_threshold_type == "PERCENTAGE"
+    and $budget_action.change.after.action_threshold[0].action_threshold_value == 100
+    and ($budget_action.change.after.definition | length) == 1
+    and ($budget_action.change.after.definition[0].ssm_action_definition | length) == 1
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].action_sub_type
+      == "STOP_EC2_INSTANCES"
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].region
+      == "us-east-1"
+    and ($budget_action.change.after.definition[0].ssm_action_definition[0].instance_ids
+      | length) == 1
+    and $budget_action.change.after.subscriber == $budget_action.change.before.subscriber
+    and ($budget_action.change.after.subscriber | length) == 1
+    and $budget_action.change.after.subscriber[0].subscription_type == "EMAIL"
+    and ($budget_action.change.after.subscriber[0].address | type) == "string"
+    and ($budget_action.change.after.subscriber[0].address | length) > 0
+    and (refs($budget_action_config) | index("aws_instance.vm.id") != null)
+    and (refs($budget_action_config)
+      | index("aws_iam_role.budget_action[0].arn") != null)
+    and (refs($budget_action_config)
+      | index("aws_budgets_budget.monthly[0].name") != null)
+' "$PLAN_JSON"
+jq -r '
+  .resource_changes[]
+  | select(.mode == "managed" and .change.actions != ["no-op"])
+  | "\(.change.actions | join(",")) \(.address)"
+' "$PLAN_JSON"
+echo "invariants: us-east-1b; pinned image matched; p5.4xlarge; CPU 8 cores x 1 thread"
+echo "invariants: existing VPC, route table, security group, and instance profile references"
+echo "invariants: IMDSv2 required; shutdown stops; encrypted 100 GiB gp3 root deleted on termination"
+echo "invariants: budget remains automatic at 100% actual spend with SSM stop-only permissions"
+```
+
+Expected: the preflight summary prints, the strict `jq` check prints `true`, the five redacted
+changes print, and the four sanitized invariant summaries print. The changes are exactly:
+
+- replace the empty `aws_subnet.public` in us-east-1a with one in us-east-1b;
+- replace `aws_route_table_association.public` for that subnet;
+- create `aws_instance.vm` as p5.4xlarge from the pinned image with 8 active vCPUs;
+- update `aws_iam_role_policy.budget_action` for the new instance identity;
+- update `aws_budgets_budget_action.stop_vm` for the new instance identity.
+
+Any additional resource change, a nonempty subnet, a destroy without its corresponding create, or
+a change to the Region, AMI, VPC, security group, role, root-volume settings, snapshot policy, or
+budget amount stops the task. Do not apply a plan that fails the strict check.
+
+- [ ] **Step 5: STOP — the human partner approves the exact saved fallback plan**
+
+Show the five redacted action lines from Step 4 and explain that the apply replaces only the empty
+subnet and its association, creates one p5.4xlarge in us-east-1b with 8 active vCPUs, and retargets
+the two budget resources. It starts billing at \$6.88/hr if capacity is available. The retained DLM
+snapshots remain untouched, and the replacement starts clean from the pinned image. Proceed only on
+a clear yes given after this exact saved plan is shown. The earlier Task 14 approval and this task's
+push approval do not satisfy this gate. If a later budget-resource update fails after EC2 creates
+the replacement, the failure handler force-stops that clean project instance before reporting the
+error; it never leaves a partially protected H100 running.
+
+- [ ] **Step 6: Apply only the approved saved plan**
+
+Run in the background:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+PLAN=/tmp/ces-revisions-h100-us-east-1b.tfplan
+APPLY_LOG=/tmp/ces-revisions-h100-us-east-1b-apply.log
+test -f "$PLAN"
+rm -f "$APPLY_LOG"
+if tofu -chdir=infra/env apply -input=false -no-color "$PLAN" > "$APPLY_LOG" 2>&1; then
+  echo "approved saved plan applied"
+else
+  if ! ACTIVE_INSTANCE_IDS_JSON=$(aws ec2 describe-instances --region us-east-1 \
+    --filters Name=tag:project,Values=ces-revisions \
+    Name=instance-state-name,Values=pending,running,stopping \
+    --query 'Reservations[].Instances[].InstanceId' --output json); then
+    echo "STOP: apply failed and AWS instance state is unreadable." >&2
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+    exit 1
+  fi
+  STOP_FAILED=0
+  for INSTANCE_ID in $(printf '%s' "$ACTIVE_INSTANCE_IDS_JSON" | jq -r '.[]'); do
+    if ! aws ec2 stop-instances --region us-east-1 --instance-ids "$INSTANCE_ID" \
+      --force --skip-os-shutdown \
+      --query 'StoppingInstances[].{Previous:PreviousState.Name,Current:CurrentState.Name}' \
+      --output json; then
+      STOP_FAILED=1
+    fi
+    aws ec2 wait instance-stopped --region us-east-1 --instance-ids "$INSTANCE_ID" \
+      > /dev/null 2>&1 || true
+  done
+  if ! REMAINING_ACTIVE=$(aws ec2 describe-instances --region us-east-1 \
+    --filters Name=tag:project,Values=ces-revisions \
+    Name=instance-state-name,Values=pending,running,stopping \
+    --query 'length(Reservations[].Instances[])' --output text); then
+    echo "STOP: apply failed and the post-stop AWS state is unreadable." >&2
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+    exit 1
+  fi
+  if [ "$STOP_FAILED" -ne 0 ] || [ "$REMAINING_ACTIVE" -ne 0 ]; then
+    echo "STOP: apply failed and a project instance could not be confirmed stopped." >&2
+    echo "Run the EC2 console in us-east-1, filter Instances by project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  else
+    echo "apply failed; every partially created project instance is confirmed stopped" >&2
+  fi
+  echo "Keep the private apply log only until its error is reduced without request or resource IDs." >&2
+  exit 1
+fi
+```
+
+If capacity is available, expect two resources replaced, one instance created, and two resources
+updated, with no other action. If EC2 returns `InsufficientInstanceCapacity` or another error, the
+failure branch first confirms that any partially created project instance is stopped. Then stop,
+retain the error only as reduced evidence, and report it; do not loop, choose another zone, or claim
+the fallback succeeded. Delete the saved plan only after a successful apply and verification.
+
+- [ ] **Step 7: Verify generation 2, set up the clean machine, and resume Task 14**
+
+After a successful apply, verify the instance without writing identifiers into committed command
+output:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+REGION=us-east-1
+if ! INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id); then
+  echo "STOP: the replacement ID is unreadable." >&2
+  echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  exit 1
+fi
+stop_replacement() {
+  if ! STATE=$(aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+    --query 'Reservations[0].Instances[0].State.Name' --output text); then
+    echo "STOP: replacement state is unreadable." >&2
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+    return 1
+  fi
+  case "$STATE" in
+    pending|running|stopping)
+      if ! aws ec2 stop-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        --force --skip-os-shutdown \
+        --query 'StoppingInstances[].{Previous:PreviousState.Name,Current:CurrentState.Name}' \
+        --output json; then
+        echo "STOP: the replacement could not be stopped through the CLI." >&2
+        echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+        return 1
+      fi
+      aws ec2 wait instance-stopped --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        > /dev/null 2>&1 || true
+      if ! STATE=$(aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        --query 'Reservations[0].Instances[0].State.Name' --output text); then
+        echo "STOP: post-stop replacement state is unreadable." >&2
+        echo "Run: aws login --profile ces-revisions. Then confirm the project instance is stopped in the us-east-1 EC2 console." >&2
+        return 1
+      fi
+      ;;
+  esac
+  case "$STATE" in
+    stopped|shutting-down|terminated)
+      echo "replacement has no billable instance state after verification failure"
+      ;;
+    *)
+      echo "STOP: replacement state is still active after the stop attempt." >&2
+      echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+      return 1
+      ;;
+  esac
+}
+verification_failed() {
+  FAILURE_STATUS=$?
+  trap - ERR
+  set +e
+  rm -f infra/env/size.auto.tfvars.tmp
+  rm -f /tmp/ces-revisions-h100-generation-2.json \
+    /tmp/ces-revisions-h100-root.json \
+    /tmp/ces-revisions-h100-budget-action.json \
+    /tmp/ces-revisions-h100-budget-policy.json
+  echo "STOP: generation-2 infrastructure verification failed; stopping the replacement." >&2
+  stop_replacement
+  exit "$FAILURE_STATUS"
+}
+trap verification_failed ERR
+aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" --output json \
+  --query 'Reservations[0].Instances[0].{State:State.Name,InstanceType:InstanceType,AvailabilityZone:Placement.AvailabilityZone,CoreCount:CpuOptions.CoreCount,ThreadsPerCore:CpuOptions.ThreadsPerCore}' \
+  > /tmp/ces-revisions-h100-generation-2.json
+jq -e '
+  .State == "running"
+  and .InstanceType == "p5.4xlarge"
+  and .AvailabilityZone == "us-east-1b"
+  and .CoreCount == 8
+  and .ThreadsPerCore == 1
+' /tmp/ces-revisions-h100-generation-2.json
+ROOT_VOLUME_ID=$(tofu -chdir=infra/env output -raw root_volume_id)
+SECURITY_GROUP_ID=$(tofu -chdir=infra/env output -raw security_group_id)
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+INSTANCE_ARN="arn:aws:ec2:${REGION}:${ACCOUNT_ID}:instance/${INSTANCE_ID}"
+PROFILE_ARN=$(aws iam get-instance-profile --instance-profile-name ces-revisions-vm \
+  --query 'InstanceProfile.Arn' --output text)
+INSTANCE_PROFILE_ARN=$(aws ec2 describe-instances --region "$REGION" \
+  --instance-ids "$INSTANCE_ID" \
+  --query 'Reservations[0].Instances[0].IamInstanceProfile.Arn' --output text)
+INSTANCE_SECURITY_GROUP_ID=$(aws ec2 describe-instances --region "$REGION" \
+  --instance-ids "$INSTANCE_ID" \
+  --query 'Reservations[0].Instances[0].SecurityGroups[0].GroupId' --output text)
+SHUTDOWN_BEHAVIOR=$(aws ec2 describe-instance-attribute --region "$REGION" \
+  --instance-id "$INSTANCE_ID" --attribute instanceInitiatedShutdownBehavior \
+  --query 'InstanceInitiatedShutdownBehavior.Value' --output text)
+test "$INSTANCE_PROFILE_ARN" = "$PROFILE_ARN"
+test "$INSTANCE_SECURITY_GROUP_ID" = "$SECURITY_GROUP_ID"
+test "$SHUTDOWN_BEHAVIOR" = stop
+echo "instance profile, security group, and shutdown behavior verified"
+aws ec2 describe-volumes --region "$REGION" --volume-ids "$ROOT_VOLUME_ID" \
+  --query 'Volumes[0].{Encrypted:Encrypted,SizeGiB:Size,Type:VolumeType,ProjectTag:Tags[?Key==`project`]|[0].Value}' \
+  --output json > /tmp/ces-revisions-h100-root.json
+jq -e '
+  .Encrypted == true
+  and .SizeGiB == 100
+  and .Type == "gp3"
+  and .ProjectTag == "ces-revisions"
+' /tmp/ces-revisions-h100-root.json
+aws budgets describe-budget-actions-for-budget --account-id "$ACCOUNT_ID" \
+  --budget-name ces-revisions-monthly --query 'Actions[0]' --output json \
+  > /tmp/ces-revisions-h100-budget-action.json
+jq -e --arg target "$INSTANCE_ID" '
+  .BudgetName == "ces-revisions-monthly"
+  and .ActionType == "RUN_SSM_DOCUMENTS"
+  and .ApprovalModel == "AUTOMATIC"
+  and .Status == "STANDBY"
+  and .NotificationType == "ACTUAL"
+  and .ActionThreshold.ActionThresholdType == "PERCENTAGE"
+  and .ActionThreshold.ActionThresholdValue == 100
+  and .Definition.SsmActionDefinition.ActionSubType == "STOP_EC2_INSTANCES"
+  and .Definition.SsmActionDefinition.Region == "us-east-1"
+  and .Definition.SsmActionDefinition.InstanceIds == [$target]
+  and (.ExecutionRoleArn
+    | test("^arn:aws:iam::[0-9]{12}:role/ces-revisions-budget-stop$"))
+  and (.Subscribers | length) == 1
+  and .Subscribers[0].SubscriptionType == "EMAIL"
+  and (.Subscribers[0].Address | type) == "string"
+  and (.Subscribers[0].Address | length) > 0
+' /tmp/ces-revisions-h100-budget-action.json > /dev/null
+aws iam get-role-policy --role-name ces-revisions-budget-stop --policy-name stop-the-vm \
+  --query PolicyDocument --output json > /tmp/ces-revisions-h100-budget-policy.json
+jq -e --arg target "$INSTANCE_ARN" '
+  (.Statement | map(select(.Sid == "RunTheStopAutomation"))[0]) as $run
+  | (.Statement | map(select(.Sid == "StopTheVm"))[0]) as $stop
+  | (.Statement | map(select(.Sid == "ReadInstanceStatus"))[0]) as $read
+  | type == "object"
+    and .Version == "2012-10-17"
+    and (.Statement | length) == 3
+    and (.Statement | map(.Sid) | sort)
+      == ["ReadInstanceStatus", "RunTheStopAutomation", "StopTheVm"]
+    and ($run.Effect == "Allow"
+    and $run.Action == "ssm:StartAutomationExecution"
+    and ($run.Resource | sort) == [
+      "arn:aws:ssm:*:*:automation-definition/AWS-StopEC2Instance:*",
+      "arn:aws:ssm:*:*:automation-execution/*",
+      "arn:aws:ssm:*:*:document/AWS-StopEC2Instance"
+    ])
+    and ($stop.Effect == "Allow"
+    and $stop.Action == "ec2:StopInstances"
+    and $stop.Resource == $target
+    and $stop.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}})
+    and ($read.Effect == "Allow"
+    and $read.Action == "ec2:DescribeInstanceStatus"
+    and $read.Resource == "*"
+    and $read.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}})
+' /tmp/ces-revisions-h100-budget-policy.json > /dev/null
+echo "budget action and stop-only policy safeguards verified for the replacement"
+printf 'size = "h100"\n' > infra/env/size.auto.tfvars.tmp
+mv infra/env/size.auto.tfvars.tmp infra/env/size.auto.tfvars
+test "$(cat infra/env/size.auto.tfvars)" = 'size = "h100"'
+echo "last successfully applied size: h100"
+rm -f /tmp/ces-revisions-h100-generation-2.json \
+  /tmp/ces-revisions-h100-root.json \
+  /tmp/ces-revisions-h100-budget-action.json \
+  /tmp/ces-revisions-h100-budget-policy.json
+trap - ERR
+```
+
+Expected: the instance and root checks print `true`; the profile, security group, shutdown behavior,
+the budget safeguards, and last successfully applied size print their sanitized confirmations.
+`STANDBY` is the armed state in which AWS Budgets actively evaluates the action; any other action
+status fails verification and invokes the replacement stop handler.
+Guard the Systems Manager wait and host-key rollover with the same stop-on-failure rule:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+REGION=us-east-1
+INSTANCE_ID=""
+SSH_CONFIG=$HOME/.ssh/config
+SSM_OUTPUT=""
+SSH_OUTPUT=""
+CONFIG_TMP=""
+CONFIG_BACKUP=""
+CONFIG_BACKUP_READY=0
+OLD_HOST=""
+stop_after_access_failure() {
+  if ! STATE=$(aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+    --query 'Reservations[0].Instances[0].State.Name' --output text); then
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+    return 1
+  fi
+  case "$STATE" in
+    pending|running|stopping)
+      if ! aws ec2 stop-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        --force --skip-os-shutdown > /dev/null; then
+        echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+        return 1
+      fi
+      aws ec2 wait instance-stopped --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        > /dev/null 2>&1 || true
+      if ! STATE=$(aws ec2 describe-instances --region "$REGION" \
+        --instance-ids "$INSTANCE_ID" \
+        --query 'Reservations[0].Instances[0].State.Name' --output text); then
+        echo "Run: aws login --profile ces-revisions. Then confirm the project instance is stopped in the us-east-1 EC2 console." >&2
+        return 1
+      fi
+      ;;
+  esac
+  case "$STATE" in
+    stopped|shutting-down|terminated)
+      echo "replacement has no billable instance state after access verification failure"
+      ;;
+    *)
+      echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+      return 1
+      ;;
+  esac
+}
+access_failed() {
+  FAILURE_STATUS=$?
+  trap - ERR
+  set +e
+  if [ -n "$SSM_OUTPUT" ]; then
+    rm -f "$SSM_OUTPUT"
+  fi
+  if [ -n "$SSH_OUTPUT" ]; then
+    rm -f "$SSH_OUTPUT"
+  fi
+  if [ -n "$CONFIG_TMP" ]; then
+    rm -f "$CONFIG_TMP"
+  fi
+  if [ "$CONFIG_BACKUP_READY" -eq 1 ] && [ -f "$CONFIG_BACKUP" ]; then
+    if ! mv "$CONFIG_BACKUP" "$SSH_CONFIG"; then
+      echo "STOP: the prior SSH config could not be restored; recover it from $CONFIG_BACKUP before using the host alias." >&2
+    fi
+  elif [ -n "$CONFIG_BACKUP" ]; then
+    rm -f "$CONFIG_BACKUP"
+  fi
+  if [ -n "$INSTANCE_ID" ]; then
+    ssh-keygen -R "$INSTANCE_ID" > /dev/null 2>&1 || true
+  fi
+  echo "STOP: Systems Manager or SSH host-key verification failed; stopping the replacement." >&2
+  stop_after_access_failure
+  exit "$FAILURE_STATUS"
+}
+if ! INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id); then
+  echo "STOP: the replacement ID is unreadable." >&2
+  echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  exit 1
+fi
+trap access_failed ERR
+SSM_OUTPUT=$(mktemp /tmp/ces-revisions-ssm-host-key.XXXXXX)
+SSH_OUTPUT=$(mktemp /tmp/ces-revisions-ssh-check.XXXXXX)
+PING_STATUS=None
+for _ in $(seq 1 60); do
+  PING_STATUS=$(aws ssm describe-instance-information --region "$REGION" \
+    --filters Key=InstanceIds,Values="$INSTANCE_ID" \
+    --query 'InstanceInformationList[0].PingStatus' --output text)
+  if [ "$PING_STATUS" = Online ]; then
+    break
+  fi
+  sleep 15
+done
+test "$PING_STATUS" = Online
+aws ssm start-session --region "$REGION" --target "$INSTANCE_ID" \
+  --document-name AWS-StartNonInteractiveCommand \
+  --parameters '{"command":["ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub"]}' \
+  > "$SSM_OUTPUT" 2>&1
+SSM_FP=$(tr -d '\r' < "$SSM_OUTPUT" | awk '/\(ED25519\)/ {print $2; exit}')
+printf '%s\n' "$SSM_FP" | grep -Eq '^SHA256:[A-Za-z0-9+/]{43}$'
+test -f "$SSH_CONFIG"
+OLD_HOST=$(ssh -G ces-revisions-vm 2> /dev/null | \
+  awk '$1 == "hostname" {print $2; exit}')
+test -n "$OLD_HOST"
+CONFIG_TMP=$(mktemp "$HOME/.ssh/config.ces-revisions-new.XXXXXX")
+CONFIG_BACKUP=$(mktemp "$HOME/.ssh/config.ces-revisions-backup.XXXXXX")
+cp -p "$SSH_CONFIG" "$CONFIG_BACKUP"
+CONFIG_BACKUP_READY=1
+awk -v instance_id="$INSTANCE_ID" '
+  $1 == "Host" { in_target = ($2 == "ces-revisions-vm") }
+  $1 == "Match" { in_target = 0 }
+  in_target && $1 == "HostName" && !replaced {
+    print "  HostName " instance_id
+    replaced = 1
+    next
+  }
+  { print }
+  END { if (!replaced) exit 42 }
+' "$SSH_CONFIG" > "$CONFIG_TMP"
+chmod 600 "$CONFIG_TMP"
+mv "$CONFIG_TMP" "$SSH_CONFIG"
+CONFIG_TMP=""
+ssh-keygen -R "$OLD_HOST" > /dev/null 2>&1 || true
+ssh -o StrictHostKeyChecking=accept-new -o BatchMode=yes ces-revisions-vm \
+  'lsb_release -ds; uname -r' > "$SSH_OUTPUT" 2>&1
+SSH_FP=$(ssh-keygen -l -F "$INSTANCE_ID" | \
+  awk '$NF == "(ED25519)" {print $2; exit}')
+printf '%s\n' "$SSH_FP" | grep -Eq '^SHA256:[A-Za-z0-9+/]{43}$'
+test "$SSM_FP" = "$SSH_FP"
+trap - ERR
+rm -f "$SSM_OUTPUT" "$SSH_OUTPUT" "$CONFIG_BACKUP"
+echo "Systems Manager online; SSH HostName replaced; ED25519 host key matched"
+```
+
+Expected: the final sanitized confirmation prints. A timeout, AWS read error, malformed fingerprint,
+missing host entry, SSH failure, or fingerprint mismatch restores the prior SSH config, removes the
+untrusted known-hosts entry, and force-stops the replacement before the task reports failure.
+
+Then perform the clean-machine parts of Task 10 against the pushed branch:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+REGION=us-east-1
+if ! INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id); then
+  echo "STOP: the replacement ID is unreadable." >&2
+  echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  exit 1
+fi
+setup_failed() {
+  FAILURE_STATUS=$?
+  trap - ERR
+  set +e
+  echo "STOP: clean-machine setup failed; stopping the replacement." >&2
+  if ! STATE=$(aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+    --query 'Reservations[0].Instances[0].State.Name' --output text); then
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  elif [ "$STATE" = pending ] || [ "$STATE" = running ] || [ "$STATE" = stopping ]; then
+    if aws ec2 stop-instances --region "$REGION" --instance-ids "$INSTANCE_ID" \
+      --force --skip-os-shutdown \
+      --query 'StoppingInstances[].{Previous:PreviousState.Name,Current:CurrentState.Name}' \
+      --output json; then
+      aws ec2 wait instance-stopped --region "$REGION" --instance-ids "$INSTANCE_ID" \
+        > /dev/null 2>&1 || true
+      if ! FINAL_STATE=$(aws ec2 describe-instances --region "$REGION" \
+        --instance-ids "$INSTANCE_ID" \
+        --query 'Reservations[0].Instances[0].State.Name' --output text); then
+        echo "Run: aws login --profile ces-revisions. Then confirm the project instance is stopped in the us-east-1 EC2 console." >&2
+      elif [ "$FINAL_STATE" != stopped ] && [ "$FINAL_STATE" != shutting-down ] && \
+        [ "$FINAL_STATE" != terminated ]; then
+        echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+      else
+        echo "replacement has no billable instance state after setup failure"
+      fi
+    else
+      echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+    fi
+  elif [ "$STATE" = stopped ] || [ "$STATE" = shutting-down ] || [ "$STATE" = terminated ]; then
+    echo "replacement has no billable instance state after setup failure"
+  else
+    echo "Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop the result." >&2
+  fi
+  exit "$FAILURE_STATUS"
+}
+trap setup_failed ERR
+ssh ces-revisions-vm cloud-init status --wait --long
+infra/bin/vm sync-config
+CLOUD_BRANCH=$(git branch --show-current)
+test -n "$CLOUD_BRANCH"
+ssh ces-revisions-vm "CES_REVISIONS_BRANCH=$CLOUD_BRANCH bash -s" < infra/vm/setup.sh
+REMOTE_COMMIT=$(ssh ces-revisions-vm git -C Projects/ces-revisions rev-parse HEAD)
+LOCAL_COMMIT=$(git rev-parse HEAD)
+test -n "$REMOTE_COMMIT"
+test -n "$LOCAL_COMMIT"
+test "$REMOTE_COMMIT" = "$LOCAL_COMMIT"
+ssh ces-revisions-vm bash -l -s <<'EOF'
+set -euo pipefail
+cd ~/Projects/ces-revisions
+uv run python - <<'PY'
+import jax
+
+backend = jax.default_backend()
+devices = jax.local_device_count()
+print("backend", backend, "devices", devices)
+if backend != "gpu" or devices != 1:
+    raise SystemExit("expected one GPU device")
+PY
+systemctl is-enabled ces-idle-stop.timer ces-gpu-cap.service
+systemctl is-active ces-idle-stop.timer
+EOF
+trap - ERR
+```
+
+Expected: cloud-init reports `status: done` and `errors: []`; setup clones the pushed feature branch,
+syncs the `cuda` extra, recreates the carried links, and reinstalls the guards; the two commit IDs
+match; JAX prints `backend gpu devices 1`; and the guards print `enabled`, `enabled`, `active`.
+Do not perform the old generation's GitHub-token step: the public clone is sufficient for Task 14,
+and Task 16 owns final cutover. Remove the temporary JSON files, private plan and apply logs, and
+saved plan, then resume Task 14 at Step 5. Step 5 records the successful replacement as generation
+2 before any performance evidence is collected.
+
+### Task 14 resumed on generation 2
 
 - [ ] **Step 5: Record the switch (bullet 8)**
 
@@ -4790,14 +5675,29 @@ INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id)
 aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" --output json \
   --query 'Reservations[0].Instances[0].{InstanceId: InstanceId, InstanceType: InstanceType, RootVolumeId: BlockDeviceMappings[0].Ebs.VolumeId}' \
   > /tmp/ces-revisions-instance.json
-jq --arg size "$SIZE" --arg date "$(date -u +%F)" --slurpfile now /tmp/ces-revisions-instance.json \
-  '. + [{size: $size, date: $date} + $now[0]]' "$SWITCHES" > /tmp/ces-revisions-switches.json
+jq --arg size "$SIZE" --arg date "$(date -u +%F)" --argjson generation 2 \
+  --slurpfile now /tmp/ces-revisions-instance.json \
+  '. + [{size: $size, date: $date, generation: $generation} + $now[0]]' \
+  "$SWITCHES" > /tmp/ces-revisions-switches.json
 mv /tmp/ces-revisions-switches.json "$SWITCHES"
 rm /tmp/ces-revisions-instance.json
-jq -e --arg type "$TYPE" '(map(.InstanceId) | unique | length == 1) and (map(.RootVolumeId) | unique | length == 1) and .[-1].InstanceType == $type' "$SWITCHES"
+jq -e --arg type "$TYPE" '
+  ([.[].generation] | unique) == [1, 2]
+  and all(.[];
+    (try (.InstanceId | test("^i-[0-9a-f]{8,17}$")) catch false)
+    and (try (.RootVolumeId | test("^vol-[0-9a-f]{8,17}$")) catch false))
+  and (all(group_by(.generation)[];
+    (map(.InstanceId) | unique | length == 1)
+    and (map(.RootVolumeId) | unique | length == 1)))
+  and ([group_by(.generation)[] | .[0].InstanceId] | unique | length == 2)
+  and ([group_by(.generation)[] | .[0].RootVolumeId] | unique | length == 2)
+  and .[-1].generation == 2
+  and .[-1].InstanceType == $type
+' "$SWITCHES"
 ```
 
-Expected: `true`.
+Expected: `true`. Generation 1 and generation 2 intentionally have different instance and root
+volume IDs; the invariant is continuity within each generation.
 
 - [ ] **Step 6: Check the GPU, the driver, and the cap (bullets 7 and 10)**
 
@@ -4908,20 +5808,47 @@ INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id)
 aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" --output json \
   --query 'Reservations[0].Instances[0].{InstanceId: InstanceId, InstanceType: InstanceType, RootVolumeId: BlockDeviceMappings[0].Ebs.VolumeId}' \
   > /tmp/ces-revisions-instance.json
-jq --arg size "$SIZE" --arg date "$(date -u +%F)" --slurpfile now /tmp/ces-revisions-instance.json \
-  '. + [{size: $size, date: $date} + $now[0]]' "$SWITCHES" > /tmp/ces-revisions-switches.json
+jq --arg size "$SIZE" --arg date "$(date -u +%F)" --argjson generation 2 \
+  --slurpfile now /tmp/ces-revisions-instance.json \
+  '. + [{size: $size, date: $date, generation: $generation} + $now[0]]' \
+  "$SWITCHES" > /tmp/ces-revisions-switches.json
 mv /tmp/ces-revisions-switches.json "$SWITCHES"
 rm /tmp/ces-revisions-instance.json
-jq -e --arg type "$TYPE" '(map(.InstanceId) | unique | length == 1) and (map(.RootVolumeId) | unique | length == 1) and .[-1].InstanceType == $type' "$SWITCHES"
+jq -e --arg type "$TYPE" '
+  ([.[].generation] | unique) == [1, 2]
+  and all(.[];
+    (try (.InstanceId | test("^i-[0-9a-f]{8,17}$")) catch false)
+    and (try (.RootVolumeId | test("^vol-[0-9a-f]{8,17}$")) catch false))
+  and (all(group_by(.generation)[];
+    (map(.InstanceId) | unique | length == 1)
+    and (map(.RootVolumeId) | unique | length == 1)))
+  and ([group_by(.generation)[] | .[0].InstanceId] | unique | length == 2)
+  and ([group_by(.generation)[] | .[0].RootVolumeId] | unique | length == 2)
+  and .[-1].generation == 2
+  and .[-1].InstanceType == $type
+' "$SWITCHES"
 infra/bin/vm stop
-jq -r 'map(.size) | join(" -> ")' "$SWITCHES"
-jq -e '(map(.size) | index("a10g") != null and index("h100") != null) and .[-1].size == "dev"' "$SWITCHES"
+jq -r 'group_by(.generation)[] |
+  "generation \(.[0].generation): \(map(.size) | join(" -> "))"' "$SWITCHES"
+jq -e '
+  ([.[] | select(.generation == 1) | .size] | index("a10g") != null)
+  and ([.[] | select(.generation == 2) | .size] as $generation2
+    | ($generation2 | index("h100") != null) and $generation2[-1] == "dev")
+  and all(.[];
+    (try (.InstanceId | test("^i-[0-9a-f]{8,17}$")) catch false)
+    and (try (.RootVolumeId | test("^vol-[0-9a-f]{8,17}$")) catch false))
+  and (all(group_by(.generation)[];
+    (map(.InstanceId) | unique | length == 1)
+    and (map(.RootVolumeId) | unique | length == 1)))
+  and ([group_by(.generation)[] | .[0].InstanceId] | unique | length == 2)
+  and ([group_by(.generation)[] | .[0].RootVolumeId] | unique | length == 2)
+' "$SWITCHES"
 ```
 
-Expected: `true`, the printed stop command, a sequence such as `dev -> a10g -> h100 -> dev`, and
-`true`. The separate capacity evidence records the unsuccessful `l4` and `l40s` attempts. With
-every successful entry sharing one instance ID and one root volume ID, this discharges Verification
-bullet 8.
+Expected: `true`, the printed stop command, `generation 1: dev -> a10g -> dev`,
+`generation 2: h100 -> dev`, and `true`. The separate capacity evidence records the unsuccessful
+`l4`, `l40s`, and us-east-1a `h100` attempts. Continuity within each generation, together with the
+explicit console-termination lineage between generations, discharges Verification bullet 8.
 
 - [ ] **Step 11: Append to the evidence README, scan the evidence, and commit**
 
@@ -4933,7 +5860,9 @@ Append to `docs/decisions/cloud-gpu-evidence/README.md`:
 
 - `vm-h100-checks.txt` — the checks of `vm-a10g-checks.txt`, on `h100`.
 - `../cloud-gpu-probe/h100.json` — the engine probe on `h100` at T=280, n=150, p=70, with batch sizes 1, 4, 16, and 64.
-- `size-switches.json` gains the switch to `h100`, the account's first p5.4xlarge On-Demand start, and the switch back to `dev`.
+- `size-switches.json` groups the original `dev`/`a10g` switches as generation 1 and gains the
+  generation-2 switch to `h100`, the account's first p5.4xlarge On-Demand start, and the switch
+  back to `dev`. Instance and root-volume identity stay constant within each generation.
 ````
 
 Run the evidence scan from Task 6, Step 7. Expected: `evidence scan clean`. Then commit:
@@ -5491,6 +6420,8 @@ git commit -m "Add the cloud GPU environment runbook"
 **Interfaces:**
 - Consumes:
   - every evidence file from plan 3 and Tasks 6–14, and the four probe records;
+  - Task 14A's H100 capacity failure, selected-zone fallback, two-generation lineage, and
+    generation-labelled size switches;
   - Task 15's runbook;
   - Task 2's `infra/bin/vm sync-config --cutover`;
   - the committed-tree search in Task 8, Step 11, and the evidence scan in Task 6, Step 7.
@@ -5581,8 +6512,47 @@ def determinism(host):
     return f"on `{host}`, two runs {with_flag} bit for bit with XLA's deterministic flag and {without} without it"
 
 
+def switch_generations(entries):
+    generations = sorted({entry["generation"] for entry in entries})
+    if generations != [1, 2]:
+        raise SystemExit(f"size-switches.json has generations {generations}, not [1, 2]")
+    if not all(
+        isinstance(entry.get("InstanceId"), str)
+        and re.fullmatch(r"i-[0-9a-f]{8,17}", entry["InstanceId"])
+        and isinstance(entry.get("RootVolumeId"), str)
+        and re.fullmatch(r"vol-[0-9a-f]{8,17}", entry["RootVolumeId"])
+        for entry in entries
+    ):
+        raise SystemExit("size-switches.json contains a missing or malformed resource ID")
+    summaries = []
+    instance_ids = []
+    root_volume_ids = []
+    for generation in generations:
+        current = [entry for entry in entries if entry["generation"] == generation]
+        current_instance_ids = {entry["InstanceId"] for entry in current}
+        current_root_volume_ids = {entry["RootVolumeId"] for entry in current}
+        if len(current_instance_ids) != 1:
+            raise SystemExit(f"generation {generation} has more than one instance ID")
+        if len(current_root_volume_ids) != 1:
+            raise SystemExit(f"generation {generation} has more than one root volume ID")
+        instance_ids.extend(current_instance_ids)
+        root_volume_ids.extend(current_root_volume_ids)
+        sequence = " → ".join(f"`{entry['size']}`" for entry in current)
+        summaries.append(f"generation {generation}: {sequence}")
+    if len(set(instance_ids)) != 2:
+        raise SystemExit("the two generations do not have distinct instance IDs")
+    if len(set(root_volume_ids)) != 2:
+        raise SystemExit("the two generations do not have distinct root volume IDs")
+    return "; ".join(summaries)
+
+
 choice = load("zone-choice.json")
-region, zone = choice["chosen"]["region"], choice["chosen"]["zone"]
+original_zone = choice["chosen"]["zone"]
+h100_capacity_failure = load("ec2-h100-capacity-failure.json")
+h100_zone_fallback = load("ec2-h100-zone-fallback.json")
+lineage = load("environment-lineage.json")
+region = h100_zone_fallback["region"]
+zone = h100_zone_fallback["fallback_availability_zone"]
 chosen = next(r for r in choice["evaluated"] if r["region"] == region)
 image = load(f"ec2-describe-images-{region}.json")
 credentials = load("opentofu-credentials.json")
@@ -5609,6 +6579,7 @@ access = {
 
 print("date:", datetime.now(UTC).date().isoformat())
 print("zone:", zone)
+print("original zone:", original_zone)
 print("region:", region)
 print("regions evaluated:", listing(r["region"] for r in choice["evaluated"]))
 print("p5 price:", f"{min(chosen['p5_4xlarge_on_demand_usd_per_hour']):.2f}")
@@ -5631,6 +6602,17 @@ print("l4 capacity date:", capacity_failure["date"])
 print("l40s capacity date:", l40s_capacity_failure["date"])
 print("l40s price:", l40s_fallback["on_demand_usd_per_hour"])
 print("a10g price:", a10g_fallback["on_demand_usd_per_hour"])
+print("h100 capacity date:", h100_capacity_failure["date"])
+print("h100 capacity attempts:", h100_capacity_failure["api_attempts"])
+print(
+    "h100 alternate zones:",
+    listing(f"`{zone}`" for zone in h100_capacity_failure["aws_reported_alternate_availability_zones"]),
+)
+print("h100 active vcpus:", h100_zone_fallback["h100"]["active_vcpus"])
+print(
+    "h100 quota vcpus:",
+    h100_zone_fallback["h100"]["default_vcpus_counted_against_quota"],
+)
 print("image name:", image["Name"])
 print("ami id:", image["ImageId"])
 print("kernel:", re.search(r"^\S+-aws$", a10g_checks, re.MULTILINE).group(0))
@@ -5640,7 +6622,23 @@ print("provider version:", credentials["aws_provider"])
 print("credential phrase:", "through a `credential_process` profile that runs `aws configure export-credentials`" if credentials["credential_process_needed"] else "directly")
 print("access sentence:", access[load("access.json")["desktop_app"]])
 print("first p5 start date:", next(s["date"] for s in switches if s["InstanceType"] == "p5.4xlarge"))
-print("switch sequence:", " → ".join(f"`{s['size']}`" for s in switches))
+print("switch generations:", switch_generations(switches))
+if lineage["identity_continuity"] != {
+    "instance_across_generations": False,
+    "root_volume_across_generations": False,
+}:
+    raise SystemExit("environment-lineage.json does not record the identity break")
+terminated = next(
+    event
+    for event in lineage["events"]
+    if event["generation"] == 1 and event["event"] == "terminated_outside_opentofu"
+)
+print(
+    "lineage sentence:",
+    "Generation 1 ended with an out-of-band console termination that deleted its root volume; "
+    f"{terminated['completed_dlm_snapshots_retained_after']} completed DLM snapshots remained, "
+    "and generation 2 started from the pinned clean image.",
+)
 print("jax sentence:", "ran on the CPU without a message from its CUDA plugin" if "no CUDA message on stderr" in dev_checks else "logged an error from its CUDA plugin, then ran on the CPU")
 print("determinism sentence:", "; ".join(determinism(host) for host in GPU_HOSTS))
 print("idle stop minutes:", idle.group(1))
@@ -5670,7 +6668,7 @@ Expected: one line for each slot named in Step 4, then three `quota row` lines a
 Create `docs/decisions/cloud-gpu.md` from the text below. Replace each `{{name}}` slot with the text Step 3 printed after `name:`. Replace the `{{quota rows}}` slot with the `quota row` lines and the `{{probe rows}}` slot with the `probe row` lines, in each case without the prefix.
 
 ````markdown
-# Develop on one AWS instance that switches between a CPU size and four GPU sizes
+# Develop on one active AWS environment that switches between a CPU size and four GPU sizes
 
 - **Status:** Accepted
 - **Date:** {{date}}
@@ -5691,15 +6689,18 @@ Learning the cloud stack is also a project goal, so [`docs/cloud-gpu-runbook.md`
 
 ## Decision
 
-We will develop on one EC2 instance in `{{zone}}` ({{region}}), built with OpenTofu, whose instance type switches among five sizes on one root volume:
+We will develop on one active EC2 environment in `{{zone}}` ({{region}}), built with OpenTofu.
+Within an identity generation, its instance type switches among five sizes on one root volume. The
+recorded lineage retains the earlier generation instead of treating an out-of-band replacement as
+an in-place size switch:
 
-| Size | Instance type | GPU | On-Demand in us-east-1 |
-|---|---|---|---|
-| `dev` | m7i.xlarge | none | \$0.20/hr |
-| `l4` | g6.xlarge | L4, 24 GB | \$0.81/hr |
-| `l40s` | g6e.xlarge | L40S, 48 GB | \${{l40s price}}/hr |
-| `a10g` | g5.xlarge | A10G, 24 GB | \${{a10g price}}/hr |
-| `h100` | p5.4xlarge | H100, 80 GB | \$6.88/hr |
+| Size | Instance type | Active vCPUs | GPU | On-Demand in us-east-1 |
+|---|---|---:|---|---:|
+| `dev` | m7i.xlarge | 4 | none | \$0.20/hr |
+| `l4` | g6.xlarge | 4 | L4, 24 GB | \$0.81/hr |
+| `l40s` | g6e.xlarge | 4 | L40S, 48 GB | \${{l40s price}}/hr |
+| `a10g` | g5.xlarge | 4 | A10G, 24 GB | \${{a10g price}}/hr |
+| `h100` | p5.4xlarge | {{h100 active vcpus}} ({{h100 quota vcpus}} count against quota) | H100, 80 GB | \$6.88/hr |
 
 The original three prices were checked on 2026-09-13; `l40s` and `a10g` were checked on 2026-09-22.
 
@@ -5718,7 +6719,21 @@ The command outputs are in [`docs/decisions/cloud-gpu-evidence/`](cloud-gpu-evid
 
 ### Location and quotas
 
-Req 2's original rule evaluated {{regions evaluated}} and chose `{{zone}}`. In {{region}}, the Price List API had a Linux On-Demand p5.4xlarge price of \${{p5 price}} per hour, and {{zones offering all three}} offered the original three instance types. On {{l4 capacity date}}, the first g6.xlarge start failed with `InsufficientInstanceCapacity`; a live check established that the chosen zone offered g6e.xlarge at \${{l40s price}} per hour under the approved 4-vCPU G and VT quota. Its first start failed with the same error on {{l40s capacity date}}. A second live check established that the zone offered g5.xlarge at \${{a10g price}} per hour under that quota. The account's first p5.4xlarge On-Demand start succeeded on {{first p5 start date}}, which settles the question AWS's August 2025 announcement raised about single-GPU P5 On-Demand in US regions.
+Req 2's original rule evaluated {{regions evaluated}} and chose `{{original zone}}`. In {{region}},
+the Price List API had a Linux On-Demand p5.4xlarge price of \${{p5 price}} per hour, and
+{{zones offering all three}} offered the original three instance types. On {{l4 capacity date}}, the
+first g6.xlarge start failed with `InsufficientInstanceCapacity`; a live check established that the
+chosen zone offered g6e.xlarge at \${{l40s price}} per hour under the approved 4-vCPU G and VT quota.
+Its first start failed with the same error on {{l40s capacity date}}. A second live check established
+that the zone offered g5.xlarge at \${{a10g price}} per hour under that quota.
+
+Generation 1 was later terminated through the console. On {{h100 capacity date}}, all
+{{h100 capacity attempts}} replacement p5.4xlarge launch attempts in `{{original zone}}` failed with
+`InsufficientInstanceCapacity`; EC2 named {{h100 alternate zones}} as alternates. The deterministic
+same-Region fallback rule selected `{{zone}}`. The account's first p5.4xlarge On-Demand start then
+succeeded there on {{first p5 start date}} with {{h100 active vcpus}} active vCPUs, while the type's
+{{h100 quota vcpus}} default vCPUs counted against quota. This settles the question AWS's August
+2025 announcement raised about single-GPU P5 On-Demand in US regions.
 
 On {{p5 readiness date}}, a read-only survey of the standard commercial AWS Regions in the United States and Canada kept `p5.4xlarge` as a hard requirement and ranked the eligible Regions {{p5 eligible regions}}. The fallback P-quota actions covered {{p5 fallback quota regions}} only to make those Regions ready for a later attempt; they reserved no capacity and created no instance, network, volume, or other deployment. The live environment and OpenTofu state remained in {{region}}, and any cross-region launch requires a separate reviewed plan and state.
 
@@ -5741,7 +6756,8 @@ At T=280, n=150, p=70, with 20% of panel cells missing, each batch size ran one 
 - On `dev`, with the `cuda` extra installed and no GPU, JAX {{jax sentence}}. No separate CPU environment was needed, and the full test suite passed with the `cpu` backend and four host devices.
 - On `a10g` and `h100`, `nvidia-smi` reported the GPU with driver {{driver}}. The full test suite passed with the `gpu` backend and `chain_method(4) == "vectorized"`, and the GPU cap scheduled a poweroff 8 hours after boot. The `l4` and `l40s` tiers remain configured for later capacity retries.
 - Repeated runs of one batched value and gradient at batch 16: {{determinism sentence}}.
-- The size switches {{switch sequence}} kept one instance ID and one root volume ID.
+- The size switches were {{switch generations}}. Every switch kept one instance ID and one root
+  volume ID within its generation. {{lineage sentence}}
 - With its window shortened to 10 minutes, the idle stop stopped the instance within {{idle stop minutes}} minutes of the VM going idle.
 - The budget exists with its three alerts and its stop action, and lifecycle snapshots of the root volume exist. IAM's policy simulator allows the action's role to stop this instance, and denies stopping another instance or terminating this one.
 
@@ -5752,7 +6768,9 @@ One by-hand fetch of a small file from `download.bls.gov`, run from the VM with 
 ## Consequences
 
 - **Positive:**
-  - One environment on one disk: the checkout, the uv environment, and Claude Code's settings and memory persist across sizes, and a size switch is one `infra/bin/vm size` command.
+  - Within the active generation, one environment stays on one disk: the checkout, the uv
+    environment, and Claude Code's settings and memory persist across sizes, and a size switch is
+    one `infra/bin/vm size` command.
   - Nothing listens on the internet. The security group has no ingress rules, and every session rides the SSM agent's outbound connection.
   - Cost is bounded three ways: the idle stop, the GPU cap, and the budget action.
   - Every AWS resource is in OpenTofu, so the runbook can rebuild the environment or tear it down.
@@ -5760,6 +6778,9 @@ One by-hand fetch of a small file from `download.bls.gov`, run from the VM with 
   - A size switch stops the VM and whatever runs on it, and a switch to a GPU size starts billing as soon as the instance starts.
   - The budget sees only costs tagged since the tag's activation. Public IPv4 hours, data transfer, and tax fall outside it.
   - GPU capacity is per zone and per instance type. The first g6.xlarge and g6e.xlarge starts failed for lack of capacity, and any GPU type can do the same; the environment cannot move zones without a rebuild.
+  - An out-of-band console termination bypasses OpenTofu's `prevent_destroy` lifecycle rule. The
+    deleted root volume ended generation 1, so lineage evidence and within-generation continuity
+    replace the original all-history same-ID invariant.
   - The held driver and kernel receive no security updates until someone updates them by hand.
 - **Neutral / follow-on:**
   - Roadmap Stage 6 measures the engine at Stage 7–9 dimensions on this environment, and revisits the budget and the default GPU size.

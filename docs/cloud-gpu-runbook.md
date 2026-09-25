@@ -1,6 +1,10 @@
 # Cloud GPU environment runbook
 
-How to build, use, and take down the ces-revisions cloud GPU development environment: one EC2 instance on one disk, whose instance type switches between a CPU size for daily work and four GPU sizes for fits. The decision behind it, with its evidence, is [`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
+How to build, use, and take down the ces-revisions cloud GPU development environment: one managed
+EC2 instance generation on one disk at a time, whose instance type switches between a CPU size for
+daily work and four GPU sizes for fits. Size switches preserve the instance and disk within a
+generation. The decision behind it, with its evidence, is
+[`docs/decisions/cloud-gpu.md`](decisions/cloud-gpu.md).
 
 Everything under `infra/` runs on the Mac, from the repository root, never on the VM. Resizing stops the instance, which would kill an apply running on it, and the instance's role has no AWS permission beyond Systems Manager. `infra/bin/vm` refuses to run on the VM.
 
@@ -13,7 +17,8 @@ Everything under `infra/` runs on the Mac, from the repository root, never on th
   - `l4` is g6.xlarge: an NVIDIA L4 with 24 GB, \$0.81/hr.
   - `l40s` is g6e.xlarge: an NVIDIA L40S with 48 GB, \$1.861/hr.
   - `a10g` is g5.xlarge: an NVIDIA A10G with 24 GB, \$1.006/hr.
-  - `h100` is p5.4xlarge: an NVIDIA H100 with 80 GB, \$6.88/hr.
+  - `h100` is p5.4xlarge: an NVIDIA H100 with 80 GB and 8 active vCPUs, with its quota based on 16
+    default vCPUs, \$6.88/hr.
 
   The `dev`, `l4`, and `h100` prices were checked in us-east-1 on 2026-09-13; `l40s` and `a10g`
   were checked on 2026-09-22.
@@ -37,7 +42,10 @@ Underneath:
 
 ### Location, image, and quotas
 
-The region and zone come from plan 3's evidence rule, and the GPU quota requests from its Task 4; both are recorded in `docs/decisions/cloud-gpu-evidence/`. The image ID comes from Canonical's public parameter:
+The original region and zone came from plan 3's evidence rule, and the GPU quota requests from its
+Task 4; both are recorded in `docs/decisions/cloud-gpu-evidence/`. Keep that `us-east-1a` evidence
+as the historical first-qualified choice. The current same-region recovery zone is pinned from
+`ec2-h100-zone-fallback.json`. The image ID comes from Canonical's public parameter:
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -47,7 +55,10 @@ aws ssm get-parameters --region "$REGION" \
   --query 'Parameters[0].Value' --output text
 ```
 
-The region, zone, and image ID are committed in `infra/env/pinned.auto.tfvars`, and the region in `infra/state/pinned.auto.tfvars`. Underneath: OpenTofu loads every `*.auto.tfvars` file in a root without being told. Pinning the image keeps a Canonical rebuild from changing the kernel between measurements.
+The region, current zone, and image ID are committed in `infra/env/pinned.auto.tfvars`, and the
+region in `infra/state/pinned.auto.tfvars`. Underneath: OpenTofu loads every `*.auto.tfvars` file in
+a root without being told. Pinning the image keeps a Canonical rebuild from changing the kernel
+between measurements.
 
 ### SSH key
 
@@ -89,6 +100,30 @@ Underneath:
   - the daily snapshot policy.
 - At first boot, cloud-init installs the SSH key and runs `infra/vm/first-boot.sh`. That script installs the cost guards, then git, the NVIDIA 580 server driver, and gh, and holds the driver and kernel packages.
 - OpenTofu writes the state to the bucket, and a `.tflock` object locks it while an operation runs.
+
+### 2026-09-25 same-region H100 recovery
+
+The original managed VM was terminated through the AWS Management Console. Its root volume had
+delete-on-termination enabled and is gone. Four completed, encrypted, project-tagged DLM snapshots
+remain, but the old instance and root volume IDs cannot continue into a replacement generation.
+
+The first clean-image replacement attempt requested `p5.4xlarge` in `us-east-1a` with 8 cores and
+1 thread per core. That exposes 8 active vCPUs to the guest, but EC2 still counts 16 default vCPUs
+against the P-family quota. All 25 attempts failed with `InsufficientInstanceCapacity`. AWS named
+`us-east-1b` through `us-east-1f` as alternatives.
+
+The reviewed recovery pins `us-east-1b`, the first alphabetic AWS-reported alternative that offers
+all five configured instance types. It stays in `us-east-1`, retaining the regional price, quota,
+VPC, IAM, DLM, budget, and state architecture. Because a subnet belongs to one Availability Zone,
+the plan replaces the empty `us-east-1a` subnet and its route-table association, then creates a
+clean instance and encrypted root volume from the pinned Canonical image. The `us-east-1b` apply has
+not yet succeeded, and an instance-type offering does not reserve capacity.
+
+After the replacement becomes reachable, update the SSH host entry to its new instance ID, rerun
+`infra/bin/vm sync-config` and `infra/vm/setup.sh`. The public clone is sufficient for the H100
+checks. At the final cutover, enter a newly created fine-grained GitHub token as described under VM
+setup. Credentials stored only on the terminated root volume do not carry into the new generation.
+The agent never handles the token.
 
 ### SSH host entry
 
@@ -205,23 +240,26 @@ export AWS_PROFILE=ces-revisions
 infra/bin/vm size l4
 ```
 
-Review the plan, which should change only `aws_instance.vm`'s `instance_type`, and answer `yes`.
-Switch back with `infra/bin/vm size dev`, or switch to `l40s`, `a10g`, or `h100` the same way. The
-first `l4` and `l40s` starts both failed with `InsufficientInstanceCapacity`; `a10g` is the next
-qualified fallback in the pinned zone.
+Within a live generation, review the plan and answer `yes`. A CPU or G-family switch should change
+only `aws_instance.vm`'s `instance_type`; an `h100` switch also adds its CPU options. Switch back
+with `infra/bin/vm size dev`, or switch to `l40s`, `a10g`, or `h100` the same way. In generation 1,
+the first `l4` and `l40s` starts both failed with `InsufficientInstanceCapacity`; `a10g` was the
+qualified fallback in the then-pinned zone.
 
 Underneath:
 - OpenTofu stops the instance, changes its type, and starts it again, even if it was stopped. A switch to a GPU size therefore starts billing at that size's rate.
-- The instance ID, its root volume, and everything on it stay.
+- The instance ID, its root volume, and everything on it stay within that generation. Termination
+  ends this continuity and a replacement receives new IDs.
 - `infra/bin/vm` records the size in `infra/env/size.auto.tfvars` after a successful apply, so a later `tofu plan` keeps it.
 - A GPU size needs its vCPU quota in the region: 4 in "Running On-Demand G and VT instances" for
-  `l4`, `l40s`, or `a10g`, and 16 in "Running On-Demand P instances" for `h100`.
+  `l4`, `l40s`, or `a10g`, and 16 in "Running On-Demand P instances" for `h100`. The `h100` CPU
+  options expose 8 active vCPUs but do not reduce that quota requirement or its price.
 - A stop erases any local NVMe instance-store disk on the selected GPU size; nothing here uses
   those disks.
 
 ## Regional H100 readiness
 
-The live environment remains pinned to us-east-1. The dated readiness matrix in
+The environment remains pinned to us-east-1. The dated readiness matrix in
 `docs/decisions/cloud-gpu-evidence/us-canada-p5-readiness-2026-09-24.json` evaluates all standard
 commercial AWS Regions in the United States and Canada while keeping `p5.4xlarge` as the required
 target. At that check, the eligible order was us-east-1, us-east-2, then us-west-2. All three had
@@ -243,6 +281,14 @@ AWS lists the type in an Availability Zone, not that capacity is free at the mom
 Do not change `infra/env/pinned.auto.tfvars` or the backend to try another Region. The subnet, AMI,
 instance, EBS volume, snapshots, and quotas are regional, so a fallback deployment needs a separate
 reviewed OpenTofu root and state. Keep the current environment stopped while preparing one.
+
+The 2026-09-25 recovery is an Availability Zone fallback inside `us-east-1`, not a regional
+fallback. A 25-attempt clean `p5.4xlarge` launch in `us-east-1a` failed with
+`InsufficientInstanceCapacity`, and AWS reported `us-east-1b` through `us-east-1f` as alternatives.
+`us-east-1b` is pinned because it is the first alphabetic reported alternative that offers all
+five configured types. The planned apply retains the existing regional architecture, replaces the
+empty subnet and route-table association, and creates a clean pinned-image generation. It has not
+yet demonstrated free H100 capacity in `us-east-1b`.
 
 ## Running a long GPU job
 
@@ -282,7 +328,12 @@ Underneath:
 
 ## Snapshots and restore
 
-Data Lifecycle Manager snapshots the root volume every day, starting within an hour after 05:00 UTC, and keeps the latest 7:
+Data Lifecycle Manager snapshots the active generation's root volume every day, starting within an
+hour after 05:00 UTC, and keeps the latest 7. Four completed, encrypted, project-tagged snapshots
+from generation 1 survived its source volume's termination. Generation 2 is planned from the clean
+pinned image, so those retained snapshots remain separate recovery artifacts.
+
+For a live generation, list snapshots from its current root volume with:
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -294,7 +345,8 @@ aws ec2 describe-snapshots --region "$REGION" --owner-ids self \
   --output table
 ```
 
-To restore the whole disk to the latest snapshot, with the instance running:
+To restore the whole disk within the same generation to its latest snapshot, with the instance
+running:
 
 ```bash
 export AWS_PROFILE=ces-revisions
@@ -325,7 +377,8 @@ If the new volume lacks the `project = ces-revisions` tag, add it with `aws ec2 
 
 Underneath:
 - EC2 reboots the instance onto a new root volume built from the snapshot. The instance ID, network, and role stay, and memory contents are lost.
-- The snapshot must come from this instance's root volume.
+- The replace-root-volume snapshot must come from this instance's root volume lineage. A snapshot
+  from the terminated generation is not the launch source for the clean replacement generation.
 - The old volume is detached and kept, and it bills until deleted.
 - The new volume has a new ID, which `-refresh-only` records in OpenTofu's state.
 
@@ -444,10 +497,14 @@ Underneath:
 A size switch fails with `InsufficientInstanceCapacity`: AWS has no spare instance of that type in
 the zone at the moment. The instance is left stopped, possibly with the new type already set.
 Switch back with `infra/bin/vm size dev`, try the GPU size again later, or try another configured
-GPU tier. The first `l4` and `l40s` starts both failed this way, so `a10g` is the next qualified
-fallback.
+GPU tier. In generation 1, the first `l4` and `l40s` starts both failed this way before `a10g`
+succeeded. On 2026-09-25, a clean `h100` replacement exhausted 25 attempts in `us-east-1a`; the
+reviewed recovery pins `us-east-1b`, but no fallback apply success is recorded yet.
 
-Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request that finds none. The environment stays in one zone, because its subnet and its volume do.
+Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request
+that finds none. A live generation stays in one zone because its subnet and volume do. This
+same-region recovery can move zones only because the prior instance and delete-on-termination root
+volume are gone; OpenTofu must replace the empty subnet and route-table association first.
 
 ### Quota errors
 

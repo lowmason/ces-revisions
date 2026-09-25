@@ -1,0 +1,41 @@
+{
+  "recorded": "2026-09-25",
+  "events": [
+    {
+      "generation": 1,
+      "event": "terminated_outside_opentofu",
+      "interface": "AWS Management Console",
+      "event_time": "2026-09-25T14:53:58Z",
+      "last_verified_size": "dev",
+      "root_volume_present_after": false,
+      "completed_dlm_snapshots_retained_after": 4,
+      "retained_snapshot_set": {
+        "count": 4,
+        "all_completed": true,
+        "all_encrypted": true,
+        "all_dlm_managed": true,
+        "all_project_tagged": true
+      },
+      "latest_snapshot": {
+        "start_time": "2026-09-25T05:35:50.957000+00:00",
+        "volume_size_gib": 100,
+        "encrypted": true,
+        "project_tag_present": true
+      }
+    },
+    {
+      "generation": 2,
+      "event": "launch_failed",
+      "requested_size": "h100",
+      "availability_zone": "us-east-1a",
+      "creation_source": "pinned Canonical Ubuntu image",
+      "restored_from_snapshot": false,
+      "instance_created": false,
+      "root_volume_created": false
+    }
+  ],
+  "identity_continuity": {
+    "instance_across_generations": false,
+    "root_volume_across_generations": false
+  }
+}

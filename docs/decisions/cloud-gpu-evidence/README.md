@@ -89,6 +89,27 @@ The survey does not change `zone-choice.json`, the region and zone pins, the bac
 resource. EC2 quotas, AMIs, networks, and volumes are regional, so any later deployment in a
 fallback Region needs separate infrastructure and state.
 
+## Req 2: H100 capacity and environment lineage
+
+The first replacement launch stayed in us-east-1 and used the approved `p5.4xlarge` CPU topology:
+all eight physical cores with one thread per core. EC2 still evaluates the instance against the
+type's 16-default-vCPU P-family quota requirement.
+
+- `ec2-h100-capacity-failure.json` records the 2026-09-25 replacement attempt in us-east-1a. The
+  AWS provider made 25 `RunInstances` attempts before returning `InsufficientInstanceCapacity`.
+  AWS named us-east-1b through us-east-1f as alternatives; no instance or root volume was created.
+  The file omits request and resource identifiers.
+- `ec2-h100-zone-fallback.json` records the same-Region fallback decision. It selects us-east-1b,
+  the alphabetically first alternative named by AWS, confirms that all five configured project
+  instance types are offered there, and records the H100 CPU topology, quota requirement, memory,
+  GPU, price, pinned image, and retained snapshot count. It is readiness evidence and does not
+  claim that the fallback launch succeeded.
+- `environment-lineage.json` separates the environment into generations. Generation 1 ended when
+  its instance was terminated in the console and its delete-on-termination root volume was
+  deleted; four completed DLM snapshots remain. Generation 2 begins with the failed replacement
+  attempt, which produced neither an instance nor a root volume. Resource identity cannot remain
+  continuous across those generations.
+
 ## Reqs 4 and 5: image
 
 - `ssm-get-parameters-ubuntu-24.04-<region>.json` — `aws ssm get-parameters` for Canonical's parameter that names the current Ubuntu 24.04 LTS amd64 gp3 image, narrowed to its name, value, version, and date. The value is the image pinned in `infra/env/pinned.auto.tfvars`.
@@ -148,9 +169,11 @@ fallback Region needs separate infrastructure and state.
 ## Sizes: `a10g`
 
 - `size-switches.json` — after each size switch, `aws ec2 describe-instances` narrowed to the
-  instance ID, type, and root volume ID, with the size and date. The first entry is the `dev`
-  instance from `ec2-instance-dev.json`. Every entry has the same instance ID and the same root
-  volume ID.
+  instance ID, type, and root volume ID, with the size, date, and environment generation. The
+  existing generation 1 entries show that its `dev` to `a10g` to `dev` switches preserved one
+  instance and root volume. A successful replacement will start generation 2; identity continuity
+  is evaluated within each generation, while the instance and root volume must differ between
+  generations.
 - `vm-a10g-checks.txt` — on `a10g`: the kernel; the GPU and driver from `nvidia-smi`; the device
   file; the GPU cap's scheduled poweroff; JAX's backend, device count, and `chain_method(4)`; the
   full test run's summary; and four hashes of one batched value and gradient, two with XLA's

@@ -1,0 +1,35 @@
+{
+  "checked": "2026-09-25",
+  "region": "us-east-1",
+  "failed_availability_zone": "us-east-1a",
+  "fallback_availability_zone": "us-east-1b",
+  "selection_rule": "Use the first alphabetic same-region zone reported with capacity that offers every configured project instance type.",
+  "offered_instance_types": [
+    "g5.xlarge",
+    "g6.xlarge",
+    "g6e.xlarge",
+    "m7i.xlarge",
+    "p5.4xlarge"
+  ],
+  "h100": {
+    "instance_type": "p5.4xlarge",
+    "active_vcpus": 8,
+    "core_count": 8,
+    "threads_per_core": 1,
+    "default_vcpus_counted_against_quota": 16,
+    "memory_gib": 256,
+    "gpu_name": "H100",
+    "gpu_memory_gib": 80,
+    "on_demand_usd_per_hour": "6.88"
+  },
+  "quota": {
+    "code": "L-417A185B",
+    "effective_value": 16.0
+  },
+  "recovery": {
+    "prior_instance_state": "terminated",
+    "project_volumes_after_termination": 0,
+    "completed_project_snapshots": 4,
+    "replacement_source": "pinned Canonical Ubuntu image"
+  }
+}
