@@ -1,0 +1,20 @@
+{
+  "checked": "2026-09-26",
+  "region": "us-east-1",
+  "instance_type": "p5.4xlarge",
+  "required_concurrent_vcpus": 16,
+  "documented_instance_type_support": true,
+  "applied_quotas": {
+    "concurrent_p5_capacity_blocks_per_account": 0,
+    "concurrent_p5_capacity_blocks_per_organization": 0
+  },
+  "offering_query": {
+    "instance_count": 1,
+    "capacity_duration_hours": 24,
+    "all_availability_zones": true,
+    "succeeded": false,
+    "error_code": "CapacityBlockDescribeLimitExceeded"
+  },
+  "decision": "not_used_for_on_demand_retry",
+  "reason": "Separate P5 Capacity Block quotas must be raised before an offering, Availability Zone, schedule, or upfront price can be selected."
+}

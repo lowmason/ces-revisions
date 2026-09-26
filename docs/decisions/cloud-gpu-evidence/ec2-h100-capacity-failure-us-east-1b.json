@@ -1,0 +1,43 @@
+{
+  "date": "2026-09-25",
+  "operation": "create_replacement",
+  "approved_plan_sha256": "8da9544aef2f95c16a0927243ef53da28c795dd1b432c4070cc8ed66812ff606",
+  "size": "h100",
+  "instance_type": "p5.4xlarge",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1b",
+  "cpu_options": {
+    "core_count": 8,
+    "threads_per_core": 1,
+    "active_vcpus": 8
+  },
+  "default_vcpus_counted_against_quota": 16,
+  "api_attempts": 25,
+  "last_provider_wait_marker": "55m20s elapsed",
+  "error_code": "InsufficientInstanceCapacity",
+  "aws_reported_other_availability_zones": [
+    "us-east-1a",
+    "us-east-1c",
+    "us-east-1d",
+    "us-east-1e",
+    "us-east-1f"
+  ],
+  "instance_created": false,
+  "root_volume_created": false,
+  "partial_apply": {
+    "subnet_replaced": true,
+    "route_table_association_replaced": true,
+    "availability_zone": "us-east-1b"
+  },
+  "saved_plan_retention_deviation": {
+    "deleted_after_failure": true,
+    "plan_required_successful_verification_before_deletion": true,
+    "reason": "The partial apply changed infrastructure state, so the saved plan was stale and unsafe to reuse."
+  },
+  "post_failure": {
+    "managed_instance_in_state": false,
+    "active_project_instances": 0,
+    "project_volumes": 0,
+    "completed_project_snapshots": 4
+  }
+}

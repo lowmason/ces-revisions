@@ -49,6 +49,14 @@ the P-family quota. AWS named `us-east-1b` through `us-east-1f` as alternatives.
 `us-east-1b`, the first alphabetic same-region alternative that offers every configured instance
 type, and creates a clean replacement generation. No successful fallback apply is assumed.
 
+Retry amendment: the approved us-east-1b fallback apply moved the empty subnet and its route-table
+association, then exhausted another 25 `p5.4xlarge` launch attempts over about 55 minutes with
+`InsufficientInstanceCapacity`. It created neither an instance nor a root volume, and the four
+snapshots remain. A 2026-09-26 read-only check found both applicable P5 Capacity Block quotas at
+zero, so the account cannot yet inspect or purchase a block. Plan 4 permits one separately planned,
+reviewed, and approved On-Demand retry against the already-moved us-east-1b network; no successful
+replacement is assumed.
+
 ## Motivation
 
 - The Mac is not the fit target. On the M4 Max, a scratch probe of the dense engine
@@ -394,7 +402,8 @@ waits for it:
    `a10g`; then run the `h100` bullets once its quota is approved. If a clean H100 replacement
    exhausts capacity attempts in `us-east-1a`, recover in the first qualifying alphabetic
    same-region alternative, currently `us-east-1b`, without treating its offering as reserved
-   capacity.
+   capacity. If that fallback also exhausts its launch attempts, record the partial network move
+   and allow only a separately planned, reviewed, and approved one-shot retry.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
 
 Plan 3 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and

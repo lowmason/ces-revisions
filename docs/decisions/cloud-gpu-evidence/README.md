@@ -104,11 +104,21 @@ type's 16-default-vCPU P-family quota requirement.
   instance types are offered there, and records the H100 CPU topology, quota requirement, memory,
   GPU, price, pinned image, and retained snapshot count. It is readiness evidence and does not
   claim that the fallback launch succeeded.
+- `ec2-h100-capacity-failure-us-east-1b.json` records the approved fallback apply. OpenTofu moved
+  the empty subnet and route-table association to us-east-1b, then the AWS provider made 25
+  `RunInstances` attempts over about 55 minutes before returning `InsufficientInstanceCapacity`.
+  No instance or root volume was created; the file retains the approved saved-plan hash and omits
+  request and resource identifiers. It also records that the now-stale saved plan was deleted
+  after the partial failure, earlier than the original plan instructed, so it could not be reused.
+- `ec2-h100-capacity-block-readiness-2026-09-26.json` records the read-only Capacity Block check.
+  AWS documents p5.4xlarge support in us-east-1, but both applicable P5 Capacity Block quotas are
+  zero and the account cannot list offerings. A Capacity Block therefore remains outside this
+  On-Demand retry; its quota increases and non-cancellable purchase would need separate review.
 - `environment-lineage.json` separates the environment into generations. Generation 1 ended when
   its instance was terminated in the console and its delete-on-termination root volume was
-  deleted; four completed DLM snapshots remain. Generation 2 begins with the failed replacement
-  attempt, which produced neither an instance nor a root volume. Resource identity cannot remain
-  continuous across those generations.
+  deleted; four completed DLM snapshots remain. Generation 2 includes the failed replacement
+  attempts in us-east-1a and us-east-1b, neither of which produced an instance or root volume.
+  Resource identity cannot remain continuous across those generations.
 
 ## Reqs 4 and 5: image
 

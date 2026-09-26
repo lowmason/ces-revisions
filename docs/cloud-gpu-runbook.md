@@ -114,10 +114,17 @@ against the P-family quota. All 25 attempts failed with `InsufficientInstanceCap
 
 The reviewed recovery pins `us-east-1b`, the first alphabetic AWS-reported alternative that offers
 all five configured instance types. It stays in `us-east-1`, retaining the regional price, quota,
-VPC, IAM, DLM, budget, and state architecture. Because a subnet belongs to one Availability Zone,
-the plan replaces the empty `us-east-1a` subnet and its route-table association, then creates a
-clean instance and encrypted root volume from the pinned Canonical image. The `us-east-1b` apply has
-not yet succeeded, and an instance-type offering does not reserve capacity.
+VPC, IAM, DLM, budget, and state architecture. Its first approved apply replaced the empty
+`us-east-1a` subnet and its route-table association, then made 25 clean-image launch attempts over
+about 55 minutes before returning `InsufficientInstanceCapacity`; it created no instance or root
+volume. The next reviewed plan therefore expects only the instance creation and two dependent
+budget updates, with no further network replacement. An instance-type offering does not reserve
+capacity.
+
+A read-only Capacity Block check on 2026-09-26 found both applicable P5 Capacity Block quotas at
+zero. Capacity Blocks could reserve a future p5.4xlarge window after separate quota increases, but
+the purchase is non-cancellable and must target an available block's exact zone and schedule. It is
+not part of this On-Demand retry.
 
 After the replacement becomes reachable, update the SSH host entry to its new instance ID, rerun
 `infra/bin/vm sync-config` and `infra/vm/setup.sh`. The public clone is sufficient for the H100
@@ -499,12 +506,14 @@ the zone at the moment. The instance is left stopped, possibly with the new type
 Switch back with `infra/bin/vm size dev`, try the GPU size again later, or try another configured
 GPU tier. In generation 1, the first `l4` and `l40s` starts both failed this way before `a10g`
 succeeded. On 2026-09-25, a clean `h100` replacement exhausted 25 attempts in `us-east-1a`; the
-reviewed recovery pins `us-east-1b`, but no fallback apply success is recorded yet.
+reviewed recovery pins `us-east-1b`. Its first apply also exhausted 25 attempts after moving the
+empty subnet and route-table association. No instance or root volume exists; a separately reviewed
+one-shot retry is the next permitted launch.
 
 Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request
 that finds none. A live generation stays in one zone because its subnet and volume do. This
-same-region recovery can move zones only because the prior instance and delete-on-termination root
-volume are gone; OpenTofu must replace the empty subnet and route-table association first.
+same-region recovery could move zones only because the prior instance and delete-on-termination root
+volume were gone. That network replacement is now complete, so a retry must not replace it again.
 
 ### Quota errors
 
