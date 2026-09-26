@@ -110,6 +110,17 @@ type's 16-default-vCPU P-family quota requirement.
   No instance or root volume was created; the file retains the approved saved-plan hash and omits
   request and resource identifiers. It also records that the now-stale saved plan was deleted
   after the partial failure, earlier than the original plan instructed, so it could not be reused.
+- `ec2-h100-capacity-failure-us-east-1b-retry.json` records the separately approved retry against
+  the stable us-east-1b network. The saved plan is identified by its SHA-256; the provider returned
+  `InsufficientInstanceCapacity` after 51m21s. OpenTofu state and AWS reads reconciled, and three
+  stable zero-active-instance reads confirmed containment without manual action. The file omits
+  request and resource identifiers.
+- `ec2-h100-zone-fallback-us-east-1c.json` records the next same-Region fallback decision. Zones
+  us-east-1a through us-east-1d offer all five configured types; after one failed launch in
+  us-east-1a and two in us-east-1b, the deterministic first alphabetic untried choice is
+  us-east-1c. It records the H100 CPU topology, 16-vCPU quota, \$6.88 hourly price, clean pinned
+  image, and four retained snapshots. It is readiness evidence and does not claim current capacity
+  or a successful launch.
 - `ec2-h100-capacity-block-readiness-2026-09-26.json` records the read-only Capacity Block check.
   AWS documents p5.4xlarge support in us-east-1, but both applicable P5 Capacity Block quotas are
   zero and the account cannot list offerings. A Capacity Block therefore remains outside this
@@ -117,8 +128,8 @@ type's 16-default-vCPU P-family quota requirement.
 - `environment-lineage.json` separates the environment into generations. Generation 1 ended when
   its instance was terminated in the console and its delete-on-termination root volume was
   deleted; four completed DLM snapshots remain. Generation 2 includes the failed replacement
-  attempts in us-east-1a and us-east-1b, neither of which produced an instance or root volume.
-  Resource identity cannot remain continuous across those generations.
+  attempt in us-east-1a and both failed attempts in us-east-1b; none produced an instance or root
+  volume. Resource identity cannot remain continuous across those generations.
 
 ## Reqs 4 and 5: image
 

@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-26",
+  "operation": "retry_create_replacement",
+  "approved_plan_sha256": "79efc3b7fec82b2c0b719b81d5e4c347f879c433e58ce22228c75ec616dbdfa2",
+  "size": "h100",
+  "instance_type": "p5.4xlarge",
+  "region": "us-east-1",
+  "availability_zone": "us-east-1b",
+  "error_code": "InsufficientInstanceCapacity",
+  "last_provider_wait_marker": "51m21s elapsed",
+  "containment": {
+    "opentofu_state_reconciled": true,
+    "aws_reads_complete": true,
+    "stable_zero_active_reads": 3,
+    "confirmed": true,
+    "manual_action_required": false
+  }
+}

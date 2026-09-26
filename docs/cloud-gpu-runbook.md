@@ -112,14 +112,20 @@ The first clean-image replacement attempt requested `p5.4xlarge` in `us-east-1a`
 against the P-family quota. All 25 attempts failed with `InsufficientInstanceCapacity`. AWS named
 `us-east-1b` through `us-east-1f` as alternatives.
 
-The reviewed recovery pins `us-east-1b`, the first alphabetic AWS-reported alternative that offers
-all five configured instance types. It stays in `us-east-1`, retaining the regional price, quota,
-VPC, IAM, DLM, budget, and state architecture. Its first approved apply replaced the empty
+The reviewed recovery first pinned `us-east-1b`, the first alphabetic AWS-reported alternative that
+offered all five configured instance types. It stays in `us-east-1`, retaining the regional price,
+quota, VPC, IAM, DLM, budget, and state architecture. Its first approved apply replaced the empty
 `us-east-1a` subnet and its route-table association, then made 25 clean-image launch attempts over
 about 55 minutes before returning `InsufficientInstanceCapacity`; it created no instance or root
-volume. The next reviewed plan therefore expects only the instance creation and two dependent
-budget updates, with no further network replacement. An instance-type offering does not reserve
-capacity.
+volume. A separately approved retry against the stable `us-east-1b` network returned the same error
+after 51m21s. OpenTofu state and three stable regional reads confirmed no active project instance,
+so no manual containment action was required.
+
+The next reviewed fallback pins `us-east-1c`, the first alphabetic untried zone among
+`us-east-1a` through `us-east-1d`, all of which offer the five configured types. Its saved plan must
+replace the empty `us-east-1b` subnet and association, create the instance from the pinned clean
+image, and retarget the two budget resources. An instance-type offering does not reserve capacity,
+so this fallback is not considered successful until its apply and verification pass.
 
 A read-only Capacity Block check on 2026-09-26 found both applicable P5 Capacity Block quotas at
 zero. Capacity Blocks could reserve a future p5.4xlarge window after separate quota increases, but
@@ -289,13 +295,13 @@ Do not change `infra/env/pinned.auto.tfvars` or the backend to try another Regio
 instance, EBS volume, snapshots, and quotas are regional, so a fallback deployment needs a separate
 reviewed OpenTofu root and state. Keep the current environment stopped while preparing one.
 
-The 2026-09-25 recovery is an Availability Zone fallback inside `us-east-1`, not a regional
-fallback. A 25-attempt clean `p5.4xlarge` launch in `us-east-1a` failed with
-`InsufficientInstanceCapacity`, and AWS reported `us-east-1b` through `us-east-1f` as alternatives.
-`us-east-1b` is pinned because it is the first alphabetic reported alternative that offers all
-five configured types. The planned apply retains the existing regional architecture, replaces the
-empty subnet and route-table association, and creates a clean pinned-image generation. It has not
-yet demonstrated free H100 capacity in `us-east-1b`.
+The recovery is an Availability Zone fallback inside `us-east-1`, not a regional fallback. A
+25-attempt clean `p5.4xlarge` launch in `us-east-1a` failed, and the first apply plus a separate
+same-zone retry in `us-east-1b` also failed with `InsufficientInstanceCapacity`. The next reviewed
+fallback pins `us-east-1c`, the first alphabetic untried zone that offers all five configured types.
+The apply retains the existing regional architecture, replaces the empty subnet and route-table
+association, and creates a clean pinned-image generation. It has not yet demonstrated free H100
+capacity in `us-east-1c`.
 
 ## Running a long GPU job
 
@@ -506,14 +512,16 @@ the zone at the moment. The instance is left stopped, possibly with the new type
 Switch back with `infra/bin/vm size dev`, try the GPU size again later, or try another configured
 GPU tier. In generation 1, the first `l4` and `l40s` starts both failed this way before `a10g`
 succeeded. On 2026-09-25, a clean `h100` replacement exhausted 25 attempts in `us-east-1a`; the
-reviewed recovery pins `us-east-1b`. Its first apply also exhausted 25 attempts after moving the
-empty subnet and route-table association. No instance or root volume exists; a separately reviewed
-one-shot retry is the next permitted launch.
+reviewed recovery then pinned `us-east-1b`. Its first apply also exhausted 25 attempts after moving
+the empty subnet and route-table association, and a separately approved retry failed after 51m21s.
+No instance or root volume exists; three stable reads confirmed no active project instance. The
+next permitted launch is a separately reviewed one-shot fallback in `us-east-1c`.
 
 Underneath: On-Demand capacity is counted per zone and per type, and AWS does not queue a request
 that finds none. A live generation stays in one zone because its subnet and volume do. This
-same-region recovery could move zones only because the prior instance and delete-on-termination root
-volume were gone. That network replacement is now complete, so a retry must not replace it again.
+same-region recovery can move zones only because the prior instance and delete-on-termination root
+volume are gone. A zone change necessarily replaces the empty subnet and its route-table
+association; a same-zone retry must not replace them.
 
 ### Quota errors
 

@@ -1,5 +1,5 @@
 {
-  "recorded": "2026-09-25",
+  "recorded": "2026-09-26",
   "events": [
     {
       "generation": 1,
@@ -44,6 +44,20 @@
       "root_volume_created": false,
       "subnet_replaced_before_failure": true,
       "route_table_association_replaced_before_failure": true
+    },
+    {
+      "generation": 2,
+      "event": "launch_failed",
+      "attempt": "same_zone_retry",
+      "requested_size": "h100",
+      "availability_zone": "us-east-1b",
+      "creation_source": "pinned Canonical Ubuntu image",
+      "restored_from_snapshot": false,
+      "instance_created": false,
+      "root_volume_created": false,
+      "containment_confirmed": true,
+      "stable_zero_active_reads": 3,
+      "manual_action_required": false
     }
   ],
   "identity_continuity": {

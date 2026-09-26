@@ -223,6 +223,11 @@ created neither an instance nor a root volume. A 2026-09-26 read-only check foun
 P5 Capacity Block quotas at zero, so Capacity Blocks cannot supply this retry without separate
 quota increases and a separately approved non-cancellable purchase. Task 14A now permits one
 separately planned, reviewed, and approved On-Demand retry against the us-east-1b network.
+That retry also returned `InsufficientInstanceCapacity` after 51m21s, with OpenTofu state and three
+stable regional reads confirming no active project instance. The next deterministic fallback is
+us-east-1c: the first alphabetic untried zone among us-east-1a through us-east-1d, all of which
+offer every configured instance type. Catalog offering is not a capacity promise, so the new zone
+change retains separate push and exact saved-plan apply gates and assumes no launch success.
 
 ### Original planning evidence (2026-09-13)
 
@@ -4830,15 +4835,17 @@ Either success is the first p5.4xlarge On-Demand start and discharges Req 2's op
 25 launch attempts returned `InsufficientInstanceCapacity`; EC2 created no instance or root volume.
 The first approved us-east-1b fallback apply then moved the subnet and route-table association but
 returned the same error after 25 launch attempts over about 55 minutes; it also created no instance
-or root volume. Continue at Task 14A, Step 6a. For any different failure, stop and report it to the
-human partner.
+or root volume. A separately approved retry there returned the same error after 51m21s; containment
+was confirmed without manual action. Continue at Task 14A, Step 7a for the explicitly requested
+us-east-1c fallback. For any different failure, stop and report it to the human partner.
 
-### Task 14A: Replace the terminated VM in us-east-1b
+### Task 14A: Replace the terminated VM through same-region zone fallbacks
 
 **Mode:** the controller runs this task inline after Task 14, Step 4's exact 2026-09-25 capacity
 failure. Steps 2 and 5 are separate push and apply gates for the fallback. After that fallback's
 capacity failure, Steps 6b and 6e are new push and apply gates for one retry. Approval for any one
-gate does not approve another.
+gate does not approve another. After the retry's contained capacity failure, Steps 7b and 7e are
+new push and apply gates for the us-east-1c zone change.
 
 **Files:**
 - Modify: `infra/env/instance.tf`, `infra/env/pinned.auto.tfvars`
@@ -4850,6 +4857,8 @@ gate does not approve another.
   `docs/decisions/cloud-gpu-evidence/environment-lineage.json`
 - Create: `docs/decisions/cloud-gpu-evidence/ec2-h100-capacity-failure-us-east-1b.json`,
   `docs/decisions/cloud-gpu-evidence/ec2-h100-capacity-block-readiness-2026-09-26.json`
+- Create: `docs/decisions/cloud-gpu-evidence/ec2-h100-capacity-failure-us-east-1b-retry.json`,
+  `docs/decisions/cloud-gpu-evidence/ec2-h100-zone-fallback-us-east-1c.json`
 
 **Interfaces:**
 - Consumes: the terminated generation-1 instance in refreshed OpenTofu state; the four retained,
@@ -4864,6 +4873,10 @@ gate does not approve another.
   calls, as it did 25 times over about 55 minutes in each prior apply, but the controller does not
   run a second apply. It does not purchase a Capacity Block or claim that catalog offering means
   current capacity.
+- Produces, only after the us-east-1c fallback's separate push and apply approvals: replacement of
+  the empty us-east-1b subnet and association, then one clean-image p5.4xlarge attempt in
+  us-east-1c. It preserves the Region, 16-vCPU quota requirement, 8-by-1 guest CPU topology,
+  \$6.88/hr price, and four retained snapshots, and never treats an offering as capacity.
 
 - [ ] **Step 1: Record the deviation, implement the fallback, validate, and commit**
 
@@ -5207,7 +5220,7 @@ changes print, and the four sanitized invariant summaries print. The changes are
 
 OpenTofu represents the new instance ID list as `after = null` with `after_unknown = true` because
 the ID does not exist yet. The predicate also requires exactly one configuration reference to
-`aws_instance.vm.id`; Step 7 verifies that this resolves to exactly one live target after apply.
+`aws_instance.vm.id`; Step 8 verifies that this resolves to exactly one live target after apply.
 
 - replace the empty `aws_subnet.public` in us-east-1a with one in us-east-1b;
 - replace `aws_route_table_association.public` for that subnet;
@@ -5289,7 +5302,7 @@ updated, with no other action. If EC2 returns `InsufficientInstanceCapacity` or 
 failure branch first confirms that any partially created project instance is stopped. Then stop,
 retain the error only as reduced evidence, and report it; do not loop, choose another zone, or claim
 the fallback succeeded. The matching `-var size=h100` is required because OpenTofu automatically
-loads the ignored `size.auto.tfvars`, which still records the last verified size as `dev`; Step 7
+loads the ignored `size.auto.tfvars`, which still records the last verified size as `dev`; Step 8
 advances that marker only after the replacement passes verification. Delete the saved plan only
 after a successful apply and verification.
 
@@ -5847,7 +5860,7 @@ else
 fi
 ```
 
-If EC2 creates the instance and the two budget updates succeed, continue immediately to Step 7. If
+If EC2 creates the instance and the two budget updates succeed, continue immediately to Step 8. If
 the one OpenTofu apply returns `InsufficientInstanceCapacity` or another error, reconcile for five
 minutes using both refreshed OpenTofu state and repeated regional tag-filter reads, then require
 three stable zero-active reads before reporting containment. Any unreadable or uncertain state uses
@@ -5859,10 +5872,698 @@ request, instance, volume, snapshot, Capacity Block, Capacity Reservation, and U
 identifiers. Only a clean reduced file permits deletion of the private raw log and standalone SHA
 file. Stop and report the reduced file; the failed plan must never be reused. Do not run a second
 apply, choose another zone, buy a Capacity Block, or claim success. After a successful apply,
-retain the retry artifacts only until Step 7 verification, then delete them with the other
+retain the retry artifacts only until Step 8 verification, then delete them with the other
 temporary files.
 
-- [ ] **Step 7: Verify generation 2, set up the clean machine, and resume Task 14**
+- [ ] **Step 7a: Record the contained retry failure, select us-east-1c, validate, and commit**
+
+The separately approved retry in us-east-1b returned `InsufficientInstanceCapacity` after 51m21s.
+Its failure handler reconciled OpenTofu state and AWS reads, observed three stable zero-active
+results, and required no manual action. Copy only that reduced record into
+`ec2-h100-capacity-failure-us-east-1b-retry.json`; never copy the raw provider log. A fresh
+read-only offering intersection found that us-east-1a through us-east-1d offer all five configured
+instance types. Exclude the already-tried us-east-1a and us-east-1b zones and select us-east-1c,
+the first alphabetic untried qualifying zone. Record that decision in
+`ec2-h100-zone-fallback-us-east-1c.json`.
+
+Change only the Availability Zone pin from us-east-1b to us-east-1c and cite the new selection
+evidence. Keep the Region, image, VPC, route table, security group, IAM resources, DLM policy,
+budget, instance settings, root-volume settings, tags, guards, and price unchanged. Add the
+contained retry failure as a distinct generation-2 event in `environment-lineage.json`, and update
+the spec, runbook, active plan, and evidence README. No evidence file may contain an account ID,
+bucket name, ARN, email address, token, request ID, instance ID, volume ID, snapshot ID, Capacity
+Block ID, Capacity Reservation ID, or UUID-shaped identifier.
+
+Validate the amendment:
+
+```bash
+set -euo pipefail
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+FAILURE="$EVIDENCE/ec2-h100-capacity-failure-us-east-1b-retry.json"
+FALLBACK="$EVIDENCE/ec2-h100-zone-fallback-us-east-1c.json"
+jq -e '
+  .date == "2026-09-26"
+  and .operation == "retry_create_replacement"
+  and (.approved_plan_sha256 | test("^[0-9a-f]{64}$"))
+  and .size == "h100"
+  and .instance_type == "p5.4xlarge"
+  and .region == "us-east-1"
+  and .availability_zone == "us-east-1b"
+  and .error_code == "InsufficientInstanceCapacity"
+  and .last_provider_wait_marker == "51m21s elapsed"
+  and .containment.opentofu_state_reconciled == true
+  and .containment.aws_reads_complete == true
+  and .containment.stable_zero_active_reads == 3
+  and .containment.confirmed == true
+  and .containment.manual_action_required == false
+' "$FAILURE"
+jq -e '
+  .checked == "2026-09-26"
+  and .region == "us-east-1"
+  and .eligible_availability_zones
+    == ["us-east-1a", "us-east-1b", "us-east-1c", "us-east-1d"]
+  and [.prior_failed_launches[].availability_zone]
+    == ["us-east-1a", "us-east-1b", "us-east-1b"]
+  and .selected_availability_zone == "us-east-1c"
+  and .offered_instance_types
+    == ["g5.xlarge", "g6.xlarge", "g6e.xlarge", "m7i.xlarge", "p5.4xlarge"]
+  and .h100 == {instance_type: "p5.4xlarge", active_vcpus: 8, core_count: 8,
+    threads_per_core: 1, default_vcpus_counted_against_quota: 16,
+    on_demand_usd_per_hour: "6.88"}
+  and .quota.effective_value >= 16
+  and .recovery.active_project_instances == 0
+  and .recovery.project_volumes == 0
+  and .recovery.completed_project_snapshots == 4
+  and .recovery.replacement_source == "pinned Canonical Ubuntu image"
+  and .recovery.clean_image_replacement == true
+' "$FALLBACK"
+jq -e '
+  .recorded == "2026-09-26"
+  and ([.events[].generation] | unique) == [1, 2]
+  and ([.events[] | select(.generation == 2 and .event == "launch_failed"
+    and .availability_zone == "us-east-1b")] | length) == 2
+  and (.events | any(.generation == 2 and .event == "launch_failed"
+    and .attempt == "same_zone_retry" and .availability_zone == "us-east-1b"
+    and (.instance_created | not) and (.root_volume_created | not)
+    and .containment_confirmed == true and .stable_zero_active_reads == 3
+    and .manual_action_required == false))
+  and (.identity_continuity.instance_across_generations | not)
+  and (.identity_continuity.root_volume_across_generations | not)
+' "$EVIDENCE/environment-lineage.json"
+test "$(sed -n 's/^region[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)" = us-east-1
+test "$(sed -n 's/^availability_zone[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)" = us-east-1c
+test "$(git diff --name-only -- infra/env)" = infra/env/pinned.auto.tfvars
+NEW_EVIDENCE=("$FAILURE" "$FALLBACK" "$EVIDENCE/environment-lineage.json")
+NEW_EVIDENCE_SCAN_STATUS=0
+rg -qi \
+  -e '(request|case)[[:space:]_-]*id[[:space:]]*[:=]' \
+  -e '\b(i|vol|snap)-[[:xdigit:]]{8,17}\b' \
+  -e '\b(cbo|cr)-[[:alnum:]-]{8,}\b' \
+  -e '\b[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}\b' \
+  "${NEW_EVIDENCE[@]}" || NEW_EVIDENCE_SCAN_STATUS=$?
+if [ "$NEW_EVIDENCE_SCAN_STATUS" -eq 0 ]; then
+  echo "STOP: new zone-change evidence contains a request or resource identifier" >&2
+  exit 1
+elif [ "$NEW_EVIDENCE_SCAN_STATUS" -ne 1 ]; then
+  echo "STOP: new zone-change evidence identifier scan failed" >&2
+  exit 1
+fi
+echo "new zone-change evidence identifier scan clean"
+tofu fmt infra/env/pinned.auto.tfvars
+tofu fmt -check infra/env/*.tf infra/env/pinned.auto.tfvars
+tofu -chdir=infra/env validate
+uv run ruff format
+uv run ruff check
+git diff --check
+```
+
+Expected: the three `jq` checks print `true`, the pin and exact infrastructure-diff checks pass,
+the targeted identifier scan prints its clean confirmation, OpenTofu validates, and formatting,
+lint, and whitespace checks pass. Run the complete evidence scan from Task 6, Step 7; expected:
+`evidence scan clean`. Then stage exactly the amendment and commit it:
+
+```bash
+set -euo pipefail
+EVIDENCE=docs/decisions/cloud-gpu-evidence
+git add infra/env/pinned.auto.tfvars \
+  specs/cloud-gpu-environment.md specs/plans/4-cloud-gpu-environment.md \
+  docs/cloud-gpu-runbook.md "$EVIDENCE/README.md" \
+  "$EVIDENCE/environment-lineage.json" \
+  "$EVIDENCE/ec2-h100-capacity-failure-us-east-1b-retry.json" \
+  "$EVIDENCE/ec2-h100-zone-fallback-us-east-1c.json"
+test "$(git diff --cached --name-only | sort)" = "$(printf '%s\n' \
+  docs/cloud-gpu-runbook.md \
+  docs/decisions/cloud-gpu-evidence/README.md \
+  docs/decisions/cloud-gpu-evidence/ec2-h100-capacity-failure-us-east-1b-retry.json \
+  docs/decisions/cloud-gpu-evidence/ec2-h100-zone-fallback-us-east-1c.json \
+  docs/decisions/cloud-gpu-evidence/environment-lineage.json \
+  infra/env/pinned.auto.tfvars \
+  specs/cloud-gpu-environment.md \
+  specs/plans/4-cloud-gpu-environment.md | sort)"
+git diff --cached --check
+git commit -m "Move the H100 fallback to us-east-1c"
+```
+
+- [ ] **Step 7b: STOP — the human partner approves pushing the zone-change amendment**
+
+Show the commit, its exact eight-file list, the validation results, and the sanitized us-east-1c
+selection evidence. Explain that pushing publishes only the zone pin, plan, documentation,
+lineage, and reduced evidence so a clean replacement can clone the exact code. It neither replaces
+the subnet nor launches an instance, and it starts no billing. Proceed only on a clear yes given
+after that review. This push approval does not approve an OpenTofu apply.
+
+- [ ] **Step 7c: Push the zone-change amendment**
+
+```bash
+BRANCH=$(git branch --show-current)
+git push -u origin "$BRANCH"
+```
+
+Expected: the remote feature branch advances to the reviewed zone-change commit. Stop if the push
+fails; do not generate a saved plan from code the replacement cannot clone.
+
+- [ ] **Step 7d: Generate and strictly inspect a fresh saved us-east-1c plan**
+
+Generate the plan only from the pushed, clean zone-change commit and current post-failure state.
+The empty subnet and its association must move from us-east-1b to us-east-1c; no other existing
+infrastructure may change. Keep the binary plan and checksum for Step 7f rather than replanning
+after approval:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+test -z "$(git status --short)"
+test "$(git rev-list --left-right --count HEAD...@{upstream} | awk '{print $1 " " $2}')" = "0 0"
+test "$(git diff --name-only HEAD^ HEAD -- infra/env)" = infra/env/pinned.auto.tfvars
+PREVIOUS_ZONE=$(git show HEAD^:infra/env/pinned.auto.tfvars |
+  sed -n 's/^availability_zone[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p')
+REGION=$(tofu -chdir=infra/env output -raw region)
+ZONE=$(sed -n 's/^availability_zone[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)
+AMI_ID=$(sed -n 's/^ami_id[[:space:]]*=[[:space:]]*"\([^"]*\)"/\1/p' \
+  infra/env/pinned.auto.tfvars)
+test "$PREVIOUS_ZONE" = us-east-1b
+test "$REGION" = us-east-1
+test "$ZONE" = us-east-1c
+test -n "$AMI_ID"
+test "$(cat infra/env/size.auto.tfvars)" = 'size = "dev"'
+STATE_LIST=$(tofu -chdir=infra/env state list)
+STATE_INSTANCE_COUNT=$(printf '%s\n' "$STATE_LIST" | \
+  awk '$0 == "aws_instance.vm" { count++ } END { print count + 0 }')
+if [ "$STATE_INSTANCE_COUNT" -ne 0 ]; then
+  echo "STOP: OpenTofu state unexpectedly contains aws_instance.vm" >&2
+  exit 1
+fi
+test "$(printf '%s\n' "$STATE_LIST" | \
+  awk '$0 == "aws_subnet.public" { count++ } END { print count + 0 }')" = 1
+test "$(printf '%s\n' "$STATE_LIST" | \
+  awk '$0 == "aws_route_table_association.public" { count++ } END { print count + 0 }')" = 1
+STATE_JSON=$(mktemp /tmp/ces-revisions-h100-zone-state.XXXXXX)
+OFFERINGS_JSON=$(mktemp /tmp/ces-revisions-h100-zone-offerings.XXXXXX)
+trap 'rm -f "$STATE_JSON" "$OFFERINGS_JSON"' EXIT
+tofu -chdir=infra/env show -json > "$STATE_JSON"
+test "$(jq -r '.values.root_module.resources[]
+  | select(.address == "aws_subnet.public") | .values.availability_zone' "$STATE_JSON")" = us-east-1b
+SUBNET_ID=$(jq -r '.values.root_module.resources[]
+  | select(.address == "aws_subnet.public") | .values.id' "$STATE_JSON")
+test -n "$SUBNET_ID"
+test "$(aws ec2 describe-network-interfaces --region "$REGION" \
+  --filters Name=subnet-id,Values="$SUBNET_ID" \
+  --query 'length(NetworkInterfaces)' --output text)" = 0
+test "$(aws ec2 describe-instances --region "$REGION" \
+  --filters Name=tag:project,Values=ces-revisions \
+  Name=instance-state-name,Values=pending,running,stopping,stopped \
+  --query 'length(Reservations[].Instances[])' --output text)" = 0
+test "$(aws ec2 describe-volumes --region "$REGION" \
+  --filters Name=tag:project,Values=ces-revisions \
+  --query 'length(Volumes)' --output text)" = 0
+test "$(aws ec2 describe-snapshots --region "$REGION" --owner-ids self \
+  --filters Name=tag:project,Values=ces-revisions Name=status,Values=completed \
+  --query 'length(Snapshots)' --output text)" = 4
+P_QUOTA=$(aws service-quotas get-service-quota --region "$REGION" \
+  --service-code ec2 --quota-code L-417A185B --query 'Quota.Value' --output text)
+awk -v quota="$P_QUOTA" 'BEGIN { exit !(quota >= 16) }'
+aws ec2 describe-instance-type-offerings --region "$REGION" \
+  --location-type availability-zone \
+  --filters Name=location,Values="$ZONE" \
+  Name=instance-type,Values=g5.xlarge,g6.xlarge,g6e.xlarge,m7i.xlarge,p5.4xlarge \
+  --output json > "$OFFERINGS_JSON"
+test "$(jq -c '[.InstanceTypeOfferings[].InstanceType] | sort' "$OFFERINGS_JSON")" \
+  = '["g5.xlarge","g6.xlarge","g6e.xlarge","m7i.xlarge","p5.4xlarge"]'
+echo "zone-change preflight: empty us-east-1b network, no VM or volume, four snapshots, quota and us-east-1c offerings ready"
+PLAN=/tmp/ces-revisions-h100-us-east-1c.tfplan
+PLAN_JSON=/tmp/ces-revisions-h100-us-east-1c.json
+PLAN_LOG=/tmp/ces-revisions-h100-us-east-1c.log
+PLAN_SHA256_FILE=/tmp/ces-revisions-h100-us-east-1c.sha256
+rm -f "$PLAN" "$PLAN_JSON" "$PLAN_LOG" "$PLAN_SHA256_FILE"
+tofu -chdir=infra/env plan -input=false -no-color -var size=h100 -out="$PLAN" > "$PLAN_LOG"
+tofu -chdir=infra/env show -json "$PLAN" > "$PLAN_JSON"
+jq -e --arg ami "$AMI_ID" '
+  def replacement: . == ["delete", "create"] or . == ["create", "delete"];
+  def rc($address): first(.resource_changes[] | select(.address == $address));
+  def config($address):
+    first(.configuration.root_module.resources[] | select(.address == $address));
+  def refs($resource):
+    [$resource | .. | objects | select(.references? != null) | .references[]];
+  [.resource_changes[]
+    | select(.mode == "managed" and .change.actions != ["no-op"])
+    | {address, actions: .change.actions}] as $changes
+  | rc("aws_subnet.public") as $subnet
+  | rc("aws_route_table_association.public") as $association
+  | rc("aws_instance.vm") as $instance
+  | rc("aws_iam_role_policy.budget_action[0]") as $budget_policy
+  | rc("aws_budgets_budget_action.stop_vm[0]") as $budget_action
+  | config("aws_instance.vm") as $instance_config
+  | config("aws_route_table_association.public") as $association_config
+  | config("aws_iam_role_policy.budget_action") as $budget_policy_config
+  | config("aws_budgets_budget_action.stop_vm") as $budget_action_config
+  | ($budget_policy.change.before.policy | fromjson) as $policy_before
+  | ($policy_before.Statement | map(select(.Sid == "RunTheStopAutomation"))[0]) as $run
+  | ($policy_before.Statement | map(select(.Sid == "StopTheVm"))[0]) as $stop
+  | ($policy_before.Statement | map(select(.Sid == "ReadInstanceStatus"))[0]) as $read
+  | ($changes | length == 5)
+    and ([$changes[] | select(.address == "aws_subnet.public"
+      and (.actions | replacement))] | length == 1)
+    and ([$changes[] | select(.address == "aws_route_table_association.public"
+      and (.actions | replacement))] | length == 1)
+    and ([$changes[] | select(.address == "aws_instance.vm"
+      and .actions == ["create"])] | length == 1)
+    and ([$changes[] | select(.address == "aws_iam_role_policy.budget_action[0]"
+      and .actions == ["update"])] | length == 1)
+    and ([$changes[] | select(.address == "aws_budgets_budget_action.stop_vm[0]"
+      and .actions == ["update"])] | length == 1)
+    and .variables.region.value == "us-east-1"
+    and .variables.availability_zone.value == "us-east-1c"
+    and .variables.ami_id.value == $ami
+    and .variables.size.value == "h100"
+    and .variables.budget_enabled.value == true
+    and .variables.monthly_budget_usd.value == "150"
+    and $subnet.change.before.availability_zone == "us-east-1b"
+    and $subnet.change.after.availability_zone == "us-east-1c"
+    and $subnet.change.after.cidr_block == "10.42.1.0/24"
+    and $subnet.change.after.cidr_block == $subnet.change.before.cidr_block
+    and $subnet.change.after.map_public_ip_on_launch == true
+    and $subnet.change.after.vpc_id == $subnet.change.before.vpc_id
+    and $association.change.after.route_table_id == $association.change.before.route_table_id
+    and ($association_config.expressions.subnet_id.references
+      | index("aws_subnet.public.id") != null)
+    and ($association_config.expressions.route_table_id.references
+      | index("aws_route_table.public.id") != null)
+    and $instance.change.after.ami == $ami
+    and $instance.change.after.instance_type == "p5.4xlarge"
+    and $instance.change.after.iam_instance_profile == "ces-revisions-vm"
+    and $instance.change.after.instance_initiated_shutdown_behavior == "stop"
+    and $instance.change.after.metadata_options[0].http_tokens == "required"
+    and $instance.change.after.cpu_options[0].core_count == 8
+    and $instance.change.after.cpu_options[0].threads_per_core == 1
+    and $instance.change.after.root_block_device[0].volume_type == "gp3"
+    and $instance.change.after.root_block_device[0].volume_size == 100
+    and $instance.change.after.root_block_device[0].encrypted == true
+    and $instance.change.after.root_block_device[0].delete_on_termination == true
+    and $instance.change.after.tags.Name == "ces-revisions-vm"
+    and $instance.change.after.tags_all.project == "ces-revisions"
+    and ($instance_config.expressions.ami.references | index("var.ami_id") != null)
+    and ($instance_config.expressions.subnet_id.references
+      | index("aws_subnet.public.id") != null)
+    and ($instance_config.expressions.vpc_security_group_ids.references
+      | index("aws_security_group.vm.id") != null)
+    and ($instance_config.expressions.iam_instance_profile.references
+      | index("aws_iam_instance_profile.vm.name") != null)
+    and $budget_policy.change.before.name == "stop-the-vm"
+    and $budget_policy.change.after.name == $budget_policy.change.before.name
+    and $budget_policy.change.after.role == $budget_policy.change.before.role
+    and ($budget_policy.change.after_unknown.policy // false) == true
+    and $policy_before.Version == "2012-10-17"
+    and ($policy_before.Statement | length) == 3
+    and ($policy_before.Statement | map(.Sid) | sort)
+      == ["ReadInstanceStatus", "RunTheStopAutomation", "StopTheVm"]
+    and $run.Effect == "Allow"
+    and $run.Action == "ssm:StartAutomationExecution"
+    and ($run.Resource | sort) == [
+      "arn:aws:ssm:*:*:automation-definition/AWS-StopEC2Instance:*",
+      "arn:aws:ssm:*:*:automation-execution/*",
+      "arn:aws:ssm:*:*:document/AWS-StopEC2Instance"
+    ]
+    and $stop.Effect == "Allow"
+    and $stop.Action == "ec2:StopInstances"
+    and ($stop.Resource
+      | test("^arn:aws:ec2:us-east-1:[0-9]{12}:instance/i-[0-9a-f]{8,17}$"))
+    and $stop.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}}
+    and $read.Effect == "Allow"
+    and $read.Action == "ec2:DescribeInstanceStatus"
+    and $read.Resource == "*"
+    and $read.Condition
+      == {"ForAnyValue:StringEquals": {"aws:CalledVia": ["ssm.amazonaws.com"]}}
+    and (refs($budget_policy_config) | index("aws_instance.vm.arn") != null)
+    and $budget_action.change.after.budget_name == "ces-revisions-monthly"
+    and $budget_action.change.after.budget_name == $budget_action.change.before.budget_name
+    and $budget_action.change.after.action_type == "RUN_SSM_DOCUMENTS"
+    and $budget_action.change.after.approval_model == "AUTOMATIC"
+    and $budget_action.change.after.notification_type == "ACTUAL"
+    and $budget_action.change.after.execution_role_arn
+      == $budget_action.change.before.execution_role_arn
+    and ($budget_action.change.after.action_threshold | length) == 1
+    and $budget_action.change.after.action_threshold[0].action_threshold_type == "PERCENTAGE"
+    and $budget_action.change.after.action_threshold[0].action_threshold_value == 100
+    and ($budget_action.change.after.definition | length) == 1
+    and ($budget_action.change.after.definition[0].ssm_action_definition | length) == 1
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].action_sub_type
+      == "STOP_EC2_INSTANCES"
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].region
+      == "us-east-1"
+    and $budget_action.change.after.definition[0].ssm_action_definition[0].instance_ids == null
+    and ($budget_action.change.after_unknown.definition[0].ssm_action_definition[0].instance_ids
+      // false) == true
+    and $budget_action.change.after.subscriber == $budget_action.change.before.subscriber
+    and ($budget_action.change.after.subscriber | length) == 1
+    and $budget_action.change.after.subscriber[0].subscription_type == "EMAIL"
+    and ($budget_action.change.after.subscriber[0].address | type) == "string"
+    and ($budget_action.change.after.subscriber[0].address | length) > 0
+    and ((refs($budget_action_config) | map(select(. == "aws_instance.vm.id")) | length) == 1)
+    and (refs($budget_action_config)
+      | index("aws_iam_role.budget_action[0].arn") != null)
+    and (refs($budget_action_config)
+      | index("aws_budgets_budget.monthly[0].name") != null)
+' "$PLAN_JSON"
+jq -r '
+  .resource_changes[]
+  | select(.mode == "managed" and .change.actions != ["no-op"])
+  | "\(.change.actions | join(",")) \(.address)"
+' "$PLAN_JSON"
+shasum -a 256 "$PLAN" > "$PLAN_SHA256_FILE"
+cat "$PLAN_SHA256_FILE"
+echo "invariants: empty subnet moves us-east-1b to us-east-1c; pinned image; p5.4xlarge; CPU 8 cores x 1 thread"
+echo "invariants: existing VPC, route table, security group, and instance profile references"
+echo "invariants: IMDSv2 required; shutdown stops; encrypted 100 GiB gp3 root deleted on termination"
+echo "invariants: four snapshots untouched; budget remains automatic at 100% actual spend with SSM stop-only permissions"
+```
+
+Expected: the preflight summary prints, the strict `jq` check prints `true`, exactly five
+redacted changes print, the checksum prints, and the four sanitized invariant summaries print. The
+actions are exactly:
+
+- replace the empty `aws_subnet.public` from us-east-1b to us-east-1c;
+- replace `aws_route_table_association.public` for the new subnet;
+- create `aws_instance.vm` as p5.4xlarge from the pinned image with 8 active vCPUs;
+- update `aws_iam_role_policy.budget_action[0]` for the new instance identity;
+- update `aws_budgets_budget_action.stop_vm[0]` for the new instance identity.
+
+Any additional resource action, a nonempty old subnet, or a change to the Region, image, VPC, route
+table, security group, instance profile, root-volume settings, DLM policy, budget amount, or
+safeguards stops the task. Do not apply a plan that fails the strict check.
+
+- [ ] **Step 7e: STOP — the human partner approves the exact saved us-east-1c plan**
+
+Show the five redacted action lines, the saved-plan SHA-256, and the hourly price. Explain that the
+apply replaces only the empty us-east-1b subnet and its association with equivalents in
+us-east-1c, creates one On-Demand p5.4xlarge with 8 active vCPUs, and retargets the two budget
+resources. It does not purchase a Capacity Block. Billing begins at \$6.88/hr only if EC2 creates
+the instance. The four retained snapshots remain untouched. Proceed only on a clear yes given after
+this exact saved plan is shown. The request to retry, the zone-change push approval, and every prior
+apply approval do not satisfy this gate. This approval covers one OpenTofu apply; the provider may
+repeat `RunInstances` within that apply, but no second apply is authorized.
+
+- [ ] **Step 7f: Run one OpenTofu apply of the approved us-east-1c plan**
+
+Run in the background:
+
+```bash
+set -euo pipefail
+umask 077
+export AWS_PROFILE=ces-revisions
+PLAN=/tmp/ces-revisions-h100-us-east-1c.tfplan
+PLAN_JSON=/tmp/ces-revisions-h100-us-east-1c.json
+PLAN_LOG=/tmp/ces-revisions-h100-us-east-1c.log
+PLAN_SHA256_FILE=/tmp/ces-revisions-h100-us-east-1c.sha256
+APPLY_LOG=/tmp/ces-revisions-h100-us-east-1c-apply.log
+FAILED_PLAN_SHA256_FILE=/tmp/ces-revisions-h100-us-east-1c-failed-plan-sha256.txt
+REDUCED_FAILURE_EVIDENCE=/tmp/ces-revisions-h100-us-east-1c-failure-reduced.json
+test -f "$PLAN"
+test -f "$PLAN_SHA256_FILE"
+shasum -a 256 -c "$PLAN_SHA256_FILE"
+APPROVED_PLAN_SHA256=$(awk '{print $1}' "$PLAN_SHA256_FILE")
+test "${#APPROVED_PLAN_SHA256}" = 64
+rm -f "$APPLY_LOG" "$FAILED_PLAN_SHA256_FILE" "$REDUCED_FAILURE_EVIDENCE"
+invalidate_failed_plan() {
+  printf '%s\n' "$APPROVED_PLAN_SHA256" > "$FAILED_PLAN_SHA256_FILE"
+  chmod 600 "$FAILED_PLAN_SHA256_FILE"
+  rm -f "$PLAN" "$PLAN_JSON" "$PLAN_LOG" "$PLAN_SHA256_FILE"
+  echo "failed saved zone-change plan invalidated; it must never be reused" >&2
+}
+APPLY_SUCCEEDED=0
+trap 'if [ "$APPLY_SUCCEEDED" -eq 0 ]; then invalidate_failed_plan; fi' EXIT
+trap 'echo "STOP: apply interrupted; inspect project-tagged instances in us-east-1 and force-stop every active result." >&2; exit 1' HUP INT TERM
+if tofu -chdir=infra/env apply -input=false -no-color -var size=h100 "$PLAN" \
+  > "$APPLY_LOG" 2>&1; then
+  APPLY_SUCCEEDED=1
+  trap - EXIT HUP INT TERM
+  echo "approved saved us-east-1c plan applied"
+else
+  trap 'echo "STOP: zone-change containment failed unexpectedly. Open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2' ERR
+  STATE_INSTANCE_ID=""
+  STATE_RECONCILED=1
+  AWS_READS_COMPLETE=1
+  if STATE_LIST_AFTER_FAILURE=$(tofu -chdir=infra/env state list 2> /dev/null); then
+    STATE_INSTANCE_COUNT=$(printf '%s\n' "$STATE_LIST_AFTER_FAILURE" | \
+      awk '$0 == "aws_instance.vm" {count++} END {print count + 0}')
+    if [ "$STATE_INSTANCE_COUNT" -eq 1 ]; then
+      if STATE_INSTANCE_ID=$(tofu -chdir=infra/env output -raw instance_id 2> /dev/null) \
+        && printf '%s\n' "$STATE_INSTANCE_ID" | rg -q '^i-[0-9a-f]{8,17}$'; then
+        :
+      else
+        STATE_INSTANCE_ID=""
+        STATE_RECONCILED=0
+      fi
+    elif [ "$STATE_INSTANCE_COUNT" -ne 0 ]; then
+      STATE_RECONCILED=0
+    fi
+  else
+    STATE_RECONCILED=0
+  fi
+  for OBSERVATION_ROUND in $(seq 1 30); do
+    if ! TAGGED_ACTIVE_INSTANCE_IDS_JSON=$(aws ec2 describe-instances --region us-east-1 \
+      --filters Name=tag:project,Values=ces-revisions \
+      Name=instance-state-name,Values=pending,running,stopping \
+      --query 'Reservations[].Instances[].InstanceId' --output json); then
+      AWS_READS_COMPLETE=0
+      break
+    fi
+    CANDIDATE_INSTANCE_IDS_JSON=$(jq -cn --arg state_id "$STATE_INSTANCE_ID" \
+      --argjson tagged_ids "$TAGGED_ACTIVE_INSTANCE_IDS_JSON" \
+      '$tagged_ids + (if ($state_id | length) > 0 then [$state_id] else [] end) | unique')
+    for INSTANCE_ID in $(printf '%s' "$CANDIDATE_INSTANCE_IDS_JSON" | jq -r '.[]'); do
+      if INSTANCE_STATE=$(aws ec2 describe-instances --region us-east-1 \
+        --instance-ids "$INSTANCE_ID" \
+        --query 'Reservations[0].Instances[0].State.Name' --output text 2> /dev/null); then
+        case "$INSTANCE_STATE" in
+          pending|running|stopping)
+            aws ec2 stop-instances --region us-east-1 --instance-ids "$INSTANCE_ID" \
+              --force --skip-os-shutdown \
+              --query 'StoppingInstances[].{Previous:PreviousState.Name,Current:CurrentState.Name}' \
+              --output json > /dev/null 2>&1 || true
+            ;;
+        esac
+      fi
+    done
+    sleep 10
+  done
+  STABLE_ZERO_READS=0
+  if [ "$AWS_READS_COMPLETE" -eq 1 ]; then
+    for FINAL_ROUND in $(seq 1 6); do
+      if ! TAGGED_ACTIVE_INSTANCE_IDS_JSON=$(aws ec2 describe-instances --region us-east-1 \
+        --filters Name=tag:project,Values=ces-revisions \
+        Name=instance-state-name,Values=pending,running,stopping \
+        --query 'Reservations[].Instances[].InstanceId' --output json); then
+        AWS_READS_COMPLETE=0
+        break
+      fi
+      STATE_ID_SAFE=1
+      if [ -n "$STATE_INSTANCE_ID" ]; then
+        if ! INSTANCE_STATE=$(aws ec2 describe-instances --region us-east-1 \
+          --instance-ids "$STATE_INSTANCE_ID" \
+          --query 'Reservations[0].Instances[0].State.Name' --output text 2> /dev/null); then
+          AWS_READS_COMPLETE=0
+          break
+        fi
+        case "$INSTANCE_STATE" in
+          stopped|terminated) ;;
+          *) STATE_ID_SAFE=0 ;;
+        esac
+      fi
+      if [ "$(printf '%s' "$TAGGED_ACTIVE_INSTANCE_IDS_JSON" | jq 'length')" -eq 0 ] \
+        && [ "$STATE_ID_SAFE" -eq 1 ]; then
+        STABLE_ZERO_READS=$((STABLE_ZERO_READS + 1))
+      else
+        STABLE_ZERO_READS=0
+        for INSTANCE_ID in $(printf '%s' "$TAGGED_ACTIVE_INSTANCE_IDS_JSON" | jq -r '.[]'); do
+          aws ec2 stop-instances --region us-east-1 --instance-ids "$INSTANCE_ID" \
+            --force --skip-os-shutdown \
+            --query 'StoppingInstances[].{Previous:PreviousState.Name,Current:CurrentState.Name}' \
+            --output json > /dev/null 2>&1 || true
+        done
+      fi
+      if [ "$STABLE_ZERO_READS" -ge 3 ]; then
+        break
+      fi
+      sleep 5
+    done
+  fi
+  NETWORK_STATE_JSON=$(mktemp /tmp/ces-revisions-h100-us-east-1c-state-after.XXXXXX)
+  NETWORK_STATE_RECONCILED=1
+  SUBNET_ZONE_AFTER=""
+  SUBNET_ID_AFTER=""
+  ROUTE_TABLE_ID_AFTER=""
+  ASSOCIATION_SUBNET_ID_AFTER=""
+  ASSOCIATION_ROUTE_TABLE_ID_AFTER=""
+  ASSOCIATION_PRESENT=false
+  if tofu -chdir=infra/env show -json > "$NETWORK_STATE_JSON" 2> /dev/null; then
+    SUBNET_COUNT=$(jq '[.values.root_module.resources[]
+      | select(.address == "aws_subnet.public")] | length' "$NETWORK_STATE_JSON")
+    ASSOCIATION_COUNT=$(jq '[.values.root_module.resources[]
+      | select(.address == "aws_route_table_association.public")] | length' "$NETWORK_STATE_JSON")
+    SUBNET_ZONE_AFTER=$(jq -r '.values.root_module.resources[]
+      | select(.address == "aws_subnet.public") | .values.availability_zone' "$NETWORK_STATE_JSON")
+    SUBNET_ID_AFTER=$(jq -r '.values.root_module.resources[]
+      | select(.address == "aws_subnet.public") | .values.id // empty' "$NETWORK_STATE_JSON")
+    ROUTE_TABLE_ID_AFTER=$(jq -r '.values.root_module.resources[]
+      | select(.address == "aws_route_table.public") | .values.id // empty' "$NETWORK_STATE_JSON")
+    ASSOCIATION_SUBNET_ID_AFTER=$(jq -r '.values.root_module.resources[]
+      | select(.address == "aws_route_table_association.public") | .values.subnet_id // empty' \
+      "$NETWORK_STATE_JSON")
+    ASSOCIATION_ROUTE_TABLE_ID_AFTER=$(jq -r '.values.root_module.resources[]
+      | select(.address == "aws_route_table_association.public")
+      | .values.route_table_id // empty' "$NETWORK_STATE_JSON")
+    if [ "$SUBNET_COUNT" -ne 1 ] || [ "$ASSOCIATION_COUNT" -ne 1 ]; then
+      NETWORK_STATE_RECONCILED=0
+    elif [ "$SUBNET_ZONE_AFTER" != us-east-1b ] && [ "$SUBNET_ZONE_AFTER" != us-east-1c ]; then
+      NETWORK_STATE_RECONCILED=0
+    elif [ -z "$SUBNET_ID_AFTER" ] || [ -z "$ROUTE_TABLE_ID_AFTER" ] \
+      || [ "$ASSOCIATION_SUBNET_ID_AFTER" != "$SUBNET_ID_AFTER" ] \
+      || [ "$ASSOCIATION_ROUTE_TABLE_ID_AFTER" != "$ROUTE_TABLE_ID_AFTER" ]; then
+      NETWORK_STATE_RECONCILED=0
+    else
+      ASSOCIATION_PRESENT=true
+    fi
+  else
+    NETWORK_STATE_RECONCILED=0
+  fi
+  rm -f "$NETWORK_STATE_JSON"
+  SUBNET_REPLACED=false
+  if [ "$SUBNET_ZONE_AFTER" = us-east-1c ]; then
+    SUBNET_REPLACED=true
+  fi
+  invalidate_failed_plan
+  trap - ERR EXIT HUP INT TERM
+  trap 'echo "STOP: zone-change failure reduction failed; keep the private apply log and standalone plan hash, then correct the reduced evidence." >&2' ERR
+  CONTAINMENT_CONFIRMED=false
+  MANUAL_ACTION_REQUIRED=true
+  INSTANCE_CONTAINMENT_CONFIRMED=false
+  if [ "$STATE_RECONCILED" -eq 1 ] && [ "$AWS_READS_COMPLETE" -eq 1 ] \
+    && [ "$STABLE_ZERO_READS" -ge 3 ]; then
+    INSTANCE_CONTAINMENT_CONFIRMED=true
+  fi
+  if [ "$STATE_RECONCILED" -eq 1 ] && [ "$AWS_READS_COMPLETE" -eq 1 ] \
+    && [ "$NETWORK_STATE_RECONCILED" -eq 1 ] \
+    && [ "$STABLE_ZERO_READS" -ge 3 ]; then
+    CONTAINMENT_CONFIRMED=true
+    MANUAL_ACTION_REQUIRED=false
+  fi
+  if [ "$INSTANCE_CONTAINMENT_CONFIRMED" != true ]; then
+    echo "STOP: zone-change apply failed and instance containment could not be confirmed." >&2
+    echo "Run: aws login --profile ces-revisions. Then open EC2 Instances in us-east-1, filter project = ces-revisions, and force-stop every pending, running, or stopping result." >&2
+  fi
+  if [ "$NETWORK_STATE_RECONCILED" -ne 1 ]; then
+    echo "STOP: the subnet and route-table-association state could not be reconciled." >&2
+    echo "Leave networking unchanged. Run: aws login --profile ces-revisions. Then inspect aws_subnet.public and aws_route_table_association.public in OpenTofu state and the project subnet and route-table association in the us-east-1 VPC console; reconcile state before generating another plan." >&2
+  fi
+  if [ "$CONTAINMENT_CONFIRMED" = true ]; then
+    echo "zone-change apply failed; OpenTofu state plus repeated regional reads confirm no active project instance" >&2
+  fi
+  ERROR_CODE=$(sed -nE 's/.*api error ([A-Za-z][A-Za-z0-9]+):.*/\1/p' "$APPLY_LOG" | tail -n 1)
+  if [ -z "$ERROR_CODE" ]; then
+    ERROR_CODE=OpenTofuApplyError
+  fi
+  LAST_PROVIDER_WAIT_MARKER=$(rg -o '[0-9]+m[0-9]+s elapsed' "$APPLY_LOG" | tail -n 1 || true)
+  jq -n \
+    --arg date "$(date -u +%F)" \
+    --arg approved_plan_sha256 "$APPROVED_PLAN_SHA256" \
+    --arg error_code "$ERROR_CODE" \
+    --arg last_provider_wait_marker "$LAST_PROVIDER_WAIT_MARKER" \
+    --argjson opentofu_state_reconciled "$([ "$STATE_RECONCILED" -eq 1 ] && echo true || echo false)" \
+    --argjson aws_reads_complete "$([ "$AWS_READS_COMPLETE" -eq 1 ] && echo true || echo false)" \
+    --argjson stable_zero_active_reads "$STABLE_ZERO_READS" \
+    --argjson containment_confirmed "$CONTAINMENT_CONFIRMED" \
+    --argjson manual_action_required "$MANUAL_ACTION_REQUIRED" \
+    --arg subnet_zone_after "$SUBNET_ZONE_AFTER" \
+    --argjson network_state_reconciled "$([ "$NETWORK_STATE_RECONCILED" -eq 1 ] && echo true || echo false)" \
+    --argjson subnet_replaced "$SUBNET_REPLACED" \
+    --argjson association_present "$ASSOCIATION_PRESENT" \
+    '{date: $date, operation: "zone_change_create_replacement",
+      approved_plan_sha256: $approved_plan_sha256, size: "h100",
+      instance_type: "p5.4xlarge", region: "us-east-1", availability_zone: "us-east-1c",
+      error_code: $error_code, last_provider_wait_marker: $last_provider_wait_marker,
+      containment: {opentofu_state_reconciled: $opentofu_state_reconciled,
+        aws_reads_complete: $aws_reads_complete,
+        stable_zero_active_reads: $stable_zero_active_reads,
+        confirmed: $containment_confirmed,
+        manual_action_required: $manual_action_required},
+      network: {previous_availability_zone: "us-east-1b",
+        target_availability_zone: "us-east-1c",
+        state_availability_zone_after: (if ($subnet_zone_after | length) > 0
+          then $subnet_zone_after else null end),
+        state_reconciled: $network_state_reconciled,
+        subnet_replaced: $subnet_replaced,
+        route_table_association_present: $association_present}}' > "$REDUCED_FAILURE_EVIDENCE"
+  jq -e '
+    (.approved_plan_sha256 | test("^[0-9a-f]{64}$"))
+    and .operation == "zone_change_create_replacement"
+    and .size == "h100"
+    and .instance_type == "p5.4xlarge"
+    and .region == "us-east-1"
+    and .availability_zone == "us-east-1c"
+    and (.error_code | test("^[A-Za-z][A-Za-z0-9]+$"))
+    and ((.containment.opentofu_state_reconciled | type) == "boolean")
+    and ((.containment.aws_reads_complete | type) == "boolean")
+    and ((.containment.stable_zero_active_reads | type) == "number")
+    and ((.containment.confirmed | type) == "boolean")
+    and ((.containment.manual_action_required | type) == "boolean")
+    and .network.previous_availability_zone == "us-east-1b"
+    and .network.target_availability_zone == "us-east-1c"
+    and ((.network.state_reconciled | type) == "boolean")
+    and ((.network.subnet_replaced | type) == "boolean")
+    and ((.network.route_table_association_present | type) == "boolean")
+    and (if .network.state_reconciled then
+      ((.network.state_availability_zone_after == "us-east-1b"
+        or .network.state_availability_zone_after == "us-east-1c")
+      and .network.route_table_association_present == true)
+    else
+      (.containment.manual_action_required == true
+      and (.network.state_availability_zone_after == null
+        or .network.state_availability_zone_after == "us-east-1b"
+        or .network.state_availability_zone_after == "us-east-1c"))
+    end)
+  ' "$REDUCED_FAILURE_EVIDENCE"
+  REDUCED_SCAN_STATUS=0
+  rg -qi \
+    -e '(request|case)[[:space:]_-]*id[[:space:]]*[:=]' \
+    -e '\b(i|vol|snap)-[[:xdigit:]]{8,17}\b' \
+    -e '\b(cbo|cr)-[[:alnum:]-]{8,}\b' \
+    -e '\b[[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12}\b' \
+    "$REDUCED_FAILURE_EVIDENCE" || REDUCED_SCAN_STATUS=$?
+  if [ "$REDUCED_SCAN_STATUS" -eq 0 ]; then
+    echo "STOP: reduced zone-change evidence contains a request or resource identifier." >&2
+    echo "Keep the private apply log until the reduced evidence is corrected." >&2
+    exit 1
+  elif [ "$REDUCED_SCAN_STATUS" -ne 1 ]; then
+    echo "STOP: reduced zone-change evidence identifier scan failed." >&2
+    exit 1
+  fi
+  rm -f "$APPLY_LOG" "$FAILED_PLAN_SHA256_FILE"
+  trap - ERR
+  echo "zone-change failure reduced; raw apply log and standalone plan hash deleted" >&2
+  exit 1
+fi
+```
+
+If EC2 creates the instance and the two budget updates succeed, continue immediately to Step 8. If
+the apply returns `InsufficientInstanceCapacity` or another error, reconcile for five minutes using
+both refreshed OpenTofu state and repeated regional project-tag reads, require three stable
+zero-active reads, and inspect whether the subnet and association finished moving to us-east-1c.
+Any unreadable or uncertain instance or network state uses the manual STOP path. Invalidate the
+binary plan, plan JSON, plan log, and checksum immediately after failure. Reduce the private error
+to the exact plan hash, error code, containment result, and sanitized post-failure network result;
+scan that exact reduced file before deleting the raw apply log and standalone hash.
+
+After either failure outcome, stop and report the reduced file. The failed plan must never be
+reused. Do not run a second apply, continue automatically to us-east-1d, purchase a Capacity Block,
+or claim success. After success, retain the private us-east-1c plan and apply artifacts only until
+Step 8 verification, then delete them with the other temporary files.
+
+- [ ] **Step 8: Verify generation 2, set up the clean machine, and resume Task 14**
 
 After a successful apply, verify the instance without writing identifiers into committed command
 output:
@@ -5935,7 +6636,7 @@ aws ec2 describe-instances --region "$REGION" --instance-ids "$INSTANCE_ID" --ou
 jq -e '
   .State == "running"
   and .InstanceType == "p5.4xlarge"
-  and .AvailabilityZone == "us-east-1b"
+  and .AvailabilityZone == "us-east-1c"
   and .CoreCount == 8
   and .ThreadsPerCore == 1
 ' /tmp/ces-revisions-h100-generation-2.json
@@ -6025,7 +6726,12 @@ echo "last successfully applied size: h100"
 rm -f /tmp/ces-revisions-h100-generation-2.json \
   /tmp/ces-revisions-h100-root.json \
   /tmp/ces-revisions-h100-budget-action.json \
-  /tmp/ces-revisions-h100-budget-policy.json
+  /tmp/ces-revisions-h100-budget-policy.json \
+  /tmp/ces-revisions-h100-us-east-1c.tfplan \
+  /tmp/ces-revisions-h100-us-east-1c.json \
+  /tmp/ces-revisions-h100-us-east-1c.log \
+  /tmp/ces-revisions-h100-us-east-1c.sha256 \
+  /tmp/ces-revisions-h100-us-east-1c-apply.log
 trap - ERR
 ```
 

@@ -51,11 +51,14 @@ type, and creates a clean replacement generation. No successful fallback apply i
 
 Retry amendment: the approved us-east-1b fallback apply moved the empty subnet and its route-table
 association, then exhausted another 25 `p5.4xlarge` launch attempts over about 55 minutes with
-`InsufficientInstanceCapacity`. It created neither an instance nor a root volume, and the four
-snapshots remain. A 2026-09-26 read-only check found both applicable P5 Capacity Block quotas at
-zero, so the account cannot yet inspect or purchase a block. Plan 4 permits one separately planned,
-reviewed, and approved On-Demand retry against the already-moved us-east-1b network; no successful
-replacement is assumed.
+`InsufficientInstanceCapacity`. A separately approved same-zone retry returned the same error after
+51m21s. OpenTofu state and three stable regional reads confirmed containment with no active project
+instance, and neither attempt created an instance or root volume. The four snapshots remain. A
+2026-09-26 read-only check found both applicable P5 Capacity Block quotas at zero, so the account
+cannot yet inspect or purchase a block. Of the zones that offer all five configured types,
+`us-east-1c` is the first alphabetic zone not already tried; Plan 4 therefore permits one separately
+planned, reviewed, and approved On-Demand fallback there. An offering is catalog readiness, not a
+capacity guarantee, so no successful replacement is assumed.
 
 ## Motivation
 
@@ -139,6 +142,16 @@ state architecture. Replace the empty public subnet and its route-table associat
 subnet belongs to one Availability Zone. Create the replacement instance and root volume from the
 pinned Canonical image. This offering check does not reserve capacity, so the apply can still fail
 with `InsufficientInstanceCapacity`.
+
+**Second same-region H100 zone fallback amendment (2026-09-26).** The first approved apply in
+`us-east-1b` moved the empty subnet and association before its launch failed, and a separately
+approved retry against that stable network also failed. The retry remained contained after three
+stable zero-active-instance reads. Among `us-east-1a` through `us-east-1d`, which offer all five
+configured types, exclude the tried zones `us-east-1a` and `us-east-1b` and select `us-east-1c`, the
+first alphabetic untried zone. Replace only the empty subnet and its association before creating a
+clean-image replacement. Preserve the Region, image, VPC, IAM, DLM, budget, state architecture,
+16-vCPU quota requirement, and 8-core-by-1-thread guest topology. This catalog offering still does
+not prove that launch capacity is free.
 
 **Req 3 — OpenTofu layout and state.**
 
@@ -319,8 +332,9 @@ bullets pass, from their recorded evidence, and contains no placeholder.
   its ranked eligible Regions, and the fact that the fallback regional P-quota actions reserved no
   capacity and created no deployment; the failed `l4` and `l40s` capacity attempts and the separately
   qualified `a10g` fallback; the generation-1 console termination and four retained DLM snapshots;
-  the 25 failed `p5.4xlarge` launch attempts in `us-east-1a`; the AWS-reported alternatives and
-  `us-east-1b` same-region selection; a probe table for the Mac, `dev`, `a10g`, and `h100` at T=280,
+  the 25 failed `p5.4xlarge` launch attempts in `us-east-1a`; the AWS-reported alternatives; the
+  initial `us-east-1b` selection, its two failed applies, and the next deterministic selection of
+  `us-east-1c`; a probe table for the Mac, `dev`, `a10g`, and `h100` at T=280,
   n=150, p=70 with batch sizes 1, 4, and 16 everywhere and 64 on `h100`, with the JSON files under
   `docs/decisions/cloud-gpu-probe/`; and the BLS canary's outcome (allowed or blocked, with its HTTP
   status).
@@ -401,9 +415,10 @@ waits for it:
 5. Try `l4`; if it lacks capacity, try `l40s`; if that also lacks capacity, qualify and run
    `a10g`; then run the `h100` bullets once its quota is approved. If a clean H100 replacement
    exhausts capacity attempts in `us-east-1a`, recover in the first qualifying alphabetic
-   same-region alternative, currently `us-east-1b`, without treating its offering as reserved
-   capacity. If that fallback also exhausts its launch attempts, record the partial network move
-   and allow only a separately planned, reviewed, and approved one-shot retry.
+   same-region alternative without treating its offering as reserved capacity. After the first
+   `us-east-1b` apply and its separately approved same-zone retry both fail, record containment and
+   move to `us-east-1c`, the first alphabetic untried zone that offers every configured type, only
+   through another separately planned, reviewed, and approved one-shot apply.
 6. Req 10, the runbook's final pass, the documentation updates, and the cutover memory copy.
 
 Plan 3 is steps 1–3. It discharges Verification bullets 1 and 13 and the Mac run in bullet 9, and
