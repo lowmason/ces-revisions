@@ -16,10 +16,14 @@ Resumed 2026-09-15 at `b8d65c9`: Stage 4 complete per its stamp, and Stages 5–
 against what it shipped. The separate QCEW revision sequence stays in jobs while its precision
 proxy is in thousands; actual product-specific publication dates flow through `observable_at`.
 Plan 7 hardens Stage 3 acquisition only and changes no roadmap boundary or later-stage interface.
-Amended 2026-10-20: the AWS cloud GPU environment is dropped. Its spec and unexecuted Plan 4 are
-deleted, and Plan 3's provider-neutral repo changes (the `cuda` extra, `devices.py`, and
-`engine_probe.py`) stay. GPU fits run on NVIDIA instances rented by hand from Lambda, so Stage 6
-no longer waits on work outside this roadmap. Its cost measurement chooses the GPU type and count.
+Amended 2026-10-20: the AWS cloud GPU environment is dropped. Its spec and Plan 4 are deleted from
+`main`, and Plan 3's provider-neutral repo changes (the `cuda` extra, `devices.py`, and
+`engine_probe.py`) stay. Plan 4 ran in part on the unmerged `codex/cloud-gpu-environment` branch.
+Plans 9 and 10, a Lambda runner with an AWS control plane, exist only on the unmerged
+`codex/plan-10-cloud-gpu-runner` branch. Both branches are abandoned, and the next new plan takes
+ID 11 so that no plan ID is reused. GPU fits run on NVIDIA instances rented by hand from Lambda, so
+Stage 6 no longer waits on work outside this roadmap. Its cost measurement chooses the GPU type and
+count.
 
 ## Gap analysis
 
@@ -75,9 +79,10 @@ literature review (Stage 23) gates nothing but the report. Bullet numbers cite t
 Verification bullets in file order (1–14). Decision records live under `docs/decisions/`.
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
 run them alongside. Later fits run on NVIDIA instances rented by hand from Lambda (user decision,
-2026-10-20, replacing the 2026-09-13 AWS environment cycle). No spec requirement or stage covers the
-rental, and nothing outside this roadmap gates Stage 6. Stage 6's measurement chooses the GPU type
-and count from what the model requires. A10 and A100 instances are usually available, and float64
+2026-10-20). That replaces the 2026-09-13 AWS environment cycle and the unmerged 2026-10-04 decision
+to pair Lambda GPUs with AWS control. No spec requirement or stage covers the rental, and nothing
+outside this roadmap gates Stage 6. Stage 6's measurement chooses the GPU type and count from what
+the model requires. A10 and A100 instances are usually available, and float64
 (Req 17) separates them. NVIDIA rates the A100 at 9.7 FP64 TFLOPS. The A10 is a GA102 part that
 runs FP64 at 1/64 of its 31.2 FP32 TFLOPS, about 0.5 FP64 TFLOPS. A single chain's `lax.scan` runs
 its time steps one after another, each as a few small GPU kernels, so kernel launch latency rather

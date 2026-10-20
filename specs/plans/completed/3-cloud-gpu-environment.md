@@ -2,7 +2,7 @@
 
 **Status: COMPLETE (2026-09-16)** — executed via executing-plans; nothing deferred
 
-> **Superseded in part (2026-10-20):** the AWS environment was dropped in favor of GPU instances rented by hand from Lambda. The spec, Plan 4, and the `docs/decisions/cloud-gpu-evidence/` files this plan wrote were deleted and survive only in git history, so links to them below are broken. Tasks 5–10's repo changes (the `cuda` extra, `devices.py`, `engine_probe.py`, and the Mac probe baseline) stay in use. Two parts of them are reversed: `tests/test_devices.py` no longer expects one GPU per host, and Task 10's OpenTofu block in `.gitignore` is removed. The roadmap's 2026-10-20 amendment in `specs/ces-revisions-roadmap.md` records the change.
+> **Superseded in part (2026-10-20):** the AWS environment was dropped in favor of GPU instances rented by hand from Lambda. The spec, Plan 4, and the `docs/decisions/cloud-gpu-evidence/` files this plan wrote were deleted from `main`, so links to them below are broken. Git history keeps them, and Plan 4's partial run is on the unmerged, abandoned `codex/cloud-gpu-environment` branch. Tasks 5–10's repo changes (the `cuda` extra, `devices.py`, `engine_probe.py`, and the Mac probe baseline) stay in use. Two parts of them are reversed: `tests/test_devices.py` no longer expects one GPU per host, and Task 10's OpenTofu block in `.gitignore` is removed. The roadmap's 2026-10-20 amendment in `specs/ces-revisions-roadmap.md` records the change.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
