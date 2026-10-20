@@ -26,7 +26,7 @@ cuda = ["jax[cuda13]>=0.11.1; sys_platform == 'linux'"]
 ces-revisions = "ces_revisions:main"
 
 [build-system]
-requires = ["uv_build>=0.9.5,<0.13.0"]
+requires = ["uv_build>=0.9.5,<0.14.0"]
 build-backend = "uv_build"
 
 [dependency-groups]
@@ -38,7 +38,7 @@ dev = [
 
 [tool.uv]
 # The Mac and any GPU host run one uv series, so uv.lock is written one way.
-required-version = "~=0.12.13"
+required-version = "~=0.13.1"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
