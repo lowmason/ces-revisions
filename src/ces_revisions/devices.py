@@ -1,4 +1,4 @@
-"""Device facts, so one checkout runs on the Mac's CPU and on a cloud GPU host."""
+"""Device facts, so one checkout runs on the Mac's CPU and on a rented GPU host."""
 
 from pathlib import Path
 

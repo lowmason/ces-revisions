@@ -16,6 +16,10 @@ Resumed 2026-09-15 at `b8d65c9`: Stage 4 complete per its stamp, and Stages 5–
 against what it shipped. The separate QCEW revision sequence stays in jobs while its precision
 proxy is in thousands; actual product-specific publication dates flow through `observable_at`.
 Plan 7 hardens Stage 3 acquisition only and changes no roadmap boundary or later-stage interface.
+Amended 2026-10-20: the AWS cloud GPU environment is dropped. Its spec and unexecuted Plan 4 are
+deleted, and Plan 3's provider-neutral repo changes (the `cuda` extra, `devices.py`, and
+`engine_probe.py`) stay. GPU fits run on NVIDIA instances rented by hand from Lambda, so Stage 6
+no longer waits on work outside this roadmap. Its cost measurement chooses the GPU type and count.
 
 ## Gap analysis
 
@@ -70,11 +74,16 @@ is proven. The written finding is split by information order: its data and archi
 literature review (Stage 23) gates nothing but the report. Bullet numbers cite the spec's
 Verification bullets in file order (1–14). Decision records live under `docs/decisions/`.
 Stages 12–14 are independent of Stages 6–11, and Stage 23 of Stages 6–22; an orchestrator may
-run them alongside. The cloud GPU environment that later fits run on is its own brainstorming cycle
-outside this roadmap (user decision, 2026-09-13) — no spec requirement covers it — running
-alongside Stages 3–5 and gating Stage 6. Its spec and unexecuted plans 3 and 4 were reconciled onto
-current `main` on 2026-09-16; Plan 3 should start before or alongside Stage 5, and Plan 4 must finish
-before Stage 6. Once Stage 3 ships, Stages 4, 12, and 13 need nothing further and may run alongside
+run them alongside. Later fits run on NVIDIA instances rented by hand from Lambda (user decision,
+2026-10-20, replacing the 2026-09-13 AWS environment cycle). No spec requirement or stage covers the
+rental, and nothing outside this roadmap gates Stage 6. Stage 6's measurement chooses the GPU type
+and count from what the model requires. A10 and A100 instances are usually available, and float64
+(Req 17) separates them. NVIDIA rates the A100 at 9.7 FP64 TFLOPS. The A10 is a GA102 part that
+runs FP64 at 1/64 of its 31.2 FP32 TFLOPS, about 0.5 FP64 TFLOPS. A single chain's `lax.scan` runs
+its time steps one after another, each as a few small GPU kernels, so kernel launch latency rather
+than FP64 throughput may set its speed. The FP64 gap shows when chains or SBC replicates run as a
+batch. Stage 6 measures the batch size at which it starts to matter.
+Once Stage 3 ships, Stages 4, 12, and 13 need nothing further and may run alongside
 one another. If BLS
 answers the request in `specs/deferred_items.md` (first-closing dates, matched-sample counts, lapse
 values), resume re-validates Stages 4, 12, and 13 before routing them.
@@ -128,9 +137,9 @@ values), resume re-validates Stages 4, 12, and 13 before routing them.
       Objective: Run Req 17 step (2) on the real total-nonfarm aggregate — 2003+ closings and the 1979+ leg with its composite 2003 shift, March anchor rows only — to debug state layout and sampler geometry, and ship the run harness every later fit reuses.\
       Spec: Req 17 (step 2); Req 4; Req 6; Req 7; Req 15; Req 18\
       Gap closed: Req 4 (model half); Req 6 (aggregate); Req 7 (aggregate); Req 17 (step 2)\
-      Consumes: From Stage 1: the engine module, the engine determination, the dense oracle. From Stage 3: the vintage panel (total-nonfarm rows), stage-label table, 1979+ leg, release-date index, and the deferred duplicate-EMPLOY-vintage and EMPLOY/revision-table evidence items. From Stage 4: the benchmark table (final March anchors). From Stage 5: the operators module (March selection, masks), the operator-test-results record. Outside this roadmap: the cloud GPU environment and its decision record.\
-      Produces: the aggregate pilot model (Req 6 process including the crisis multiplier, Req 7 F/S/T news and noise, the 1979 leg as same-release change observations with one 2003 shift, March anchors as irregular rows, no wedge rows); the run harness (InferenceData writer with log-likelihood grouped by reference month and benchmark year; diagnostics JSON; provenance of seeds, data hashes, versions, and the operator-test record); the synthetic-panel simulator, SBC harness, and prior-predictive harness at aggregate scope; the seasonal-state decision at `docs/decisions/seasonal-state.md`, recording the engine's value-and-gradient time on the cloud GPU at the Stage 7–9 state and cell dimensions of the chosen layout (the seasonal block is the largest share of each sector's state, so its choice largely fixes those dimensions); the pilot InferenceData.\
-      Exit: the pilot meets Req 18 thresholds with diagnostics JSON and provenance in the run directory (Req 17 step 2); a test asserts the likelihood contains irregular anchor rows and NaN cells and no latent state among sampled sites; a test asserts the 1979 leg is partially observed with exactly one 2003 shift (Req 4), flags or drops the repeated EMPLOY25M10 vintage before fitting, and pins the ten pre-1997 EMPLOY/revision-table disagreements that justify taking the leg's changes from the revision table (the duplicate-EMPLOY item and the EMPLOY half of plan 5's evidence-tests item); the layer-local prior predictive satisfies the Req 15 monthly constraint at total nonfarm before the fit; the April 2020 movement is absorbed by the latent state under the crisis multiplier (Req 6); reduced-panel SBC recovers the news/noise allocation (bullet 7, reduced half); the seasonal-state decision is committed with the GPU cost measurement; the dispersed-chain-starts item in `specs/deferred_items.md` (plan 1) is closed, and its `A_t`/`Z_t` gradient-check item too if the pilot samples a parameter entering `transition_matrix` or `observation_matrix`. If the cost measurement makes the Stage 7–9 fits or their SBC infeasible, resume re-validates Stages 7–17 before routing Stage 7.\
+      Consumes: From Stage 1: the engine module, the engine determination, the dense oracle. From Stage 3: the vintage panel (total-nonfarm rows), stage-label table, 1979+ leg, release-date index, and the deferred duplicate-EMPLOY-vintage and EMPLOY/revision-table evidence items. From Stage 4: the benchmark table (final March anchors). From Stage 5: the operators module (March selection, masks), the operator-test-results record. Outside this roadmap (shipped by plan 3): the `cuda` extra; the chain-method rule in `src/ces_revisions/devices.py`; the engine probe (`src/ces_revisions/engine_probe.py`) and its Mac baseline in `docs/decisions/cloud-gpu-probe/`.\
+      Produces: the aggregate pilot model (Req 6 process including the crisis multiplier, Req 7 F/S/T news and noise, the 1979 leg as same-release change observations with one 2003 shift, March anchors as irregular rows, no wedge rows); the run harness (InferenceData writer with log-likelihood grouped by reference month and benchmark year; diagnostics JSON; provenance of seeds, data hashes, versions, and the operator-test record); the synthetic-panel simulator, SBC harness, and prior-predictive harness at aggregate scope; the seasonal-state decision at `docs/decisions/seasonal-state.md`, recording the engine's value-and-gradient time, on each GPU type the stage rents from Lambda to measure, at the Stage 7–9 state and cell dimensions of the chosen layout (the seasonal block is the largest share of each sector's state, so its choice largely fixes those dimensions), and the GPU type and count for Stages 7–17 chosen from it by what the model requires: float64 throughput, memory, and the chains or SBC replicates run at once; the pilot InferenceData.\
+      Exit: the pilot meets Req 18 thresholds with diagnostics JSON and provenance in the run directory (Req 17 step 2); a test asserts the likelihood contains irregular anchor rows and NaN cells and no latent state among sampled sites; a test asserts the 1979 leg is partially observed with exactly one 2003 shift (Req 4), flags or drops the repeated EMPLOY25M10 vintage before fitting, and pins the ten pre-1997 EMPLOY/revision-table disagreements that justify taking the leg's changes from the revision table (the duplicate-EMPLOY item and the EMPLOY half of plan 5's evidence-tests item); the layer-local prior predictive satisfies the Req 15 monthly constraint at total nonfarm before the fit; the April 2020 movement is absorbed by the latent state under the crisis multiplier (Req 6); reduced-panel SBC recovers the news/noise allocation (bullet 7, reduced half); the seasonal-state decision is committed with the GPU cost measurement and the GPU type and count it chooses; the dispersed-chain-starts item in `specs/deferred_items.md` (plan 1) is closed, and its `A_t`/`Z_t` gradient-check item too if the pilot samples a parameter entering `transition_matrix` or `observation_matrix`. If the cost measurement makes the Stage 7–9 fits or their SBC infeasible, resume re-validates Stages 7–17 before routing Stage 7.\
       ROUTING: writing-plans
 
 - [ ] Stage 7: Gaussian closing-stage core across supersectors\

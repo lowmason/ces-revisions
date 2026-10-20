@@ -4,7 +4,7 @@ Run as ``python -m ces_revisions.engine_probe``. The probe builds a synthetic fl
 model at the requested dimensions and times ``jax.value_and_grad`` of the filter's log
 likelihood with respect to two log scales, one multiplying every transition covariance
 and one every observation covariance, vmapped over a batch of parameter draws. Each run
-writes one JSON record, so runs on the Mac and on each cloud size compare field by field.
+writes one JSON record, so runs on the Mac and on each GPU host compare field by field.
 """
 
 import argparse
@@ -141,7 +141,7 @@ def _parse_args(argv: list[str] | None) -> argparse.Namespace:
         "--repeats", type=int, default=10, help="timed calls per batch after compiling"
     )
     parser.add_argument("--seed", type=int, default=0, help="seed for model and draws")
-    parser.add_argument("--label", required=True, help="host label, e.g. mac or l4")
+    parser.add_argument("--label", required=True, help="host label, e.g. mac or a100")
     parser.add_argument("--out", type=Path, required=True, help="JSON record to write")
     return parser.parse_args(argv)
 

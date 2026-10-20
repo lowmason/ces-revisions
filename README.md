@@ -35,10 +35,8 @@ specs/
   ces-revisions-research-chatgpt.md   literature review, gap analysis, and design draft
   ces-revisions-research-claude.md    literature review, gap analysis, and design draft
   ces-revisions-research-gemini.md    literature review, gap analysis, and design draft
-  cloud-gpu-environment.md            design spec: the cloud GPU development environment
-  plans/                              implementation plans for the roadmap stages and the cloud GPU spec
+  plans/                              implementation plans for the roadmap stages
 docs/decisions/                       decision records (engine.md: the Kalman engine)
-  cloud-gpu-evidence/                 AWS account, zone, and quota evidence for the cloud GPU environment
   cloud-gpu-probe/                    engine timing records, starting with the Mac baseline
 src/ces_revisions/                    Python package (src layout): kalman.py is the state-space engine,
                                       vintages/ and annual/ build the Stage 3/4 inputs,
@@ -108,5 +106,7 @@ public year uses an inferred cumulative job-change representation. Later model
 runs copy the JSON record into their provenance.
 
 On a Linux host with an NVIDIA GPU, `uv sync --extra cuda` also installs JAX's CUDA 13 plugin; the extra is Linux-only, so on the Mac it installs nothing. `src/ces_revisions/devices.py` picks NumPyro's chain method from the devices JAX sees, and `uv run python -m ces_revisions.engine_probe` times the engine's value and gradient on the current host and writes a JSON record like those in [`docs/decisions/cloud-gpu-probe/`](docs/decisions/cloud-gpu-probe/).
+
+GPU fits run on an instance rented from [Lambda](https://lambda.ai) and set up by hand, with no infrastructure code in this repo. The model's needs set the GPU type and count. Stage 6 of the [roadmap](specs/ces-revisions-roadmap.md) measures them with the engine probe. On a new instance, install uv from the 0.12 series, because the newest uv fails the `required-version` pin. JAX's CUDA 13 wheels need NVIDIA driver 580 or later, so check `nvidia-smi` before `uv sync --extra cuda`.
 
 The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).

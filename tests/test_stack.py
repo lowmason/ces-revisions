@@ -35,8 +35,8 @@ def test_stack_module_imports(module):
 
 def test_session_runs_float64_jax_on_the_expected_devices():
     assert jnp.zeros(1).dtype == jnp.float64
-    if has_nvidia_device():  # a GPU size: JAX runs on the GPU, deterministically
+    if has_nvidia_device():  # a GPU host: JAX runs on its GPUs, deterministically
         assert jax.default_backend() == "gpu"
         assert DETERMINISTIC_GPU_FLAG in os.environ["XLA_FLAGS"].split()
-    else:  # the Mac or dev: the four host devices from tests/conftest.py
+    else:  # a CPU host: the four host devices from tests/conftest.py
         assert jax.local_device_count() == 4

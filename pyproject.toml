@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-# JAX's CUDA 13 plugin for the cloud GPU sizes. Linux-only, so the Mac's
+# JAX's CUDA 13 plugin for a rented NVIDIA GPU host. Linux-only, so the Mac's
 # `uv sync --extra cuda` installs nothing new.
 cuda = ["jax[cuda13]>=0.11.1; sys_platform == 'linux'"]
 
@@ -37,7 +37,7 @@ dev = [
 ]
 
 [tool.uv]
-# The Mac and the cloud VM run one uv series, so uv.lock is written one way.
+# The Mac and any GPU host run one uv series, so uv.lock is written one way.
 required-version = "~=0.12.13"
 
 [tool.pytest.ini_options]
