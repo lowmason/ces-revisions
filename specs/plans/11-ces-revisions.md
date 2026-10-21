@@ -5,9 +5,9 @@
 > Roadmap: specs/ces-revisions-roadmap.md, Stage 6 — on plan completion, tick the stage and
 > re-validate later stages against what shipped.
 
-**Goal:** Fit the marginalized linear-Gaussian pilot to the real total-nonfarm vintages under Req 18's thresholds, and ship the run harness that every later fit reuses. The pilot takes same-release F, S, and T changes from 1979, one composite May 2003 shift, and the 23 final March anchors. Calibrate it by prior predictive and reduced-panel SBC. Choose the seasonal state, and the Lambda GPU type and count for Stages 7–17, from measured cost.
+**Goal:** Fit the marginalized linear-Gaussian pilot to the real total-nonfarm vintages under Req 18's thresholds, and ship the run harness that every later fit reuses. The pilot takes same-release F, S, and T changes from 1979, one composite May 2003 shift, and the 23 final March anchors. Calibrate it by prior predictive and reduced-panel SBC. Choose the seasonal state, and the Lambda GPU type and count for each Stage 7–9 model, from measured cost.
 
-**Architecture:** A new `ces_revisions.pilot` package builds the aggregate observation panel from the Stage 3, 4, and 5 artifacts. It defines three seasonal layouts and the Jacobs–van Norden state-space model on top of `kalman.py`, simulates synthetic panels from that model, runs SBC, and holds the two pre-registered decision rules (seasonal layout and GPU). A new, model-agnostic `ces_revisions.runs` package owns dispersed chain starts, NUTS, the grouped log likelihood, the Req 18 diagnostics, provenance, and the run directory. `scripts/pilot_run.py` drives the prior predictive, the fit, SBC, and both decisions. `scripts/gpu_probe_grid.py` times the engine at the Stage 7–9 dimensions on each host. One owner-run task rents the Lambda GPUs. The decision record is written from the committed evidence.
+**Architecture:** A new `ces_revisions.pilot` package builds the aggregate observation panel from the Stage 3, 4, and 5 artifacts. It defines three seasonal layouts and the Jacobs–van Norden state-space model on top of `kalman.py`, simulates synthetic panels from that model, runs SBC, and holds the two pre-registered decision rules (seasonal layout and per-stage GPU). A new, model-agnostic `ces_revisions.runs` package owns dispersed chain starts, NUTS, the grouped log likelihood, the Req 18 diagnostics, provenance, and the run directory. `scripts/pilot_run.py` drives the prior predictive, the fit, SBC, and both decisions. `scripts/gpu_probe_grid.py` times the engine at the Stage 7–9 dimensions on each host. One owner-run task rents the Lambda GPUs. The decision record is written from the committed evidence.
 
 **Tech Stack:** Python 3.14; JAX 0.11.1 (float64); NumPyro 0.21.0 (NUTS); ArviZ 1.3.0 (xarray `DataTree`); xarray 2026.7.0; h5netcdf 1.8.1 and h5py 3.16.0 (new); SciPy 1.18.1 (already locked through ArviZ, now declared); Polars 1.44.2; NumPy 2.5.3; pytest 9.1.1; ruff 0.16.7.
 
@@ -38,6 +38,7 @@
 - **D2** (owner, planning questions, 2026-10-21; narrowed after the spike, 2026-10-21): the crisis multiplier scales the non-news level shock and the S and T news shocks in March–June 2020, and not the slope, seasonal, post-T news, or noise terms. The first answer also scaled the post-T news. The spike showed that this left April 2020's latent change almost unidentified (total SD 5,634), and Lowell narrowed it. Applied in: Global Constraints, Task 1 (spec amendment), Task 4, Task 5, Task 7.
 - **D3** (owner, planning questions, 2026-10-21): the GPU measurement rents one single-GPU on-demand instance each of A10, A100 40 GB, and GH200 from Lambda, with a \$40 cap on the total. Applied in: Task 13.
 - **D4** (owner, planning questions, 2026-10-21): h5netcdf and h5py join the runtime dependencies so that a run's InferenceData is one file. Rank histograms are numeric, and plotting waits for Stage 10. Applied in: Global Constraints, Task 6.
+- **D5** (owner, plan review, 2026-10-21): the GPU rule chooses a GPU type and count for each Stage 7–9 model, not one for every stage: Stage 7, and Stages 8 and 9 under each wedge reading. Stages 10–17 keep Stage 9's Kalman states and cells (Req 17 samples their mixing variables and volatility paths), so they take Stage 9's choice at the wedge Stage 8 settles, rerun with their own measured steps per iteration. The probe grid adds Stage 8's two wedge readings, so it has 20 entries. This narrows the roadmap's "GPU type and count for Stages 7–17" to one choice per model. The Handoff section names it for the resume. Applied in: Task 8, Task 12, Task 13, Task 14.
 
 ---
 
@@ -52,7 +53,7 @@
      - the `σ_slope` conflict: the pilot's posterior median and SD of `sigma_slope` from `docs/runs/stage-6/pilot-fit/`, against its HalfNormal(15) prior. Revisit if: Stage 10's $`t_5`$ process innovations or Stage 16's prior-predictive gate still leave it above 3 prior scales.
      - the doubled-prior failure: the two figures in `docs/runs/stage-6/prior-predictive-doubled.json`. Revisit if: Stage 16's full prior-predictive gate runs.
      - the residual seasonality at lags 11–12: the Ljung–Box Q of each layout from `docs/runs/stage-6/seasonal-comparison.json`. Revisit if: Stage 18's posterior predictive suite or Stage 21's sensitivity suite traces a misfit to the seasonal block.
-  2. Add `## Handoff to later stages` to this plan. Only Stage 7 names Stage 6 in its roadmap `Consumes`, so the section has one bullet, for Stage 7: the `ces_revisions.runs` and `ces_revisions.pilot` names it imports, `TARGET_ACCEPT_PROB` 0.95, the `news_post` stand-in that Stage 8 replaces, the chosen layout and GPU from `docs/decisions/seasonal-state.md`, the per-GPU SBC shards (`run_sbc` takes one worker on a GPU host), plan 1's open `A_t`/`Z_t` item, and the plan 11 section of `specs/deferred_items.md`. Add any deviation from execution.
+  2. Add `## Handoff to later stages` to this plan. Only Stage 7 names Stage 6 in its roadmap `Consumes`, so the section has one bullet, for Stage 7: the `ces_revisions.runs` and `ces_revisions.pilot` names it imports, `TARGET_ACCEPT_PROB` 0.95, the `news_post` stand-in that Stage 8 replaces, the chosen layout and each Stage 7–9 model's GPU from `docs/decisions/seasonal-state.md` (D5 narrows the roadmap's one GPU for Stages 7–17), the per-GPU SBC shards (`run_sbc` takes one worker on a GPU host), plan 1's open `A_t`/`Z_t` item, and the plan 11 section of `specs/deferred_items.md`. Add any deviation from execution.
   3. Tick Stage 6 in `specs/ces-revisions-roadmap.md`, and put this stamp under its entry:\
      `> Stage 6: COMPLETE (YYYY-MM-DD) — implemented by plan 11 (specs/plans/completed/11-ces-revisions.md). Its Handoff section names what Stage 7 consumes.`\
      `> Next: resume the roadmap.`
@@ -200,7 +201,7 @@ All figures come from a spike in a scratch clone at `a2f6937`. The spike impleme
 | 9, low wedge | 247, 145 | 214, 145 |
 | 9, high wedge | 368, 277 | 335, 277 |
 
-- Batch-1 value and gradient at $`T=572`$: dummy Stage 7 1.35 s, Stage 9 low 2.99 s, Stage 9 high 5.64 s. Batch 4 at Stage 9 high needs 37.4 GB of compiled memory and did not run. One 4-chain Stage 9 high fit would take 685–725 hours sequentially on the Mac. The Mac is not viable past Stage 7, which is why the GPU measurement exists.
+- Batch-1 value and gradient at $`T=572`$: dummy Stage 7 1.35 s, Stage 8 low 2.13 s, Stage 8 high 3.91 s, Stage 9 low 2.99 s, Stage 9 high 5.64 s. Batch 4 needs 26.9 GB of compiled memory at Stage 8 high and 37.4 GB at Stage 9 high, so neither ran under the Mac's 20 GB guard. One 4-chain Stage 9 high fit would take 685–725 hours sequentially on the Mac. The Mac is not viable past Stage 7, which is why the GPU measurement exists.
 - On every Lambda target, the cp314 wheels exist for jaxlib 0.11.1 (manylinux `x86_64` and `aarch64`), `jax-cuda13-plugin` 0.11.1 (both), and `jax-cuda13-pjrt` 0.11.1 (both), and every package in `uv.lock` has an aarch64 build. So the GH200's aarch64 host can run `uv sync --extra cuda`.
 
 **Planning choices** (mine, with reasons; each is open to change at plan review):
@@ -208,7 +209,7 @@ All figures come from a spike in a scratch clone at `a2f6937`. The spike impleme
 2. **The April 2020 check needs the whole 90% interval** of the smoothed change inside ±5% of the third print, not only the mean. The spike's first check passed a mean of −19,689 against −19,756 while the total SD was 5,634. That pass said nothing about identification.
 3. **The SBC window and quantities** as described above.
 4. **The seasonal rule is code** (`pilot/seasonal.py`). An alternative layout must meet Req 18 and pass its own April 2020 check. Clause (b) also needs its Ljung–Box Q at most 1.25 times the dummy's in every closing column: the spike's dummy rejects in all three columns, so a count of rejections could not bind. The rule runs on all benchmark-year blocks and again on the blocks with Pareto k ≤ 0.7 in every layout. If the two runs choose different layouts, the dummy stays and the decision record says the comparison is unreliable.
-5. **The GPU rule is code** (`pilot/gpu_choice.py`). It sizes for a Stage 9 high-wedge fit at $`T=572`$ and 127 leapfrog steps per iteration, the top of the 31–127 band, because Stages 7–9 sample far more parameters than the pilot. A grid entry belongs to a layout by its dimensions, so `trig` reads the dummy's timings. A configuration is one GPU running the four chains as a batch, or four GPUs with one chain each where Lambda rents that GPU type as a 4-GPU instance (A100 only, at planning time). It is feasible when its fit takes at most 48 hours and its SBC at most 14 days. SBC is projected for the shipped runner: one replicate per GPU at a time, in whole rounds. `run_sbc` refuses more than one worker on a GPU host, so a 4-GPU instance runs four `pilot_run.py sbc --workers 1` shards, each under its own `CUDA_VISIBLE_DEVICES` with its own `--start` and `--stop`, into one output directory. A batched-runner projection is reported beside it and decides nothing. The cheapest feasible configuration in dollars per fit wins. With every configuration measured and none feasible, the roadmap's resume re-validates Stages 7–17. A record that lacks an entry the rule needs gives the status "unmeasured", which decides nothing. "Infeasible" is recorded only when every D3 GPU type has a record, or Lowell confirms that a missing type could not be measured.
+5. **The GPU rule is code** (`pilot/gpu_choice.py`). It runs once for each Stage 7–9 model (D5), on that model's own dimensions: a fit over $`T=572`$ and an SBC replicate over 280 months. It sizes every model at 127 leapfrog steps per iteration, the top of the 31–127 band, because Stages 7–9 sample far more parameters than the pilot. A grid entry belongs to a layout by its dimensions, so `trig` reads the dummy's timings. A configuration is one GPU running the four chains as a batch, or four GPUs with one chain each where Lambda rents that GPU type as a 4-GPU instance (A100 only, at planning time). It is feasible when its fit takes at most 48 hours and its SBC at most 14 days. SBC is projected for the shipped runner: one replicate per GPU at a time, in whole rounds. `run_sbc` refuses more than one worker on a GPU host, so a 4-GPU instance runs four `pilot_run.py sbc --workers 1` shards, each under its own `CUDA_VISIBLE_DEVICES` with its own `--start` and `--stop`, into one output directory. A batched-runner projection is reported beside it and decides nothing. For each model, the cheapest feasible configuration in dollars per fit wins. If any model has every configuration measured and none feasible, the roadmap's resume re-validates Stages 7–17. A record that lacks an entry the rule needs gives the status "unmeasured", which decides nothing. "Infeasible" is recorded only when every D3 GPU type has a record, or Lowell confirms that a missing type could not be measured.
 6. **SciPy is declared**, not new. `diagnostics.py` uses `scipy.stats.rankdata`, and `pilot_run.py` uses `scipy.stats.chi2`.
 7. **`jax_versions()` and `nvidia_driver()` move from `engine_probe.py` to `devices.py`**, and `engine_probe.batched_value_and_grad()` becomes public, so that the harness and the grid script import no private names.
 8. **The `A_t`/`Z_t` gradient-check item stays open.** No sampled parameter enters `transition_matrix` or `observation_matrix`: κ, λ, μ, and ρ enter only covariances and offsets. That item's closure condition is therefore not met.
@@ -228,7 +229,7 @@ Created:
 - `src/ces_revisions/pilot/sbc.py`: γ-ECDF math and the replicate runner.
 - `src/ces_revisions/pilot/dimensions.py`: Stage 7–9 state and cell counts and the measurement grid.
 - `src/ces_revisions/pilot/seasonal.py`: the pre-registered seasonal-layout rule.
-- `src/ces_revisions/pilot/gpu_choice.py`: fit and SBC projections and the GPU rule.
+- `src/ces_revisions/pilot/gpu_choice.py`: fit and SBC projections and the per-stage GPU rule.
 - `src/ces_revisions/pilot/decision_tables.py`: the decision record's lines and tables, from the committed JSON.
 - `src/ces_revisions/runs/__init__.py`, `inits.py`, `diagnostics.py`, `inference_data.py`, `provenance.py`, `fit.py`: the model-agnostic run harness.
 - `scripts/pilot_run.py`: the CLI (`prior-predictive`, `fit`, `sbc`, `sbc-summary`, `compare-seasonal`, `choose-gpu`).
@@ -6713,12 +6714,12 @@ git commit -m "Add the April 2020 check and the pilot's SBC"
 **Interfaces:**
 - Consumes: `engine_probe.synthetic_problem`, `engine_probe.time_batches`, `engine_probe.batched_value_and_grad`, `devices.jax_versions`, `devices.nvidia_driver`, `DETERMINISTIC_GPU_FLAG`, `has_nvidia_device` (Task 6).
 - Produces:
-  - `dimensions`: `SEASONAL_DIMS = {"dummy": 11, "trig": 11, "trig4": 8}`, `pilot_dimensions(layout_name, num_steps=572) -> dict`, `stage_dimensions(layout_name, stage, wedge="low", num_steps=572) -> dict` with keys `steps`, `states`, `cells`, `stage`, `layout`, `wedge`, `matches_layout(entry, layout_name) -> bool` (a grid entry has the layout's Stage 7–9 states and cells), and `MEASUREMENT_GRID` (dummy and trig4; Stage 7 low, Stage 9 low and high).
+  - `dimensions`: `SEASONAL_DIMS = {"dummy": 11, "trig": 11, "trig4": 8}`, `pilot_dimensions(layout_name, num_steps=572) -> dict`, `stage_dimensions(layout_name, stage, wedge="low", num_steps=572) -> dict` with keys `steps`, `states`, `cells`, `stage`, `layout`, `wedge`, `matches_layout(entry, layout_name) -> bool` (a grid entry has the layout's Stage 7–9 states and cells), `STAGE_CONFIGURATIONS` (Stage 7 low, Stage 8 low and high, Stage 9 low and high), and `MEASUREMENT_GRID` (dummy and trig4, every model of `STAGE_CONFIGURATIONS`, at 572 and 280 steps: 20 entries).
   - `seasonal`: `REFERENCE_LAYOUT = "dummy"`, `SE_MULTIPLE = 2.0`, `COST_SAVING_MIN = 0.25`, `PARETO_K_MAX = 0.7`, `LJUNG_BOX_ALPHA = 0.01`, `LJUNG_BOX_Q_RATIO_MAX = 1.25`, `COST_ENTRY`, `elpd_difference(alternative, reference, keep) -> dict`, `ljung_box_rejections(ljung_box) -> int`, `verdict(candidates, differences) -> dict` (each candidate has `states`, `meets_req18`, `april_2020_passed`, `ljung_box_q`, `seconds`), `choose_layout(candidates, pointwise, pareto_k) -> dict`, `grid_seconds(grid, layout_name) -> float | None`.
-  - `gpu_choice`: `NUM_CHAINS`, `ITERATIONS`, `STEPS_PER_ITERATION = 127`, `STEP_BAND`, `LOCKSTEP_FACTOR`, `FIT_HOURS_MAX = 48.0`, `TARGET`, `SBC_TARGET`, `SBC_REPLICATES`, `SBC_ITERATIONS`, `SBC_DAYS_MAX = 14.0`, `BATCH_LOCKSTEP_FACTORS`, `batch_timings(record, layout_name, target) -> dict[int, float | None] | None`, `configurations(record, layout_name, steps_per_iteration=127) -> list[dict]`, `batched_sbc(sbc, gpus, steps_per_iteration=127) -> dict | None`, `choose_gpu(records, layout_name, steps_per_iteration=127) -> dict` with keys `steps_per_iteration`, `configurations`, `band_fit_hours`, `status` ("chosen", "infeasible", or "unmeasured"), and `choice`.
+  - `gpu_choice`: `NUM_CHAINS`, `ITERATIONS`, `STEPS_PER_ITERATION = 127`, `STEP_BAND`, `LOCKSTEP_FACTOR`, `FIT_HOURS_MAX = 48.0`, `FIT_STEPS = 572`, `SBC_STEPS = 280`, `SBC_REPLICATES`, `SBC_ITERATIONS`, `SBC_DAYS_MAX = 14.0`, `BATCH_LOCKSTEP_FACTORS`, `batch_timings(record, layout_name, target) -> dict[int, float | None] | None` (`target` gives `stage`, `wedge`, and `steps`), `configurations(record, layout_name, stage, wedge, steps_per_iteration=127) -> list[dict]`, `batched_sbc(sbc, gpus, steps_per_iteration=127) -> dict | None`, `choose_stage(records, layout_name, stage, wedge, steps_per_iteration=127) -> dict` with keys `stage`, `wedge`, `configurations`, `band_fit_hours`, `status` ("chosen", "infeasible", or "unmeasured"), and `choice`, and `choose_gpu(records, layout_name, steps_per_iteration=127) -> dict` with keys `steps_per_iteration`, `stages` (one `choose_stage` result per model of `STAGE_CONFIGURATIONS`), and the overall `status`.
   - `scripts/gpu_probe_grid.py`: `--label`, `--out`, `--batch`, `--repeats`, `--steps`, `--grid-filter`, `--grid-json`, `--missing-share`, `--seed`, `--max-bytes`, `--hourly-price`, `--four-gpu-price`. `--four-gpu-price` is the whole 4-GPU instance's hourly price, and the script refuses one below twice `--hourly-price`. One JSON record per host: `label`, `hourly_price_usd`, `four_gpu_hourly_price_usd`, `host`, `versions`, `entries`, `timestamp_utc`. On a GPU the device's `bytes_limit` caps each batch, so batches that cannot fit are recorded as skipped rather than crashing the run, and larger batches are skipped without compiling. On a host with an NVIDIA device, the script refuses to run unless JAX's backend is the GPU.
 
-`NUM_CHAINS` is Req 18's chain count, not a GPU count. The rule considers one GPU running all chains, and one GPU per chain where the record carries the price of a 4-GPU instance of the same type. `BATCH_LOCKSTEP_FACTORS` come from the planning spike's 100 SBC replicates: the expected largest of b replicates' mean steps per iteration, over their average.
+`NUM_CHAINS` is Req 18's chain count, not a GPU count. For each Stage 7–9 model (D5), the rule considers one GPU running all chains, and one GPU per chain where the record carries the price of a 4-GPU instance of the same type. `BATCH_LOCKSTEP_FACTORS` come from the planning spike's 100 SBC replicates: the expected largest of b replicates' mean steps per iteration, over their average.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -6821,7 +6822,7 @@ def test_pilot_dimensions_reject_an_unknown_layout():
         pilot_dimensions("weekly")
 
 
-def test_measurement_grid_lists_both_layouts_stages_7_and_9_and_both_spans():
+def test_measurement_grid_lists_both_layouts_every_stage_7_to_9_model_and_both_spans():
     configurations = [
         (entry["layout"], entry["stage"], entry["wedge"], entry["steps"])
         for entry in MEASUREMENT_GRID
@@ -6830,9 +6831,16 @@ def test_measurement_grid_lists_both_layouts_stages_7_and_9_and_both_spans():
     assert configurations == [
         (layout_name, stage, wedge, steps)
         for layout_name in ("dummy", "trig4")
-        for stage, wedge in ((7, "low"), (9, "low"), (9, "high"))
+        for stage, wedge in (
+            (7, "low"),
+            (8, "low"),
+            (8, "high"),
+            (9, "low"),
+            (9, "high"),
+        )
         for steps in (572, 280)
     ]
+    assert len(MEASUREMENT_GRID) == 20
     for entry in MEASUREMENT_GRID:
         expected = EXPECTED[(entry["layout"], entry["stage"], entry["wedge"])]
         assert (entry["states"], entry["cells"]) == expected
@@ -7218,48 +7226,45 @@ def test_grid_seconds_reads_the_stage_9_low_full_span_batch_1_median():
 Create `tests/test_pilot_gpu_choice.py`:
 
 ```python
-"""The GPU projection and choice rule, on hand-made probe-grid records."""
+"""The GPU projection and per-stage choice rule, on hand-made probe-grid records."""
 
 import math
 
 import pytest
 
-from ces_revisions.pilot.dimensions import stage_dimensions
+from ces_revisions.pilot.dimensions import STAGE_CONFIGURATIONS, stage_dimensions
 from ces_revisions.pilot.gpu_choice import (
     BATCH_LOCKSTEP_FACTORS,
-    SBC_TARGET,
-    TARGET,
     batch_timings,
     batched_sbc,
     choose_gpu,
+    choose_stage,
     configurations,
 )
 
 FIT_STEPS = 2_000 * 127  # iterations times leapfrog steps per iteration
 SBC_STEPS = 1_490 * 127
+FIT_TARGET = {"stage": 9, "wedge": "high", "steps": 572}
 
 
-def entry(target, batches, layout_name="dummy"):
-    """A grid entry at a target with the layout's dimensions; None marks a batch that did
-    not fit in memory."""
-    dims = stage_dimensions(
-        layout_name, target["stage"], target["wedge"], target["steps"]
-    )
+def entry(stage, wedge, steps, batches, layout_name="dummy"):
+    """A grid entry with the layout's dimensions; None marks a batch that did not fit."""
     tried = [
         {"batch": b, "median_seconds": s}
         if s is not None
         else {"batch": b, "error": "x"}
         for b, s in batches.items()
     ]
-    return {**dims, "batches": tried}
+    return {**stage_dimensions(layout_name, stage, wedge, steps), "batches": tried}
 
 
 def record(label, price, fit, sbc=None, four_gpu_price=None, layout_name="dummy"):
-    """A grid record with TARGET and, optionally, SBC_TARGET entries."""
-    entries = [entry(TARGET, fit, layout_name)]
+    """A record with Stage 9 high's fit entry, optionally its SBC entry, and one entry of
+    another stage, which the Stage 9 high rule must ignore."""
+    entries = [entry(9, "high", 572, fit, layout_name)]
     if sbc is not None:
-        entries.append(entry(SBC_TARGET, sbc, layout_name))
-    entries.append(entry({**TARGET, "wedge": "low"}, {1: 99.0}, layout_name))
+        entries.append(entry(9, "high", 280, sbc, layout_name))
+    entries.append(entry(9, "low", 572, {1: 99.0}, layout_name))
     return {
         "label": label,
         "hourly_price_usd": price,
@@ -7273,21 +7278,50 @@ A10 = record("a10", 1.29, {1: 0.5, 4: None}, {1: 0.08, 4: 0.2})
 A100 = record("a100", 1.99, {1: 0.2, 4: 0.3}, A100_SBC, four_gpu_price=7.96)
 MAC = record("mac", None, {1: 5.6, 4: 20.0}, {1: 2.0})
 
+# Relative cost of each Stage 7-9 model, for records that cover the whole grid.
+SCALE = {(7, "low"): 1.0, (8, "low"): 1.2, (8, "high"): 2.5, (9, "low"): 1.5}
+SCALE[(9, "high")] = 3.0
+
+
+def full_record(label, price, fit4, fit1, sbc1, *, fits_from=None, skip=()):
+    """A record over every Stage 7-9 model: batch 4 takes ``fit4`` times the model's
+    scale, and does not fit from scale ``fits_from`` up; ``skip`` drops models."""
+    entries = []
+    for stage, wedge in STAGE_CONFIGURATIONS:
+        if (stage, wedge) in skip:
+            continue
+        scale = SCALE[(stage, wedge)]
+        batch4 = None if fits_from is not None and scale >= fits_from else fit4 * scale
+        entries.append(entry(stage, wedge, 572, {1: fit1 * scale, 4: batch4}))
+        entries.append(entry(stage, wedge, 280, {1: sbc1 * scale}))
+    return {
+        "label": label,
+        "hourly_price_usd": price,
+        "four_gpu_hourly_price_usd": None,
+        "entries": entries,
+    }
+
+
+A10_FULL = full_record("a10", 1.29, 0.2, 0.15, 0.03, fits_from=2.5)
+GH200_FULL = full_record("gh200", 2.29, 0.15, 0.12, 0.02)
+
 
 def test_batch_timings_read_every_tried_batch_at_the_layouts_dimensions():
-    assert batch_timings(A10, "dummy", TARGET) == {1: 0.5, 4: None}
+    assert batch_timings(A10, "dummy", FIT_TARGET) == {1: 0.5, 4: None}
     # trig has the dummy's dimensions, so it reads the dummy's entries; trig4 does not.
-    assert batch_timings(A10, "trig", TARGET) == {1: 0.5, 4: None}
-    assert batch_timings(A10, "trig4", TARGET) is None
+    assert batch_timings(A10, "trig", FIT_TARGET) == {1: 0.5, 4: None}
+    assert batch_timings(A10, "trig4", FIT_TARGET) is None
     trig4 = record("a10", 1.29, {1: 0.4}, layout_name="trig4")
-    assert batch_timings(trig4, "trig4", TARGET) == {1: 0.4}
-    assert batch_timings(trig4, "dummy", TARGET) is None
+    assert batch_timings(trig4, "trig4", FIT_TARGET) == {1: 0.4}
+    assert batch_timings(trig4, "dummy", FIT_TARGET) is None
 
 
 def test_configurations_price_one_gpu_and_a_rented_four_gpu_instance():
-    vectorized, parallel = configurations(A100, "dummy")
+    vectorized, parallel = configurations(A100, "dummy", 9, "high")
     hours = FIT_STEPS * 1.44 * 0.3 / 3_600
     assert vectorized == {
+        "stage": 9,
+        "wedge": "high",
         "host": "a100",
         "gpus": 1,
         "chain_method": "vectorized",
@@ -7317,13 +7351,12 @@ def test_configurations_price_one_gpu_and_a_rented_four_gpu_instance():
 
 
 def test_a_gpu_type_without_a_four_gpu_instance_has_no_parallel_row():
-    assert [row["chain_method"] for row in configurations(A10, "dummy")] == [
-        "vectorized"
-    ]
+    rows = configurations(A10, "dummy", 9, "high")
+    assert [row["chain_method"] for row in rows] == ["vectorized"]
 
 
 def test_a_batch_that_did_not_fit_is_measured_and_infeasible():
-    (vectorized,) = configurations(A10, "dummy")
+    (vectorized,) = configurations(A10, "dummy", 9, "high")
     assert vectorized["seconds"] is None
     assert vectorized["fit_hours"] is None
     assert vectorized["fit_usd"] is None
@@ -7349,7 +7382,8 @@ def test_batched_sbc_takes_the_fastest_batch_with_whole_rounds():
 
 
 def test_the_cheapest_feasible_configuration_wins_and_unpriced_hosts_are_ignored():
-    result = choose_gpu([MAC, A10, A100], "dummy")
+    result = choose_stage([MAC, A10, A100], "dummy", 9, "high")
+    assert (result["stage"], result["wedge"]) == (9, "high")
     assert {row["host"] for row in result["configurations"]} == {"a10", "a100"}
     assert result["status"] == "chosen"
     choice = result["choice"]
@@ -7364,28 +7398,53 @@ def test_the_cheapest_feasible_configuration_wins_and_unpriced_hosts_are_ignored
     )
 
 
-def test_trig_reads_the_dummys_entries_and_gets_the_same_choice():
-    assert choose_gpu([A10, A100], "trig") == choose_gpu([A10, A100], "dummy")
-    assert choose_gpu([A10, A100], "trig4")["status"] == "unmeasured"
+def test_each_stage_gets_the_cheapest_gpu_that_runs_it():
+    result = choose_gpu([MAC, A10_FULL, GH200_FULL], "dummy")
+    assert result["status"] == "chosen"
+    assert [(r["stage"], r["wedge"]) for r in result["stages"]] == list(
+        STAGE_CONFIGURATIONS
+    )
+    chosen = {(r["stage"], r["wedge"]): r["choice"]["host"] for r in result["stages"]}
+    # The A10 is cheaper wherever batch 4 fits its memory; the larger models need the
+    # GH200.
+    assert chosen == {
+        (7, "low"): "a10",
+        (8, "low"): "a10",
+        (8, "high"): "gh200",
+        (9, "low"): "a10",
+        (9, "high"): "gh200",
+    }
+
+
+def test_trig_reads_the_dummys_entries_and_gets_the_same_choices():
+    records = [A10_FULL, GH200_FULL]
+    assert choose_gpu(records, "trig") == choose_gpu(records, "dummy")
+    assert choose_gpu(records, "trig4")["status"] == "unmeasured"
 
 
 def test_a_configuration_whose_sbc_is_too_slow_is_not_chosen():
     # x is cheaper per fit, but one replicate at a time takes 17.5 days of SBC.
     cheap = record("x", 1.0, {1: 1.0, 4: 0.3}, {1: 0.08})
     dear = record("y", 2.0, {1: 1.0, 4: 0.3}, {1: 0.05})
-    (row,) = configurations(cheap, "dummy")
+    (row,) = configurations(cheap, "dummy", 9, "high")
     assert row["fit_hours"] <= 48
     assert row["sbc_days"] == pytest.approx(17.5, abs=0.1)
     assert row["feasible"] is False
-    result = choose_gpu([cheap, dear], "dummy")
+    result = choose_stage([cheap, dear], "dummy", 9, "high")
     assert (result["status"], result["choice"]["host"]) == ("chosen", "y")
 
 
-def test_measured_configurations_none_feasible_are_infeasible():
-    slow = record("a10", 1.29, {1: 3.0, 4: 4.0}, {1: 0.05})
-    result = choose_gpu([slow], "dummy")
-    assert all(row["measured"] for row in result["configurations"])
-    assert (result["status"], result["choice"]) == ("infeasible", None)
+def test_one_infeasible_stage_makes_the_overall_status_infeasible():
+    result = choose_gpu([A10_FULL], "dummy")
+    statuses = {(r["stage"], r["wedge"]): r["status"] for r in result["stages"]}
+    assert statuses == {
+        (7, "low"): "chosen",
+        (8, "low"): "chosen",
+        (8, "high"): "infeasible",
+        (9, "low"): "chosen",
+        (9, "high"): "infeasible",
+    }
+    assert result["status"] == "infeasible"
 
 
 @pytest.mark.parametrize(
@@ -7393,31 +7452,39 @@ def test_measured_configurations_none_feasible_are_infeasible():
     [
         [],  # nothing measured
         [MAC],  # no priced host
-        [record("a10", 1.29, {1: 0.2, 4: 0.3})],  # no SBC_TARGET entry
+        [record("a10", 1.29, {1: 0.2, 4: 0.3})],  # no SBC entry
         [record("a10", 1.29, {1: 0.2}, {1: 0.05})],  # batch 4 was never tried
         [A100, record("a10", 1.29, {1: 0.2, 4: 0.3})],  # one host incomplete
     ],
 )
 def test_an_incomplete_measurement_is_unmeasured_not_infeasible(records):
-    result = choose_gpu(records, "dummy")
+    result = choose_stage(records, "dummy", 9, "high")
     assert (result["status"], result["choice"]) == ("unmeasured", None)
 
 
+def test_a_stage_missing_from_one_record_makes_the_overall_status_unmeasured():
+    partial = full_record("gh200", 2.29, 0.15, 0.12, 0.02, skip={(8, "high")})
+    result = choose_gpu([A10_FULL, partial], "dummy")
+    statuses = {(r["stage"], r["wedge"]): r["status"] for r in result["stages"]}
+    assert statuses[(8, "high")] == "unmeasured"
+    assert result["status"] == "unmeasured"
+
+
 def test_measured_steps_per_iteration_replace_the_sizing_assumption():
-    result = choose_gpu([A100], "dummy", steps_per_iteration=31)
+    result = choose_gpu([A10_FULL, GH200_FULL], "dummy", steps_per_iteration=31)
     assert result["steps_per_iteration"] == 31
-    vectorized = result["configurations"][0]
-    assert vectorized["fit_hours"] == pytest.approx(2_000 * 31 * 1.44 * 0.3 / 3_600)
-    assert vectorized["sbc_days"] == pytest.approx(100 * 1_490 * 31 * 0.05 / 86_400)
-    assert choose_gpu([A100], "dummy")["steps_per_iteration"] == 127
+    stage_7 = result["stages"][0]["configurations"][0]
+    assert stage_7["fit_hours"] == pytest.approx(2_000 * 31 * 1.44 * 0.2 / 3_600)
+    assert stage_7["sbc_days"] == pytest.approx(100 * 1_490 * 31 * 0.03 / 86_400)
+    assert choose_gpu([A10_FULL], "dummy")["steps_per_iteration"] == 127
 
 
 def test_a_tie_in_dollars_goes_to_fewer_gpus():
     # Vectorized: 1.44 * 0.4 s at $2.00; parallel: 0.144 s at $8.00. Equal per fit.
     tied = record("a100", 2.0, {1: 0.144, 4: 0.4}, {1: 0.05}, four_gpu_price=8.0)
-    vectorized, parallel = configurations(tied, "dummy")
+    vectorized, parallel = configurations(tied, "dummy", 9, "high")
     assert vectorized["fit_usd"] == pytest.approx(parallel["fit_usd"], rel=1e-12)
-    assert choose_gpu([tied], "dummy")["choice"]["gpus"] == 1
+    assert choose_stage([tied], "dummy", 9, "high")["choice"]["gpus"] == 1
 ```
 
 - [ ] **Step 2: Run them to verify they fail**
@@ -7459,6 +7526,9 @@ CLOSINGS = 3  # F, S, and T rows per series
 WEDGE_WINDOW = 11
 STAGES = (7, 8, 9)
 WEDGES = ("low", "high")
+# Every Stage 7-9 model the GPU measurement times: Stage 7 has no wedge rows, and Stage 8
+# chooses the wedge reading that Stage 9 inherits, so both readings are timed.
+STAGE_CONFIGURATIONS = ((7, "low"), (8, "low"), (8, "high"), (9, "low"), (9, "high"))
 # 1979-01 through 2026-08, the aggregate leg's full span, and 2003-05 through 2026-08, the
 # sector panel's span (Req 4: no sector vintage precedes May 2003).
 FULL_STEPS = 572
@@ -7552,12 +7622,12 @@ def _seasonal_dim(layout_name: str) -> int:
 
 
 # The configurations the Stage 6 cost measurement times on each GPU type: the dummy (whose
-# dimensions ``trig`` shares) and ``trig4``, the narrowest (Stage 7) and widest (Stage 9)
-# models, Stage 9 under both wedge readings, at the full span and the sector span.
+# dimensions ``trig`` shares) and ``trig4``, every Stage 7-9 model, at the full span (a
+# fit) and the sector span (an SBC replicate).
 MEASUREMENT_GRID = tuple(
     stage_dimensions(layout_name, stage, wedge, num_steps)
     for layout_name in ("dummy", "trig4")
-    for stage, wedge in ((7, "low"), (9, "low"), (9, "high"))
+    for stage, wedge in STAGE_CONFIGURATIONS
     for num_steps in (FULL_STEPS, SECTOR_STEPS)
 )
 ```
@@ -7737,13 +7807,19 @@ def _saving(candidate: dict, reference: dict) -> float:
 Create `src/ces_revisions/pilot/gpu_choice.py`:
 
 ```python
-"""Project Stage 7-9 fit and SBC cost from probe-grid records; choose the GPU type and count.
+"""Project Stage 7-9 fit and SBC cost from probe-grid records; choose a GPU for each stage.
 
 Each rented host's record (``scripts/gpu_probe_grid.py --hourly-price``) times one value
 and gradient of the engine at the Stage 7-9 dimensions, for batches of chains or SBC
 replicates run at once. A grid entry belongs to a layout when its states and cells are
 that layout's at the entry's stage, wedge, and steps, so ``trig``, whose dimensions equal
 the dummy's, reads the dummy's entries.
+
+The rule chooses a GPU type and count for each Stage 7-9 model of STAGE_CONFIGURATIONS
+(decision D5), from that model's own dimensions: a fit over FIT_STEPS months and an SBC
+replicate over SBC_STEPS. Stages 10-17 sample more parameters but keep Stage 9's Kalman
+states and cells (Req 17), so they take Stage 9's choice at the wedge Stage 8 settles,
+rerun with their own measured steps per iteration.
 
 A fit runs NUM_CHAINS chains of ITERATIONS NUTS iterations, and every leapfrog step costs
 one value and gradient. On one GPU the chains run as one batch (NumPyro's "vectorized"
@@ -7752,7 +7828,7 @@ per chain they run side by side ("parallel") at batch 1; that configuration exis
 where Lambda rents the GPU type as a NUM_CHAINS-GPU instance, whose hourly price the
 record carries (``--four-gpu-price``).
 
-SBC runs SBC_REPLICATES single-chain replicates at SBC_TARGET, the reduced panel's span.
+SBC runs SBC_REPLICATES single-chain replicates over SBC_STEPS, the reduced panel's span.
 The projection assumes one replicate per GPU at a time, at batch 1, in
 ceil(SBC_REPLICATES / GPUs) rounds. That is the shipped runner's throughput
 (``ces_revisions.pilot.sbc.run_sbc``): it runs one replicate per process and one worker
@@ -7760,24 +7836,32 @@ on a GPU host, so a multi-GPU instance runs one shard per GPU under its own
 ``CUDA_VISIBLE_DEVICES``. The record also projects a batched runner, which Stage 7 would
 have to build, for reference; that projection decides nothing.
 
-The pre-registered rule:
+The pre-registered rule, for each stage:
 
-1. A configuration is measured when its record holds TARGET and SBC_TARGET at the
-   layout's dimensions with the batches it needs. A batch that did not fit device memory
-   counts as measured and infeasible.
-2. A configuration is feasible when its fit takes at most FIT_HOURS_MAX hours at TARGET
-   and its SBC at most SBC_DAYS_MAX days.
+1. A configuration is measured when its record holds the stage's fit and SBC entries at
+   the layout's dimensions with the batches it needs. A batch that did not fit device
+   memory counts as measured and infeasible.
+2. A configuration is feasible when its fit takes at most FIT_HOURS_MAX hours and its SBC
+   at most SBC_DAYS_MAX days.
 3. When every configuration is measured, the cheapest feasible one in dollars per fit, to
-   the cent, wins ("chosen"); a tie goes to fewer GPUs. With none feasible the status is
-   "infeasible", and the roadmap's resume re-validates Stages 7-17 before it routes
-   Stage 7.
+   the cent, wins ("chosen"); a tie goes to fewer GPUs. With none feasible the stage's
+   status is "infeasible".
 4. When no host is priced or any configuration is unmeasured, the status is
    "unmeasured" and nothing is chosen: the measurement is incomplete, not a finding.
+
+The overall status is "unmeasured" if any stage's is, else "infeasible" if any stage's
+is, and then the roadmap's resume re-validates Stages 7-17 before it routes Stage 7;
+otherwise it is "chosen".
 """
 
 import math
 
-from ces_revisions.pilot.dimensions import matches_layout
+from ces_revisions.pilot.dimensions import (
+    FULL_STEPS,
+    SECTOR_STEPS,
+    STAGE_CONFIGURATIONS,
+    matches_layout,
+)
 
 NUM_CHAINS = 4
 ITERATIONS = 2_000  # 1,000 warmup and 1,000 sampling iterations per chain (Req 18 runs)
@@ -7790,8 +7874,8 @@ STEP_BAND = (31, 63, 127)
 # lockstep total over its slowest chain's was 94.2 / 65.3 steps per iteration.
 LOCKSTEP_FACTOR = 1.44
 FIT_HOURS_MAX = 48.0
-TARGET = {"stage": 9, "wedge": "high", "steps": 572}
-SBC_TARGET = {"stage": 9, "wedge": "high", "steps": 280}
+FIT_STEPS = FULL_STEPS  # a fit covers 1979-01 through 2026-08
+SBC_STEPS = SECTOR_STEPS  # an SBC replicate covers the sector panel's span
 SBC_REPLICATES = 100
 SBC_ITERATIONS = 1_490  # 500 warmup and 990 sampling iterations, one chain each
 SBC_DAYS_MAX = 14.0
@@ -7809,8 +7893,9 @@ def batch_timings(
 ) -> dict[int, float | None] | None:
     """Median seconds of every batch tried at a target, by batch size.
 
-    None when the record holds no entry at the target and the layout's dimensions. A
-    batch that did not fit device memory maps to None.
+    ``target`` gives the entry's stage, wedge, and steps. None when the record holds no
+    entry at the target and the layout's dimensions. A batch that did not fit device
+    memory maps to None.
     """
     for entry in record["entries"]:
         if matches_layout(entry, layout_name) and all(
@@ -7824,11 +7909,19 @@ def batch_timings(
 
 
 def configurations(
-    record: dict, layout_name: str, steps_per_iteration: int = STEPS_PER_ITERATION
+    record: dict,
+    layout_name: str,
+    stage: int,
+    wedge: str,
+    steps_per_iteration: int = STEPS_PER_ITERATION,
 ) -> list[dict]:
-    """The host's configurations at TARGET, each with its fit cost and SBC projection."""
-    fit = batch_timings(record, layout_name, TARGET)
-    sbc = batch_timings(record, layout_name, SBC_TARGET)
+    """The host's configurations for one stage, each with its fit cost and SBC days."""
+    fit = batch_timings(
+        record, layout_name, {"stage": stage, "wedge": wedge, "steps": FIT_STEPS}
+    )
+    sbc = batch_timings(
+        record, layout_name, {"stage": stage, "wedge": wedge, "steps": SBC_STEPS}
+    )
     shapes = [
         (1, "vectorized", NUM_CHAINS, LOCKSTEP_FACTOR, record["hourly_price_usd"])
     ]
@@ -7857,6 +7950,8 @@ def configurations(
         measured = fit is not None and batch in fit and sbc is not None and 1 in sbc
         rows.append(
             {
+                "stage": stage,
+                "wedge": wedge,
                 "host": record["label"],
                 "gpus": gpus,
                 "chain_method": chain_method,
@@ -7900,26 +7995,27 @@ def batched_sbc(
     return min(options, key=lambda option: option["days"], default=None)
 
 
-def choose_gpu(
+def choose_stage(
     records: list[dict],
     layout_name: str,
+    stage: int,
+    wedge: str,
     steps_per_iteration: int = STEPS_PER_ITERATION,
 ) -> dict:
-    """Every priced host's configurations, the band, and the rule's status and choice.
-
-    ``steps_per_iteration`` replaces the rule's sizing assumption when a later stage has
-    measured its own leapfrog steps per iteration.
-    """
+    """One stage's configurations over every priced host, its band, status, and choice."""
     priced = [record for record in records if record["hourly_price_usd"] is not None]
     rows = [
         row
         for record in priced
-        for row in configurations(record, layout_name, steps_per_iteration)
+        for row in configurations(
+            record, layout_name, stage, wedge, steps_per_iteration
+        )
     ]
     band = {
         record["label"]: {
             str(steps): [
-                row["fit_hours"] for row in configurations(record, layout_name, steps)
+                row["fit_hours"]
+                for row in configurations(record, layout_name, stage, wedge, steps)
             ]
             for steps in STEP_BAND
         }
@@ -7934,11 +8030,40 @@ def choose_gpu(
         status = "chosen"
         choice = min(feasible, key=lambda row: (round(row["fit_usd"], 2), row["gpus"]))
     return {
-        "steps_per_iteration": steps_per_iteration,
+        "stage": stage,
+        "wedge": wedge,
         "configurations": rows,
         "band_fit_hours": band,
         "status": status,
         "choice": choice,
+    }
+
+
+def choose_gpu(
+    records: list[dict],
+    layout_name: str,
+    steps_per_iteration: int = STEPS_PER_ITERATION,
+) -> dict:
+    """The rule for every Stage 7-9 model, and the overall status.
+
+    ``steps_per_iteration`` replaces the rule's sizing assumption when a later stage has
+    measured its own leapfrog steps per iteration.
+    """
+    stages = [
+        choose_stage(records, layout_name, stage, wedge, steps_per_iteration)
+        for stage, wedge in STAGE_CONFIGURATIONS
+    ]
+    statuses = {result["status"] for result in stages}
+    if "unmeasured" in statuses:
+        status = "unmeasured"
+    elif "infeasible" in statuses:
+        status = "infeasible"
+    else:
+        status = "chosen"
+    return {
+        "steps_per_iteration": steps_per_iteration,
+        "stages": stages,
+        "status": status,
     }
 ```
 
@@ -8316,7 +8441,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_dimensions.py tests/test_pilot_seasonal.py tests/test_pilot_gpu_choice.py -q`
-Expected: `67 passed`.
+Expected: `69 passed`.
 
 - [ ] **Step 5: Lint and commit**
 
@@ -8358,7 +8483,7 @@ import pytest
 from scipy.stats import chi2
 
 from ces_revisions.devices import DETERMINISTIC_GPU_FLAG
-from ces_revisions.pilot.dimensions import stage_dimensions
+from ces_revisions.pilot.dimensions import STAGE_CONFIGURATIONS, stage_dimensions
 from ces_revisions.vintages import raw as vintage_raw
 
 SEED = sum(map(ord, "ces-revisions-stage-6-pilot-run"))
@@ -8463,21 +8588,23 @@ def test_the_cli_starts_in_a_fresh_process():
         assert command in result.stdout
 
 
-def grid_entry(steps, batches):
-    dims = stage_dimensions("dummy", 9, "high", steps)
+def grid_entry(stage, wedge, steps, batches):
+    dims = stage_dimensions("dummy", stage, wedge, steps)
     return {**dims, "batches": [{"batch": b, **timing} for b, timing in batches]}
 
 
 def test_choose_gpu_writes_the_rule_for_the_given_records(tmp_path):
     no_fit = {"error": "skipped: compiled memory exceeds 40e9 bytes"}
+    entries = []
+    for stage, wedge in STAGE_CONFIGURATIONS:
+        fit = [(1, {"median_seconds": 0.2}), (4, no_fit)]
+        entries.append(grid_entry(stage, wedge, 572, fit))
+        entries.append(grid_entry(stage, wedge, 280, [(1, {"median_seconds": 0.05})]))
     grid = {
         "label": "a100",
         "hourly_price_usd": 1.99,
         "four_gpu_hourly_price_usd": 7.96,
-        "entries": [
-            grid_entry(572, [(1, {"median_seconds": 0.2}), (4, no_fit)]),
-            grid_entry(280, [(1, {"median_seconds": 0.05})]),
-        ],
+        "entries": entries,
     }
     path = tmp_path / "a100.json"
     path.write_text(json.dumps(grid))
@@ -8489,8 +8616,10 @@ def test_choose_gpu_writes_the_rule_for_the_given_records(tmp_path):
     assert written["records"] == [str(path)]
     assert written["status"] == "chosen"
     assert written["steps_per_iteration"] == 127
-    assert written["choice"]["host"] == "a100"
-    assert written["choice"]["gpus"] == 4  # batch 4 did not fit: one GPU per chain
+    assert len(written["stages"]) == len(STAGE_CONFIGURATIONS)
+    for result in written["stages"]:
+        assert result["choice"]["host"] == "a100"
+        assert result["choice"]["gpus"] == 4  # batch 4 did not fit: one GPU per chain
     measured = [*parser_arguments, "--steps-per-iteration", "31"]
     assert pilot_run.main(measured) == 0
     assert json.loads(out.read_text())["steps_per_iteration"] == 31
@@ -9161,7 +9290,12 @@ def run_choose_gpu(arguments: argparse.Namespace) -> int:
         },
         arguments.out,
     )
-    print(json.dumps({"status": result["status"], "choice": result["choice"]}))
+    choices = {
+        f"{stage['stage']} {stage['wedge']}": stage["choice"]
+        and stage["choice"]["host"]
+        for stage in result["stages"]
+    }
+    print(json.dumps({"status": result["status"], "choices": choices}))
     return 0
 
 
@@ -9253,7 +9387,7 @@ Expected: `1 passed`. It runs two short, depth-capped fits from one seed and che
 - [ ] **Step 5: Run the whole fast tier**
 
 Run: `uv run pytest -m "not slow and not network" -q`
-Expected: `622 passed, 21 deselected`, as in the spike.
+Expected: `624 passed, 21 deselected`, as in the spike.
 
 - [ ] **Step 6: Lint and commit**
 
@@ -9393,13 +9527,13 @@ Run nothing else while Step 1 runs: it is a timing measurement.
 
 - [ ] **Step 1: Time the engine on the Mac**
 
-About 7 minutes:
+About 12 minutes:
 
 ```bash
 uv run python scripts/gpu_probe_grid.py --label mac --out docs/decisions/cloud-gpu-probe/mac-grid.json --batch 1 4 --repeats 3 --max-bytes 20e9
 ```
 
-Expected: 12 entries. The two batch-4 cells at Stage 9 high, $`T=572`$, are skipped on memory (37.4 GB and 33.1 GB compiled). Batch-1 medians near 1.35 s (dummy Stage 7), 2.99 s (dummy Stage 9 low), and 2.45 s (trig4 Stage 9 low). Host load changes these by up to about 40%.
+Expected: 20 entries. Four batch-4 cells at $`T=572`$ are skipped on memory: Stage 9 high (37.4 GB and 33.1 GB compiled for dummy and trig4) and Stage 8 high (26.9 GB and 23.2 GB). Batch-1 medians near 1.35 s (dummy Stage 7), 2.13 s (dummy Stage 8 low), 3.91 s (dummy Stage 8 high), 2.99 s (dummy Stage 9 low), and 2.45 s (trig4 Stage 9 low). Host load changes these by up to about 40%.
 
 Commit the record now, so that the next fits record a clean tree:
 
@@ -9534,7 +9668,7 @@ nohup uv run python scripts/gpu_probe_grid.py --label <label> --out <label>-grid
 tail -f grid.log
 ```
 
-The script caps every batch at the device's memory and records a batch that cannot fit as skipped; larger batches after it are skipped without compiling. It rewrites the record after every entry, so a stopped run keeps its finished entries. Expect 10–40 minutes. Stop `tail` with Ctrl-C when the 12th entry's line appears; the run itself keeps going until then.
+The script caps every batch at the device's memory and records a batch that cannot fit as skipped; larger batches after it are skipped without compiling. It rewrites the record after every entry, so a stopped run keeps its finished entries. Expect 15–60 minutes for the 20 entries. Stop `tail` with Ctrl-C when the 20th entry's line appears; the run itself keeps going until then.
 
 - [ ] **Step 7: Check and copy the record off (Lowell)**
 
@@ -9542,7 +9676,7 @@ The script caps every batch at the device's memory and records a batch that cann
 cd ~/ces-revisions && uv run python -c "import json; r = json.load(open('<label>-grid.json')); print(r['host']['backend'], len(r['entries']), r['hourly_price_usd'], r['four_gpu_hourly_price_usd'])"
 ```
 
-Expected: `gpu`, `12`, and the prices you passed. If fewer than 12 entries are there and the 3-hour box allows, run Step 6 again in full: it rewrites the record. If the record is still incomplete, do not copy it: record the type as not measured, with the reason. A complete record is copied from the Mac, in the worktree:
+Expected: `gpu`, `20`, and the prices you passed. If fewer than 20 entries are there and the 3-hour box allows, run Step 6 again in full: it rewrites the record. If the record is still incomplete, do not copy it: record the type as not measured, with the reason. A complete record is copied from the Mac, in the worktree:
 
 ```bash
 scp ubuntu@<ip>:ces-revisions/<label>-grid.json docs/decisions/cloud-gpu-probe/
@@ -9564,7 +9698,7 @@ git add docs/decisions/cloud-gpu-probe/*-grid.json
 git commit -m "Record the Lambda GPU grid measurements"
 ```
 
-Expected: each Lambda record shows 12 entries, its price, the `gpu` backend, and its device kind. `mac-grid.json` is already committed and shows no price.
+Expected: each Lambda record shows 20 entries, its price, the `gpu` backend, and its device kind. `mac-grid.json` is already committed and shows no price.
 
 ### Task 14: The seasonal-state decision record and the docs
 
@@ -9587,10 +9721,10 @@ With `<layout>` the `rule.layout` of `docs/runs/stage-6/seasonal-comparison.json
 uv run python scripts/pilot_run.py choose-gpu docs/decisions/cloud-gpu-probe/*-grid.json --layout <layout> --out docs/runs/stage-6/gpu-choice.json
 ```
 
-Expected: a JSON line with `"status": "chosen"` and the choice. The Mac record has no price, so the rule skips it. `trig` reads the dummy's grid entries, because the two layouts have the same dimensions.
+Expected: a JSON line with `"status": "chosen"` and one chosen host for each Stage 7–9 model (D5). The Mac record has no price, so the rule skips it. `trig` reads the dummy's grid entries, because the two layouts have the same dimensions.
 
-- `"status": "unmeasured"` means a priced record lacks an entry or a batch the rule needs, or no record is priced. Stop and report: the measurement is incomplete, and nothing may be recorded as a finding.
-- `"status": "infeasible"` means every configuration of the records given was measured and none runs a Stage 9 fit within 48 hours and its SBC within 14 days. First check that `a10`, `a100`, and `gh200` each have a committed record. If any has none, stop and report to Lowell before recording anything: "infeasible" is a finding only when every D3 type was measured, or when Lowell confirms in chat that each missing type could not be measured. Then the decision record says so, and the roadmap's resume re-validates Stages 7–17 before it routes Stage 7 (roadmap Stage 6, Exit).
+- `"status": "unmeasured"` means a priced record lacks an entry or a batch the rule needs for some model, or no record is priced. Stop and report: the measurement is incomplete, and nothing may be recorded as a finding.
+- `"status": "infeasible"` means that, for at least one model, every configuration of the records given was measured and none runs its fit within 48 hours and its SBC within 14 days. First check that `a10`, `a100`, and `gh200` each have a committed record. If any has none, stop and report to Lowell before recording anything: "infeasible" is a finding only when every D3 type was measured, or when Lowell confirms in chat that each missing type could not be measured. Then the decision record says so, and the roadmap's resume re-validates Stages 7–17 before it routes Stage 7 (roadmap Stage 6, Exit).
 
 - [ ] **Step 2: Write the failing decision test**
 
@@ -9640,6 +9774,8 @@ COMPARISON = {
     },
 }
 CONFIGURATION = {
+    "stage": 9,
+    "wedge": "high",
     "host": "a100",
     "gpus": 1,
     "chain_method": "vectorized",
@@ -9656,24 +9792,33 @@ CONFIGURATION = {
 }
 
 
-def test_decision_lines_name_the_layout_and_the_gpu():
-    choice = {"status": "chosen", "choice": CONFIGURATION}
-    assert decision_lines(COMPARISON, choice) == [
+def stage(number, wedge, status, choice=None):
+    return {"stage": number, "wedge": wedge, "status": status, "choice": choice}
+
+
+def test_decision_lines_name_the_layout_and_each_models_gpu():
+    a10 = CONFIGURATION | {"stage": 7, "wedge": "low", "host": "a10"}
+    gpu_choice = {
+        "status": "infeasible",
+        "stages": [
+            stage(7, "low", "chosen", a10),
+            stage(9, "high", "infeasible"),
+        ],
+    }
+    assert decision_lines(COMPARISON, gpu_choice) == [
         "The seasonal state for Stages 7–17 is `dummy`.",
+        "Stage 7: 1 × `a10`, with NumPyro's `vectorized` chain method.",
         (
-            "The GPU for Stages 7–17 is 1 × `a100`, with NumPyro's `vectorized` "
-            "chain method."
+            "Stage 9, high wedge: no measured GPU configuration runs its fit within "
+            "48 hours and its SBC within 14 days."
         ),
     ]
-    assert decision_lines(COMPARISON, {"status": "infeasible", "choice": None})[1] == (
-        "No measured GPU configuration runs a Stage 9 fit within 48 hours and its SBC "
-        "within 14 days."
-    )
 
 
 def test_an_incomplete_gpu_measurement_has_no_decision_lines():
+    gpu_choice = {"status": "unmeasured", "stages": [stage(8, "low", "unmeasured")]}
     with pytest.raises(ValueError, match="incomplete"):
-        decision_lines(COMPARISON, {"status": "unmeasured", "choice": None})
+        decision_lines(COMPARISON, gpu_choice)
 
 
 def test_seasonal_rows_show_both_block_sets_the_checks_and_the_cost():
@@ -9732,9 +9877,19 @@ def test_gpu_rows_escape_dollars_and_mark_unmeasured_cells():
         "feasible": False,
     }
     unmeasured |= {"sbc_seconds": None, "sbc_days": None, "sbc_batched": None}
-    assert gpu_rows({"configurations": [CONFIGURATION, unmeasured]}) == [
-        "| a100 | 1 | `vectorized` | 4 | 0.300 | 30.5 | \\$60.66 | 10.9 | 5.2 | yes |",
-        "| a100 | 1 | `vectorized` | 4 | — | — | — | — | — | no |",
+    stage_8 = unmeasured | {"stage": 8, "wedge": "low"}
+    gpu_choice = {
+        "stages": [
+            {"configurations": [CONFIGURATION]},
+            {"configurations": [stage_8]},
+        ]
+    }
+    assert gpu_rows(gpu_choice) == [
+        (
+            "| Stage 9, high wedge | a100 | 1 | `vectorized` | 4 | 0.300 | 30.5 "
+            "| \\$60.66 | 10.9 | 5.2 | yes |"
+        ),
+        "| Stage 8, low wedge | a100 | 1 | `vectorized` | 4 | — | — | — | — | — | no |",
     ]
 
 
@@ -9797,27 +9952,34 @@ TIMING_HEADER = (
     "| Host | Stage | Wedge | Steps | States | Cells | Batch | Seconds | Compiled GB |"
 )
 GPU_HEADER = (
-    "| Host | GPUs | Chain method | Batch | Seconds | Fit hours | Fit cost "
+    "| Model | Host | GPUs | Chain method | Batch | Seconds | Fit hours | Fit cost "
     "| SBC days | Batched SBC days | Feasible |"
 )
 
 
+def model_name(stage: int, wedge: str) -> str:
+    """A Stage 7-9 model's name: Stage 7 has no wedge rows, Stages 8 and 9 have two."""
+    return "Stage 7" if stage == 7 else f"Stage {stage}, {wedge} wedge"
+
+
 def decision_lines(comparison: dict, gpu_choice: dict) -> list[str]:
-    """The two sentences that state the decision."""
-    lines = [f"The seasonal state for Stages 7–17 is `{comparison['rule']['layout']}`."]
-    choice = gpu_choice["choice"]
-    if gpu_choice["status"] == "chosen":
-        lines.append(
-            f"The GPU for Stages 7–17 is {choice['gpus']} × `{choice['host']}`, "
-            f"with NumPyro's `{choice['chain_method']}` chain method."
-        )
-    elif gpu_choice["status"] == "infeasible":
-        lines.append(
-            "No measured GPU configuration runs a Stage 9 fit within "
-            f"{FIT_HOURS_MAX:g} hours and its SBC within {SBC_DAYS_MAX:g} days."
-        )
-    else:
+    """The sentences that state the decision: the layout, then each model's GPU."""
+    if gpu_choice["status"] == "unmeasured":
         raise ValueError("the GPU measurement is incomplete: no decision to record")
+    lines = [f"The seasonal state for Stages 7–17 is `{comparison['rule']['layout']}`."]
+    for result in gpu_choice["stages"]:
+        name = model_name(result["stage"], result["wedge"])
+        choice = result["choice"]
+        if result["status"] == "chosen":
+            lines.append(
+                f"{name}: {choice['gpus']} × `{choice['host']}`, with NumPyro's "
+                f"`{choice['chain_method']}` chain method."
+            )
+        else:
+            lines.append(
+                f"{name}: no measured GPU configuration runs its fit within "
+                f"{FIT_HOURS_MAX:g} hours and its SBC within {SBC_DAYS_MAX:g} days."
+            )
     return lines
 
 
@@ -9867,14 +10029,16 @@ def timing_rows(records: list[dict], layout_name: str) -> list[str]:
 
 
 def gpu_rows(gpu_choice: dict) -> list[str]:
-    """One row per priced host and configuration the GPU rule weighed."""
+    """One row per model, priced host, and configuration the GPU rule weighed."""
     return [
-        f"| {row['host']} | {row['gpus']} | `{row['chain_method']}` | {row['batch']} "
+        f"| {model_name(row['stage'], row['wedge'])} | {row['host']} | {row['gpus']} "
+        f"| `{row['chain_method']}` | {row['batch']} "
         f"| {_number(row['seconds'], '.3f')} | {_number(row['fit_hours'], '.1f')} "
         f"| {_dollars(row['fit_usd'])} | {_number(row['sbc_days'], '.1f')} "
         f"| {_number((row['sbc_batched'] or {}).get('days'), '.1f')} "
         f"| {_yes(row['feasible'])} |"
-        for row in gpu_choice["configurations"]
+        for result in gpu_choice["stages"]
+        for row in result["configurations"]
     ]
 
 
@@ -9923,7 +10087,7 @@ def main(argv: list[str] | None = None) -> None:
         ],
         [
             GPU_HEADER,
-            "|---|---:|---|---:|---:|---:|---:|---:|---:|---|",
+            "|---|---|---:|---|---:|---:|---:|---:|---:|---:|---|",
             *gpu_rows(gpu_choice),
         ],
     ]
@@ -9945,10 +10109,10 @@ Print the decision lines and the three tables:
 uv run python -m ces_revisions.pilot.decision_tables docs/runs/stage-6/seasonal-comparison.json docs/runs/stage-6/gpu-choice.json
 ```
 
-Create `docs/decisions/seasonal-state.md` from the template below. Paste the printed lines and tables where the template says, and replace each other `<…>` field with the value it names from the committed JSON. Replace the title with one that states the decision, for example "Keep the dummy seasonal state and run Stages 7–17 on one A100".
+Create `docs/decisions/seasonal-state.md` from the template below. Paste the printed lines and tables where the template says, and replace each other `<…>` field with the value it names from the committed JSON. Replace the title with one that states the decision, for example "Keep the dummy seasonal state, and run Stage 7 on one A10 and Stage 9 on one GH200".
 
 ```markdown
-# Choose the seasonal state and the GPU for Stages 7–17
+# Choose the seasonal state and each stage's GPU for Stages 7–17
 
 - **Status:** Accepted
 - **Date:** <the commit date, YYYY-MM-DD>
@@ -9957,13 +10121,15 @@ Create `docs/decisions/seasonal-state.md` from the template below. Paste the pri
 
 ## Context
 
-Req 6 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) uses the dummy seasonal recursion and says that a trigonometric seasonal state may replace it if diagnostics favor it. Roadmap Stage 6 makes that choice together with the GPU measurement, because the seasonal block largely fixes the Stage 7–9 state dimension. Float64 throughput, memory, and the number of chains or SBC replicates run at once then set the GPU (Req 17).
+Req 6 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) uses the dummy seasonal recursion and says that a trigonometric seasonal state may replace it if diagnostics favor it. Roadmap Stage 6 makes that choice together with the GPU measurement, because the seasonal block largely fixes the Stage 7–9 state dimension. Float64 throughput, memory, and the number of chains or SBC replicates run at once then set each stage's GPU (Req 17). Decision D5 of plan 11 chooses a GPU for each Stage 7–9 model rather than one for all stages, so a small model does not rent the largest model's GPU.
 
 Plan 11 fitted the aggregate total-nonfarm pilot under three layouts with the same data, seeds, and sampler settings: `dummy` (11 states), `trig` (harmonics 1–5 and the Nyquist harmonic, 11 states), and `trig4` (harmonics 1–4, 8 states). It timed the engine's value and gradient at the Stage 7–9 dimensions on the Mac and on one Lambda instance of each GPU type it rented. Both rules are code (`src/ces_revisions/pilot/seasonal.py`, `src/ces_revisions/pilot/gpu_choice.py`), fixed by plan 11 before the runs recorded here. A planning spike under an earlier model had already applied the seasonal rule's clauses to these layouts (trig +15.4 ± 9.4, trig4 −466 ± 70 on benchmark-year blocks). The reliable-block rerun, the April 2020 and Ljung–Box conditions, and the GPU rule's step and lockstep constants were set after that spike evidence was read.
 
 ## Decision
 
-<paste the two lines that `uv run python -m ces_revisions.pilot.decision_tables docs/runs/stage-6/seasonal-comparison.json docs/runs/stage-6/gpu-choice.json` prints first, one per paragraph>
+<paste the lines that `uv run python -m ces_revisions.pilot.decision_tables docs/runs/stage-6/seasonal-comparison.json docs/runs/stage-6/gpu-choice.json` prints first: the layout line as one paragraph, then the five model lines as a bullet list>
+
+Stages 10–17 keep Stage 9's Kalman states and cells: Req 17 samples their mixing variables and volatility paths rather than adding states. So each of them rents Stage 9's GPU at the wedge reading Stage 8 settles, and reruns the rule with its own measured steps per iteration.
 
 ### The seasonal rule
 
@@ -9973,32 +10139,33 @@ The rule compares each alternative with the dummy on benchmark-year PSIS-LOO blo
 
 ### The GPU measurement
 
-Each row is one value and gradient of the engine at the chosen layout's dimensions, timed on a synthetic float64 model by `scripts/gpu_probe_grid.py`. "Batch" counts chains or SBC replicates run at once. "Compiled GB" is XLA's memory analysis of the compiled batch. A skipped batch did not fit the device's memory or the Mac's 20 GB guard; one with no compiled size was skipped without compiling, after a smaller batch did not fit. The `trig` layout has the dummy's dimensions, so the dummy's entries serve both. The records are in `docs/decisions/cloud-gpu-probe/`.
+Each row is one value and gradient of the engine at the chosen layout's dimensions, timed on a synthetic float64 model by `scripts/gpu_probe_grid.py`. "Batch" counts chains or SBC replicates run at once. "Compiled GB" is XLA's memory analysis of the compiled batch. A skipped batch did not fit the device's memory or the Mac's 20 GB guard. One with no compiled size was skipped without compiling, after a smaller batch did not fit. The `trig` layout has the dummy's dimensions, so the dummy's entries serve both. The records are in `docs/decisions/cloud-gpu-probe/`.
 
-<name each D3 GPU type (A10, A100 40 GB, GH200) that was not measured, and why: not available, a driver that did not reach 580, or a record left incomplete; or write "Every D3 GPU type was measured.">
+<name each D3 GPU type (A10, A100 40 GB, GH200) that was not measured, and why: not available, a driver that did not reach 580, or a record left incomplete. If every type was measured, write "Every D3 GPU type was measured.">
 
 <paste the timing table that the command prints>
 
 ### The GPU rule
 
-A fit runs 4 chains of 2,000 NUTS iterations. The rule sizes for a Stage 9 high-wedge model over all 572 months at 127 leapfrog steps per iteration of the slowest chain: the pilot's 17 parameters took about 65, and Stages 7–9 sample many more. On one GPU the 4 chains run as one batch and wait for the deepest tree in each iteration (the pilot measured 1.44 times the slowest chain's steps). With one GPU per chain they run side by side at batch 1, on a 4-GPU instance; that configuration exists only for a GPU type that Lambda rents as one, priced at that instance's hourly rate. SBC runs 100 single-chain replicates of 1,490 iterations at the Stage 9 high-wedge dimensions over 280 months. The projection assumes one replicate per GPU at a time: `run_sbc` takes one worker on a GPU host, and a multi-GPU instance runs one `pilot_run.py sbc --workers 1` shard per GPU under its own `CUDA_VISIBLE_DEVICES`. A configuration so needs ceil(100 / GPUs) rounds. A configuration is feasible if its fit takes at most 48 hours and its SBC at most 14 days. The cheapest feasible configuration, in dollars per fit at the price each instance was billed, wins. The "Batched SBC days" column projects a batched runner that Stage 7 would have to build; it decides nothing.
+The rule runs once for each Stage 7–9 model: Stage 7, and Stages 8 and 9 under each wedge reading. A fit runs 4 chains of 2,000 NUTS iterations over all 572 months. The rule sizes every model at 127 leapfrog steps per iteration of the slowest chain: the pilot's 17 parameters took about 65, and Stages 7–9 sample many more. On one GPU the 4 chains run as one batch and wait for the deepest tree in each iteration (the pilot measured 1.44 times the slowest chain's steps). With one GPU per chain they run side by side at batch 1, on a 4-GPU instance. That configuration exists only for a GPU type that Lambda rents as one, priced at that instance's hourly rate. SBC runs 100 single-chain replicates of 1,490 iterations at the model's dimensions over 280 months. The projection assumes one replicate per GPU at a time: `run_sbc` takes one worker on a GPU host, and a multi-GPU instance runs one `pilot_run.py sbc --workers 1` shard per GPU under its own `CUDA_VISIBLE_DEVICES`. A configuration so needs ceil(100 / GPUs) rounds. A configuration is feasible if its fit takes at most 48 hours and its SBC at most 14 days. For each model, the cheapest feasible configuration, in dollars per fit at the price each instance was billed, wins. The "Batched SBC days" column projects a batched runner that Stage 7 would have to build. It decides nothing.
 
 <paste the GPU table that the command prints>
 
-<state the rule's `status` in `docs/runs/stage-6/gpu-choice.json`. If it is "chosen", give the chosen configuration's `sbc_days` and its batched projection (`sbc_batched`). If it is "infeasible", say which limit each configuration missed, and give the cheapest fit-feasible configuration and its batched SBC days. Add "The roadmap's resume re-validates Stages 7–17 before it routes Stage 7." only when every D3 type has a record, or Lowell has confirmed that each missing type could not be measured.>
+<state the overall `status` in `docs/runs/stage-6/gpu-choice.json`, and for each model in `stages` its status, its chosen configuration's `sbc_days`, and the batched projection (`sbc_batched`). For each model whose status is "infeasible", say which limit each configuration missed, and give the cheapest fit-feasible configuration and its batched SBC days. Add "The roadmap's resume re-validates Stages 7–17 before it routes Stage 7." only when every D3 type has a record, or Lowell has confirmed that each missing type could not be measured.>
 
-<state `band_fit_hours` for the chosen host, or for every priced host if the status is "infeasible": the fit hours at 31, 63, and 127 steps per iteration, so a reader sees how the projection moves if Stage 7–9 trees are shallower than the rule assumes>
+<state `band_fit_hours` for each model's chosen host, or for every priced host where the model's status is "infeasible": the fit hours at 31, 63, and 127 steps per iteration, so a reader sees how the projection moves if Stage 7–9 trees are shallower than the rule assumes>
 
 ## Consequences
 
 - Stages 7–17 build each sector's seasonal block with the chosen layout from `src/ces_revisions/pilot/layout.py`, and size their models with `src/ces_revisions/pilot/dimensions.py`.
-- Fits and SBC runs for Stages 7–17 rent the chosen GPU type and count by hand from Lambda, as CLAUDE.md describes. The code takes its chain method from `chain_method(num_chains)`, so it never names a GPU count.
+- Fits and SBC runs for Stages 7–9 rent their own model's GPU type and count by hand from Lambda, as CLAUDE.md describes, and Stages 10–17 rent Stage 9's at the wedge Stage 8 settles. The code takes its chain method from `chain_method(num_chains)`, so it never names a GPU count.
 - <state whether every layout's Ljung–Box test rejects at 1% (`runs[].ljung_box` in `docs/runs/stage-6/seasonal-comparison.json`). If so, write: "No layout removes the pilot's residual seasonality at lags 11 and 12. Stage 18's posterior predictive suite and Stage 21's sensitivity suite own it.">
 
 ## Alternatives considered
 
 - <one bullet for each layout the rule did not choose, `dummy` included when it lost: its elpd difference on both block sets, its measured saving, its Req 18 and April 2020 results, and the clause that kept it out>.
-- **The other GPU types and counts.** <one line per GPU type that the rule did not choose, from the GPU table: its cheapest feasible configuration's cost per fit, or why it had none>.
+- **The other GPU types and counts.** <for each model, one line per GPU type that the rule did not choose, from the GPU table: its cheapest feasible configuration's cost per fit, or why it had none>.
+- **One GPU for every stage.** The roadmap first asked for one GPU type and count for Stages 7–17. Sized for the largest model, that choice would rent the largest model's GPU for the smaller ones. D5 chooses per model instead. One GPU for every stage would keep all runs on one architecture, but the posterior does not depend on the hardware beyond floating-point rounding.
 
 ## Revisit triggers
 
@@ -10017,7 +10184,7 @@ Expected: `6 passed`.
 In `CLAUDE.md`, under "Layout and tooling", add after the `operators/` bullet:
 
 ```markdown
-- `src/ces_revisions/pilot/` implements roadmap Stage 6: the aggregate total-nonfarm panel (`assembly.py`, `panel.py`), the three seasonal layouts (`layout.py`), the marginalized Jacobs–van Norden pilot (`model.py`), its simulator and prior predictive (`simulate.py`), SBC (`sbc.py`), the April 2020 check (`checks.py`), the Stage 7–9 dimensions (`dimensions.py`), and the two pre-registered decision rules (`seasonal.py`, `gpu_choice.py`) recorded in `docs/decisions/seasonal-state.md`. NUTS runs at `TARGET_ACCEPT_PROB = 0.95` from `model.py`: at 0.8 the pilot diverges.
+- `src/ces_revisions/pilot/` implements roadmap Stage 6: the aggregate total-nonfarm panel (`assembly.py`, `panel.py`), the three seasonal layouts (`layout.py`), the marginalized Jacobs–van Norden pilot (`model.py`), its simulator and prior predictive (`simulate.py`), SBC (`sbc.py`), the April 2020 check (`checks.py`), the Stage 7–9 dimensions (`dimensions.py`), and the two pre-registered decision rules (`seasonal.py`, and `gpu_choice.py`, which chooses a GPU for each Stage 7–9 model) recorded in `docs/decisions/seasonal-state.md`. NUTS runs at `TARGET_ACCEPT_PROB = 0.95` from `model.py`: at 0.8 the pilot diverges.
 - `src/ces_revisions/runs/` is the model-agnostic run harness every fit uses: dispersed chain starts (`inits.py`), NUTS and the run directory (`fit.py`), Req 18 diagnostics (`diagnostics.py`), the log likelihood grouped by reference month and benchmark year (`inference_data.py`), and provenance (`provenance.py`). Run directories go to the gitignored `data/runs/`; small JSON evidence is committed under `docs/runs/`.
 - `scripts/pilot_run.py` drives the pilot (`prior-predictive`, `fit`, `sbc`, `sbc-summary`, `compare-seasonal`, `choose-gpu`). `scripts/gpu_probe_grid.py` times the engine at the Stage 7–9 dimensions on one host and writes one record; on a rented GPU pass `--hourly-price`, and `--four-gpu-price` where Lambda rents a 4-GPU instance of the same type. `tests/test_seasonal_state_decision.py` checks `docs/decisions/seasonal-state.md` against `docs/runs/stage-6/seasonal-comparison.json`, `gpu-choice.json`, and the `*-grid.json` records that `gpu-choice.json` lists, and fails if they change. The rest of `docs/runs/stage-6/` is Stage 6's committed exit evidence, which no test guards. Write new measurements to `data/runs/`; re-measuring the committed ones means rewriting that record.
 ```
@@ -10103,7 +10270,7 @@ The GPU type and count follow what the model requires, measured with the engine 
 with:
 
 ```text
-The GPU type and count follow what the model requires: roadmap Stage 6 measured them, and `docs/decisions/seasonal-state.md` records the choice;
+The GPU type and count follow what each model requires: roadmap Stage 6 measured them, and `docs/decisions/seasonal-state.md` records the choice for each Stage 7–9 model;
 ```
 
 In `CLAUDE.md`, replace:
@@ -10127,7 +10294,7 @@ Stage 6 of the [roadmap](specs/ces-revisions-roadmap.md) measures them with the 
 with:
 
 ```text
-Stage 6 of the [roadmap](specs/ces-revisions-roadmap.md) measured them, and [`docs/decisions/seasonal-state.md`](docs/decisions/seasonal-state.md) records the choice.
+Stage 6 of the [roadmap](specs/ces-revisions-roadmap.md) measured them, and [`docs/decisions/seasonal-state.md`](docs/decisions/seasonal-state.md) records the choice for each stage.
 ```
 
 In `README.md`, replace:
@@ -10152,7 +10319,7 @@ uv run ruff check
 uv run ruff format --check
 ```
 
-Expected: the fast tier gives `628 passed, 21 deselected`; the slow tier passes in a few minutes; ruff reports no problem.
+Expected: the fast tier gives `630 passed, 21 deselected`; the slow tier passes in a few minutes; ruff reports no problem.
 
 - [ ] **Step 9: Check the exit criteria**
 
@@ -10179,7 +10346,7 @@ git commit -m "Record the seasonal-state and GPU decision for Stages 7-17"
 | The prior predictive meets Req 15's monthly constraint before the fit | Task 10 Step 2; `docs/runs/stage-6/prior-predictive.json`; `tests/test_pilot_fit.py::test_the_prior_predictive_meets_the_monthly_constraint_on_the_real_panel` |
 | The April 2020 movement is absorbed by the latent state under the crisis multiplier (Req 6) | Task 10 Step 5; `docs/runs/stage-6/pilot-fit/april_2020.json` (`passed`: every subsampled draw finite, and the whole 90% interval within ±5% of the third print) |
 | Reduced-panel SBC recovers the news/noise allocation (bullet 7, reduced half) | Task 11; `docs/runs/stage-6/sbc-summary.json` (`passed`) |
-| The seasonal-state decision is committed with the GPU cost measurement and the GPU type and count | Task 14; `docs/decisions/seasonal-state.md`, `tests/test_seasonal_state_decision.py` |
+| The seasonal-state decision is committed with the GPU cost measurement and the GPU type and count | Task 14; `docs/decisions/seasonal-state.md` (one GPU type and count per Stage 7–9 model, D5), `tests/test_seasonal_state_decision.py` |
 | The dispersed-chain-starts item is closed | Task 6; `runs/inits.py`, recorded in every run's provenance (`init`) |
 | The `A_t`/`Z_t` gradient-check item is closed if the pilot samples a parameter in `transition_matrix` or `observation_matrix` | Not triggered: no sampled parameter enters either matrix (planning choice 8). The item stays open for Stage 7's loadings |
 | If the cost measurement makes Stage 7–9 fits or their SBC infeasible, resume re-validates Stages 7–17 | Task 14 Step 1; `gpu-choice.json` (`status`: "infeasible" triggers it), stated in the decision record |
