@@ -270,7 +270,17 @@ The preferred path runs `tofu destroy` from the scratch copy. OpenTofu knows eve
    tofu -chdir=infra/env init -backend-config=backend.hcl -lockfile=readonly
    tofu -chdir=infra/env state list                   # expect 17 resources and one data source, no aws_instance.vm
    (umask 077; tofu -chdir=infra/env state pull > "$W/env-state-before-teardown.json")
+   if n=$(tofu -chdir=infra/env state list | wc -l | tr -d ' ') && [ "$n" -gt 0 ] \
+       && [ -s "$W/env-state-before-teardown.json" ]; then
+     echo "env state saved: $n addresses"
+   else
+     echo 'STOP: no env state. Run nothing else in this phase. Read the note below.'
+   fi
    ```
+
+   The shell creates the output file before `state pull` runs, so a failed pull leaves an empty file and looks like success. The check above catches that. If it prints `STOP`, delete nothing in this phase, and check the state bucket with `aws s3api head-bucket --bucket "$BUCKET" --region "$REGION"`:
+   - A 404 means the state bucket and the env state are gone. Skip steps 3 and 6. Use the manual fallback, then steps 4 and 5.
+   - Any other error, such as expired credentials or no network, can be fixed. Fix it and rerun step 1.
 
 2. If `aws_instance.vm` is in state, `tofu destroy` terminates it in step 3. If a project instance exists outside state, in any region, terminate it by hand. Termination is irreversible, and it also deletes the root volume.
    ```bash
@@ -318,9 +328,10 @@ The preferred path runs `tofu destroy` from the scratch copy. OpenTofu knows eve
    aws ec2 release-address --region <ADDRESS_REGION> --allocation-id <ALLOCATION_ID>
    ```
 
-6. Delete the state bucket last in this phase. This is irreversible. It holds the env state. `force_destroy` acts only after an apply writes it to state, so the order is edit, apply, then destroy.
+6. Delete the state bucket last in this phase, and only after step 3's destroy succeeded. This is irreversible. The bucket holds the env state, so deleting it first loses that state for good. Run the guard line first. Continue only if it prints `env destroyed`. `force_destroy` acts only after an apply writes it to state, so the order is edit, apply, then destroy.
    ```bash
    # docs: https://raw.githubusercontent.com/hashicorp/terraform-provider-aws/main/website/docs/r/s3_bucket.html.markdown
+   if out=$(tofu -chdir=infra/env state list) && [ -z "$out" ]; then echo 'env destroyed'; else echo 'STOP: env state still lists resources or cannot be read. Keep the bucket.'; fi
    perl -0pi -e 's/prevent_destroy = true/prevent_destroy = false/; s/(bucket_prefix = "ces-revisions-tofu-state-"\n)/$1  force_destroy = true\n/' infra/state/main.tf
    grep -n -E 'prevent_destroy|force_destroy' infra/state/main.tf   # expect false and true
    tofu -chdir=infra/state plan                       # expect 1 to change: force_destroy
@@ -333,7 +344,12 @@ The preferred path runs `tofu destroy` from the scratch copy. OpenTofu knows eve
 
 ### Manual fallback
 
-Use it only if `init` or the state read fails, or if destroy keeps failing. For one blocker, fix it by hand and rerun `tofu destroy` instead.
+Use it only in one of these cases. For one blocker, fix it by hand and rerun `tofu destroy` instead.
+
+- Step 1 printed `STOP` because the state bucket is gone.
+- `init` or the state read fails for another reason.
+- Destroy keeps failing.
+
 ```bash
 # docs: https://docs.aws.amazon.com/cli/latest/reference/budgets/delete-budget-action.html
 # docs: https://docs.aws.amazon.com/cli/latest/reference/budgets/delete-budget.html
@@ -373,7 +389,10 @@ aws ec2 delete-internet-gateway --internet-gateway-id "$IGW_ID"
 aws ec2 delete-vpc --vpc-id "$VPC_ID"
 ```
 
-Then delete the snapshots as in step 4. Empty the state bucket with the S3 console's Empty button, and run `aws s3api delete-bucket --bucket "$BUCKET"`.
+After the block:
+
+1. Delete the snapshots as in step 4.
+2. Delete the state bucket only after every command in the block succeeded, ending with `delete-vpc`. If any command failed, keep the bucket, fix the failure and rerun from that command. Deleting the bucket is irreversible. Empty it with the S3 console's Empty button, then run `aws s3api delete-bucket --bucket "$BUCKET"`. If `head-bucket` already returns a 404, skip this step.
 
 ## Phase 4: Account-level items
 
