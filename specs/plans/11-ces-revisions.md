@@ -38,7 +38,8 @@
 - **D2** (owner, planning questions, 2026-10-21; narrowed after the spike, 2026-10-21): the crisis multiplier scales the non-news level shock and the S and T news shocks in March–June 2020, and not the slope, seasonal, post-T news, or noise terms. The first answer also scaled the post-T news. The spike showed that this left April 2020's latent change almost unidentified (total SD 5,634), and Lowell narrowed it. Applied in: Global Constraints, Task 1 (spec amendment), Task 4, Task 5, Task 7.
 - **D3** (owner, planning questions, 2026-10-21): the GPU measurement rents one single-GPU on-demand instance each of A10, A100 40 GB, and GH200 from Lambda, with a \$40 cap on the total. Applied in: Task 13.
 - **D4** (owner, planning questions, 2026-10-21): h5netcdf and h5py join the runtime dependencies so that a run's InferenceData is one file. Rank histograms are numeric, and plotting waits for Stage 10. Applied in: Global Constraints, Task 6.
-- **D5** (owner, plan review, 2026-10-21): the GPU rule chooses a GPU type and count for each Stage 7–9 model, not one for every stage: Stage 7, and Stages 8 and 9 under each wedge reading. Stages 10–17 keep Stage 9's Kalman states and cells (Req 17 samples their mixing variables and volatility paths), so they take Stage 9's choice at the wedge Stage 8 settles, rerun with their own measured steps per iteration. The probe grid adds Stage 8's two wedge readings, so it has 20 entries. This narrows the roadmap's "GPU type and count for Stages 7–17" to one choice per model. The Handoff section names it for the resume. Applied in: Task 8, Task 12, Task 13, Task 14.
+- **D5** (owner, plan review, 2026-10-21): the GPU rule chooses a GPU type and count for each Stage 7–9 model, not one for every stage: Stage 7, and Stages 8 and 9 under each wedge reading. Stages 10–17 keep Stage 9's Kalman states and cells (Req 17 samples their mixing variables and volatility paths), so they take Stage 9's choice at the wedge Stage 8 settles, rerun with their own measured steps per iteration. The probe grid adds Stage 8's two wedge readings, so it has 20 entries. This narrows the roadmap's "GPU type and count for Stages 7–17" to one choice per model. The Handoff section names it for the resume. Applied in: Task 8, Task 9, Task 12, Task 13, Task 14.
+- **D6** (owner, plan review, 2026-10-21): Task 1's spec wording is approved as shown: the Req 6 sentences on what the crisis multiplier scales, the Req 7 sentences that put NSA closing cells in the same-release change form and leave Req 9's SA rows to Stage 9, and the Rollout note line. Applied in: Task 1 (spec amendment).
 
 ---
 
@@ -214,7 +215,7 @@ All figures come from a spike in a scratch clone at `a2f6937`. The spike impleme
 7. **`jax_versions()` and `nvidia_driver()` move from `engine_probe.py` to `devices.py`**, and `engine_probe.batched_value_and_grad()` becomes public, so that the harness and the grid script import no private names.
 8. **The `A_t`/`Z_t` gradient-check item stays open.** No sampled parameter enters `transition_matrix` or `observation_matrix`: κ, λ, μ, and ρ enter only covariances and offsets. That item's closure condition is therefore not met.
 9. **Recorded, not acted on:** the doubled-prior failure (Stage 16), the `σ_slope` conflict (Stages 10 and 16), and the residual seasonality at lags 11–12 (Stage 18's posterior predictive suite and Stage 21's sensitivity suite). The completion protocol records them as plan 11 deferred items (Retirement above).
-10. **The post-T news stand-in and T's noise center** are this plan's readings of Req 7 and Req 15, stated in the model section. Lowell approves Task 1's Req 7 wording, which states the stand-in, at plan review, before Task 1 runs.
+10. **The post-T news stand-in and T's noise center** are this plan's readings of Req 7 and Req 15, stated in the model section. Lowell approved Task 1's Req 7 wording, which states the stand-in, at plan review (D6).
 
 ## File structure
 
@@ -298,10 +299,10 @@ with:
 - Modify: `specs/ces-revisions.md` (Req 6, Req 7, Rollout note)
 
 **Interfaces:**
-- Consumes: Decisions D1 and D2.
+- Consumes: Decisions D1, D2, and D6.
 - Produces: the spec text that Tasks 2–5 implement. The spec's status line and every other requirement stay as they are.
 
-Lowell reviews this wording at plan review: the D1 and D2 text, and the Req 7 sentences that replace the level display with the change form, attach news and noise to the month's change, scope the form to NSA cells, and state the Stages 6–7 post-T news stand-in. The plan's Decisions list records the approval. Do not run this task before that record exists; then apply the wording exactly.
+Lowell approved this wording at plan review (D6): the D1 and D2 text, and the Req 7 sentences that replace the level display with the change form, attach news and noise to the month's change, scope the form to NSA cells, and state the Stages 6–7 post-T news stand-in. Apply the wording exactly.
 
 - [ ] **Step 1: Amend Req 6's crisis multiplier (D2)**
 
@@ -345,7 +346,7 @@ $`d^N_{s,t,j}=\Delta x_{s,t}-\sum_{k\in\mathcal F(j)}n^N_{s,t,k}+e^N_{s,t,j}`$,
 with $`n^N_{s,t,k}`$ and $`e^N_{s,t,j}`$ read as the news and noise of month $`t`$'s change.
 So a print's news and noise attach to that month's change, and its distance from the truth
 does not carry into later months' prints. This holds for every NSA closing cell, the 1979+
-total-nonfarm leg of Req 4 included; Stage 9 settles whether Req 9's SA rows take the same
+total-nonfarm leg of Req 4 included. Stage 9 settles whether Req 9's SA rows take the same
 form. The news increments enter the latent process's own innovation (the Jacobs–van Norden
 form), so each closing change is the true change less the news still to come, plus noise.
 Benchmark anchors stay level observations of $`x`$. Before the wedge rows enter
@@ -364,8 +365,8 @@ In `specs/ces-revisions.md`, append to the end of the Rollout note, after the St
 Amended 2026-10-21 at plan 11 (user decisions): Req 7 states that closing stages enter as
 same-release over-the-month changes in the Jacobs–van Norden form, that benchmark anchors stay
 levels, and that the post-third-print news is one monthly increment until Stage 8's wedge
-rows (Req 10's B-vintage rows) induce the `B` and `M` increments; Req 6 states which
-innovations the crisis multiplier scales. Stage 6 implements these; Stages 7–17 inherit them.
+rows (Req 10's B-vintage rows) induce the `B` and `M` increments. Req 6 states which
+innovations the crisis multiplier scales. Stage 6 implements these. Stages 7–17 inherit them.
 ```
 
 - [ ] **Step 4: Check the rendering and commit**
@@ -7470,6 +7471,17 @@ def test_a_stage_missing_from_one_record_makes_the_overall_status_unmeasured():
     assert result["status"] == "unmeasured"
 
 
+def test_an_unmeasured_stage_outranks_an_infeasible_one():
+    # Stage 7 is missing from the GH200 record, and Stage 9 high fits neither GPU.
+    partial = full_record(
+        "gh200", 2.29, 0.15, 0.12, 0.02, fits_from=3.0, skip={(7, "low")}
+    )
+    result = choose_gpu([A10_FULL, partial], "dummy")
+    statuses = {(r["stage"], r["wedge"]): r["status"] for r in result["stages"]}
+    assert (statuses[(7, "low")], statuses[(9, "high")]) == ("unmeasured", "infeasible")
+    assert result["status"] == "unmeasured"
+
+
 def test_measured_steps_per_iteration_replace_the_sizing_assumption():
     result = choose_gpu([A10_FULL, GH200_FULL], "dummy", steps_per_iteration=31)
     assert result["steps_per_iteration"] == 31
@@ -7818,8 +7830,9 @@ the dummy's, reads the dummy's entries.
 The rule chooses a GPU type and count for each Stage 7-9 model of STAGE_CONFIGURATIONS
 (decision D5), from that model's own dimensions: a fit over FIT_STEPS months and an SBC
 replicate over SBC_STEPS. Stages 10-17 sample more parameters but keep Stage 9's Kalman
-states and cells (Req 17), so they take Stage 9's choice at the wedge Stage 8 settles,
-rerun with their own measured steps per iteration.
+states and cells (Req 17). While they also keep Stage 9's engine and NUTS kernel, they
+take Stage 9's choice at the wedge Stage 8 settles, rerun with their own measured steps
+per iteration.
 
 A fit runs NUM_CHAINS chains of ITERATIONS NUTS iterations, and every leapfrog step costs
 one value and gradient. On one GPU the chains run as one batch (NumPyro's "vectorized"
@@ -8441,7 +8454,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_dimensions.py tests/test_pilot_seasonal.py tests/test_pilot_gpu_choice.py -q`
-Expected: `69 passed`.
+Expected: `70 passed`.
 
 - [ ] **Step 5: Lint and commit**
 
@@ -8460,7 +8473,7 @@ git commit -m "Add the seasonal and GPU decision rules and the probe grid"
 
 **Interfaces:**
 - Consumes: everything from Tasks 2–8.
-- Produces: `scripts/pilot_run.py` with the commands `prior-predictive`, `fit`, `sbc`, `sbc-summary`, `compare-seasonal`, and `choose-gpu`; its module-level `_configure_xla(argv)`, `ljung_box(errors, lags=12) -> dict`, `standardized_errors(params, panel, layout)`, `seasonal_candidates(entries, grid) -> dict[str, dict]`, `month(text) -> date`, and `main(argv) -> int`. `fit` writes a run directory (`inference_data.nc`, `diagnostics.json`, `provenance.json`, `april_2020.json`) under `data/runs/`. `compare-seasonal RUN_DIR... --grid PATH --out PATH` writes the comparison and the rule's verdict; it reads each run directory's `april_2020.json`. `choose-gpu GRID_RECORD... --layout NAME --out PATH [--steps-per-iteration N]` writes the GPU rule's result and prints its status.
+- Produces: `scripts/pilot_run.py` with the commands `prior-predictive`, `fit`, `sbc`, `sbc-summary`, `compare-seasonal`, and `choose-gpu`; its module-level `_configure_xla(argv)`, `ljung_box(errors, lags=12) -> dict`, `standardized_errors(params, panel, layout)`, `seasonal_candidates(entries, grid) -> dict[str, dict]`, `month(text) -> date`, and `main(argv) -> int`. `fit` writes a run directory (`inference_data.nc`, `diagnostics.json`, `provenance.json`, `april_2020.json`) under `data/runs/`. `compare-seasonal RUN_DIR... --grid PATH --out PATH` writes the comparison and the rule's verdict; it reads each run directory's `april_2020.json`. `choose-gpu GRID_RECORD... --layout NAME --out PATH [--steps-per-iteration N]` writes the GPU rule's result and prints its overall status and each Stage 7–9 model's chosen host.
 
 The CLI sets `XLA_FLAGS` before its first JAX import: XLA's deterministic GPU flag on an NVIDIA host, and four host devices on a CPU host for `fit` and `prior-predictive`. SBC workers set their own single device.
 
@@ -9387,7 +9400,7 @@ Expected: `1 passed`. It runs two short, depth-capped fits from one seed and che
 - [ ] **Step 5: Run the whole fast tier**
 
 Run: `uv run pytest -m "not slow and not network" -q`
-Expected: `624 passed, 21 deselected`, as in the spike.
+Expected: `625 passed, 21 deselected`, as in the spike.
 
 - [ ] **Step 6: Lint and commit**
 
@@ -9815,8 +9828,19 @@ def test_decision_lines_name_the_layout_and_each_models_gpu():
     ]
 
 
-def test_an_incomplete_gpu_measurement_has_no_decision_lines():
-    gpu_choice = {"status": "unmeasured", "stages": [stage(8, "low", "unmeasured")]}
+@pytest.mark.parametrize(
+    "gpu_choice",
+    [
+        {"status": "unmeasured", "stages": [stage(8, "low", "unmeasured")]},
+        # A model left unmeasured is never written up as infeasible, whatever the
+        # overall status says.
+        {
+            "status": "infeasible",
+            "stages": [stage(7, "low", "unmeasured"), stage(9, "high", "infeasible")],
+        },
+    ],
+)
+def test_an_incomplete_gpu_measurement_has_no_decision_lines(gpu_choice):
     with pytest.raises(ValueError, match="incomplete"):
         decision_lines(COMPARISON, gpu_choice)
 
@@ -9964,7 +9988,8 @@ def model_name(stage: int, wedge: str) -> str:
 
 def decision_lines(comparison: dict, gpu_choice: dict) -> list[str]:
     """The sentences that state the decision: the layout, then each model's GPU."""
-    if gpu_choice["status"] == "unmeasured":
+    statuses = {gpu_choice["status"]} | {r["status"] for r in gpu_choice["stages"]}
+    if "unmeasured" in statuses:
         raise ValueError("the GPU measurement is incomplete: no decision to record")
     lines = [f"The seasonal state for Stages 7–17 is `{comparison['rule']['layout']}`."]
     for result in gpu_choice["stages"]:
@@ -10099,7 +10124,7 @@ if __name__ == "__main__":
 ```
 
 Run: `uv run pytest tests/test_seasonal_state_decision.py -q`
-Expected: 5 passed and 1 failed. The failure is `test_the_decision_record_states_its_evidence`, with `FileNotFoundError` for `docs/decisions/seasonal-state.md`.
+Expected: 6 passed and 1 failed. The failure is `test_the_decision_record_states_its_evidence`, with `FileNotFoundError` for `docs/decisions/seasonal-state.md`.
 
 - [ ] **Step 5: Write the decision record**
 
@@ -10129,7 +10154,7 @@ Plan 11 fitted the aggregate total-nonfarm pilot under three layouts with the sa
 
 <paste the lines that `uv run python -m ces_revisions.pilot.decision_tables docs/runs/stage-6/seasonal-comparison.json docs/runs/stage-6/gpu-choice.json` prints first: the layout line as one paragraph, then the five model lines as a bullet list>
 
-Stages 10–17 keep Stage 9's Kalman states and cells: Req 17 samples their mixing variables and volatility paths rather than adding states. So each of them rents Stage 9's GPU at the wedge reading Stage 8 settles, and reruns the rule with its own measured steps per iteration.
+Stages 10–17 keep Stage 9's Kalman states and cells: Req 17 samples their mixing variables and volatility paths rather than adding states. So each of them rents Stage 9's GPU at the wedge reading Stage 8 settles, and reruns the rule with its own measured steps per iteration. This holds while a stage keeps Stage 9's engine and NUTS kernel.
 
 ### The seasonal rule
 
@@ -10169,7 +10194,8 @@ The rule runs once for each Stage 7–9 model: Stage 7, and Stages 8 and 9 under
 
 ## Revisit triggers
 
-- Stage 7's or Stage 9's measured leapfrog steps per iteration are far from 127. Then rerun `scripts/pilot_run.py choose-gpu` with `--steps-per-iteration` set to the measured value.
+- A Stage 7, 8, or 9 model's measured leapfrog steps per iteration are far from 127. Then rerun `scripts/pilot_run.py choose-gpu` with `--steps-per-iteration` set to the measured value.
+- A later stage changes the engine or kernel that Stage 9 ran: Req 17 step (4)'s finite-mixture fallback at Stage 10, or a filter remedy or blocked kernel from Stage 17's sampler benchmark (`docs/decisions/engine.md`). Then time the changed engine at Stage 9's dimensions before that stage chooses its GPU. `--steps-per-iteration` does not cover a slower value and gradient.
 - Lambda's prices or GPU types change.
 - A posterior predictive check in Stage 18 traces a misfit to the seasonal block.
 ```
@@ -10177,7 +10203,7 @@ The rule runs once for each Stage 7–9 model: Stage 7, and Stages 8 and 9 under
 - [ ] **Step 6: Run the test to verify it passes**
 
 Run: `uv run pytest tests/test_seasonal_state_decision.py -q`
-Expected: `6 passed`.
+Expected: `7 passed`.
 
 - [ ] **Step 7: Update CLAUDE.md and README.md**
 
@@ -10319,7 +10345,7 @@ uv run ruff check
 uv run ruff format --check
 ```
 
-Expected: the fast tier gives `630 passed, 21 deselected`; the slow tier passes in a few minutes; ruff reports no problem.
+Expected: the fast tier gives `632 passed, 21 deselected`; the slow tier passes in a few minutes; ruff reports no problem.
 
 - [ ] **Step 9: Check the exit criteria**
 
