@@ -314,10 +314,11 @@ seasonal state may replace the dummy recursion if diagnostics favor it.
 with:
 
 ```markdown
-a sensitivity run replaces the multiplier with unrestricted level-jump states. The multiplier scales the
-non-news level innovation and the `F→S` and `S→T` news increments, which enter the truth's own
-innovation (Req 7). It does not scale the slope or seasonal innovations, the transitory noise,
-or the post-third-print news, whose yearly total the benchmark rows pin.
+a sensitivity run replaces the multiplier with unrestricted level-jump states.
+The multiplier scales the non-news level innovation and the `F→S` and `S→T` news increments,
+which enter the truth's own innovation (Req 7). It does not scale the slope or seasonal
+innovations, the transitory noise, or the post-third-print news, whose yearly total the
+benchmark rows pin.
 (Lowell, plan 11, 2026-10-21) A trigonometric seasonal state may replace the dummy recursion
 if diagnostics favor it.
 ```
@@ -335,11 +336,12 @@ with:
 
 ```markdown
 where $`n^N_{s,t,k}`$ is news first revealed at stage $`k`$ and $`e^N_{s,t,j}`$ transitory
-noise. The display fixes which news each closing stage still lacks. The closing stages
-enter the likelihood not as those levels but as the same-release over-the-month change, the
-published change from $`t-1`$ to $`t`$ in the release that first prints stage $`j`$ for
-month $`t`$: $`d^N_{s,t,j}=\Delta x_{s,t}-\sum_{k\in\mathcal F(j)}n^N_{s,t,k}+e^N_{s,t,j}`$,
-where $`n^N_{s,t,k}`$ and $`e^N_{s,t,j}`$ are the news and noise of month $`t`$'s change.
+noise. The display above fixes which news each closing stage still lacks. The closing
+stages enter the likelihood not as those levels but as the same-release over-the-month
+change, the published change from $`t-1`$ to $`t`$ in the release that first prints stage
+$`j`$ for month $`t`$:
+$`d^N_{s,t,j}=\Delta x_{s,t}-\sum_{k\in\mathcal F(j)}n^N_{s,t,k}+e^N_{s,t,j}`$,
+with $`n^N_{s,t,k}`$ and $`e^N_{s,t,j}`$ read as the news and noise of month $`t`$'s change.
 So a print's news and noise attach to that month's change, and its distance from the truth
 does not carry into later months' prints. This holds for every NSA closing cell, the 1979+
 total-nonfarm leg of Req 4 included; Stage 9 settles whether Req 9's SA rows take the same
