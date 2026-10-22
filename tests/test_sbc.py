@@ -107,6 +107,17 @@ def test_recovery_reports_the_posterior_z_score_and_contraction():
         recovery(2.0, np.array([1.0, 2.0]), prior_sd=0.0)
 
 
+def test_recovery_of_a_constant_posterior_is_non_finite_not_perfect(recwarn):
+    # A zero-variance chain would divide by zero: z = inf, and contraction = 1.0 would
+    # read as perfect recovery. Both are NaN instead, with no numpy warning.
+    for prior_value in (2.0, 3.0):
+        result = recovery(prior_value, np.full(5, 3.0), prior_sd=5.0)
+
+        assert math.isnan(result["z"])
+        assert math.isnan(result["contraction"])
+    assert not recwarn.list
+
+
 def test_gamma_matches_the_exact_definition_on_every_tiny_rank_vector():
     vectors = itertools.product(range(TINY_DRAWS + 1), repeat=TINY_REPLICATES)
     for ranks in vectors:

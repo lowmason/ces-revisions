@@ -2,7 +2,11 @@
 
 import json
 import math
+import os
+import types
+from concurrent.futures import Future
 
+import jax.numpy as jnp
 import numpy as np
 import pytest
 from pilot_synthetic import synthetic_panel
@@ -64,6 +68,53 @@ def fake_records(
             }
         )
     return records
+
+
+class ConstantMCMC:
+    """Stands in for MCMC: sigma_slope's draws are constant, every other site's vary."""
+
+    def __init__(self, kernel, *, num_warmup, num_samples, num_chains, **kwargs):
+        self.num_samples = num_samples
+        self.last_state = types.SimpleNamespace(
+            adapt_state=types.SimpleNamespace(step_size=0.1)
+        )
+
+    def run(self, key, *args, **kwargs):
+        pass
+
+    def get_samples(self):
+        varying = 1.0 + 0.01 * jnp.arange(self.num_samples)
+        return {
+            name: jnp.full(self.num_samples, 1.0) if name == "sigma_slope" else varying
+            for name in SAMPLED_SITES
+        }
+
+    def get_extra_fields(self):
+        return {
+            "diverging": jnp.zeros(self.num_samples, dtype=bool),
+            "num_steps": jnp.full(self.num_samples, 3),
+        }
+
+
+class InlinePool:
+    """Stands in for ProcessPoolExecutor: each task runs at once, in this process."""
+
+    def __init__(self, **kwargs):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def submit(self, function, *args, **kwargs):
+        future = Future()
+        try:
+            future.set_result(function(*args, **kwargs))
+        except Exception as error:  # noqa: BLE001 - delivered through the future
+            future.set_exception(error)
+        return future
 
 
 def test_quantities_are_the_sites_the_derived_quantities_and_the_log_likelihood():
@@ -192,6 +243,80 @@ def test_run_sbc_refuses_several_workers_on_a_gpu_host(tmp_path, monkeypatch):
             base_seed=SEED,
             **TINY,
         )
+
+
+def test_run_replicate_refuses_a_constant_posterior(monkeypatch):
+    monkeypatch.setattr(sbc, "MCMC", ConstantMCMC)
+    with pytest.raises(
+        sbc.NonFiniteRecovery,
+        match=r"non-finite recovery for sigma_slope.*zero or non-finite",
+    ):
+        run_replicate(
+            1,
+            base_seed=SEED,
+            layout_name="dummy",
+            panel=synthetic_panel("dummy"),
+            **TINY,
+        )
+
+
+@pytest.mark.parametrize("how", ["worker-raises", "record-is-not-finite"])
+def test_run_sbc_records_a_non_finite_replicate_as_a_failure(
+    tmp_path, monkeypatch, how
+):
+    """The bad replicate is reported, writes no file, and spares the others and a rerun."""
+    panel = synthetic_panel("dummy")
+    good = fake_records(np.random.default_rng(SEED))
+    real_run_replicate = sbc.run_replicate
+
+    def run_replicate_stub(index, **kwargs):
+        if index != 1:
+            return good[index]
+        if how == "worker-raises":
+            return real_run_replicate(index, **kwargs)
+        record = json.loads(json.dumps(good[index]))
+        record["recovery"]["sigma_slope"] = {"z": float("inf"), "contraction": 1.0}
+        return record
+
+    monkeypatch.setattr(sbc, "MCMC", ConstantMCMC)
+    monkeypatch.setattr(sbc, "ProcessPoolExecutor", InlinePool)
+    monkeypatch.setattr(sbc, "run_replicate", run_replicate_stub)
+    arguments = {
+        "layout_name": "dummy",
+        "panel": panel,
+        "start": 0,
+        "stop": 3,
+        "workers": 2,
+        "base_seed": SEED,
+        **TINY,
+    }
+    summary = run_sbc(tmp_path, **arguments)
+
+    assert list(summary["failures"]) == ["1"]
+    assert "non-finite" in summary["failures"]["1"]
+    assert not replicate_path(tmp_path, 1).exists()
+    assert summary["indices"] == [0, 2]
+    assert [record["index"] for record in read_replicates(tmp_path)] == [0, 2]
+    json.loads((tmp_path / sbc.SUMMARY_FILE).read_text())
+    # A rerun retries the missing replicate and reports it again, without raising.
+    rerun = run_sbc(tmp_path, **arguments)
+    assert list(rerun["failures"]) == ["1"]
+    assert rerun["skipped"] == 2
+
+
+def test_write_json_names_its_temporary_file_by_process(tmp_path, monkeypatch):
+    replaced = []
+    real_replace = os.replace
+    monkeypatch.setattr(
+        sbc.os,
+        "replace",
+        lambda source, target: replaced.append(source) or real_replace(source, target),
+    )
+    sbc._write_json({"a": 1}, tmp_path / "summary.json")
+
+    assert [path.name for path in replaced] == [f".summary.json.{os.getpid()}.tmp"]
+    assert json.loads((tmp_path / "summary.json").read_text()) == {"a": 1}
+    assert [path.name for path in tmp_path.iterdir()] == ["summary.json"]
 
 
 @pytest.mark.slow

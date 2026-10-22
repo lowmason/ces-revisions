@@ -30,7 +30,7 @@ import numpy as np
 import numpyro
 from numpyro.infer import MCMC, NUTS, init_to_value
 
-from ces_revisions.devices import has_nvidia_device
+from ces_revisions.devices import chain_method, has_nvidia_device
 from ces_revisions.kalman import kalman_filter
 from ces_revisions.pilot.layout import LAYOUTS, Layout
 from ces_revisions.pilot.model import (
@@ -149,7 +149,9 @@ def recovery(prior_value: float, draws: np.ndarray, prior_sd: float) -> dict:
     """Posterior z-score and contraction of one parameter fit to one simulated panel.
 
     The z-score is (posterior mean - prior value) / posterior SD, and the contraction
-    1 - posterior variance / prior variance; both use the draws' ddof=1 variance.
+    1 - posterior variance / prior variance; both use the draws' ddof=1 variance. A
+    posterior with zero or non-finite variance (a constant chain) has neither: both are
+    NaN, never an infinite z-score or a contraction of 1.
     """
     draws = np.asarray(draws, dtype=np.float64)
     if draws.ndim != 1 or draws.size < 2:
@@ -157,6 +159,8 @@ def recovery(prior_value: float, draws: np.ndarray, prior_sd: float) -> dict:
     if not prior_sd > 0:
         raise ValueError(f"prior_sd must be positive, not {prior_sd}")
     variance = draws.var(ddof=1)
+    if not (np.isfinite(variance) and variance > 0):
+        return {"z": float("nan"), "contraction": float("nan")}
     return {
         "z": float((draws.mean() - prior_value) / np.sqrt(variance)),
         "contraction": float(1.0 - variance / prior_sd**2),
@@ -242,6 +246,8 @@ LARGE_Z_SHARE_MAX = 0.05
 PRIOR_REFERENCE_SEED = sum(map(ord, "ces-revisions-stage-6-sbc-prior-reference"))
 PRIOR_REFERENCE_DRAWS = 20_000
 ECDF_SEED = sum(map(ord, "ces-revisions-stage-6-sbc-ecdf"))
+# The family's critical value sits at alpha = 0.05 / 23, so its tail needs many simulations.
+ECDF_SIMULATIONS = 100_000
 MAX_TREE_DEPTH = 10
 # The reduced panel: January 1999 to December 2021 holds 52 months before the May 2003
 # shift, the 2020 crisis months, and the anchors of 2003-2021, so the shift, crisis, and
@@ -333,6 +339,7 @@ def run_replicate(
         num_warmup=num_warmup,
         num_samples=num_samples,
         num_chains=1,
+        chain_method=chain_method(1),
         progress_bar=False,
     )
     sampling_started = time.perf_counter()
@@ -347,6 +354,12 @@ def run_replicate(
     samples = {name: np.asarray(samples[name]) for name in SAMPLED_SITES}
     draws = {**samples, **derived(samples)}
     truth = {**theta, **{name: float(value) for name, value in derived(theta).items()}}
+
+    recoveries = {
+        name: recovery(truth[name], draws[name], reference["sd"][name])
+        for name in (*SAMPLED_SITES, *DERIVED_QUANTITIES)
+    }
+    _require_finite_recovery(index, recoveries)
 
     kept = thin(np.arange(num_samples), num_kept)
     log_likelihoods = _log_likelihoods(
@@ -383,10 +396,7 @@ def run_replicate(
         "ranks": {
             name: rank_of(truth[name], kept_draws[name], rng) for name in QUANTITIES
         },
-        "recovery": {
-            name: recovery(truth[name], draws[name], reference["sd"][name])
-            for name in (*SAMPLED_SITES, *DERIVED_QUANTITIES)
-        },
+        "recovery": recoveries,
         "ess_bulk": {
             name: _json_float(az.ess(draws[name][None, :], method="bulk"))
             for name in (*SAMPLED_SITES, *DERIVED_QUANTITIES)
@@ -407,6 +417,24 @@ def run_replicate(
             "total": time.perf_counter() - started,
         },
     }
+
+
+class NonFiniteRecovery(ValueError):
+    """A replicate whose recovery cannot be computed finitely, so it cannot be recorded."""
+
+
+def _require_finite_recovery(index: int, recoveries: dict) -> None:
+    """Raise NonFiniteRecovery naming each quantity whose z or contraction is not finite."""
+    bad = [
+        name
+        for name, entry in recoveries.items()
+        if not (np.isfinite(entry["z"]) and np.isfinite(entry["contraction"]))
+    ]
+    if bad:
+        raise NonFiniteRecovery(
+            f"replicate {index} has non-finite recovery for {', '.join(bad)}: "
+            "the posterior draws have zero or non-finite variance"
+        )
 
 
 def _log_likelihoods(params: dict, panel: AggregatePanel, layout: Layout) -> np.ndarray:
@@ -500,10 +528,10 @@ def run_sbc(
                     index = futures[future]
                     try:
                         record = future.result()
+                        _require_finite_recovery(index, record["recovery"])
+                        _write_json(record, replicate_path(out_dir, index))
                     except Exception as error:  # noqa: BLE001 - one failure must not stop the rest
                         failures[index] = repr(error)
-                        continue
-                    _write_json(record, replicate_path(out_dir, index))
         finally:
             if saved_flags is None:
                 del os.environ["XLA_FLAGS"]
@@ -535,7 +563,8 @@ def _initialize_worker() -> None:
 def _write_json(record: dict, path: Path) -> None:
     """Write through a temporary file, so a killed process never leaves a partial file."""
     text = json.dumps(record, indent=2, sort_keys=True, allow_nan=False) + "\n"
-    temporary = path.with_name(f".{path.name}.tmp")
+    # The process id keeps hand-started shards that write one out_dir from sharing a name.
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     temporary.write_text(text)
     os.replace(temporary, path)
 
@@ -559,7 +588,9 @@ def summarize_sbc(records: list[dict]) -> dict:
     quantities = {}
     for name in QUANTITIES:
         ranks = np.array([record["ranks"][name] for record in records], dtype=np.int64)
-        test = ecdf_test(ranks, num_kept, alpha, seed=ECDF_SEED)
+        test = ecdf_test(
+            ranks, num_kept, alpha, seed=ECDF_SEED, num_simulations=ECDF_SIMULATIONS
+        )
         entry = {"ecdf": {key: test[key] for key in ("gamma", "critical")}}
         entry["ecdf"]["passed"] = bool(test["passed"])
         entry["ess_bulk_kept_min"] = _min_or_none(
