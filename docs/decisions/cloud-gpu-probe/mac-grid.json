@@ -1,0 +1,1015 @@
+{
+  "label": "mac",
+  "hourly_price_usd": null,
+  "four_gpu_hourly_price_usd": null,
+  "host": {
+    "backend": "cpu",
+    "device_kind": "cpu",
+    "device_count": 1,
+    "bytes_limit": null,
+    "nvidia_driver": null,
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "cpu_count": 14,
+    "xla_flags": ""
+  },
+  "versions": {
+    "jax": "0.11.1",
+    "jaxlib": "0.11.1"
+  },
+  "entries": [
+    {
+      "steps": 572,
+      "states": 190,
+      "cells": 37,
+      "stage": 7,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 370319424,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 370319537,
+            "temp_size_in_bytes": 1580834160,
+            "total_bytes": 1951153624
+          },
+          "compile_seconds": 1.529807750004693,
+          "median_seconds": 1.276943457996822,
+          "iqr_seconds": 0.015569895502267173
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 370319472,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 370319657,
+            "temp_size_in_bytes": 5630714480,
+            "total_bytes": 6001034064
+          },
+          "compile_seconds": 3.0942304159980267,
+          "median_seconds": 2.8863132080005016,
+          "iqr_seconds": 0.00409016649791738
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        2.3251953125,
+        4.4638671875,
+        6.869140625
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 190,
+      "cells": 37,
+      "stage": 7,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 181423456,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 181423569,
+            "temp_size_in_bytes": 774321008,
+            "total_bytes": 955744504
+          },
+          "compile_seconds": 0.9040337499973248,
+          "median_seconds": 0.6420274589982,
+          "iqr_seconds": 0.0008012500002223533
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 181423504,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 181423689,
+            "temp_size_in_bytes": 2757675632,
+            "total_bytes": 2939099248
+          },
+          "compile_seconds": 1.6583084169978974,
+          "median_seconds": 1.3406901670023217,
+          "iqr_seconds": 0.002573708497948246
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        2.50830078125,
+        4.43212890625,
+        6.8291015625
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 203,
+      "cells": 85,
+      "stage": 8,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 491203408,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 491203521,
+            "temp_size_in_bytes": 2234383536,
+            "total_bytes": 2725586984
+          },
+          "compile_seconds": 2.314683791999414,
+          "median_seconds": 2.0661712080036523,
+          "iqr_seconds": 0.0013862290034012403
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 491203456,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 491203641,
+            "temp_size_in_bytes": 7882611056,
+            "total_bytes": 8373814624
+          },
+          "compile_seconds": 4.3430131249988335,
+          "median_seconds": 4.207851707993541,
+          "iqr_seconds": 0.039508520498202415
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        3.46728515625,
+        4.45849609375,
+        6.75341796875
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 203,
+      "cells": 85,
+      "stage": 8,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 240618352,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 240618465,
+            "temp_size_in_bytes": 1094398896,
+            "total_bytes": 1335017288
+          },
+          "compile_seconds": 1.2944066670024768,
+          "median_seconds": 1.0219132080019335,
+          "iqr_seconds": 0.0005627499995171092
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 240618400,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 240618585,
+            "temp_size_in_bytes": 3860313840,
+            "total_bytes": 4100932352
+          },
+          "compile_seconds": 2.25880687499739,
+          "median_seconds": 1.9181091250065947,
+          "iqr_seconds": 0.0012495214978116564
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        3.3212890625,
+        4.3935546875,
+        6.703125
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 324,
+      "cells": 217,
+      "stage": 8,
+      "layout": "dummy",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1502260048,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 1502260161,
+            "temp_size_in_bytes": 7209426736,
+            "total_bytes": 8711686824
+          },
+          "compile_seconds": 3.903622040998016,
+          "median_seconds": 3.6167189160041744,
+          "iqr_seconds": 0.008694374999322463
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1502260096,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 1502260281,
+            "temp_size_in_bytes": 25375717104,
+            "total_bytes": 26877977312
+          },
+          "error": "skipped: compiled memory exceeds 20000000000 bytes"
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        4.3271484375,
+        4.546875,
+        6.703125
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 324,
+      "cells": 217,
+      "stage": 8,
+      "layout": "dummy",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 735802096,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 735802209,
+            "temp_size_in_bytes": 3531101808,
+            "total_bytes": 4266903944
+          },
+          "compile_seconds": 1.9893540409975685,
+          "median_seconds": 1.702960583003005,
+          "iqr_seconds": 0.0037156250000407454
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 735802144,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 735802329,
+            "temp_size_in_bytes": 12426488304,
+            "total_bytes": 13162290560
+          },
+          "compile_seconds": 7.118331375000707,
+          "median_seconds": 6.018801333004376,
+          "iqr_seconds": 0.046329937500559026
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.77978515625,
+        5.09375,
+        6.8125
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 247,
+      "cells": 145,
+      "stage": 9,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 821401584,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 821401697,
+            "temp_size_in_bytes": 3879929392,
+            "total_bytes": 4701331016
+          },
+          "compile_seconds": 3.2966645829947083,
+          "median_seconds": 2.9347175000002608,
+          "iqr_seconds": 0.0219530409995059
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 821401632,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 821401817,
+            "temp_size_in_bytes": 13657243376,
+            "total_bytes": 14478645120
+          },
+          "compile_seconds": 9.703743209000095,
+          "median_seconds": 7.032973417000903,
+          "iqr_seconds": 0.2993009375022666
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.39501953125,
+        5.19482421875,
+        6.7578125
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 247,
+      "cells": 145,
+      "stage": 9,
+      "layout": "dummy",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 402334864,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 402334977,
+            "temp_size_in_bytes": 1900357232,
+            "total_bytes": 2302692136
+          },
+          "compile_seconds": 1.6979487920034444,
+          "median_seconds": 1.4018632079969393,
+          "iqr_seconds": 0.009125917003984796
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 402334912,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 402335097,
+            "temp_size_in_bytes": 6688053040,
+            "total_bytes": 7090388064
+          },
+          "compile_seconds": 3.5714426249978715,
+          "median_seconds": 3.3501532500013127,
+          "iqr_seconds": 0.01291147900337819
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.45458984375,
+        5.29296875,
+        6.75634765625
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 368,
+      "cells": 277,
+      "stage": 9,
+      "layout": "dummy",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 2062276912,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 2062277025,
+            "temp_size_in_bytes": 10035493424,
+            "total_bytes": 12097770376
+          },
+          "compile_seconds": 5.525691458999063,
+          "median_seconds": 5.403263624997635,
+          "iqr_seconds": 0.04163112499736599
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 2062276960,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 2062277145,
+            "temp_size_in_bytes": 35338999088,
+            "total_bytes": 37401276160
+          },
+          "error": "skipped: compiled memory exceeds 20000000000 bytes"
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        8.138671875,
+        5.794921875,
+        6.89453125
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 368,
+      "cells": 277,
+      "stage": 9,
+      "layout": "dummy",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1010060752,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 1010060865,
+            "temp_size_in_bytes": 4915266608,
+            "total_bytes": 5925327400
+          },
+          "compile_seconds": 2.7909826660034014,
+          "median_seconds": 2.5858172079970245,
+          "iqr_seconds": 0.008380187504371861
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1010060800,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 1010060985,
+            "temp_size_in_bytes": 17305278192,
+            "total_bytes": 18315339104
+          },
+          "compile_seconds": 10.561948832997587,
+          "median_seconds": 8.670098916001734,
+          "iqr_seconds": 0.0152429999980086
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        11.03564453125,
+        6.76025390625,
+        7.17724609375
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 157,
+      "cells": 37,
+      "stage": 7,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 259689696,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 259689809,
+            "temp_size_in_bytes": 1122240368,
+            "total_bytes": 1381930104
+          },
+          "compile_seconds": 1.4038053340045735,
+          "median_seconds": 1.1263653329951921,
+          "iqr_seconds": 0.006926979498530272
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 259689744,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 259689929,
+            "temp_size_in_bytes": 3987364400,
+            "total_bytes": 4247054256
+          },
+          "compile_seconds": 2.8058416670028237,
+          "median_seconds": 2.388850540999556,
+          "iqr_seconds": 0.026494749497942394
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        9.1201171875,
+        6.54345703125,
+        7.091796875
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 157,
+      "cells": 37,
+      "stage": 7,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 127222144,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 127222257,
+            "temp_size_in_bytes": 549688816,
+            "total_bytes": 676911000
+          },
+          "compile_seconds": 0.8021585419992334,
+          "median_seconds": 0.5509820840015891,
+          "iqr_seconds": 0.0002757079964794684
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 127222192,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 127222377,
+            "temp_size_in_bytes": 1952811632,
+            "total_bytes": 2080033936
+          },
+          "compile_seconds": 1.45727108400024,
+          "median_seconds": 1.1735232920036651,
+          "iqr_seconds": 0.032894416002818616
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        8.7099609375,
+        6.5009765625,
+        7.0732421875
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 170,
+      "cells": 85,
+      "stage": 8,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 365466016,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 365466129,
+            "temp_size_in_bytes": 1693607024,
+            "total_bytes": 2059073080
+          },
+          "compile_seconds": 1.9915200420000474,
+          "median_seconds": 1.7490856670046924,
+          "iqr_seconds": 0.003221270500944229
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 365466064,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 365466249,
+            "temp_size_in_bytes": 5965861552,
+            "total_bytes": 6331327728
+          },
+          "compile_seconds": 3.8397098330024164,
+          "median_seconds": 3.574112916998274,
+          "iqr_seconds": 0.024199437499191845
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        8.4990234375,
+        6.63427734375,
+        7.1044921875
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 170,
+      "cells": 85,
+      "stage": 8,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 179018176,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 179018289,
+            "temp_size_in_bytes": 829520816,
+            "total_bytes": 1008539032
+          },
+          "compile_seconds": 1.0922923750040354,
+          "median_seconds": 0.8330147079977905,
+          "iqr_seconds": 0.0021595830003207084
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 179018224,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 179018409,
+            "temp_size_in_bytes": 2921579888,
+            "total_bytes": 3100598224
+          },
+          "compile_seconds": 2.0366986250010086,
+          "median_seconds": 1.7108840000000782,
+          "iqr_seconds": 0.0024057915034063626
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        7.6533203125,
+        6.51416015625,
+        7.05615234375
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 291,
+      "cells": 217,
+      "stage": 8,
+      "layout": "trig4",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1283437840,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 1283437953,
+            "temp_size_in_bytes": 6236542000,
+            "total_bytes": 7519979880
+          },
+          "compile_seconds": 3.49425962499663,
+          "median_seconds": 3.3085599999976694,
+          "iqr_seconds": 0.0164794999982405
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1283437888,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 1283438073,
+            "temp_size_in_bytes": 21960056880,
+            "total_bytes": 23243494880
+          },
+          "error": "skipped: compiled memory exceeds 20000000000 bytes"
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.3388671875,
+        6.2763671875,
+        6.96142578125
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 291,
+      "cells": 217,
+      "stage": 8,
+      "layout": "trig4",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 628603312,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 628603425,
+            "temp_size_in_bytes": 3054586224,
+            "total_bytes": 3683189576
+          },
+          "compile_seconds": 1.8293217919999734,
+          "median_seconds": 1.5466334170050686,
+          "iqr_seconds": 0.005039646501245443
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 628603360,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 628603545,
+            "temp_size_in_bytes": 10753710576,
+            "total_bytes": 11382314048
+          },
+          "compile_seconds": 5.085839958999713,
+          "median_seconds": 5.015588082998875,
+          "iqr_seconds": 0.040106458003720036
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.57861328125,
+        6.2919921875,
+        6.93994140625
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 214,
+      "cells": 145,
+      "stage": 9,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 660003072,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 660003185,
+            "temp_size_in_bytes": 3169334320,
+            "total_bytes": 3829337432
+          },
+          "compile_seconds": 2.6698583339966717,
+          "median_seconds": 2.3578399999969406,
+          "iqr_seconds": 0.002648708497872576
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 660003120,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 660003305,
+            "temp_size_in_bytes": 11155565936,
+            "total_bytes": 11815569168
+          },
+          "compile_seconds": 5.786477000001469,
+          "median_seconds": 5.64831279200007,
+          "iqr_seconds": 0.032334729497961234
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        8.08203125,
+        6.64990234375,
+        7.0400390625
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 214,
+      "cells": 145,
+      "stage": 9,
+      "layout": "trig4",
+      "wedge": "low",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 323266336,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 323266449,
+            "temp_size_in_bytes": 1552307504,
+            "total_bytes": 1875573880
+          },
+          "compile_seconds": 1.456811291995109,
+          "median_seconds": 1.1766122499975609,
+          "iqr_seconds": 0.0013940834978711791
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 323266384,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 323266569,
+            "temp_size_in_bytes": 5462875888,
+            "total_bytes": 5786142384
+          },
+          "compile_seconds": 2.9385810419989866,
+          "median_seconds": 2.726712290997966,
+          "iqr_seconds": 0.003152000001136912
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.96142578125,
+        6.470703125,
+        6.96875
+      ]
+    },
+    {
+      "steps": 572,
+      "states": 335,
+      "cells": 277,
+      "stage": 9,
+      "layout": "trig4",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1807793584,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 1807793697,
+            "temp_size_in_bytes": 8892790192,
+            "total_bytes": 10700583816
+          },
+          "compile_seconds": 4.6752227089964435,
+          "median_seconds": 4.518056083004922,
+          "iqr_seconds": 0.14845210400017095
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 1807793632,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 1807793817,
+            "temp_size_in_bytes": 31338410992,
+            "total_bytes": 33146204736
+          },
+          "error": "skipped: compiled memory exceeds 20000000000 bytes"
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.76904296875,
+        6.4560546875,
+        6.951171875
+      ]
+    },
+    {
+      "steps": 280,
+      "states": 335,
+      "cells": 277,
+      "stage": 9,
+      "layout": "trig4",
+      "wedge": "high",
+      "missing_share": 0.2,
+      "seed": 3455,
+      "repeats": 3,
+      "max_bytes": 20000000000,
+      "batches": [
+        {
+          "batch": 1,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 885393616,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 40,
+            "peak_memory_in_bytes": 885393729,
+            "temp_size_in_bytes": 4355579440,
+            "total_bytes": 5240973096
+          },
+          "compile_seconds": 2.418796124999062,
+          "median_seconds": 2.215802541002631,
+          "iqr_seconds": 0.0034433545006322674
+        },
+        {
+          "batch": 4,
+          "memory_analysis": {
+            "alias_size_in_bytes": 0,
+            "argument_size_in_bytes": 885393664,
+            "generated_code_size_in_bytes": 0,
+            "output_size_in_bytes": 112,
+            "peak_memory_in_bytes": 885393849,
+            "temp_size_in_bytes": 15346057328,
+            "total_bytes": 16231451104
+          },
+          "compile_seconds": 7.437394250002399,
+          "median_seconds": 7.547555958997691,
+          "iqr_seconds": 0.1900882920017466
+        }
+      ],
+      "peak_bytes_in_use": null,
+      "load_average": [
+        6.7548828125,
+        6.49853515625,
+        6.93994140625
+      ]
+    }
+  ],
+  "timestamp_utc": "2026-10-22T04:34:14+00:00"
+}
