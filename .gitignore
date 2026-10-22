@@ -28,3 +28,6 @@ data/annual/panel/
 
 # Stage 5 deterministic operator artifacts are rebuilt from the committed Stage 3/4 sources
 data/operators/
+
+# Stage 6 run directories (InferenceData, diagnostics, provenance) are rebuilt by each fit
+data/runs/
