@@ -28,6 +28,7 @@ from collections.abc import Callable
 from dataclasses import asdict, dataclass, fields, replace
 from datetime import UTC, date, datetime, time
 from functools import partial
+from operator import attrgetter
 from pathlib import Path, PurePosixPath
 from time import sleep
 from zoneinfo import ZoneInfo
@@ -268,6 +269,21 @@ def inspect_zip(payload: bytes) -> dict[str, str]:
     return result
 
 
+def newest_member(payload: bytes) -> str:
+    """The latest modification time among a ZIP's members, as ISO 8601 with no timezone.
+
+    The scope is the fingerprints': top-level members that are not directories. A nested ZIP
+    counts by its own entry's time, and its members are not read. ZIP times are the zipping
+    machine's local clock and carry no timezone, so the value has no `Z` and is not UTC.
+    """
+    with zipfile.ZipFile(io.BytesIO(payload)) as archive:
+        # `date_time` is (year, month, day, hour, minute, second), so tuples sort as times do.
+        times = [info.date_time for info in archive.infolist() if not info.is_dir()]
+    if not times:
+        return ""
+    return "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(*max(times))
+
+
 @dataclass(frozen=True)
 class Capture:
     """One copy of a seasonal-adjustment ZIP: an Internet Archive capture or BLS's current file."""
@@ -283,6 +299,9 @@ class Capture:
     prior_adjustment: str = ""
     outliers: str = ""
     unexpected: str = ""
+    # The newest member's time on the zipping machine's clock (see `newest_member`), for an
+    # opened copy only. It tests that a copy holds files made inside the window it is credited to.
+    newest_member: str = ""
 
 
 CAPTURE_COLUMNS = [field.name for field in fields(Capture)]
@@ -379,7 +398,7 @@ def payload_digest(payload: bytes) -> str:
 
 def fetch_and_inspect(url: str) -> tuple[bytes, dict[str, str]]:
     payload = fetch(url)
-    return payload, inspect_zip(payload)
+    return payload, {**inspect_zip(payload), "newest_member": newest_member(payload)}
 
 
 def collect_captures(now: datetime) -> list[Capture]:
@@ -486,7 +505,9 @@ def resolve_revisits(captures: list[Capture]) -> list[Capture]:
 
     The Internet Archive lists a copy identical to an earlier one as a revisit, with status `-`,
     and `captures` does not download it. The same digest means the same bytes, so a revisit
-    evidences the same files at its own time. A revisit with no opened twin stays empty.
+    evidences the same files, with the same member dates. A specification revisit counts at its
+    own time, and a prior-adjustment or outlier revisit counts by its member date
+    (`monthly_moment`). A revisit with no opened twin stays empty.
     """
     opened = {
         (capture.artifact, capture.digest): capture
@@ -497,28 +518,62 @@ def resolve_revisits(captures: list[Capture]) -> list[Capture]:
     for capture in captures:
         twin = opened.get((capture.artifact, capture.digest))
         if capture.status == "-" and twin is not None:
-            copied = (*FILE_TYPES, "unexpected")
+            copied = (*FILE_TYPES, "unexpected", "newest_member")
             capture = replace(capture, **{name: getattr(twin, name) for name in copied})
         resolved.append(capture)
     return resolved
 
 
+def member_release(capture: Capture, vintages: list[Vintage]) -> Vintage | None:
+    """The release a copy's files were made for: the first dated on or after its newest member.
+
+    BLS builds the prior-adjustment and outlier files a few days before each release, but it has
+    posted an earlier release's build as current on a release day. The ZIP that the Internet
+    Archive copied on 2015-09-05 was last modified 14 minutes after the August 2015 release, yet
+    holds files dated 2015-08-04, made for the July release of 2015-08-07. A ZIP time has no
+    timezone, so the newest member's calendar date is compared with the release dates, which are
+    Eastern, and a file dated on a release's own day belongs to that release. None means the
+    files are newer than every listed release.
+    """
+    made = date.fromisoformat(capture.newest_member[:10])
+    return next((vintage for vintage in vintages if vintage.release_date >= made), None)
+
+
+def monthly_moment(capture: Capture, vintages: list[Vintage]) -> datetime | None:
+    """When a copy's prior-adjustment and outlier files went live: their release's embargo.
+
+    A copy without a member date, as in evidence written before `captures` recorded them, counts
+    at its own time. None leaves the copy out: its files belong to no listed release.
+    """
+    if not capture.newest_member:
+        return capture.timestamp
+    release = member_release(capture, vintages)
+    return None if release is None else release_instant(release.release_date)
+
+
+def _inside(window: tuple[datetime, datetime | None], moment: datetime | None) -> bool:
+    start, end = window
+    return moment is not None and start <= moment and (end is None or moment < end)
+
+
 def file_status(
-    captures: list[Capture], file_type: str, window: tuple[datetime, datetime | None]
+    captures: list[Capture],
+    file_type: str,
+    window: tuple[datetime, datetime | None],
+    moment: Callable[[Capture], datetime | None] = attrgetter("timestamp"),
 ) -> tuple[str, str]:
     """One file type's status for one vintage, with the URL of the copy that evidences it.
 
     Opened copies count, and so do revisit records once `resolve_revisits` has filled them in.
+    `moment` gives the time a copy evidences, by default its own, and None leaves it out.
     """
-    start, end = window
     holding = sorted(
         (
             capture
             for capture in captures
             if capture.status in ("200", "-")
             and getattr(capture, file_type)
-            and start <= capture.timestamp
-            and (end is None or capture.timestamp < end)
+            and _inside(window, moment(capture))
         ),
         key=lambda capture: capture.timestamp,
     )
@@ -533,12 +588,23 @@ def file_status(
 def inventory_rows(
     vintages: list[Vintage], captures: list[Capture]
 ) -> list[dict[str, str]]:
-    """One row per reference month from May 2003 through the latest vintage."""
+    """One row per reference month from May 2003 through the latest vintage.
+
+    A specification copy evidences the benchmark window that holds the copy. A prior-adjustment
+    or outlier copy evidences the release its files were made for (`monthly_moment`), which is
+    earlier than the copy's own window when BLS posted an earlier release's build as current.
+    """
     captures = resolve_revisits(captures)
     windows = {
         "specification": live_windows(vintages, annual=True),
         "prior_adjustment": live_windows(vintages, annual=False),
         "outliers": live_windows(vintages, annual=False),
+    }
+    by_files = partial(monthly_moment, vintages=vintages)
+    moments = {
+        "specification": attrgetter("timestamp"),
+        "prior_adjustment": by_files,
+        "outliers": by_files,
     }
     released = {vintage.reference_month: vintage for vintage in vintages}
     rows = []
@@ -554,7 +620,7 @@ def inventory_rows(
             row["release_date"] = vintage.release_date.isoformat()
             for file_type in FILE_TYPES:
                 row[file_type], row[f"{file_type}_evidence"] = file_status(
-                    captures, file_type, windows[file_type][month]
+                    captures, file_type, windows[file_type][month], moments[file_type]
                 )
             # cesseasadjtn.htm: X-13 runs on unrounded NSA data, and BLS publishes rounded data.
             row["unrounded_nsa_inputs"] = "not_published"

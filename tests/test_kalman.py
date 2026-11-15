@@ -155,6 +155,48 @@ def test_log_likelihood_gradient_matches_a_dense_finite_difference(gappy_case):
     np.testing.assert_allclose(gradient, finite_difference, rtol=1e-5)
 
 
+def _dense_directional_derivative(ssm, y, field, direction, step=1e-6):
+    """The dense oracle's log likelihood, central-differenced along `direction` in one array."""
+
+    def log_likelihood(distance):
+        moved = {**ssm, field: ssm[field] + distance * direction}
+        return dense_reference(moved, y)["log_likelihood"]
+
+    return (log_likelihood(step) - log_likelihood(-step)) / (2 * step)
+
+
+@pytest.mark.parametrize("field", ["transition_matrix", "observation_matrix"])
+def test_log_likelihood_gradient_along_a_matrix_matches_a_dense_finite_difference(
+    gappy_case, field
+):
+    """The gradient with respect to every step's A_t or Z_t, on the panel with missing cells.
+
+    A unit-length random direction over the whole array reaches every entry at once, and a step
+    of 1e-6 along it leaves the model as stable as it was. By the chain rule, agreement here
+    covers any later parameter that enters one of these arrays.
+    """
+    ssm, y = gappy_case
+    engine_ssm, panel = _engine(ssm), jnp.asarray(y)
+
+    def engine_log_likelihood(matrices):
+        moved = engine_ssm._replace(**{field: matrices})
+        return kalman_filter(moved, panel).log_likelihood
+
+    gradient = np.asarray(jax.grad(engine_log_likelihood)(getattr(engine_ssm, field)))
+    assert gradient.shape == ssm[field].shape
+    assert np.isfinite(gradient).all()
+    for stream in range(3):
+        direction = np.random.default_rng([SEED, stream]).normal(size=gradient.shape)
+        direction /= np.linalg.norm(direction)
+        finite_difference = _dense_directional_derivative(ssm, y, field, direction)
+        np.testing.assert_allclose(
+            np.vdot(gradient, direction),
+            finite_difference,
+            rtol=1e-5,
+            err_msg=f"{field}, direction {stream}",
+        )
+
+
 def test_rejects_arrays_whose_shapes_disagree_with_the_panel(gappy_case):
     ssm, y = gappy_case
     short = {**ssm, "observation_cov": ssm["observation_cov"][:-1]}
