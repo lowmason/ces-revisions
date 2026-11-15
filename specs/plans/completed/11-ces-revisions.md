@@ -2,8 +2,10 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> Roadmap: specs/ces-revisions-roadmap.md, Stage 6 — on plan completion, tick the stage and
+> Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 2 — on plan completion, tick the stage and
 > re-validate later stages against what shipped.
+
+**Status: COMPLETE (2026-11-15)** — executed via subagent-driven-development (Tasks 1–12) and executing-plans (Task 14, as Task 2 of plan 13); deferred items in specs/deferred_items.md
 
 **Goal:** Fit the marginalized linear-Gaussian pilot to the real total-nonfarm vintages under Req 18's thresholds, and ship the run harness that every later fit reuses. The pilot takes same-release F, S, and T changes from 1979, one composite May 2003 shift, and the 23 final March anchors. Calibrate it by prior predictive and reduced-panel SBC. Choose the seasonal state, and the Lambda GPU type and count for each Stage 7–9 model, from measured cost.
 
@@ -11,7 +13,7 @@
 
 **Tech Stack:** Python 3.14; JAX 0.11.1 (float64); NumPyro 0.21.0 (NUTS); ArviZ 1.3.0 (xarray `DataTree`); xarray 2026.7.0; h5netcdf 1.8.1 and h5py 3.16.0 (new); SciPy 1.18.1 (already locked through ArviZ, now declared); Polars 1.44.2; NumPy 2.5.3; pytest 9.1.1; ruff 0.16.7.
 
-**Spec:** [`specs/ces-revisions.md`](../ces-revisions.md) Req 17 (step 2), Req 4, Req 6, Req 7, Req 15, Req 18; roadmap [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md) Stage 6. Executors read both.
+**Spec:** [`specs/completed/ces-revisions.md`](../../completed/ces-revisions.md) Req 17 (step 2), Req 4, Req 6, Req 7, Req 15, Req 18; roadmap [`specs/completed/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md) Stage 6. Executors read both.
 
 ## Global Constraints
 
@@ -47,21 +49,19 @@
 
 ## Source and numbering
 
-- Source spec: [`specs/ces-revisions.md`](../ces-revisions.md): Req 4, Req 6, Req 7, Req 15, Req 17 step (2), Req 18.
-- Roadmap stage: [`specs/ces-revisions-roadmap.md`](../ces-revisions-roadmap.md), Stage 6.
+- Source spec: [`specs/completed/ces-revisions.md`](../../completed/ces-revisions.md): Req 4, Req 6, Req 7, Req 15, Req 17 step (2), Req 18.
+- Roadmap stage: [`specs/completed/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md), Stage 6.
 - Inputs: the Stage 1 engine (`src/ces_revisions/kalman.py`, `tests/dense_reference.py`), the Stage 3 vintage panel (`ces_revisions.vintages`), the Stage 4 annual tables (`ces_revisions.annual`), the Stage 5 operators (`ces_revisions.operators`), and the plan 3 device rule and engine probe (`devices.py`, `engine_probe.py`).
 - **Plan ID 11.** `entry_check.py` reports 9 as the next free ID, but it cannot see the abandoned `codex/plan-10-cloud-gpu-runner` branch. The roadmap's 2026-10-20 amendment gives plans 9 and 10 to that branch and says that the next new plan takes ID 11, so that no ID is reused.
-- **Retirement:** `specs/ces-revisions.md` does not retire with this plan, because later stages still implement it. On completion, run writing-plans' Plan Completion Protocol, step 3a included:
-  1. In `specs/deferred_items.md`, rewrite plan 5's evidence-tests item as Execution notes give it, and append a `## 11-ces-revisions — YYYY-MM-DD` section with the three items that planning choice 9 records, each in the backlog's schema (`Size: design`):
-     - the `σ_slope` conflict: the pilot's posterior median and SD of `sigma_slope` from `docs/runs/stage-6/pilot-fit/`, against its HalfNormal(15) prior. Revisit if: Stage 10's $`t_5`$ process innovations or Stage 16's prior-predictive gate still leave it above 3 prior scales.
-     - the doubled-prior failure: the two figures in `docs/runs/stage-6/prior-predictive-doubled.json`. Revisit if: Stage 16's full prior-predictive gate runs.
-     - the residual seasonality at lags 11–12: the Ljung–Box Q of each layout from `docs/runs/stage-6/seasonal-comparison.json`. Revisit if: Stage 18's posterior predictive suite or Stage 21's sensitivity suite traces a misfit to the seasonal block.
-  2. Add `## Handoff to later stages` to this plan. Only Stage 7 names Stage 6 in its roadmap `Consumes`, so the section has one bullet, for Stage 7: the `ces_revisions.runs` and `ces_revisions.pilot` names it imports, `TARGET_ACCEPT_PROB` 0.95, the `news_post` stand-in that Stage 8 replaces, the chosen layout and each Stage 7–9 model's GPU from `docs/decisions/seasonal-state.md` (D5 narrows the roadmap's one GPU for Stages 7–17), the per-GPU SBC shards (`run_sbc` takes one worker on a GPU host), plan 1's open `A_t`/`Z_t` item, and the plan 11 section of `specs/deferred_items.md`. Add any deviation from execution.
-  3. Tick Stage 6 in `specs/ces-revisions-roadmap.md`, and put this stamp under its entry:\
-     `> Stage 6: COMPLETE (YYYY-MM-DD) — implemented by plan 11 (specs/plans/completed/11-ces-revisions.md). Its Handoff section names what Stage 7 consumes.`\
-     `> Next: resume the roadmap.`
-  4. Add the same completion line to the spec's Rollout note, after the plan 11 amendment note, as earlier stages did:\
-     `Stage 6: COMPLETE (YYYY-MM-DD) — implemented by plan 11 (specs/plans/completed/11-ces-revisions.md). Next: resume the roadmap.`
+- **Retirement:** `specs/completed/ces-revisions.md` does not retire with this plan, because later stages still implement it. Plan 13 (roadmap Stage 2, `specs/plans/completed/13-ces-revision-drivers-stage-2.md`) ran writing-plans' Plan Completion Protocol for this plan, with these changes:
+  1. In `specs/deferred_items.md`, plan 5's evidence-tests item is not rewritten, because `main` already ticked it. A `## 11-ces-revisions — 2026-11-15` section holds the three items that planning choice 9 records, each in the backlog's schema (`Size: design`):
+     - the `σ_slope` conflict: the pilot's posterior median and SD of `sigma_slope` from `docs/runs/stage-6/pilot-fit/`, against its HalfNormal(15) prior. Revisit if: O6's fit or O17's prior-predictive gate still leaves it above 3 prior scales.
+     - the doubled-prior failure: the two figures in `docs/runs/stage-6/prior-predictive-doubled.json`. Revisit if: O17's prior-sensitivity run.
+     - the residual seasonality at lags 11–12: the Ljung–Box Q of each layout from `docs/runs/stage-6/seasonal-comparison.json`. Revisit if: O17's posterior predictive suite traces a misfit to the seasonal block.
+     The section adds a fourth item for plan 11's Task 13 and the GPU half of Task 14 (the \$40 Lambda measurement, the GPU rule, `gpu-choice.json`, and D8's parallel-filter note), covered by O6. It also adds the unfixed review findings.
+  2. The Handoff section below points to plan 13's, which names what later stages consume.
+  3. Tick Stage 6 in the parked `specs/completed/ces-revisions-roadmap.md`: not done. That roadmap says "Do not resume this file", so plan 13 ticks Stage 2 of `specs/ces-revision-drivers-roadmap.md` instead.
+  4. The completion line in the spec's Rollout note: not done, for the same reason.
 
 ## Scope check
 
@@ -306,7 +306,7 @@ with:
 
 Lowell approved this wording at plan review (D6): the D1 and D2 text, and the Req 7 sentences that replace the level display with the change form, attach news and noise to the month's change, scope the form to NSA cells, and state the Stages 6–7 post-T news stand-in. Apply the wording exactly.
 
-- [ ] **Step 1: Amend Req 6's crisis multiplier (D2)**
+- [x] **Step 1: Amend Req 6's crisis multiplier (D2)**
 
 In `specs/ces-revisions.md`, Req 6, replace:
 
@@ -327,7 +327,7 @@ benchmark rows pin.
 if diagnostics favor it.
 ```
 
-- [ ] **Step 2: Amend Req 7's measurement form (D1)**
+- [x] **Step 2: Amend Req 7's measurement form (D1)**
 
 In `specs/ces-revisions.md`, Req 7, replace:
 
@@ -358,7 +358,7 @@ total. (Lowell, plan 11, 2026-10-21)
 From Stage 8 the `B` and `M` increments are **not** free monthly shocks: they are induced by the
 ```
 
-- [ ] **Step 3: Note the amendment in the Rollout note**
+- [x] **Step 3: Note the amendment in the Rollout note**
 
 In `specs/ces-revisions.md`, append to the end of the Rollout note, after the Stage 5 stamp:
 
@@ -371,7 +371,7 @@ rows (Req 10's B-vintage rows) induce the `B` and `M` increments. Req 6 states w
 innovations the crisis multiplier scales. Stage 6 implements these. Stages 7–17 inherit them.
 ```
 
-- [ ] **Step 4: Check the rendering and commit**
+- [x] **Step 4: Check the rendering and commit**
 
 Run: `uv run ruff format --check specs/ces-revisions.md`
 Expected: `1 file already formatted` (ruff scans Markdown only for Python code blocks, so this checks that nothing else changed shape).
@@ -400,7 +400,7 @@ git commit -m "Amend Req 6 and Req 7 for the Stage 6 pilot decisions"
 
 This task carries two of Stage 6's exit tests: the 1979 leg is partially observed with exactly one 2003 shift (Req 4), and the EMPLOY evidence (the repeated EMPLOY25M10 vintage is dropped, and the 13 disagreements are pinned).
 
-- [ ] **Step 1: Write the failing panel tests**
+- [x] **Step 1: Write the failing panel tests**
 
 Create `tests/test_pilot_assembly.py`:
 
@@ -831,12 +831,12 @@ def test_employ_disagrees_with_the_revision_table_in_ten_pre_1997_and_three_2020
         assert releases[row["vintage_id"]] == add_months(row["reference_month"], offset)
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_assembly.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.pilot'`.
 
-- [ ] **Step 3: Write the package, the panel dataclass, and the assembly**
+- [x] **Step 3: Write the package, the panel dataclass, and the assembly**
 
 Create `src/ces_revisions/pilot/__init__.py`:
 
@@ -1384,12 +1384,12 @@ def employ_table_disagreements(
     )
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_assembly.py -q`
 Expected: `12 passed`. The first test takes about 40 s, because it builds the cached operator and vintage frames.
 
-- [ ] **Step 5: Lint and commit**
+- [x] **Step 5: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/__init__.py src/ces_revisions/pilot/panel.py src/ces_revisions/pilot/assembly.py tests/test_pilot_assembly.py
@@ -1414,7 +1414,7 @@ git commit -m "Assemble the Stage 6 aggregate observation panel"
 
 The system matrices hold no parameter. Every sampled scalar enters only a covariance or an offset, which is why plan 1's `A_t`/`Z_t` gradient-check item stays open (planning choice 8).
 
-- [ ] **Step 1: Write the synthetic-panel helper**
+- [x] **Step 1: Write the synthetic-panel helper**
 
 Create `tests/pilot_synthetic.py`:
 
@@ -1714,7 +1714,7 @@ def _panel(months, y, anchor_offset, crisis_steps) -> AggregatePanel:
     )
 ```
 
-- [ ] **Step 2: Write the failing layout tests**
+- [x] **Step 2: Write the failing layout tests**
 
 Create `tests/test_pilot_layout.py`:
 
@@ -1935,12 +1935,12 @@ def test_seasonal_prior_scales_match_the_dummy_year_over_year_variance():
     )
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_layout.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.pilot.layout'`.
 
-- [ ] **Step 4: Write the layouts**
+- [x] **Step 4: Write the layouts**
 
 Create `src/ces_revisions/pilot/layout.py`:
 
@@ -2180,12 +2180,12 @@ SEASONAL_PRIOR_SCALE = {
 }
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_layout.py -q`
 Expected: `20 passed`.
 
-- [ ] **Step 6: Lint and commit**
+- [x] **Step 6: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/layout.py tests/pilot_synthetic.py tests/test_pilot_layout.py
@@ -2208,7 +2208,7 @@ git commit -m "Add the pilot's three seasonal layouts and synthetic test panels"
 
 This task carries Stage 6's likelihood exit test: the model's trace holds exactly the 17 scalar sites and one factor equal to the filter's log likelihood, so no latent state is a sampled site, and the likelihood includes irregular anchor rows and NaN cells. The dense-parity tests compare the engine with the Stage 1 dense oracle at `rtol=1e-8`, on a short synthetic panel and on one at real magnitude.
 
-- [ ] **Step 1: Write the failing model tests**
+- [x] **Step 1: Write the failing model tests**
 
 Create `tests/test_pilot_model.py`:
 
@@ -2647,12 +2647,12 @@ def test_log_density_gradient_is_finite_at_prior_draws(layout_name):
         assert all(np.isfinite(float(entry)) for entry in gradient.values())
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_model.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.pilot.model'`.
 
-- [ ] **Step 3: Write the model**
+- [x] **Step 3: Write the model**
 
 Create `src/ces_revisions/pilot/model.py`:
 
@@ -2970,12 +2970,12 @@ def step_log_likelihood(
     return kalman_filter(ssm, jnp.asarray(panel.y)).step_log_likelihood
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_model.py -q`
 Expected: `34 passed`.
 
-- [ ] **Step 5: Lint and commit**
+- [x] **Step 5: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/model.py tests/test_pilot_model.py
@@ -2995,7 +2995,7 @@ git commit -m "Add the marginalized Jacobs-van Norden pilot model"
 - Consumes: `SAMPLED_SITES`, `INITIAL_MEAN`, `INITIAL_SD`, `MONTHS_PER_YEAR`, `NOISE_RAW_SITES`, `prior_distributions`, `derived`, `draw_distributions` (Task 4); the layout functions (Task 3); `AggregatePanel` (Task 2).
 - Produces: `simulate_panel(params, panel, layout, seed, *, complete=False) -> np.ndarray` (T, 4), an explicit NumPy recursion independent of `pilot_ssm`; `simulate_complete_panels(params, panel, layout, seed, num_panels) -> np.ndarray`; `revision_statistics(y) -> dict[str, float]`; `prior_predictive(panel, layout, num_draws, seed, *, doubled=False) -> dict`; `monthly_constraint(prior_predictive_result) -> dict` with keys `share_median_in_range`, `pooled_share_above_250`, `passed`; constants `MEDIAN_RANGE = (20, 100)`, `MEDIAN_SHARE_MIN = 0.8`, `LARGE_REVISION = 250`, `LARGE_SHARE_RANGE = (0.001, 0.05)`, `SENSITIVITY_FACTOR = 2`. The doubled run multiplies every LogNormal prior's log-scale SD by `SENSITIVITY_FACTOR`, and the SD of each `NOISE_RAW_SITES` prior too, because the noise SDs are LogNormal through those sites.
 
-- [ ] **Step 1: Make the dense oracle's moment helper public**
+- [x] **Step 1: Make the dense oracle's moment helper public**
 
 The simulator's moment test needs the oracle's joint moments. In `tests/dense_reference.py`, rename the function `_joint_moments` to `joint_moments` and its one call in `dense_reference`:
 
@@ -3024,7 +3024,7 @@ index ad6f41d..98c8034 100644
      flat = y.ravel()
 ```
 
-- [ ] **Step 2: Write the failing simulator tests**
+- [x] **Step 2: Write the failing simulator tests**
 
 Create `tests/test_pilot_simulate.py`:
 
@@ -3251,12 +3251,12 @@ def test_monthly_constraint_applies_both_req_15_bounds():
     assert not too_loud["passed"]
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_simulate.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.pilot.simulate'`.
 
-- [ ] **Step 4: Write the simulator**
+- [x] **Step 4: Write the simulator**
 
 Create `src/ces_revisions/pilot/simulate.py`:
 
@@ -3548,12 +3548,12 @@ def monthly_constraint(prior_predictive_result: dict) -> dict:
     }
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_simulate.py tests/test_dense_reference.py tests/test_kalman.py -q`
 Expected: all pass (`13` in `tests/test_pilot_simulate.py`).
 
-- [ ] **Step 6: Lint and commit**
+- [x] **Step 6: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/simulate.py tests/test_pilot_simulate.py tests/dense_reference.py
@@ -3563,6 +3563,8 @@ git commit -m "Add the pilot simulator and Req 15's prior predictive"
 ```
 
 ### Task 6: The run harness
+
+> Deviation: `uv.lock` moved from revision 3 to 5, the first relock under uv 0.13. Source: ledger, Task 6.
 
 **Files:**
 - Create: `src/ces_revisions/runs/__init__.py`, `src/ces_revisions/runs/inits.py`, `src/ces_revisions/runs/diagnostics.py`, `src/ces_revisions/runs/inference_data.py`, `src/ces_revisions/runs/provenance.py`, `src/ces_revisions/runs/fit.py`
@@ -3582,7 +3584,7 @@ git commit -m "Add the pilot simulator and Req 15's prior predictive"
 
 `RunSettings` keeps NumPyro's 0.8 as its default because the harness is model-agnostic; the pilot passes its own `TARGET_ACCEPT_PROB`. This task closes plan 1's dispersed-chain-starts item: every run starts four chains at per-site permutations of ±0.5 and ±1.5 prior SDs in unconstrained space, checks that each start has a finite potential energy, and records the strategy in its provenance.
 
-- [ ] **Step 1: Add the dependencies**
+- [x] **Step 1: Add the dependencies**
 
 Run:
 
@@ -3614,7 +3616,7 @@ index 3788256..34e98ee 100644
  [project.optional-dependencies]
 ```
 
-- [ ] **Step 2: Extend the stack test and ignore run directories**
+- [x] **Step 2: Extend the stack test and ignore run directories**
 
 Edit `tests/test_stack.py`:
 
@@ -3664,7 +3666,7 @@ index 3c60f7e..fe32a72 100644
 +data/runs/
 ```
 
-- [ ] **Step 3: Move the host helpers into `devices.py`**
+- [x] **Step 3: Move the host helpers into `devices.py`**
 
 Edit `src/ces_revisions/devices.py`:
 
@@ -3803,7 +3805,7 @@ index ce4b98f..8378423 100644
 Run: `uv run pytest tests/test_stack.py tests/test_engine_probe.py tests/test_devices.py -q`
 Expected: all pass.
 
-- [ ] **Step 4: Write the failing harness tests**
+- [x] **Step 4: Write the failing harness tests**
 
 Create `tests/test_run_harness.py`:
 
@@ -4470,12 +4472,12 @@ def test_run_nuts_writes_a_complete_run_directory(
     )
 ```
 
-- [ ] **Step 5: Run them to verify they fail**
+- [x] **Step 5: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_run_harness.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.runs'`.
 
-- [ ] **Step 6: Write the harness package**
+- [x] **Step 6: Write the harness package**
 
 Create `src/ces_revisions/runs/__init__.py`:
 
@@ -5234,7 +5236,7 @@ def _utc_now() -> datetime:
     return datetime.now(UTC)
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_run_harness.py -q -m "not slow"`
 Expected: `31 passed, 1 deselected`.
@@ -5242,7 +5244,7 @@ Expected: `31 passed, 1 deselected`.
 Run: `uv run pytest tests/test_run_harness.py -q -m slow`
 Expected: `1 passed`. It runs `run_nuts` end to end on the Stage 1 synthetic pilot and checks the run directory.
 
-- [ ] **Step 8: Lint and commit**
+- [x] **Step 8: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/runs/ src/ces_revisions/devices.py src/ces_revisions/engine_probe.py tests/test_run_harness.py tests/test_stack.py
@@ -5252,6 +5254,8 @@ git commit -m "Add the model-agnostic NUTS run harness"
 ```
 
 ### Task 7: The April 2020 check and the SBC library
+
+> Deviation: the owner chose to fix the non-finite-recovery crash and three Minor findings, though the plan's code did neither. `recovery()` returns NaN on zero variance, `run_replicate` raises `NonFiniteRecovery`, `run_sbc` records it under `failures`, `ECDF_SIMULATIONS` is 100,000 (the critical value for N=200, L=19 moved from 0.00021010 to 0.00022503), the summary's temporary file name carries the process ID, and the MCMC uses `chain_method(1)`. Source: ledger, Task 7 (owner decision).
 
 **Files:**
 - Create: `src/ces_revisions/pilot/checks.py`
@@ -5267,7 +5271,7 @@ git commit -m "Add the model-agnostic NUTS run harness"
 
 The April 2020 check passes only when every subsampled draw filters to finite moments and the smoothed change's whole central 90% interval lies within ±5% of the third print (planning choice 2). SBC's rule is pre-registered: every quantity passes the γ-ECDF test of Säilynoja, Bürkner, and Vehtari (2022) at the Bonferroni level `FAMILY_ALPHA / len(QUANTITIES)`, and for each news share the median contraction is at least 0.25 and at most 5% of replicates have |z| > 3.
 
-- [ ] **Step 1: Write the failing check and SBC tests**
+- [x] **Step 1: Write the failing check and SBC tests**
 
 Create `tests/test_pilot_checks.py`:
 
@@ -5911,12 +5915,12 @@ def test_run_sbc_spawns_workers_and_resumes(tmp_path):
     assert remote["truth"] == pytest.approx(local["truth"], rel=1e-12)
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_checks.py tests/test_sbc.py tests/test_pilot_sbc_runner.py -q`
 Expected: collection errors, `ModuleNotFoundError: No module named 'ces_revisions.pilot.checks'` and `'ces_revisions.pilot.sbc'`.
 
-- [ ] **Step 3: Write the check and the SBC module**
+- [x] **Step 3: Write the check and the SBC module**
 
 Create `src/ces_revisions/pilot/checks.py`:
 
@@ -6690,7 +6694,7 @@ def _min_or_none(values) -> float | None:
     return float(min(values))
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_checks.py tests/test_sbc.py tests/test_pilot_sbc_runner.py -q -m "not slow"`
 Expected: `43 passed, 2 deselected`.
@@ -6698,7 +6702,7 @@ Expected: `43 passed, 2 deselected`.
 Run: `uv run pytest tests/test_pilot_sbc_runner.py -q -m slow`
 Expected: `2 passed`. They run two short replicates in worker processes and check the resume path.
 
-- [ ] **Step 5: Lint and commit**
+- [x] **Step 5: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/checks.py src/ces_revisions/pilot/sbc.py tests/test_pilot_checks.py tests/test_sbc.py tests/test_pilot_sbc_runner.py
@@ -6708,6 +6712,8 @@ git commit -m "Add the April 2020 check and the pilot's SBC"
 ```
 
 ### Task 8: The decision rules and the probe grid
+
+> Deviation: the "infeasible" GPU gate stays manual, in Task 14 Step 1 and the Task 13 header, and not in code. The owner ruled this at the Task 8 review. Both places moved to O6. Source: ledger, Task 8.
 
 **Files:**
 - Create: `src/ces_revisions/pilot/dimensions.py`, `src/ces_revisions/pilot/seasonal.py`, `src/ces_revisions/pilot/gpu_choice.py`
@@ -6724,7 +6730,7 @@ git commit -m "Add the April 2020 check and the pilot's SBC"
 
 `NUM_CHAINS` is Req 18's chain count, not a GPU count. For each Stage 7–9 model (D5), the rule considers one GPU running all chains, and one GPU per chain where the record carries the price of a 4-GPU instance of the same type. `BATCH_LOCKSTEP_FACTORS` come from the planning spike's 100 SBC replicates: the expected largest of b replicates' mean steps per iteration, over their average.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/test_pilot_dimensions.py`:
 
@@ -7501,12 +7507,12 @@ def test_a_tie_in_dollars_goes_to_fewer_gpus():
     assert choose_stage([tied], "dummy", 9, "high")["choice"]["gpus"] == 1
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_dimensions.py tests/test_pilot_seasonal.py tests/test_pilot_gpu_choice.py -q`
 Expected: collection errors, `ModuleNotFoundError` for `gpu_probe_grid`, `ces_revisions.pilot.dimensions`, `ces_revisions.pilot.seasonal`, and `ces_revisions.pilot.gpu_choice`.
 
-- [ ] **Step 3: Write the modules and the grid script**
+- [x] **Step 3: Write the modules and the grid script**
 
 Create `src/ces_revisions/pilot/dimensions.py`:
 
@@ -8453,12 +8459,12 @@ if __name__ == "__main__":
     main()
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_dimensions.py tests/test_pilot_seasonal.py tests/test_pilot_gpu_choice.py -q`
 Expected: `70 passed`.
 
-- [ ] **Step 5: Lint and commit**
+- [x] **Step 5: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/dimensions.py src/ces_revisions/pilot/seasonal.py src/ces_revisions/pilot/gpu_choice.py scripts/gpu_probe_grid.py tests/test_pilot_dimensions.py tests/test_pilot_seasonal.py tests/test_pilot_gpu_choice.py
@@ -8479,7 +8485,7 @@ git commit -m "Add the seasonal and GPU decision rules and the probe grid"
 
 The CLI sets `XLA_FLAGS` before its first JAX import: XLA's deterministic GPU flag on an NVIDIA host, and four host devices on a CPU host for `fit` and `prior-predictive`. SBC workers set their own single device.
 
-- [ ] **Step 1: Write the failing CLI tests**
+- [x] **Step 1: Write the failing CLI tests**
 
 Create `tests/test_pilot_run.py`:
 
@@ -8848,12 +8854,12 @@ def test_a_seed_repeats_its_draws_on_the_real_panel(provenance_root):
     }
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv run pytest tests/test_pilot_run.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'pilot_run'`.
 
-- [ ] **Step 3: Write the CLI**
+- [x] **Step 3: Write the CLI**
 
 Create `scripts/pilot_run.py`:
 
@@ -9391,7 +9397,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_pilot_run.py tests/test_pilot_fit.py -q -m "not slow"`
 Expected: `20 passed, 1 deselected`.
@@ -9399,12 +9405,12 @@ Expected: `20 passed, 1 deselected`.
 Run: `uv run pytest tests/test_pilot_fit.py -q -m slow`
 Expected: `1 passed`. It runs two short, depth-capped fits from one seed and checks that they repeat.
 
-- [ ] **Step 5: Run the whole fast tier**
+- [x] **Step 5: Run the whole fast tier**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: `625 passed, 21 deselected`, as in the spike.
 
-- [ ] **Step 6: Lint and commit**
+- [x] **Step 6: Lint and commit**
 
 ```bash
 uv run ruff format scripts/pilot_run.py tests/test_pilot_run.py tests/test_pilot_fit.py
@@ -9425,7 +9431,7 @@ git commit -m "Add the Stage 6 pilot CLI"
 
 Req 15 requires the prior predictive to run before the fit, so commit Steps 2 and 3 before Step 5.
 
-- [ ] **Step 1: Build the artifacts and check that the tree is clean**
+- [x] **Step 1: Build the artifacts and check that the tree is clean**
 
 Commit this plan file and any checkbox ticks in it first: `run_provenance` counts untracked and modified files.
 
@@ -9438,7 +9444,7 @@ git status --short
 
 Expected: the builds finish, and `git status --short` prints nothing.
 
-- [ ] **Step 2: Run the prior predictive**
+- [x] **Step 2: Run the prior predictive**
 
 ```bash
 mkdir -p docs/runs/stage-6 data/runs
@@ -9447,7 +9453,7 @@ uv run python scripts/pilot_run.py prior-predictive --out docs/runs/stage-6/prio
 
 Expected: `"passed": true`, with `share_median_in_range` 0.9475 and `pooled_share_above_250` 0.02885. The seed is fixed, so the values repeat exactly. A failure stops the plan here: Req 15 says that failures adjust priors before any fit, and that is a decision for Lowell.
 
-- [ ] **Step 3: Run the doubled-SD sensitivity**
+- [x] **Step 3: Run the doubled-SD sensitivity**
 
 ```bash
 uv run python scripts/pilot_run.py prior-predictive --doubled --out docs/runs/stage-6/prior-predictive-doubled.json
@@ -9455,7 +9461,7 @@ uv run python scripts/pilot_run.py prior-predictive --doubled --out docs/runs/st
 
 Expected: `"passed": false`, with `share_median_in_range` 0.6685 and `pooled_share_above_250` 0.1333. This is Req 15's sensitivity rerun, with every LogNormal log-scale SD doubled, the noise row's included. It is recorded for Stage 16's prior-sensitivity gate and does not stop the plan.
 
-- [ ] **Step 4: Commit the prior predictive**
+- [x] **Step 4: Commit the prior predictive**
 
 ```bash
 git add docs/runs/stage-6/prior-predictive.json docs/runs/stage-6/prior-predictive-doubled.json
@@ -9465,7 +9471,7 @@ git status --short
 
 Expected: `git status --short` prints nothing, so the fit records `"dirty": false`.
 
-- [ ] **Step 5: Fit the pilot**
+- [x] **Step 5: Fit the pilot**
 
 Run in the background, about 30 minutes on the M4 Max:
 
@@ -9477,7 +9483,7 @@ Expected: the last line of the log is a JSON summary with `"meets_req18": true` 
 
 If `meets_req18` is false, or the April 2020 check fails, stop and report the summary. Do not change the target acceptance, the priors, or the check to make it pass.
 
-- [ ] **Step 6: Commit the fit evidence**
+- [x] **Step 6: Commit the fit evidence**
 
 ```bash
 RUN=$(ls -d data/runs/stage6-pilot-seed2995-* | tail -1)
@@ -9499,7 +9505,7 @@ Expected: the `grep` prints `"dirty": false`.
 - Consumes: `scripts/pilot_run.py sbc` and `sbc-summary` (Task 9).
 - Produces: the committed evidence for Stage 6's SBC exit item: reduced-panel SBC recovers the news/noise allocation (Req 18 bullet 7, reduced half).
 
-- [ ] **Step 1: Run the replicates**
+- [x] **Step 1: Run the replicates**
 
 Run in the background, about 4 hours with six workers:
 
@@ -9509,7 +9515,7 @@ uv run python scripts/pilot_run.py sbc --out-dir data/runs/stage6-sbc > data/run
 
 The defaults are 100 replicates, January 1999 to December 2021, 500 warmup and 990 draws thinned to 99, and target acceptance 0.95. Each replicate writes `data/runs/stage6-sbc/replicate-NNNN.json`. If the run stops, the same command resumes it and skips finished replicates.
 
-- [ ] **Step 2: Summarize**
+- [x] **Step 2: Summarize**
 
 ```bash
 uv run python scripts/pilot_run.py sbc-summary --out-dir data/runs/stage6-sbc
@@ -9519,7 +9525,7 @@ Expected: `"passed": true`, `"num_replicates": 100`, no ECDF failures, and both 
 
 If `passed` is false, stop and report `ecdf_failures` and `recovery_checks`. A failed SBC is a finding about the model, not a reason to change the rule.
 
-- [ ] **Step 3: Commit the summary**
+- [x] **Step 3: Commit the summary**
 
 ```bash
 cp data/runs/stage6-sbc/summary.json docs/runs/stage-6/sbc-summary.json
@@ -9540,7 +9546,7 @@ git commit -m "Record the Stage 6 reduced-panel SBC"
 
 Run nothing else while Step 1 runs: it is a timing measurement.
 
-- [ ] **Step 1: Time the engine on the Mac**
+- [x] **Step 1: Time the engine on the Mac**
 
 About 12 minutes:
 
@@ -9560,7 +9566,7 @@ git status --short
 
 Expected: `git status --short` prints nothing.
 
-- [ ] **Step 2: Fit the two trigonometric layouts**
+- [x] **Step 2: Fit the two trigonometric layouts**
 
 Run one after the other in the background, about 35 minutes each:
 
@@ -9571,7 +9577,7 @@ uv run python scripts/pilot_run.py fit --layout trig4 --label seasonal-trig4 > d
 
 Expected: both report `"meets_req18": true`. If a layout fails Req 18 or its April 2020 check, keep going: the rule needs both for an alternative to win, so that layout cannot be chosen.
 
-- [ ] **Step 3: Apply the rule**
+- [x] **Step 3: Apply the rule**
 
 ```bash
 DUMMY=$(ls -d data/runs/stage6-pilot-seed2995-* | tail -1)
@@ -9582,7 +9588,7 @@ uv run python scripts/pilot_run.py compare-seasonal "$DUMMY" "$TRIG" "$TRIG4" --
 
 Expected: `{"layout": "dummy", "reliable": true}`, as in the spike. The spike ran this comparison under the first model (trig +15.4 ± 9.4, trig4 −466 ± 70 on benchmark-year blocks). The narrowed D2 changes every layout's elpd a little, so expect the margins to move. Whatever the rule returns is the decision: Task 14 records it. If it returns `trig`, the GPU rule reads the dummy's grid entries, because `trig` has the dummy's dimensions.
 
-- [ ] **Step 4: Commit the evidence**
+- [x] **Step 4: Commit the evidence**
 
 ```bash
 TRIG=$(ls -d data/runs/seasonal-trig-seed2995-* | tail -1)
@@ -9595,6 +9601,8 @@ git commit -m "Record the seasonal-layout comparison"
 ```
 
 ### Task 13: The Lambda GPU measurement (owner-run)
+
+> Skipped: GPU work moved to O6 by roadmap Stage 2 (specs/ces-revision-drivers-roadmap.md:24) → deferred
 
 **Files:**
 - Create: `docs/decisions/cloud-gpu-probe/a10-grid.json`, `docs/decisions/cloud-gpu-probe/a100-grid.json`, `docs/decisions/cloud-gpu-probe/gh200-grid.json`
@@ -9615,7 +9623,9 @@ Lambda bills by the minute until an instance is terminated in its console or API
 
 The last column gives the GPU rule its one-GPU-per-chain configuration. Only its price is used: the rule assumes that each of its GPUs runs batch 1 at the measured 1-GPU speed, which is an approximation when the measured A100 is SXM and the 4× instance is PCIe.
 
-- [ ] **Step 1: Bundle the branch (executor)**
+- [x] **Step 1: Bundle the branch (executor)**
+
+> Deviation: done at `97736a3`, and the task then stopped, because the owner held the rented-GPU steps. The bundle is not needed now that the GPU work moved to O6. Source: ledger, Task 13.
 
 ```bash
 git bundle create /tmp/ces-revisions.bundle HEAD
@@ -9732,6 +9742,8 @@ Expected: each Lambda record shows 20 entries, its price, the `gpu` backend, and
 
 - [ ] **Step 1: Apply the GPU rule**
 
+> Skipped: GPU work moved to O6 by roadmap Stage 2 (specs/ces-revision-drivers-roadmap.md:24) → deferred
+
 With `<layout>` the `rule.layout` of `docs/runs/stage-6/seasonal-comparison.json`:
 
 ```bash
@@ -9743,7 +9755,7 @@ Expected: a JSON line with `"status": "chosen"` and one chosen host for each Sta
 - `"status": "unmeasured"` means a priced record lacks an entry or a batch the rule needs for some model, or no record is priced. Stop and report: the measurement is incomplete, and nothing may be recorded as a finding.
 - `"status": "infeasible"` means that, for at least one model, every configuration of the records given was measured and none runs its fit within 48 hours and its SBC within 14 days. First check that `a10`, `a100`, and `gh200` each have a committed record. If any has none, stop and report to Lowell before recording anything: "infeasible" is a finding only when every D3 type was measured, or when Lowell confirms in chat that each missing type could not be measured. Then the decision record says so, and the roadmap's resume re-validates Stages 7–17 before it routes Stage 7 (roadmap Stage 6, Exit).
 
-- [ ] **Step 2: Write the failing decision test**
+- [x] **Step 2: Write the failing decision test**
 
 Create `tests/test_seasonal_state_decision.py`:
 
@@ -9943,12 +9955,12 @@ def test_the_decision_record_states_its_evidence():
     assert missing == []
 ```
 
-- [ ] **Step 3: Run it to verify it fails**
+- [x] **Step 3: Run it to verify it fails**
 
 Run: `uv run pytest tests/test_seasonal_state_decision.py -q`
 Expected: collection error, `ModuleNotFoundError: No module named 'ces_revisions.pilot.decision_tables'`.
 
-- [ ] **Step 4: Write the table module**
+- [x] **Step 4: Write the table module**
 
 Create `src/ces_revisions/pilot/decision_tables.py`:
 
@@ -10130,7 +10142,7 @@ if __name__ == "__main__":
 Run: `uv run pytest tests/test_seasonal_state_decision.py -q`
 Expected: 6 passed and 1 failed. The failure is `test_the_decision_record_states_its_evidence`, with `FileNotFoundError` for `docs/decisions/seasonal-state.md`.
 
-- [ ] **Step 5: Write the decision record**
+- [x] **Step 5: Write the decision record**
 
 Print the decision lines and the three tables:
 
@@ -10205,12 +10217,12 @@ The rule runs once for each Stage 7–9 model: Stage 7, and Stages 8 and 9 under
 - A posterior predictive check in Stage 18 traces a misfit to the seasonal block.
 ```
 
-- [ ] **Step 6: Run the test to verify it passes**
+- [x] **Step 6: Run the test to verify it passes**
 
 Run: `uv run pytest tests/test_seasonal_state_decision.py -q`
 Expected: `7 passed`.
 
-- [ ] **Step 7: Update CLAUDE.md and README.md**
+- [x] **Step 7: Update CLAUDE.md and README.md**
 
 In `CLAUDE.md`, under "Layout and tooling", add after the `operators/` bullet:
 
@@ -10343,7 +10355,7 @@ with fastexcel to read the source workbooks, SciPy for ranks and test statistics
 ```
 
 
-- [ ] **Step 8: Run every test tier**
+- [x] **Step 8: Run every test tier**
 
 ```bash
 uv run pytest -m "not slow and not network" -q
@@ -10354,11 +10366,13 @@ uv run ruff format --check
 
 Expected: the fast tier gives `632 passed, 21 deselected`; the slow tier passes in a few minutes; ruff reports no problem.
 
-- [ ] **Step 9: Check the exit criteria**
+- [x] **Step 9: Check the exit criteria**
+
+> Deviation: run by plan 13 on 2026-11-15. Every row holds except the GPU rows: the GPU type and count in the decision-record row, and the infeasible-GPU row. Both moved to O6 (roadmap Stage 2). Source: plan 13, Task 5.
 
 Check each row of the exit table below against the committed evidence, and report any row that fails.
 
-- [ ] **Step 10: Lint and commit**
+- [x] **Step 10: Lint and commit**
 
 ```bash
 uv run ruff format src/ces_revisions/pilot/decision_tables.py tests/test_seasonal_state_decision.py
@@ -10383,3 +10397,7 @@ git commit -m "Record the seasonal-state and GPU decision for Stages 7-17"
 | The dispersed-chain-starts item is closed | Task 6; `runs/inits.py`, recorded in every run's provenance (`init`) |
 | The `A_t`/`Z_t` gradient-check item is closed if the pilot samples a parameter in `transition_matrix` or `observation_matrix` | Not triggered: no sampled parameter enters either matrix (planning choice 8). The item stays open for Stage 7's loadings |
 | If the cost measurement makes Stage 7–9 fits or their SBC infeasible, resume re-validates Stages 7–17 | Task 14 Step 1; `gpu-choice.json` (`status`: "infeasible" triggers it), stated in the decision record |
+
+## Handoff to later stages
+
+None here: plan 13 (`specs/plans/completed/13-ces-revision-drivers-stage-2.md`) finished this plan under roadmap Stage 2, and its Handoff section names what later stages consume.

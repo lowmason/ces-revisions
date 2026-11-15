@@ -5,6 +5,8 @@
 > Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 2 — on plan completion, tick the stage and
 > re-validate later stages against what shipped.
 
+**Status: COMPLETE (2026-11-15)** — executed via executing-plans; deferred items in specs/deferred_items.md, § 11-ces-revisions
+
 **Goal:** Bring plan 11's aggregate pilot and run harness onto this branch without its GPU work, record the seasonal-state decision, and report the posterior news shares of the total-nonfarm revisions in `specs/ces-revision-drivers-stage-2-findings.md`.
 
 **Architecture:** Task 1 merges plan 11's branch and checks that the merged code reproduces plan 11's committed evidence. Task 2 runs plan 11's Task 14 without its GPU half. Task 3 adds `ces_revisions.pilot.news_shares` and two `scripts/pilot_run.py` subcommands: `shares` reads the pilot's gitignored run directory and writes a small committed JSON, and `shares-report` renders the findings table from that JSON alone. Task 4 writes the findings. Task 5 reviews the whole branch and retires plans 11 and 13.
@@ -35,6 +37,8 @@
 - **D1** (owner, brief, 2026-11-15): commit nothing on `main`. Pushing is the owner's call. Applied in: Global Constraints, Task 5.
 - **D2** (owner, brief, 2026-11-15): plan 11's branch stays untouched until this plan is approved. Task 1 merges it and never rewrites it. Applied in: Task 1.
 - **D3** (owner, plan review, 2026-11-15): execute inline with executing-plans in one fresh session, as Stage 1 did (F1). Keep test-first for Tasks 2 and 3, and one whole-branch Opus review in Task 5. Applied in: header, Task 5.
+- **D4** (owner, completion gate, 2026-11-15): skip the Codex second review, so only the Opus code-reviewer runs and no branch content goes to OpenAI. Applied in: Task 5.
+- **D5** (owner, completion gate, 2026-11-15): add a test that ties the findings table to `docs/runs/stage-6/news-shares.json`, leave `shares` checking the panel hash alone, and carry plan 11's open Minor findings as one deferred item. Applied in: Task 3, Task 5.
 
 ## Defaults settled in this plan
 
@@ -68,11 +72,11 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F1 expl
 **Interfaces:**
 - Produces: `ces_revisions.pilot`, `ces_revisions.runs` and `scripts/pilot_run.py` on this branch. The run directories in `data/runs/`, plan 11's ledger in `.sdd/11-ces-revisions/`, and the built `data/panel/`, `data/annual/panel/` and `data/operators/`.
 
-- [ ] **Step 1: Merge.** Run `git merge --no-ff claude/ces-revisions-stage-6-bd9ab7 -m "Merge plan 11's aggregate pilot for roadmap Stage 2"`. Expected: no conflict. `specs/ces-revisions.md` does not exist, and `grep -c 'Lowell, plan 11, 2026-10-21' specs/completed/ces-revisions.md` prints 2.
-- [ ] **Step 2: Check the ignored workspaces.** If `data/runs/` is missing, run `cp -Rp /Users/lowell/Projects/ces-revisions/data/runs data/`. If `.sdd/11-ces-revisions/` is missing, run `mkdir -p .sdd` and `cp -Rp /Users/lowell/Projects/ces-revisions/.sdd/. .sdd/`, which also copies the `.gitignore` of `*`. Expected: `diff -rq data/runs /Users/lowell/Projects/ces-revisions/data/runs`, the same `diff` for `.sdd/11-ces-revisions`, `cmp data/runs/stage6-pilot-seed2995-20261022T020454Z/provenance.json docs/runs/stage-6/pilot-fit/provenance.json` and `git status --short` print nothing. `shasum -a 256` of that run's `inference_data.nc` prints the hash in Planning evidence.
-- [ ] **Step 3: Sync and build.** Run `uv sync --locked`, then the three builds of `11:257`. Expected: each build finishes.
-- [ ] **Step 4: Run the tiers.** Run `uv run pytest -m "not slow and not network" -q`, then `uv run pytest -m slow -q`. Expected: `679 passed, 22 deselected`, then `18 passed, 683 deselected`. A failure stops the task. Fix it in its own commit, with a Deviation note here.
-- [ ] **Step 5: Reproduce the seasonal comparison** (Review Focus 5). Run plan 11's Task 12 Step 3 commands (`11:9577-9580`) with `--out /tmp/seasonal-comparison.json`, then `cmp /tmp/seasonal-comparison.json docs/runs/stage-6/seasonal-comparison.json`. Expected: no output. A difference stops the plan. Report the `diff`.
+- [x] **Step 1: Merge.** Run `git merge --no-ff claude/ces-revisions-stage-6-bd9ab7 -m "Merge plan 11's aggregate pilot for roadmap Stage 2"`. Expected: no conflict. `specs/ces-revisions.md` does not exist, and `grep -c 'Lowell, plan 11, 2026-10-21' specs/completed/ces-revisions.md` prints 2.
+- [x] **Step 2: Check the ignored workspaces.** If `data/runs/` is missing, run `cp -Rp /Users/lowell/Projects/ces-revisions/data/runs data/`. If `.sdd/11-ces-revisions/` is missing, run `mkdir -p .sdd` and `cp -Rp /Users/lowell/Projects/ces-revisions/.sdd/. .sdd/`, which also copies the `.gitignore` of `*`. Expected: `diff -rq data/runs /Users/lowell/Projects/ces-revisions/data/runs`, the same `diff` for `.sdd/11-ces-revisions`, `cmp data/runs/stage6-pilot-seed2995-20261022T020454Z/provenance.json docs/runs/stage-6/pilot-fit/provenance.json` and `git status --short` print nothing. `shasum -a 256` of that run's `inference_data.nc` prints the hash in Planning evidence.
+- [x] **Step 3: Sync and build.** Run `uv sync --locked`, then the three builds of `11:257`. Expected: each build finishes.
+- [x] **Step 4: Run the tiers.** Run `uv run pytest -m "not slow and not network" -q`, then `uv run pytest -m slow -q`. Expected: `679 passed, 22 deselected`, then `18 passed, 683 deselected`. A failure stops the task. Fix it in its own commit, with a Deviation note here.
+- [x] **Step 5: Reproduce the seasonal comparison** (Review Focus 5). Run plan 11's Task 12 Step 3 commands (`11:9577-9580`) with `--out /tmp/seasonal-comparison.json`, then `cmp /tmp/seasonal-comparison.json docs/runs/stage-6/seasonal-comparison.json`. Expected: no output. A difference stops the plan. Report the `diff`.
 
 ### Task 2: The seasonal-state decision record (plan 11's Task 14, re-scoped)
 
@@ -87,14 +91,17 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F1 expl
 
 Run plan 11's Task 14 Steps 2–10 (`11:9744-10366`) with these changes.
 
-- [ ] **Step 1: Skip plan 11's Step 1,** the GPU rule. Under plan 11's Task 14 heading, add `> Deviation: re-scoped to the seasonal-state decision alone by roadmap Stage 2 (specs/ces-revision-drivers-roadmap.md:75). Step 1, the GPU table and gpu-choice.json moved to O6. Plan 13's Task 2 executed the rest.`
-- [ ] **Step 2: Write the tests** of plan 11's Step 2, changed:
+- [x] **Step 1: Skip plan 11's Step 1,** the GPU rule. Under plan 11's Task 14 heading, add `> Deviation: re-scoped to the seasonal-state decision alone by roadmap Stage 2 (specs/ces-revision-drivers-roadmap.md:75). Step 1, the GPU table and gpu-choice.json moved to O6. Plan 13's Task 2 executed the rest.`
+- [x] **Step 2: Write the tests** of plan 11's Step 2, changed:
   - `test_decision_lines_name_the_layout`: ``decision_lines(COMPARISON) == ["The seasonal state for O6 and every later fit of this model is `dummy`."]``
   - Drop `test_an_incomplete_gpu_measurement_has_no_decision_lines` and `test_gpu_rows_escape_dollars_and_mark_unmeasured_cells`. Keep the seasonal-rows and timing-rows tests as written.
   - `test_the_decision_record_states_its_evidence`: read the Mac record from the comparison's `grid.path`. Assert that every line of `decision_lines`, `seasonal_rows` and `timing_rows([mac], layout)` is in the record, and that the timing rows are not empty.
-- [ ] **Step 3: Run them to verify they fail.** Run `uv run pytest tests/test_seasonal_state_decision.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.pilot.decision_tables'`.
-- [ ] **Step 4: Write the module** of plan 11's Step 4, without `gpu_rows`, `grid_records` and the GPU lines, with a `python -m` entry that takes only COMPARISON. Run the Step 3 command. Expected: 3 passed and 1 failed, the record test, with `FileNotFoundError`.
-- [ ] **Step 5: Write the record** from plan 11's Step 5 template (`11:10141-10204`), changed:
+
+> Deviation: three tests were added to the plan's four, for input shapes that the mutant step asks for. Source: ledger, Task 2.
+
+- [x] **Step 3: Run them to verify they fail.** Run `uv run pytest tests/test_seasonal_state_decision.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.pilot.decision_tables'`.
+- [x] **Step 4: Write the module** of plan 11's Step 4, without `gpu_rows`, `grid_records` and the GPU lines, with a `python -m` entry that takes only COMPARISON. Run the Step 3 command. Expected: 3 passed and 1 failed, the record test, with `FileNotFoundError`.
+- [x] **Step 5: Write the record** from plan 11's Step 5 template (`11:10141-10204`), changed:
   - Title: one that states the layout the rule chose, for example "Keep the dummy seasonal state".
   - Blast radius: the seasonal block of every sector's state in O6 and the later model outcomes.
   - Context: in the first paragraph, drop the sentences from "Roadmap Stage 6 makes that choice" through the D5 sentence. In the second, drop each GPU mention: the Lambda instances, `gpu_choice.py` and the GPU rule's constants. Point the spec link to `../../specs/completed/ces-revisions.md`. Add that roadmap Stage 2 moved the GPU choice to O6 (`specs/ces-revision-drivers-roadmap.md:24`).
@@ -104,8 +111,8 @@ Run plan 11's Task 14 Steps 2–10 (`11:9744-10366`) with these changes.
   - Consequences: the first bullet, with "Stages 7–17" read as "O6 and the later model outcomes". Drop the GPU bullet. The Ljung–Box bullet names O17 for Stages 18 and 21.
   - Alternatives considered: the layout bullets only. The GPU, one-GPU and parallel-filter bullets go to the O6 deferred item (Task 5).
   - Revisit triggers: only "A posterior predictive check in O17 traces a misfit to the seasonal block."
-- [ ] **Step 6: Run the test to verify it passes.** Run the Step 3 command. Expected: 4 passed.
-- [ ] **Step 7: Update CLAUDE.md and README.md** as plan 11's Step 7 states, changed:
+- [x] **Step 6: Run the test to verify it passes.** Run the Step 3 command. Expected: 4 passed.
+- [x] **Step 7: Update CLAUDE.md and README.md** as plan 11's Step 7 states, changed:
   - In the first new CLAUDE.md bullet, replace "and the two pre-registered decision rules (`seasonal.py`, and `gpu_choice.py`, which chooses a GPU for each Stage 7–9 model) recorded in `docs/decisions/seasonal-state.md`" with "the pre-registered seasonal rule (`seasonal.py`), recorded in `docs/decisions/seasonal-state.md`, and the GPU rule (`gpu_choice.py`), which waits for O6".
   - In the third bullet, the test sentence names only `docs/runs/stage-6/seasonal-comparison.json` and the Mac grid record that it names.
   - Drop the CLAUDE.md "GPU type and count" edit and the README "Stage 6 … measures them" edit. Their old text is gone from `main`, which already names O6.
@@ -123,8 +130,11 @@ src/ces_revisions/                    Python package (src layout): kalman.py is 
                                       devices.py picks the chain method, engine_probe.py times the engine
 ```
 
-- [ ] **Step 8: Run every tier** as plan 11's Step 8 states. Expected: the fast tier gives `683 passed, 22 deselected`, and the slow tier and ruff pass.
-- [ ] **Step 9: Commit** the files above with `git commit -m "Record the seasonal-state decision without the GPU choice"`.
+- [x] **Step 8: Run every tier** as plan 11's Step 8 states. Expected: the fast tier gives `683 passed, 22 deselected`, and the slow tier and ruff pass.
+
+> Deviation: the fast tier read 686 passed, not 683, for the three added tests, and the tiers ran inside `task-done` after Step 9's commit. Source: ledger, Task 2.
+
+- [x] **Step 9: Commit** the files above with `git commit -m "Record the seasonal-state decision without the GPU choice"`.
 
 ### Task 3: The news shares
 
@@ -145,47 +155,70 @@ src/ces_revisions/                    Python package (src layout): kalman.py is 
   - `shares RUN_DIR --out PATH` writes the record as sorted, indented JSON. It checks `RUN_DIR` before it loads the panel. When `RUN_DIR` is missing, it returns 2 and prints plan 11's refit command, `uv run python scripts/pilot_run.py fit --layout dummy --label stage6-pilot`, on stderr.
   - `shares-report RECORD [--findings PATH]` reads only the JSON. It rewrites the generated block `stage-2-shares` of the findings file (default `specs/ces-revision-drivers-stage-2-findings.md`) with `archive_inventory.replace_generated`, as `scripts/collection_window.py` does.
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_pilot_news_shares.py`:
+- [x] **Step 1: Write the failing tests** in `tests/test_pilot_news_shares.py`:
   - `test_share_draws_pool_every_chain_and_draw` (Review Focus 3): a posterior Dataset of 4 chains × 3 draws, in which each chain holds its own constant set of sampled sites. Each output has shape `(12,)` and 4 distinct values, and each chain's value equals `derived()` of that chain's sites.
   - `test_summary_is_the_median_and_central_interval`: `summarize(np.linspace(0, 1, 101)) == pytest.approx({"median": 0.5, "lower": 0.05, "upper": 0.95})`
   - `test_the_block_names_the_revision_each_share_splits` (Review Focus 4): with `share_s` at median 0.7234, lower 0.6 and upper 0.81, the block holds ``| F→S | `share_s` | 0.723 | 0.600–0.810 |``, and the `share_t` row starts ``| S→T | `share_t` |``.
   - `test_shares_refuse_a_run_fit_to_other_data` (Review Focus 1): a `tmp_path` run directory that holds only a `provenance.json` whose `arrays.sha256` is `"f" * 64`. `pilot_run.shares_record(run_dir, "0" * 64)` raises `ValueError` matching "other data".
   - `test_shares_name_the_refit_when_the_run_is_gone` (Review Focus 2): `pilot_run.main(["shares", str(tmp_path / "missing"), "--out", str(tmp_path / "x.json")]) == 2`, and `capsys`'s stderr holds `pilot_run.py fit --layout dummy --label stage6-pilot`.
   - `test_shares_report_needs_only_the_record` (Review Focus 2): with a record JSON and a findings file that holds an empty `stage-2-shares` block, both in `tmp_path`, `pilot_run.main(["shares-report", <record>, "--findings", <findings>]) == 0`, and the file holds the F→S row.
-- [ ] **Step 2: Run them to verify they fail.** Run `uv run pytest tests/test_pilot_news_shares.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.pilot.news_shares'`.
-- [ ] **Step 3: Implement** the module and the two subcommands as the Interfaces state.
-- [ ] **Step 4: Run the tests to verify they pass.** Run the Step 2 command. Expected: 6 passed.
-- [ ] **Step 5: Make the real record.** Run `uv run python scripts/pilot_run.py shares data/runs/stage6-pilot-seed2995-20261022T020454Z --out docs/runs/stage-6/news-shares.json`. Expected: `num_draws` 4000, `sampling_seconds` 1659.6018157910003, `panel_sha256` starting `c197e079`, `inference_data_sha256` starting `b0480b97`, `share_s` 0.7232 (0.5532–0.8526) and `share_t` 0.6520 (0.3002–0.8466) to four decimals. Another value stops the task. Report it.
-- [ ] **Step 6: Commit** the five files with `git commit -m "Report the pilot's posterior news shares"`.
+- [x] **Step 2: Run them to verify they fail.** Run `uv run pytest tests/test_pilot_news_shares.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.pilot.news_shares'`.
+- [x] **Step 3: Implement** the module and the two subcommands as the Interfaces state.
+- [x] **Step 4: Run the tests to verify they pass.** Run the Step 2 command. Expected: 6 passed.
+
+> Deviation: ten tests were added after this run, for input shapes the six leave out, and the final review added one more, so `tests/test_pilot_news_shares.py` holds 17. Source: ledger, Task 3.
+
+- [x] **Step 5: Make the real record.** Run `uv run python scripts/pilot_run.py shares data/runs/stage6-pilot-seed2995-20261022T020454Z --out docs/runs/stage-6/news-shares.json`. Expected: `num_draws` 4000, `sampling_seconds` 1659.6018157910003, `panel_sha256` starting `c197e079`, `inference_data_sha256` starting `b0480b97`, `share_s` 0.7232 (0.5532–0.8526) and `share_t` 0.6520 (0.3002–0.8466) to four decimals. Another value stops the task. Report it.
+- [x] **Step 6: Commit** the five files with `git commit -m "Report the pilot's posterior news shares"`.
 
 ### Task 4: The findings file
 
 **Files:** Create `specs/ces-revision-drivers-stage-2-findings.md`.
 
-- [ ] **Step 1: Write the skeleton** with the sections Question, Answer, Data and model, Results, Limits and Measured cost. Results holds the empty block between `<!-- BEGIN GENERATED stage-2-shares -->` and `<!-- END GENERATED stage-2-shares -->`.
-- [ ] **Step 2: Render the table.** Run `uv run python scripts/pilot_run.py shares-report docs/runs/stage-6/news-shares.json` twice. Expected: the block holds the two rows of Task 3 Step 5, and `shasum` of the file is the same after each run.
-- [ ] **Step 3: Write the prose.**
+- [x] **Step 1: Write the skeleton** with the sections Question, Answer, Data and model, Results, Limits and Measured cost. Results holds the empty block between `<!-- BEGIN GENERATED stage-2-shares -->` and `<!-- END GENERATED stage-2-shares -->`.
+- [x] **Step 2: Render the table.** Run `uv run python scripts/pilot_run.py shares-report docs/runs/stage-6/news-shares.json` twice. Expected: the block holds the two rows of Task 3 Step 5, and `shasum` of the file is the same after each run.
+- [x] **Step 3: Write the prose.**
   - Answer: two or three sentences from the generated numbers.
   - Data and model: plan 11's pilot, with the dummy layout (`docs/decisions/seasonal-state.md`), Req 18 met (`docs/runs/stage-6/pilot-fit/diagnostics.json`), and the reduced-panel SBC's share contraction and |z| > 3 share (`docs/runs/stage-6/sbc-summary.json`).
   - Limits: the two of F8, and the excluded rounding variance. The shares are model-implied variance shares, not a split of each month's revision. The model has one aggregate NSA series, and benchmark and seasonal revisions stay outside it (O6). SBC ran on the reduced 1999–2021 panel only, and the doubled-prior rerun missed Req 15's constraint (`docs/runs/stage-6/prior-predictive-doubled.json`), so full-panel SBC and prior sensitivity wait for O17.
   - Measured cost: the generated sampling time, which covers compilation, warmup and sampling of four chains on the Mac's CPU on 2026-10-22, and the sessions that Stage 2 used, counted at completion.
-- [ ] **Step 4: Verify.** Run `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass.
-- [ ] **Step 5: Commit** with `git commit -m "Write the Stage 2 news/noise findings"`.
+
+> Deviation: the final review corrected the Limits line on the crisis multiplier, and F8 above. Source: ledger, final review.
+
+- [x] **Step 4: Verify.** Run `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass.
+- [x] **Step 5: Commit** with `git commit -m "Write the Stage 2 news/noise findings"`.
 
 ### Task 5: Final review and completion
 
 **Files:** Modify `specs/plans/11-ces-revisions.md`, this plan, `specs/deferred_items.md`, `specs/ces-revision-drivers-roadmap.md` and `specs/history.md`. Move both plans to `specs/plans/completed/`.
 
-- [ ] **Step 1: Review the whole branch.** Dispatch code-reviewer (Opus) over `9861d27..HEAD`, against plan 11 (Tasks 1–12, and Task 14 as Task 2 re-scopes it) and this plan. Put the Minor findings of `.sdd/11-ces-revisions/progress.md` in the dispatch. Handle each finding with receiving-code-review, and commit each fix on its own.
-- [ ] **Step 2: Run the completion gate** (writing-plans' Plan Completion Protocol, step 1) for both plans. Plan 11's leftovers are Task 13, and Step 1 and the GPU half of Task 14. Defer them to O6.
-- [ ] **Step 3: Mark up plan 11.** Tick the steps done in Tasks 1–12 and 14. Under Task 13 and under Step 1 of Task 14, add `> Skipped: GPU work moved to O6 by roadmap Stage 2 (:24) → deferred`. Add the ledger's deviations, such as the owner decision of Task 7 (`progress.md:15`). Replace its `Roadmap:` lines (`11:5-6`) with the two stamp lines of this plan's header, which name this roadmap's Stage 2. Point its spec and roadmap links to `specs/completed/` from `specs/plans/completed/`, and add its status line. Its Retirement block (`11:54-64`) changes as follows:
+- [x] **Step 1: Review the whole branch.** Dispatch code-reviewer (Opus) over `9861d27..HEAD`, against plan 11 (Tasks 1–12, and Task 14 as Task 2 re-scopes it) and this plan. Put the Minor findings of `.sdd/11-ces-revisions/progress.md` in the dispatch. Handle each finding with receiving-code-review, and commit each fix on its own.
+
+> Deviation: the Codex second review was skipped at the owner's word on 2026-11-15, so no branch content went to OpenAI (D4). The review found no Critical issue and three Important ones. Three commits fix them: the crisis-multiplier wording, a test of `decision_tables`' module entry, and an `sbc-summary` check for missing replicates. A fourth commit adds the test that ties the findings table to `news-shares.json` (D5). The review's request that `sbc` exit 1 on a failed replicate is ruled out in the ledger. Source: ledger, final review.
+
+- [x] **Step 2: Run the completion gate** (writing-plans' Plan Completion Protocol, step 1) for both plans. Plan 11's leftovers are Task 13, and Step 1 and the GPU half of Task 14. Defer them to O6.
+- [x] **Step 3: Mark up plan 11.** Tick the steps done in Tasks 1–12 and 14. Under Task 13 and under Step 1 of Task 14, add `> Skipped: GPU work moved to O6 by roadmap Stage 2 (:24) → deferred`. Add the ledger's deviations, such as the owner decision of Task 7 (`progress.md:15`). Replace its `Roadmap:` lines (`11:5-6`) with the two stamp lines of this plan's header, which name this roadmap's Stage 2. Point its spec and roadmap links to `specs/completed/` from `specs/plans/completed/`, and add its status line. Its Retirement block (`11:54-64`) changes as follows:
   - Item 1: drop the plan 5 rewrite. Append `## 11-ces-revisions — YYYY-MM-DD` with its three items and these Revisit-if lines: for `σ_slope`, "O6's fit or O17's prior-predictive gate still leaves it above 3 prior scales". For the doubled prior, "O17's prior-sensitivity run". For the residual seasonality, "O17's posterior predictive suite traces a misfit to the seasonal block". Add a fourth item: plan 11's Task 13 and the GPU half of Task 14 (the \$40 Lambda measurement, the GPU rule, `gpu-choice.json`, and D8's parallel-filter note). Size: plan. Covered by O6. Done when: the stage that delivers O6 ticks. Add the unfixed review findings.
   - Item 2: plan 11's Handoff section points to this plan's.
   - Items 3 and 4: not done (F5).
-- [ ] **Step 4: Tick the two planned items** in `specs/deferred_items.md` with `→ done YYYY-MM-DD`: plan 1's dispersed chain starts (`runs/inits.py`, with each run's `init` provenance) and plan 5's repeated EMPLOY vintage (`employ_without_repeats`).
-- [ ] **Step 5: Mark up this plan** and write its Handoff section. Stage 8 consumes the findings file. Its table is the generated block that `shares-report` rewrites from the committed `docs/runs/stage-6/news-shares.json`, so Stage 8 needs no run directory. Name the traps: the run directory is gitignored, a refit (plan 11's Task 10 Step 5) followed by `shares` regenerates the JSON, `share_t` splits the S→T revision, and `docs/runs/stage-6/` keeps the parked stage number. Name the differences: the 29-commit drift, and the deferred items that go to O6 and O17 by their section.
-- [ ] **Step 6: Tick Stage 2 and stamp it** in the roadmap:\
+- [x] **Step 4: Tick the two planned items** in `specs/deferred_items.md` with `→ done YYYY-MM-DD`: plan 1's dispersed chain starts (`runs/inits.py`, with each run's `init` provenance) and plan 5's repeated EMPLOY vintage (`employ_without_repeats`).
+- [x] **Step 5: Mark up this plan** and write its Handoff section. Stage 8 consumes the findings file. Its table is the generated block that `shares-report` rewrites from the committed `docs/runs/stage-6/news-shares.json`, so Stage 8 needs no run directory. Name the traps: the run directory is gitignored, a refit (plan 11's Task 10 Step 5) followed by `shares` regenerates the JSON, `share_t` splits the S→T revision, and `docs/runs/stage-6/` keeps the parked stage number. Name the differences: the 29-commit drift, and the deferred items that go to O6 and O17 by their section.
+- [x] **Step 6: Tick Stage 2 and stamp it** in the roadmap:\
   `> Stage 2: COMPLETE (YYYY-MM-DD) — implemented by plan 13 (specs/plans/completed/13-ces-revision-drivers-stage-2.md) with plan 11 (specs/plans/completed/11-ces-revisions.md). Its Handoff section names what Stage 8 consumes.`\
   `> Next: resume the roadmap.`
-- [ ] **Step 7: Retire.** Report `deferred_stats.py`'s summary, run `deferral_scan.py` on both plans, append a history entry for each plan, and `git mv` both plans to `specs/plans/completed/` in one `chore(specs): retire plans 11 and 13` commit.
+- [x] **Step 7: Retire.** Report `deferred_stats.py`'s summary, run `deferral_scan.py` on both plans, append a history entry for each plan, and `git mv` both plans to `specs/plans/completed/` in one `chore(specs): retire plans 11 and 13` commit.
 - [ ] **Step 8: Finish** with finishing-a-development-branch. The PR merges with a merge commit. Before the worktree is archived, copy this plan's `.sdd/` ledger to the main checkout's `.sdd/`.
+
+> Deviation: this plan's executor stopped before this step. The owner picks the merge or the PR with finishing-a-development-branch. The ledger stays in `.sdd/13-ces-revision-drivers-stage-2/` until the copy in this step. Source: ledger, final review.
+
+## Handoff to later stages
+
+- **Stage 8 (Report)** consumes `specs/ces-revision-drivers-stage-2-findings.md` (O5). Its table is the generated block `stage-2-shares`. `uv run python scripts/pilot_run.py shares-report docs/runs/stage-6/news-shares.json` rewrites it from the committed JSON, so Stage 8 needs no run directory. The findings give a median and a 90% central interval of 4,000 pooled posterior draws (F3), not a standard error. The traps:
+  - The pilot's run directory, `data/runs/stage6-pilot-seed2995-20261022T020454Z`, is gitignored. A refit (plan 11's Task 10 Step 5, `uv run python scripts/pilot_run.py fit --layout dummy --label stage6-pilot`) followed by `shares` regenerates the JSON. `shares` refuses a run fit to other data than the current panel, and with no run directory it prints the refit command and exits 2.
+  - `shares-report` rewrites only the table. The findings' hand-written figures (Answer, Fit quality, Calibration, Measured cost) stay as written, so check them by hand after a refit. `tests/test_pilot_news_shares.py` fails when the table and the JSON differ.
+  - `share_t` is the news share of the S→T revision. Stage 1 reports F→T, so the two do not compare directly.
+  - `shares` checks only the panel hash. A run of another layout fit to the same panel would give shares for that layout (D5).
+  - `docs/runs/stage-6/` keeps the parked roadmap's stage number, because plan 11's run records cite those paths (F6).
+  - The shares are the pilot's model-implied variance shares at the non-crisis scale, without the rounding variance (F8).
+
+Differences from the roadmap's `Produces` and `Consumes`: plan 11's branch was 22 commits ahead of `origin/main` and 29 behind it, not 2 behind, and the merge was clean. Plan 11's Task 14 ran without its GPU half, as a recorded Deviation. The deferred items go to the stages that deliver O6 and O17, which the roadmap does not yet stage. They are in `specs/deferred_items.md`, § 11-ces-revisions: the GPU work (O6), the `σ_slope` conflict (O6 or O17), the doubled-prior failure (O17), the residual seasonality (O17), and plan 11's open Minor findings (O17).

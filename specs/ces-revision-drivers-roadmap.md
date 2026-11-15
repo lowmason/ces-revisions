@@ -68,7 +68,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
 > Stage 1: COMPLETE (2026-11-15) — implemented by plan 12 (specs/plans/completed/12-ces-revision-drivers-stage-1.md). Its Handoff section names what Stage 8 consumes.
 > Next: resume the roadmap.
 
-- [ ] Stage 2: Finish the aggregate news/noise pilot\
+- [x] Stage 2: Finish the aggregate news/noise pilot\
       Objective: Finish plan 11 without its GPU work, so that the total-nonfarm news/noise split and the run harness reach `main`.\
       Outcomes: O5\
       Track: B\
@@ -77,6 +77,9 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Exit: the findings file reports the posterior news share of the S and T revisions (`share_s`, `share_t`) of total nonfarm, with intervals, from the pilot fit's run directory, or from a refit if that directory is gone (O5). The committed JSON evidence does not hold these shares. Plan 11's header names this roadmap's Stage 2. The plan 1 dispersed-starts item and the plan 5 repeated-EMPLOY item in `specs/deferred_items.md` are ticked. The file records the fit's sampling time and the sessions used.\
       Leaves out: the GPU measurement and the GPU choice (plan 11's Task 13, up to \$40, and the GPU rule and `docs/runs/stage-6/gpu-choice.json` of its Task 14): O6 in the Track B Ranked list. Full validation suites at supersector scale: O17 in the Track B Ranked list.\
       ROUTING: writing-plans
+
+> Stage 2: COMPLETE (2026-11-15) — implemented by plan 13 (specs/plans/completed/13-ces-revision-drivers-stage-2.md) with plan 11 (specs/plans/completed/11-ces-revisions.md). Its Handoff section names what Stage 8 consumes.
+> Next: resume the roadmap.
 
 - [ ] Stage 3: Seasonal share of SA revisions\
       Objective: Report the share of SA revision variance that comes from changes in seasonal adjustment, from the accounting decomposition that is already built.\

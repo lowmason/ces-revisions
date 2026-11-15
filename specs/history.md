@@ -26,3 +26,33 @@ Differences from the design:
 - Deviation (Task 3): a Limits line on lapse-delayed later prints, added at the completion gate. Source: plan, Task 3.
 - Deviation (Task 3): nine tests added by the mutant step. Source: plan, Task 3.
 - Deferred: 1 item. Source: specs/deferred_items.md, § 12-ces-revision-drivers-stage-1.
+
+## 11-ces-revisions — 2026-11-15
+Plan: specs/plans/completed/11-ces-revisions.md · Spec: specs/completed/ces-revisions.md (retired) · Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 2
+
+Differences from the design:
+- Deviation (Task 6): `uv.lock` moved from revision 3 to 5, the first relock under uv 0.13. Source: plan, Task 6.
+- Deviation (Task 7): at the owner's word, the non-finite-recovery crash and three Minor findings were fixed, though the plan's code did neither: NaN on zero variance, `NonFiniteRecovery`, `ECDF_SIMULATIONS` of 100,000, a process ID in the summary's temporary name, and `chain_method(1)`. Source: plan, Task 7.
+- Deviation (Task 8): the "infeasible" GPU gate stays manual, in Task 14 Step 1 and the Task 13 header. Both moved to O6. Source: plan, Task 8.
+- Deviation (Task 13): only Step 1 ran, at `97736a3`, and the rented-GPU steps moved to O6. Source: plan, Task 13.
+- Deviation (Task 14): re-scoped to the seasonal-state decision alone by roadmap Stage 2. Plan 13's Task 2 executed it, and its Step 1 and the GPU rows of the exit check moved to O6. Source: plan, Task 14.
+- Decision D1 (spec amendment): every closing cell, 1979–2026, enters as a same-release over-the-month change, and the March anchors enter as levels on the latent path. Source: plan, `## Decisions`.
+- Decision D2 (spec amendment): the crisis multiplier scales the non-news level shock and the S and T news shocks in March–June 2020, and not the slope, seasonal, post-T news, or noise terms. Source: plan, `## Decisions`.
+- Decision D6 (spec amendment): Task 1's spec wording on the crisis multiplier, the NSA closing cells and the Rollout note line is approved. Source: plan, `## Decisions`.
+- Deferred: 5 items. Source: specs/deferred_items.md, § 11-ces-revisions.
+
+## 13-ces-revision-drivers-stage-2 — 2026-11-15
+Plan: specs/plans/completed/13-ces-revision-drivers-stage-2.md · Spec: none · Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 2
+
+Differences from the design:
+- Ruling (Task 2): added 3 tests beyond the plan's 4 (positive elpd gain and Req 18 failure, a non-dummy rule layout, more than one grid record) — mutants.md step 2 asks for each rule's input shapes, and mutant 1 (decision_lines names the reference layout) survives the plan's tests alone — the fast tier reads 686, not the plan's 683; a wrong expected count if the owner compares it.
+- Ruling (Task 3): added 10 tests after Step 4's run (the plan lists 6, Step 4 expected 6 passed, which held) — mutants.md step 2 asks for each rule's input shapes (other interval, skewed summary, block header and note, a whole run directory, both commands with a stand-in panel, a stale findings block, the default path) — the Task 3 test file holds 16 tests, not 6, and the fast tier reads 702, not 686+6
+- Deviation (Task 2): three tests added to the plan's four, and the tiers ran inside `task-done` after Step 9's commit, so the fast tier read 686, not 683. Source: plan, Task 2.
+- Deviation (Task 3): ten tests added after Step 4's run, and one from the final review, so the file holds 17. Source: plan, Task 3.
+- Deviation (Task 4): the final review corrected the Limits line on the crisis multiplier, and F8. Source: plan, Task 4.
+- Deviation (Task 5): the Codex review was skipped at the owner's word (D4). Three commits fix the three Important findings, a fourth adds the findings-table test (D5), and `sbc` keeps exit 0 on a failed replicate. Source: plan, Task 5.
+- Deviation (Task 5): the executor stopped before Step 8, the owner's merge or PR choice. Source: plan, Task 5.
+
+Closed earlier deferred items:
+- "Review recommendation: dispersed chain starts for Req 18 (whole-branch" (deferred by 1-ces-revisions).
+- "Review Minor: two EMPLOY vintages map to one release (whole-branch" (deferred by 5-ces-revisions).
