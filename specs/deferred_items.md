@@ -245,3 +245,22 @@ plan 11.
       by O12 in the Track D Ranked list, with the refits under O7. Size:
       design. Done when: the stages of `specs/ces-revision-drivers-roadmap.md`
       that deliver O12 and O7 have all ticked.
+
+## claude/deferred-063daa Step 4b review — 2026-11-15
+- [ ] Keep each `bls_current` copy as evidence across `captures` runs
+      (code-reviewer's Declined to judge line in the Step 4b review of branch
+      `claude/deferred-063daa`, carried by the owner). Each run of
+      `scripts/archive_inventory.py captures` replaces the earlier `bls_current`
+      rows in `docs/inventory/archive-captures.csv` and keeps no payload. The
+      run of 2026-11-15 dropped the 2026-09-13 copy of `ces.spec.other.zip`, so
+      2026-08 went from complete to `not_archived`. 2026-10 is one of the 29
+      archive-complete releases that O10 of
+      `specs/ces-revision-drivers-roadmap.md` would reproduce, and it rests only
+      on BLS's current file. It drops at the next run unless the Internet
+      Archive copies it first. The behavior predates the branch (plan 2). The
+      fix keeps the earlier rows as dated evidence. It also stores each fetched
+      payload, because O10 needs the files and not only their fingerprints.
+      Where the payloads live is the open decision, under CLAUDE.md's rules for
+      `data/raw/`. Size: design. Done when: a later `captures` run keeps every
+      earlier `bls_current` row and its payload, and a test shows that a
+      release credited by such a copy keeps its status after that run.
