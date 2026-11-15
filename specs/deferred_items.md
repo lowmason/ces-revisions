@@ -1,7 +1,7 @@
 # Deferred items
 
 ## 1-ces-revisions — 2026-09-12
-- [ ] Review Minor: gradient checks along `A_t` and `Z_t` (whole-branch
+- [x] Review Minor: gradient checks along `A_t` and `Z_t` (whole-branch
       review of plan 1, triaged defer). `tests/test_kalman.py` checks the
       log-likelihood gradient only along a joint scaling of `transition_cov`
       and `observation_cov`, which covers Stage 1's scale-only pilot. A stage
@@ -13,6 +13,7 @@
       entering `transition_matrix` or `observation_matrix` adds a dense-oracle
       gradient check along it.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Waits for O6 in specs/ces-revision-drivers-roadmap.md, the first model that samples parameters inside those matrices
+      → done 2026-11-15 (/deferred quick fix)
 - [ ] Review recommendation: dispersed chain starts for Req 18 (whole-branch
       review of plan 1, triaged defer). NumPyro's default
       `init_to_uniform(radius=2)` starts each LogNormal scale in roughly
@@ -24,9 +25,10 @@
       the Stage 6 run harness starts the four chains from dispersed points
       and records the initialization strategy with each run.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
+      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
 
 ## 2-ces-revisions — 2026-09-13
-- [ ] Review Important: test the monthly live window against member dates
+- [x] Review Important: test the monthly live window against member dates
       (whole-branch review of plan 2, triaged defer). `scripts/archive_inventory.py`
       credits a prior-adjustment or outlier copy to the release whose 8:30 a.m.
       Eastern embargo precedes it, but BLS's seasonal adjustment files page says
@@ -41,16 +43,7 @@
       Done when: `captures` records member dates and a test checks every copy
       against them.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Waits for a captures run
-- [x] Review Minor: releases before May 1999 in `es-vintages.csv` (whole-branch
-      review of plan 2, triaged defer). `parse_release_index` in
-      `scripts/archive_inventory.py` reads only links with a four-digit year, so
-      the 49 releases from February 1995 to April 1999, whose links use MMDDYY,
-      are missing from `docs/inventory/es-vintages.csv`, and each older date needs
-      checking against the archived schedules, since the December 1999 item links
-      a file dated 2000-01-19. Stage 2 needs only May 2003 on; Stage 3's
-      release-date index owns the earlier years. Size: quick-fix. Done when:
-      Stage 3's release-date index covers the 1995–1999 releases with checked
-      dates, or records those years as out of scope. → done in plan 5
+      → done 2026-11-15 (/deferred quick fix)
 - [ ] Review Minor: show the copies behind a `conflicting_captures` cell
       (whole-branch review of plan 2, triaged defer). `_status_cell` in
       `scripts/archive_inventory.py` links evidence only for present statuses, so
@@ -58,23 +51,6 @@
       none of the copies that disagree; no such cell exists today. Size:
       quick-fix. Revisit if: `docs/inventory/archive-inventory.csv` shows a
       `conflicting_captures` status.
-- [x] Spec-owner finding: usable linked coverage is not published (completion
-      report of plan 2). Req 3 asks for usable linked employment coverage and
-      RSE by supersector, harmonized across the organization, UI-account, and
-      worksite definition switches. Table 1 of the CES technical notes counts
-      active sample reports, not the matched sample the estimator uses; every
-      copy from March 2002 to March 2025 has the same columns, so no switch was
-      found; and no copy holds the March 2012 table. The RSE measure does
-      change: relative standard errors of levels through 2009, separate
-      standard error pages from the 2009 benchmark, and a 1-month change from
-      2017 (the `linked_coverage` and `relative_standard_error` rows of
-      `docs/ces-revisions-review.md`). Roadmap Stage 4 builds the sample panel,
-      and its exit's "definition-break flag at each documented switch" would
-      pass vacuously. Size: design. Done when: the spec names the coverage
-      measure Stage 4 builds, and Stage 4's exit flags the RSE measure changes
-      and the missing 2012 table. Spec half done 2026-09-14: Req 3 names the
-      coverage-share proxy and the RSE break flags (user decision); Stage 4's
-      exit waits for the roadmap resume. → done in plan 6
 - [ ] BLS request: first-closing dates, matched-sample counts, and lapse
       operations (user decisions of 2026-09-14). Req 3 uses two labeled proxies
       because BLS publishes neither input: the release date ends the collection
@@ -103,22 +79,6 @@
       See `specs/plans/completed/5-ces-revisions.md`. Size: quick-fix. Revisit
       if: `test_bls_has_not_refreshed_the_vintage_files_since_the_manifest`
       fails under `uv run pytest -m network`.
-- [x] Review Important and Minors: harden `fetch` before the next refresh → done in plan 7
-      (whole-branch review of plan 5; deferred by user decision, 2026-09-14).
-      `fetch_sources` in `scripts/vintage_sources.py` overwrites each file in
-      `data/raw/` as it downloads and accepts whatever the server returns, so
-      a failure partway, or an error page served in a file's place, leaves the
-      committed sources out of step with `data/raw/manifest.csv`; meanwhile,
-      `git checkout -- data/raw` restores them. The work: download into a
-      staging directory, check each payload's file signature (ZIP, PDF, XLS,
-      XLSX, HTML), and move files into `data/raw/` only when all pass; add an
-      offline command that rehashes the manifest, since editing
-      `data/raw/manual/es-reschedules.csv`, the one hand-editable source, fails
-      the manifest test until a full network fetch; and record the `pdftotext`
-      version, since the layout of `bls/histreleasedates.txt` can vary by
-      poppler version. Size: plan. Done when: `fetch` stages and checks its
-      downloads, an offline command rehashes the manifest, and the manifest
-      names the `pdftotext` version.
 - [ ] Review Minor: two EMPLOY vintages map to one release (whole-branch
       review of plan 5, triaged defer). `rtdsm_levels` in
       `src/ces_revisions/vintages/panel.py` joins each EMPLOY vintage to the
@@ -131,7 +91,8 @@
       `rtdsm_employ` rows (roadmap Stage 6 consumes the 1979 leg) flags or
       drops the repeat vintage.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
-- [ ] Review recommendations: evidence tests for two planning findings
+      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
+- [x] Review recommendations: evidence tests for two planning findings
       (whole-branch review of plan 5, triaged defer). Two findings in plan 5's
       Planning evidence rest on one-off queries: EMPLOY's same-vintage
       seasonally adjusted changes differ from the revision table in 10 cells
@@ -144,6 +105,7 @@
       `tests/test_stage_labels.py`, would keep those choices auditable. Size:
       quick-fix. Done when: tests pin the 10 cells and the three counts.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Half done in plan 11 (the ten EMPLOY cells), which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
+      → done 2026-11-15 (/deferred quick fix)
 
 ## ces-revisions-roadmap — 2026-11-15
 
@@ -267,7 +229,7 @@ plan 11.
       when: Stage 8 of `specs/ces-revision-drivers-roadmap.md` ticks.
 - [ ] Parked Stage 25, X-13 vintage reproduction
       (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
-      outcome-first reset). Reproduces the X-13 factors for the 28
+      outcome-first reset). Reproduces the X-13 factors for the 29
       archive-complete releases (spec Req 9, channel (b)). Covered by O10 in
       the Track C Ranked list. Size: design. Done when: the stage of
       `specs/ces-revision-drivers-roadmap.md` that delivers O10 ticks.
@@ -283,3 +245,22 @@ plan 11.
       by O12 in the Track D Ranked list, with the refits under O7. Size:
       design. Done when: the stages of `specs/ces-revision-drivers-roadmap.md`
       that deliver O12 and O7 have all ticked.
+
+## claude/deferred-063daa Step 4b review — 2026-11-15
+- [ ] Keep each `bls_current` copy as evidence across `captures` runs
+      (code-reviewer's Declined to judge line in the Step 4b review of branch
+      `claude/deferred-063daa`, carried by the owner). Each run of
+      `scripts/archive_inventory.py captures` replaces the earlier `bls_current`
+      rows in `docs/inventory/archive-captures.csv` and keeps no payload. The
+      run of 2026-11-15 dropped the 2026-09-13 copy of `ces.spec.other.zip`, so
+      2026-08 went from complete to `not_archived`. 2026-10 is one of the 29
+      archive-complete releases that O10 of
+      `specs/ces-revision-drivers-roadmap.md` would reproduce, and it rests only
+      on BLS's current file. It drops at the next run unless the Internet
+      Archive copies it first. The behavior predates the branch (plan 2). The
+      fix keeps the earlier rows as dated evidence. It also stores each fetched
+      payload, because O10 needs the files and not only their fingerprints.
+      Where the payloads live is the open decision, under CLAUDE.md's rules for
+      `data/raw/`. Size: design. Done when: a later `captures` run keeps every
+      earlier `bls_current` row and its payload, and a test shows that a
+      release credited by such a copy keeps its status after that run.
