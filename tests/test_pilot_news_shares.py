@@ -7,6 +7,7 @@ import numpy as np
 import pilot_run
 import pytest
 import xarray as xr
+from archive_inventory import generated_block
 
 from ces_revisions.pilot.model import SAMPLED_SITES, derived
 from ces_revisions.pilot.news_shares import (
@@ -250,3 +251,12 @@ def test_shares_report_defaults_to_the_stage_2_findings_file(tmp_path, monkeypat
 def test_the_default_findings_file_is_the_stage_2_findings():
     stage_2_findings = "specs/ces-revision-drivers-stage-2-findings.md"
     assert pilot_run.FINDINGS == vintage_raw.ROOT / stage_2_findings
+
+
+def test_the_findings_table_is_the_committed_record_rendered():
+    """A refit that rewrites news-shares.json must also rerun shares-report."""
+    root = vintage_raw.ROOT
+    record = json.loads((root / "docs/runs/stage-6/news-shares.json").read_text())
+    findings = (root / pilot_run.FINDINGS.relative_to(root)).read_text()
+    block = generated_block(findings, pilot_run.SHARES_BLOCK_NAME)
+    assert block == f"\n{shares_block(record)}\n\n"
