@@ -51,7 +51,9 @@ def test_pandemic_months_are_reported_apart():
 
 def test_lapse_flag_reaches_the_revisions():
     flagged = revisions().filter("lapse_delayed")["reference_month"]
-    assert flagged.unique().sort().to_list() == list(LAPSE_DELAYED_MONTHS)
+    kept = [month for month in LAPSE_DELAYED_MONTHS if month not in DROPPED_MONTHS]
+    assert flagged.unique().sort().to_list() == kept
+    assert len(kept) == 5
 
 
 def test_revision_is_the_absolute_change_from_the_first_estimate():

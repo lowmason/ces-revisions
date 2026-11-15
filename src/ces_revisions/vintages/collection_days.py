@@ -14,15 +14,17 @@ from ces_revisions.vintages.federal_calendar import business_days
 
 # The CES reference period is the pay period that includes the 12th of the month.
 REFERENCE_DAY = 12
-# The five releases that a lapse in appropriations delayed. December 1995: footnote 1 of BLS's
+# The six releases that a lapse in appropriations delayed. December 1995: footnote 1 of BLS's
 # historical release dates (data/raw/bls/histreleasedates.txt, keyed in
 # data/raw/manual/es-reschedules.csv). The others: the shutdown_release_delayed row of
-# docs/ces-revisions-review.md. The January 2018 and 2018-19 lapses delayed no release, and the
-# index's off_schedule flag is wider: it also marks October 1998 and the canceled October 2025.
+# docs/ces-revisions-review.md. Stage 1's analysis drops September 2025, so five of them enter
+# it. The January 2018 and 2018-19 lapses delayed no release, and the index's off_schedule flag
+# is wider: it also marks October 1998 and the canceled October 2025.
 LAPSE_DELAYED_MONTHS = (
     date(1995, 12, 1),
     date(2013, 9, 1),
     date(2013, 10, 1),
+    date(2025, 9, 1),
     date(2025, 11, 1),
     date(2026, 1, 1),
 )

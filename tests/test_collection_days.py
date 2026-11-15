@@ -45,12 +45,13 @@ def test_every_release_has_one_day_count():
     assert frame["collection_days"].null_count() == 0
 
 
-def test_only_the_five_lapse_delayed_releases_are_flagged():
+def test_only_the_lapse_delayed_releases_are_flagged():
     frame = vintage_data.collection_days()
     assert LAPSE_DELAYED_MONTHS == (
         date(1995, 12, 1),
         date(2013, 9, 1),
         date(2013, 10, 1),
+        date(2025, 9, 1),
         date(2025, 11, 1),
         date(2026, 1, 1),
     )
