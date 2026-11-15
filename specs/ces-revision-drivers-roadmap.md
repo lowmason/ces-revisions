@@ -22,12 +22,13 @@ Choices made:
 - Target for O1 (owner, 2026-11-15): one session, on the same day.
 - Process for Stage 1 (owner, 2026-11-15): lighter. Test-driven development for the day count and one whole-branch Opus review stay. Brainstorming, code blocks in the plan, per-task reviewers and subagent dispatch are skipped.
 - Finish for O5 (owner, 2026-11-15): without plan 11's GPU work, which moves to O6: the Lambda measurement of Task 13 and the GPU rule of Task 14.
+- Track A after Stage 1 (owner, 2026-11-15, at the resume): O3 is promoted to Stage 9, and the Track A Ranked list keeps O2, then O4. Stage 1 found no clear `D_t` effect within 12 to 19 business days, and O2 would reuse that narrow range.
 
 | # | Outcome | Track | Rank | Cost (estimate; basis) |
 |---|---|---|---|---|
 | O1 | How mean absolute revision (F→S, F→T) changes with the length of the collection window, total nonfarm, 1979–2026 | A | 1 | about one session: every input is on disk, and the holiday rule is computed offline |
-| O2 | The same for each of the 11 supersectors, 2003–2026 | A | 2 | small after O1: the data is on disk, 12 series × 280 months |
-| O3 | Whether a longer window raises the first-closing collection rate, and how revision size moves with that rate, 1981–2026 | A | 3 | one LABSTAT fetch for C1–C3. First-published values need Internet Archive pages, which throttle bursts |
+| O2 | The same for each of the 11 supersectors, 2003–2026 | A | 3 | small after O1: the data is on disk, 12 series × 280 months |
+| O3 | Whether a longer window raises the first-closing collection rate, and how revision size moves with that rate, 1981–2026 | A | 2 | one LABSTAT fetch for C1–C3. First-published values need Internet Archive pages, which throttle bursts |
 | O4 | The O1 answer with BLS's first-closing dates in place of the release-date proxy | A | 4 | waits for BLS to answer the request of 2026-09-14 (`specs/deferred_items.md`) |
 | O5 | How much of each total-nonfarm revision is news and how much is noise, 1979–2026 | B | 1 | the fit is done on plan 11's branch. About one session to finish without GPUs, and up to \$40 more with them |
 | O6 | The news/noise split for each supersector, with benchmark and seasonal revisions inside the model | B | 2 | about 64 h per fit on the Mac, above plan 11's 48 h cap. This is arithmetic from the measured Mac grid, not a measurement. GPUs are not yet measured |
@@ -52,7 +53,7 @@ Tracks: A — Collection window (research). B — Revision model (research). Spl
 
 ## Stages
 
-The order follows the owner's track ranking. Each core stage is a cheap answer on data that is already built, so the core stages come first. This diverges from the old roadmap, which put the model before every driver answer. Stages 1–7 are independent of one another and may run in any order. Stage 8 reads the findings of the stages that have ticked.
+The order follows the owner's track ranking. Each core stage is a cheap answer on data that is already built, so the core stages come first. This diverges from the old roadmap, which put the model before every driver answer. Stages 1–7 are independent of one another and may run in any order. Stage 8 reads the findings of the stages that have ticked. Stage 9 was promoted from the Track A Ranked list at the resume after Stage 1, and it is independent of Stages 2–7.
 
 - [x] Stage 1: Collection window and revision size, total nonfarm\
       Objective: Measure how mean absolute F→S and F→T revisions of total nonfarm change with the day count `D_t`, 1979–2026, at the owner's smallest standard.\
@@ -137,11 +138,20 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Leaves out: nothing.\
       ROUTING: brainstorming
 
+- [ ] Stage 9: Collection window and the first-closing collection rate\
+      Objective: Measure whether a longer collection window raises the first-closing collection rate, and how revision size moves with that rate, 1981–2026.\
+      Outcomes: O3\
+      Track: A\
+      Consumes: From Stage 1: the day count `D_t` and the lapse flag of each release in `data/panel/collection_days.parquet`, which the vintage build writes, and `absolute_revisions` in `ces_revisions.collection_window` (plan 12, Handoff; Resolved at resume, 2026-11-15). Built inputs (plan 5): `data/panel/release_index.parquet` and the `cesnaicsrev` rows of `data/panel/panel.parquet`. Background: Req 3's collection rows of the old spec, and the parked Stage 12 item in `specs/deferred_items.md`.\
+      Produces: the collection-rate sources in `data/raw/`, from one LABSTAT fetch and the first-published values on Internet Archive pages, each fetched and validated under CLAUDE.md's rules for `data/raw/`, with its manifest row. `specs/ces-revision-drivers-stage-9-findings.md`, with the associations and the measured cost.\
+      Exit: the findings file reports how the first-closing collection rate moves with `D_t`, and how the mean absolute F→S and F→T revisions move with that rate, each with its uncertainty (O3). It records the measured cost of the real run and the sessions used.\
+      Leaves out: point-in-time awareness: O8 in the Track B Ranked list. Traceability: Stage 8.\
+      ROUTING: brainstorming
+
 ## Ranked list — Track A
 
 1. O2 — small after Stage 1. The data is on disk.
-2. O3 — one LABSTAT fetch, and first-published values from the Internet Archive. Its sources follow CLAUDE.md's rules for `data/raw/`: a validated fetch and the manifest.
-3. O4 — waits for BLS's answer.
+2. O4 — waits for BLS's answer.
 
 ## Ranked list — Track B
 
