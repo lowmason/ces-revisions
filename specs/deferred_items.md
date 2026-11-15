@@ -25,7 +25,7 @@
       the Stage 6 run harness starts the four chains from dispersed points
       and records the initialization strategy with each run.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
-      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
+      → planned 2026-11-15: specs/plans/13-ces-revision-drivers-stage-2.md
 
 ## 2-ces-revisions — 2026-09-13
 - [x] Review Important: test the monthly live window against member dates
@@ -91,7 +91,7 @@
       `rtdsm_employ` rows (roadmap Stage 6 consumes the 1979 leg) flags or
       drops the repeat vintage.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
-      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
+      → planned 2026-11-15: specs/plans/13-ces-revision-drivers-stage-2.md
 - [x] Review recommendations: evidence tests for two planning findings
       (whole-branch review of plan 5, triaged defer). Two findings in plan 5's
       Planning evidence rest on one-off queries: EMPLOY's same-vintage
