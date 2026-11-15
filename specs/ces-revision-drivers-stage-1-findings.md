@@ -1,6 +1,6 @@
 # Stage 1 findings: collection window and revision size, total nonfarm
 
-Outcome O1 of the [ces-revision-drivers roadmap](ces-revision-drivers-roadmap.md), Stage 1, implemented by [plan 12](plans/12-ces-revision-drivers-stage-1.md). `uv run python scripts/collection_window.py report` writes the three tables below from the built `data/panel/`. Do not edit them by hand.
+Outcome O1 of the [ces-revision-drivers roadmap](ces-revision-drivers-roadmap.md), Stage 1, implemented by [plan 12](plans/completed/12-ces-revision-drivers-stage-1.md). `uv run python scripts/collection_window.py report` writes the three tables below from the built `data/panel/`. Do not edit them by hand.
 
 ## Question
 

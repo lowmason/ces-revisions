@@ -6,6 +6,8 @@
 
 Process: lighter. Keep TDD for the day count and one whole-branch Opus review. Skip brainstorming, code blocks in the plan, per-task reviewers and subagent dispatch.
 
+**Status: COMPLETE (2026-11-15)** — executed via executing-plans; deferred items in specs/deferred_items.md
+
 **Goal:** Measure how the mean absolute F→S and F→T revisions of total nonfarm change with the collection-window day count `D_t`, 1979–2026, NSA and SA, and write the answer to `specs/ces-revision-drivers-stage-1-findings.md`.
 
 **Architecture:** Two small modules in `ces_revisions.vintages` compute the federal holiday calendar by rule and one `D_t` per release. The vintage build writes the day counts as `data/panel/collection_days.parquet`. A new module, `ces_revisions.collection_window`, joins `D_t` to the revision table's estimates in `data/panel/panel.parquet`. It computes the table of mean absolute revisions and one OLS specification with year and calendar-month fixed effects and year-clustered standard errors. `scripts/collection_window.py report` writes the tables into generated blocks of the findings file.
@@ -72,7 +74,7 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F2, F5,
 **Interfaces:**
 - Produces: `federal_holidays(year: int) -> tuple[date, ...]`, the sorted observed dates of that year's 6103(a) holidays, which can include December 31 of the year before. It raises `ValueError` for a year before 1978. `business_days(start: date, end: date) -> int`, the weekdays `d` with `start <= d < end` that are not holidays. `collection_days(reference_month: date, release_date: date) -> int`, which is `business_days` from the 13th of the reference month to the release date.
 
-- [ ] **Step 1: Write the failing tests.** In `tests/test_federal_calendar.py`:
+- [x] **Step 1: Write the failing tests.** In `tests/test_federal_calendar.py`:
   - `test_federal_holidays_2026_match_opm`: `federal_holidays(2026) == (date(2026,1,1), date(2026,1,19), date(2026,2,16), date(2026,5,25), date(2026,6,19), date(2026,7,3), date(2026,9,7), date(2026,10,12), date(2026,11,11), date(2026,11,26), date(2026,12,25))`
   - `test_saturday_new_years_day_is_observed_the_friday_before`: `date(2010,12,31) in federal_holidays(2011)` and `date(2010,12,31) not in federal_holidays(2010)`
   - `test_sunday_holiday_is_observed_the_monday_after`: `date(2021,7,5) in federal_holidays(2021)`
@@ -88,11 +90,13 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F2, F5,
   - `test_holidays_count_from_their_first_observance`: `collection_days(date(1985,1,1), date(1985,2,1)) == 14`, `collection_days(date(1986,1,1), date(1986,2,7)) == 18`, `collection_days(date(2021,6,1), date(2021,7,2)) == 13`, `collection_days(date(2026,6,1), date(2026,7,2)) == 12`
   - `test_lapse_days_count_as_business_days`: `collection_days(date(2026,1,1), date(2026,2,11)) == 20` and `collection_days(date(2013,9,1), date(2013,10,22)) == 26`
 
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q`. Expected: collection errors, `ModuleNotFoundError: No module named 'ces_revisions.vintages.federal_calendar'`.
-- [ ] **Step 3: Implement `federal_calendar.py`** with `federal_holidays` and `business_days`, and **the scalar `collection_days`** in `collection_days.py`. Name the first years as constants: `FIRST_RULE_YEAR = 1978`, `KING_BIRTHDAY_FIRST_YEAR = 1986`, `JUNETEENTH_FIRST_YEAR = 2021`. `business_days` takes the holidays of `start.year` through `end.year + 1`, so a December 31 observance of the next New Year's Day is seen. `numpy.busday_count` or a day loop are both fine.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 12 passed.
-- [ ] **Step 5: Prove the tests.** Run executing-plans' mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
-- [ ] **Step 6: Commit.** `git add src/ces_revisions/vintages/federal_calendar.py src/ces_revisions/vintages/collection_days.py tests/test_federal_calendar.py tests/test_collection_days.py` then `git commit -m "Add the federal holiday rule and the collection-window day count"`.
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q`. Expected: collection errors, `ModuleNotFoundError: No module named 'ces_revisions.vintages.federal_calendar'`.
+- [x] **Step 3: Implement `federal_calendar.py`** with `federal_holidays` and `business_days`, and **the scalar `collection_days`** in `collection_days.py`. Name the first years as constants: `FIRST_RULE_YEAR = 1978`, `KING_BIRTHDAY_FIRST_YEAR = 1986`, `JUNETEENTH_FIRST_YEAR = 2021`. `business_days` takes the holidays of `start.year` through `end.year + 1`, so a December 31 observance of the next New Year's Day is seen. `numpy.busday_count` or a day loop are both fine.
+  > Deviation: `business_days` reads the holidays of `start.year` through `end.year`, not `end.year + 1` (ledger ruling): a December 31 observance before `end` already sits in a year no later than `end`'s.
+- [x] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 12 passed.
+- [x] **Step 5: Prove the tests.** Run executing-plans' mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
+  > Deviation: mutant step 2 added four shape tests: the 1978 boundary, a May with five Mondays, a November with five Thursdays and Columbus Day in 2024. Mutants: 18 of 18 caught.
+- [x] **Step 6: Commit.** `git add src/ces_revisions/vintages/federal_calendar.py src/ces_revisions/vintages/collection_days.py tests/test_federal_calendar.py tests/test_collection_days.py` then `git commit -m "Add the federal holiday rule and the collection-window day count"`.
 
 ### Task 2: One `D_t` for every release, in the vintage build
 
@@ -107,15 +111,17 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F2, F5,
 - Consumes: `collection_days(reference_month, release_date)` (Task 1). The release index frame from `release_index.build_release_index`.
 - Produces: `LAPSE_DELAYED_MONTHS: tuple[date, ...]`, the five D1 months in order. `build_collection_days(index: pl.DataFrame) -> pl.DataFrame` with the columns `reference_month: Date`, `release_date: Date`, `collection_days: Int32` and `lapse_delayed: Boolean`. It has one row for each index row with `status == "released"`, sorted by `reference_month`, and keeps 2025-09, which only the analysis drops. `VintageBuild.collection_days`, written as `data/panel/collection_days.parquet`.
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_collection_days.py`, on `vintage_data.collection_days()`:
+- [x] **Step 1: Write the failing tests** in `tests/test_collection_days.py`, on `vintage_data.collection_days()`:
   - `test_every_release_has_one_day_count`: `frame.height == 571`, `frame["reference_month"].is_unique().all()`, `date(2025,10,1) not in frame["reference_month"].to_list()`, `frame["collection_days"].null_count() == 0`
   - `test_only_the_five_lapse_delayed_releases_are_flagged`: `LAPSE_DELAYED_MONTHS == (date(1995,12,1), date(2013,9,1), date(2013,10,1), date(2025,11,1), date(2026,1,1))` and `frame.filter("lapse_delayed")["reference_month"].to_list() == list(LAPSE_DELAYED_MONTHS)`
   - `test_built_day_counts_match_hand_counts`: the rows for 1995-12, 2013-09, 2025-09 and 2026-08 carry 24, 26, 46 and 16
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_days.py -q`. Expected: a collection error, `ImportError: cannot import name 'LAPSE_DELAYED_MONTHS'`.
-- [ ] **Step 3: Implement** `LAPSE_DELAYED_MONTHS` and `build_collection_days`. Cite D1's sources in a comment beside the constant. Add the frame to `VintageBuild` and `build()`, the cached accessor, the `composed()` key and the CLAUDE.md list entry.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_collection_days.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass, with the slow tier's parametrized test now covering `collection_days`.
-- [ ] **Step 5: Prove the tests.** Run the mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
-- [ ] **Step 6: Commit.** `git add` the five files, then `git commit -m "Write one collection-window day count per release in the vintage build"`.
+  > Deviation: the final review added September 2025 to `LAPSE_DELAYED_MONTHS`, so `data/panel/collection_days.parquet` flags six months, under roadmap `:20` ("the affected releases are flagged"): the 2025 lapse moved that release from October 3 to November 20. The plan test expects six and is renamed `test_only_the_lapse_delayed_releases_are_flagged`. The owner kept this ruling at the completion gate. The analysis drops September 2025, so five flagged releases enter it, as D1 states.
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_days.py -q`. Expected: a collection error, `ImportError: cannot import name 'LAPSE_DELAYED_MONTHS'`.
+- [x] **Step 3: Implement** `LAPSE_DELAYED_MONTHS` and `build_collection_days`. Cite D1's sources in a comment beside the constant. Add the frame to `VintageBuild` and `build()`, the cached accessor, the `composed()` key and the CLAUDE.md list entry.
+- [x] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_collection_days.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass, with the slow tier's parametrized test now covering `collection_days`.
+- [x] **Step 5: Prove the tests.** Run the mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
+  > Deviation: mutant step 2 added `test_day_counts_come_sorted_with_the_stated_schema`. The final review replaced Mutant 2, which crashed on every call, and added Mutants 8 (the scheduled date ends the window) and 9 (September 2025 unflagged). The rerun caught 9 of 9.
+- [x] **Step 6: Commit.** `git add` the five files, then `git commit -m "Write one collection-window day count per release in the vintage build"`.
 
 ### Task 3: The table, the regression and the findings file
 
@@ -136,17 +142,26 @@ The owner approved the plan with these defaults on 2026-11-15, and chose F2, F5,
   - `days_regression(revisions: pl.DataFrame) -> pl.DataFrame`: one row per `seasonal_status` and `transition`, from the main period, with `n`, `clusters`, `days_coefficient`, `days_se`, `lapse_coefficient` and `lapse_se`.
   - `scripts/collection_window.py report`: reads `data/panel/`, renders the generated blocks `stage-1-main`, `stage-1-pandemic` and `stage-1-regression` with `archive_inventory.replace_generated`, writes them into the findings file and prints its wall time. With no `data/panel/`, it exits non-zero and names `scripts/vintage_sources.py build`.
 
-- [ ] **Step 1: Write the Review Focus tests** in `tests/test_collection_window.py`, on `absolute_revisions(vintage_data.table_changes(), vintage_data.collection_days())`:
+- [x] **Step 1: Write the Review Focus tests** in `tests/test_collection_window.py`, on `absolute_revisions(vintage_data.table_changes(), vintage_data.collection_days())`:
   - `test_missing_estimates_drop_rather_than_count_as_zero`: no row for (2003-04, `F_S`), (2003-03, `F_T`) or (2003-04, `F_T`); no row in `DROPPED_MONTHS`; the latest `F_S` month is 2026-07 and the latest `F_T` month 2026-06; for each seasonal status the `F_S` count exceeds the `F_T` count
   - `test_pandemic_months_are_reported_apart`: the `"pandemic"` months are exactly the 22 months from 2020-03 to 2021-12
   - `test_lapse_flag_reaches_the_revisions`: the sorted unique months with `lapse_delayed` equal `list(LAPSE_DELAYED_MONTHS)`
-- [ ] **Step 2: Run them to verify they fail.** Run: `uv run pytest tests/test_collection_window.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.collection_window'`.
-- [ ] **Step 3: Implement `ces_revisions.collection_window`** as its Interfaces state. In `days_regression`, the design is the intercept, `collection_days`, `lapse_delayed`, reference-year dummies without the first year and calendar-month dummies without January.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 3 passed.
-- [ ] **Step 5: Write the script and the findings skeleton.** The findings file has the sections Question, Data and day count, Results (the three generated blocks, each between `<!-- BEGIN GENERATED <name> -->` and `<!-- END GENERATED <name> -->`), Limits and Measured cost. The tables give means to one decimal and coefficients to two decimals, in thousands.
-- [ ] **Step 6: Make the real run.** Run: `time -p uv run python scripts/vintage_sources.py build`, then `time -p uv run python scripts/collection_window.py report`. Expected: the build manifest lists `collection_days` with 571 rows. The main tables hold `D_t` values from 12 to 26, with no 46. The regression block has four rows, each with 47 clusters (1979–2020 and 2022–2026).
-- [ ] **Step 7: Cross-check the regression.** In `/tmp`, refit the four designs with `uv run --with statsmodels python` and `OLS(...).fit(cov_type="cluster", cov_kwds={"groups": year})`. Expected: coefficients and standard errors agree with `days_regression` to 1e-8. If statsmodels does not install on Python 3.14, compare the coefficients with `np.linalg.lstsq`, and record the fallback in the ledger.
-- [ ] **Step 8: Write the findings prose.** Give the answer in two or three sentences, from the generated numbers. Limits name F7's benchmark effect, the cells with n = 1, the five lapse releases, and `D_t` as a release-date proxy for first closing (O4 replaces it). Measured cost gives the two wall times from Step 6 and "1 session".
-- [ ] **Step 9: Verify.** Run: `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass. Rerun the report and check that `shasum` of the findings file is unchanged, which shows the generated blocks are stable.
-- [ ] **Step 10: Prove the tests.** Run the mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
-- [ ] **Step 11: Commit.** `git add` the five files, then `git commit -m "Measure revision size against the collection window for total nonfarm"`.
+  > Deviation: after the Task 2 change, `test_lapse_flag_reaches_the_revisions` compares against `LAPSE_DELAYED_MONTHS` minus `DROPPED_MONTHS`, which pins the same five months.
+- [x] **Step 2: Run them to verify they fail.** Run: `uv run pytest tests/test_collection_window.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.collection_window'`.
+- [x] **Step 3: Implement `ces_revisions.collection_window`** as its Interfaces state. In `days_regression`, the design is the intercept, `collection_days`, `lapse_delayed`, reference-year dummies without the first year and calendar-month dummies without January.
+- [x] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 3 passed.
+- [x] **Step 5: Write the script and the findings skeleton.** The findings file has the sections Question, Data and day count, Results (the three generated blocks, each between `<!-- BEGIN GENERATED <name> -->` and `<!-- END GENERATED <name> -->`), Limits and Measured cost. The tables give means to one decimal and coefficients to two decimals, in thousands.
+  > Deviation: the findings file adds an Answer section after Question (ledger ruling), because Step 8 asks for the answer first.
+- [x] **Step 6: Make the real run.** Run: `time -p uv run python scripts/vintage_sources.py build`, then `time -p uv run python scripts/collection_window.py report`. Expected: the build manifest lists `collection_days` with 571 rows. The main tables hold `D_t` values from 12 to 26, with no 46. The regression block has four rows, each with 47 clusters (1979–2020 and 2022–2026).
+  > Deviation: zsh's `time` takes no `-p`, so the run used `/usr/bin/time -p`: 7.22 s for the build and 0.38 s for the report.
+- [x] **Step 7: Cross-check the regression.** In `/tmp`, refit the four designs with `uv run --with statsmodels python` and `OLS(...).fit(cov_type="cluster", cov_kwds={"groups": year})`. Expected: coefficients and standard errors agree with `days_regression` to 1e-8. If statsmodels does not install on Python 3.14, compare the coefficients with `np.linalg.lstsq`, and record the fallback in the ledger.
+- [x] **Step 8: Write the findings prose.** Give the answer in two or three sentences, from the generated numbers. Limits name F7's benchmark effect, the cells with n = 1, the five lapse releases, and `D_t` as a release-date proxy for first closing (O4 replaces it). Measured cost gives the two wall times from Step 6 and "1 session".
+  > Deviation: at the completion gate the owner added a Limits line on the 9 main-period revisions whose later estimate came in a lapse-delayed release.
+- [x] **Step 9: Verify.** Run: `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass. Rerun the report and check that `shasum` of the findings file is unchanged, which shows the generated blocks are stable.
+- [x] **Step 10: Prove the tests.** Run the mutant gate on this task's diff. Expected: every mutant killed, or each survivor ruled in the ledger.
+  > Deviation: mutant step 2 added nine tests: the revision values, the source filter, the day-count guard, the table's counts and means, both layouts, the regression against statsmodels' values, the report end to end and its refusal. The Step 11 commit ran first, because the mutant script needs a clean tree. Mutants: 22 of 22 caught.
+- [x] **Step 11: Commit.** `git add` the five files, then `git commit -m "Measure revision size against the collection window for total nonfarm"`.
+
+## Handoff to later stages
+
+- **Stage 8 (Report)** consumes `specs/ces-revision-drivers-stage-1-findings.md` (O1). Its three tables are generated blocks: `uv run python scripts/collection_window.py report` rewrites them from `data/panel/` after `uv run python scripts/vintage_sources.py build`, so edit only the prose around them. The findings give each `D_t` coefficient with its year-clustered standard error, not an interval, and the table of means is descriptive. This differs from the roadmap's Produces in two ways. The day count for every release is `data/panel/collection_days.parquet` (571 releases, with `collection_days` and `lapse_delayed`), written by the vintage build, not by a Stage 1 script. It flags six lapse-delayed months, not five (Task 2 deviation). Trap: from 2004, November's F→T and December's F→S revisions carry benchmark effects (findings, Limits). The one deferred item goes to O2 in the Track A Ranked list, not to a stage: `specs/deferred_items.md`, § 12-ces-revision-drivers-stage-1.

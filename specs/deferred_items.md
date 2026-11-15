@@ -283,3 +283,16 @@ plan 11.
       by O12 in the Track D Ranked list, with the refits under O7. Size:
       design. Done when: the stages of `specs/ces-revision-drivers-roadmap.md`
       that deliver O12 and O7 have all ticked.
+
+## 12-ces-revision-drivers-stage-1 — 2026-11-15
+- [ ] Declined review line: `absolute_revisions` in
+      `src/ces_revisions/collection_window.py` pairs the first and later
+      estimates on `reference_month` and `seasonal_status` only. That holds
+      while its source, BLS's revision table (`cesnaicsrev`), carries total
+      nonfarm alone (final review of plan 12; the owner ruled defer for O2).
+      O2 measures the 11 supersectors from vintage-file changes
+      (`data/panel/stage_changes.parquet`), whose rows add `sector`, so the
+      join keys and the source filter must take `sector` and that source, with
+      a test that two sectors' estimates for one month never pair. Size:
+      quick-fix. Revisit if: a stage of
+      `specs/ces-revision-drivers-roadmap.md` lists O2 in its Outcomes line.
