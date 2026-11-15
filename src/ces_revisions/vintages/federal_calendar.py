@@ -56,12 +56,12 @@ def federal_holidays(year: int) -> tuple[date, ...]:
 def business_days(start: date, end: date) -> int:
     """Weekdays from start up to, but not including, end that are not holidays.
 
-    The holidays of the year after end's are included, because that year's New Year's Day can
-    be observed on December 31.
+    A New Year's Day observed on December 31 is in the next year's list; any such day before
+    end belongs to a year no later than end's, so the years from start's to end's suffice.
     """
     holidays = {
         day
-        for year in range(start.year, end.year + 2)
+        for year in range(start.year, end.year + 1)
         for day in federal_holidays(year)
     }
     days = (start + timedelta(days=offset) for offset in range((end - start).days))

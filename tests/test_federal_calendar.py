@@ -58,3 +58,18 @@ def test_business_days_skip_weekends_and_holidays():
     assert business_days(date(2026, 8, 13), date(2026, 9, 4)) == 16
     assert business_days(date(2026, 11, 26), date(2026, 11, 27)) == 0
     assert business_days(date(2026, 9, 4), date(2026, 9, 4)) == 0
+
+
+def test_the_rule_starts_in_1978():
+    assert len(federal_holidays(1978)) == 9
+    assert date(1978, 11, 10) in federal_holidays(1978)
+
+
+def test_memorial_day_is_the_last_monday_when_may_has_five():
+    assert date(2021, 5, 31) in federal_holidays(2021)
+    assert date(2021, 5, 24) not in federal_holidays(2021)
+
+
+def test_thanksgiving_is_the_fourth_thursday_when_november_has_five():
+    assert date(2012, 11, 22) in federal_holidays(2012)
+    assert date(2012, 11, 29) not in federal_holidays(2012)
