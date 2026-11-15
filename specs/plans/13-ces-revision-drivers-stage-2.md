@@ -1,6 +1,6 @@
 # Stage 2 — Finish the Aggregate News/Noise Pilot Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via executing-plans (the owner chose inline execution, D3). Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 2 — on plan completion, tick the stage and
 > re-validate later stages against what shipped.
@@ -34,12 +34,13 @@
 
 - **D1** (owner, brief, 2026-11-15): commit nothing on `main`. Pushing is the owner's call. Applied in: Global Constraints, Task 5.
 - **D2** (owner, brief, 2026-11-15): plan 11's branch stays untouched until this plan is approved. Task 1 merges it and never rewrites it. Applied in: Task 1.
+- **D3** (owner, plan review, 2026-11-15): execute inline with executing-plans in one fresh session, as Stage 1 did (F1). Keep test-first for Tasks 2 and 3, and one whole-branch Opus review in Task 5. Applied in: header, Task 5.
 
 ## Defaults settled in this plan
 
 These wait for the owner's review.
 
-- **F1 (process):** execute inline with executing-plans in one fresh session, as Stage 1 did (roadmap `:23`). Every task works on Task 1's merged tree, and Tasks 4 and 5 need the tasks before them, so subagent dispatch gains little. Keep test-first for Tasks 2 and 3, and one whole-branch Opus review in Task 5, which is also plan 11's missing final review. If the owner agrees, the header names executing-plans.
+- **F1 (process):** execute inline with executing-plans in one fresh session, as Stage 1 did (roadmap `:23`). Every task works on Task 1's merged tree, and Tasks 4 and 5 need the tasks before them, so subagent dispatch gains little. Keep test-first for Tasks 2 and 3, and one whole-branch Opus review in Task 5, which is also plan 11's missing final review. The owner chose it (D3).
 - **F2 (merge direction):** Task 1 merges plan 11's branch into this plan's branch. Merging `main` into plan 11's branch gives the same tree, but it changes plan 11's branch before the owner's merge.
 - **F3 (interval):** the median and the central 90% interval (the 5th to 95th percentile) of the 4,000 pooled draws. Plan 11's April 2020 check uses the same 90%. ArviZ's 94% HDI is the alternative.
 - **F4 (stamp):** the Stage 2 stamp names plan 13 with plan 11. Both plans retire in one commit, each with its history entry.
