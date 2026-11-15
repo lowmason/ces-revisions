@@ -73,7 +73,7 @@ def _block_diag(blocks):
     return out
 
 
-def _joint_moments(ssm):
+def joint_moments(ssm):
     """Moments of the stacked states X (T*n) and cells Y (T*p), and Cov(X, Y)."""
     a, c, q = ssm["transition_matrix"], ssm["transition_offset"], ssm["transition_cov"]
     num_steps, n = c.shape
@@ -115,7 +115,7 @@ def _condition(mean_a, cov_aa, cov_ab, mean_b, cov_bb, value_b):
 
 def dense_reference(ssm, y):
     """Every FilterResult and SmootherResult field, by dense Gaussian conditioning."""
-    mean_x, cov_x, mean_y, cov_y, cov_xy = _joint_moments(ssm)
+    mean_x, cov_x, mean_y, cov_y, cov_xy = joint_moments(ssm)
     num_steps, p = y.shape
     n = len(ssm["initial_mean"])
     flat = y.ravel()

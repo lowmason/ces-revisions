@@ -11,8 +11,10 @@ import pytest
 from ces_revisions.devices import DETERMINISTIC_GPU_FLAG, has_nvidia_device
 
 # One importable module per pinned distribution: runtime jax, numpy, numpyro, arviz,
-# polars, and fastexcel, the Excel reader behind Stage 3's workbooks; dynamax from the dev
-# group, as engine-determination evidence only.
+# polars, and fastexcel, the Excel reader behind Stage 3's workbooks; h5netcdf and h5py,
+# the netCDF backend that writes each run's DataTree; scipy, for the run diagnostics' ranks
+# and the Ljung-Box p-value; dynamax from the dev group, as engine-determination evidence
+# only.
 STACK_MODULES = [
     "jax",
     "numpy",
@@ -20,6 +22,9 @@ STACK_MODULES = [
     "arviz",
     "polars",
     "fastexcel",
+    "h5netcdf",
+    "h5py",
+    "scipy",
     "dynamax.linear_gaussian_ssm",
 ]
 
