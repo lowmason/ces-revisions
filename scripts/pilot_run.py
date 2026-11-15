@@ -8,7 +8,9 @@ with four dispersed NUTS chains and writes a run directory with the April 2020 c
 per replicate so a stopped run resumes; ``compare-seasonal`` compares fitted runs of the
 seasonal layouts by blocked PSIS-LOO, residual autocorrelation, and measured cost, and
 applies the pre-registered layout rule (``ces_revisions.pilot.seasonal``); ``choose-gpu``
-applies the GPU rule (``ces_revisions.pilot.gpu_choice``) to probe-grid records.
+applies the GPU rule (``ces_revisions.pilot.gpu_choice``) to probe-grid records; ``shares``
+writes a small JSON of a fitted run's posterior news shares, and ``shares-report`` renders
+the Stage 2 findings table from that JSON alone.
 
 XLA reads its flags when JAX first touches a device, so they are set here before any JAX
 operation: XLA's deterministic GPU operations on an NVIDIA host, and on a CPU host four
@@ -60,6 +62,7 @@ import arviz as az
 import jax
 import jax.numpy as jnp
 import numpy as np
+from archive_inventory import replace_generated
 from scipy.stats import chi2
 
 from ces_revisions.kalman import kalman_filter
@@ -80,6 +83,13 @@ from ces_revisions.pilot.model import (
     pilot_ssm,
     sample_prior,
     step_log_likelihood,
+)
+from ces_revisions.pilot.news_shares import (
+    INTERVAL_PROB,
+    SHARES,
+    share_draws,
+    shares_block,
+    summarize,
 )
 from ces_revisions.pilot.panel import CLOSING_STAGES, AggregatePanel
 from ces_revisions.pilot.sbc import FIRST_MONTH, LAST_MONTH, run_sbc, write_summary
@@ -105,6 +115,7 @@ from ces_revisions.runs.fit import (
 )
 from ces_revisions.runs.inference_data import read_inference_data
 from ces_revisions.runs.provenance import array_sha256
+from ces_revisions.vintages.raw import ROOT, file_sha256
 
 PRIOR_PREDICTIVE_SEED = sum(map(ord, "ces-revisions-stage-6-prior-predictive"))
 FIT_SEED = sum(map(ord, "ces-revisions-stage-6-pilot-fit"))
@@ -118,6 +129,11 @@ MODEL_NAME = "stage6-pilot"
 LJUNG_BOX_LAGS = 12
 LOO_BLOCKS = ("panel_month", "panel_benchmark_year")
 RULE_BLOCK = "panel_benchmark_year"  # the seasonal rule's close-to-independent blocks
+FINDINGS = ROOT / "specs" / "ces-revision-drivers-stage-2-findings.md"
+SHARES_BLOCK_NAME = "stage-2-shares"
+REFIT_COMMAND = (
+    "uv run python scripts/pilot_run.py fit --layout dummy --label stage6-pilot"
+)
 
 
 def load_panel() -> AggregatePanel:
@@ -454,6 +470,55 @@ def run_choose_gpu(arguments: argparse.Namespace) -> int:
     return 0
 
 
+def shares_record(run_dir: Path, panel_sha256: str) -> dict:
+    """A fitted run's posterior news shares, summarized, for the panel it was fit to.
+
+    The provenance is read first, so a run fit to other data stops before its
+    InferenceData file opens.
+    """
+    provenance = json.loads((run_dir / PROVENANCE_FILE).read_text())
+    if provenance["arrays"]["sha256"] != panel_sha256:
+        raise ValueError(f"{run_dir} was fit to other data than the current panel")
+    inference_data = run_dir / INFERENCE_DATA_FILE
+    posterior = read_inference_data(inference_data)["posterior"].to_dataset()
+    draws = share_draws(posterior)
+    return {
+        "run_dir": str(run_dir),
+        "inference_data_sha256": file_sha256(inference_data),
+        "panel_sha256": panel_sha256,
+        "num_draws": len(draws["share_s"]),
+        "interval_prob": INTERVAL_PROB,
+        "sampling_seconds": provenance["sampling"]["timings"]["sampling_seconds"],
+        **{key: summarize(values) for key, values in draws.items()},
+    }
+
+
+def run_shares(arguments: argparse.Namespace) -> int:
+    if not arguments.run_dir.is_dir():
+        print(
+            f"{arguments.run_dir} is missing, and data/runs/ is gitignored. Refit "
+            f"the pilot with `{REFIT_COMMAND}`, then run shares on the new run "
+            "directory.",
+            file=sys.stderr,
+        )
+        return 2
+    panel_sha256 = array_sha256(panel_arrays(load_panel()))
+    record = shares_record(arguments.run_dir, panel_sha256)
+    write_json(record, arguments.out)
+    print(json.dumps({key: record[key] for key in SHARES}))
+    return 0
+
+
+def run_shares_report(arguments: argparse.Namespace) -> int:
+    record = json.loads(arguments.record.read_text())
+    document = arguments.findings.read_text(encoding="utf-8")
+    # Blank lines keep the table a block of its own beside the HTML-comment markers.
+    body = f"\n{shares_block(record)}\n\n"
+    document = replace_generated(document, SHARES_BLOCK_NAME, body)
+    arguments.findings.write_text(document, encoding="utf-8")
+    return 0
+
+
 def month(text: str) -> date:
     """A YYYY-MM argument as the first day of that month."""
     return date.fromisoformat(f"{text}-01")
@@ -522,6 +587,18 @@ def main(argv: list[str] | None = None) -> int:
         help="leapfrog steps per iteration of the slowest chain, once a stage measures it",
     )
     gpu.set_defaults(handler=run_choose_gpu)
+
+    shares = commands.add_parser("shares", help="the posterior news shares of a run")
+    shares.add_argument("run_dir", type=Path, metavar="RUN_DIR")
+    shares.add_argument("--out", type=Path, required=True)
+    shares.set_defaults(handler=run_shares)
+
+    report = commands.add_parser(
+        "shares-report", help="render the Stage 2 shares table from a shares record"
+    )
+    report.add_argument("record", type=Path, metavar="RECORD")
+    report.add_argument("--findings", type=Path, default=FINDINGS)
+    report.set_defaults(handler=run_shares_report)
 
     arguments = parser.parse_args(argv)
     return arguments.handler(arguments)
