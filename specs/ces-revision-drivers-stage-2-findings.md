@@ -38,7 +38,7 @@ The shares summarize 4000 pooled posterior draws of `data/runs/stage6-pilot-seed
 - **Model-implied shares.** The table gives variance shares that the model implies. It does not split the revision of any single month into news and noise.
 - **Rounding variance.** The shares leave out the variance that rounding adds to the published figures.
 - **The 2003 shift.** The May 2003 shift scales the S and T news and all three noise standard deviations by one factor. So the shares are the same before and after May 2003. The table has no separate pre-2003 pair.
-- **The crisis months.** The crisis multiplier scales only the news terms in March to June 2020, so the shares are larger in those four months. The table gives no separate crisis pair.
+- **The crisis months.** The crisis multiplier scales the S and T news shocks and the non-news level shock in March to June 2020, and no noise term. So the shares are larger in those four months. The table gives no separate crisis pair.
 - **One series.** The model has one aggregate NSA series. Benchmark revisions and seasonal-adjustment revisions stay outside it. Outcome O6 puts them inside the model.
 - **Validation.** SBC ran on the reduced 1999–2021 panel only. The prior-predictive rerun with every prior scale doubled missed Req 15's monthly constraint: 13.3% of months had an F→T revision above 250 thousand, against a ceiling of 5% (`docs/runs/stage-6/prior-predictive-doubled.json`). Full-panel SBC and a prior-sensitivity run wait for outcome O17.
 
