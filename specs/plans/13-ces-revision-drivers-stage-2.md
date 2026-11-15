@@ -38,7 +38,7 @@
 
 ## Defaults settled in this plan
 
-These wait for the owner's review.
+The owner approved the plan with these defaults on 2026-11-15, and chose F1 explicitly (D3).
 
 - **F1 (process):** execute inline with executing-plans in one fresh session, as Stage 1 did (roadmap `:23`). Every task works on Task 1's merged tree, and Tasks 4 and 5 need the tasks before them, so subagent dispatch gains little. Keep test-first for Tasks 2 and 3, and one whole-branch Opus review in Task 5, which is also plan 11's missing final review. The owner chose it (D3).
 - **F2 (merge direction):** Task 1 merges plan 11's branch into this plan's branch. Merging `main` into plan 11's branch gives the same tree, but it changes plan 11's branch before the owner's merge.
