@@ -3,7 +3,10 @@
 import json
 
 from ces_revisions.pilot.decision_tables import (
+    SEASONAL_HEADER,
+    TIMING_HEADER,
     decision_lines,
+    main,
     seasonal_rows,
     timing_rows,
 )
@@ -152,3 +155,19 @@ def test_timing_rows_cover_every_record_in_order():
         "| mac | 7 | low | 280 | 190 | 37 | 1 | 0.642 | 1.0 |",
         "| a10 | 7 | low | 280 | 190 | 37 | 1 | 0.101 | 1.0 |",
     ]
+
+
+def test_the_module_entry_prints_the_decision_line_and_both_tables(capsys):
+    path = EVIDENCE / "seasonal-comparison.json"
+    comparison = json.loads(path.read_text())
+    mac = json.loads((vintage_raw.ROOT / comparison["grid"]["path"]).read_text())
+    main([str(path)])
+    printed = capsys.readouterr().out
+    # Three sections, each its own Markdown block: the line, the seasonal table, the
+    # timing table.
+    line, seasonal, timing = (section.splitlines() for section in printed.split("\n\n"))
+    assert line == decision_lines(comparison)
+    assert seasonal[0] == SEASONAL_HEADER
+    assert seasonal[2:] == seasonal_rows(comparison)
+    assert timing[0] == TIMING_HEADER
+    assert timing[2:] == timing_rows([mac], comparison["rule"]["layout"])
