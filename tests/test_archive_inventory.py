@@ -9,8 +9,10 @@ from pathlib import Path
 import archive_inventory
 import pytest
 from archive_inventory import (
+    CAPTURES_PATH,
     FIRST_REFERENCE_MONTH,
     RELEASE_INDEX_URL,
+    VINTAGES_PATH,
     Capture,
     Vintage,
     capture_from_row,
@@ -22,12 +24,16 @@ from archive_inventory import (
     inventory_rows,
     list_captures,
     live_windows,
+    member_release,
     missing_reference_months,
+    newest_member,
     parse_cdx,
     parse_release_index,
+    read_csv,
     release_instant,
     render_blocks,
     replace_generated,
+    resolve_revisits,
     retrying,
     select_vintages,
     vintage_rows,
@@ -50,9 +56,16 @@ def vintage(reference_month: str, released: str) -> Vintage:
 
 
 def make_zip(members: dict[str, bytes], date_time=(2026, 9, 1, 15, 33, 0)) -> bytes:
+    return make_dated_zip(
+        [(name, date_time, payload) for name, payload in members.items()]
+    )
+
+
+def make_dated_zip(members: list[tuple[str, tuple[int, ...], bytes]]) -> bytes:
+    """A ZIP whose members, written in the order given, each carry their own date."""
     buffer = io.BytesIO()
     with zipfile.ZipFile(buffer, "w") as archive:
-        for name, payload in members.items():
+        for name, date_time, payload in members:
             archive.writestr(zipfile.ZipInfo(name, date_time=date_time), payload)
     return buffer.getvalue()
 
@@ -246,6 +259,41 @@ def test_fingerprints_ignore_zip_timestamps_but_not_contents():
     assert first["outliers"] == rezipped["outliers"] != changed["outliers"]
 
 
+def test_newest_member_is_the_latest_member_date_not_the_last_member_written():
+    payload = make_dated_zip(
+        [
+            ("readme.other.txt", (2021, 3, 1, 9, 0, 0), b"readme"),
+            ("outliers.xlsx", (2021, 11, 3, 14, 22, 10), b"AO"),
+            ("prior_adjustment_file.xlsx", (2021, 11, 2, 8, 0, 0), b"PA"),
+        ]
+    )
+    # The ZIP's clock carries no timezone, so the value has no `Z`.
+    assert newest_member(payload) == "2021-11-03T14:22:10"
+
+
+def test_newest_member_dates_a_nested_zip_by_its_own_entry_only():
+    # Same scope as the fingerprints: top-level members only. A nested ZIP counts by the date of
+    # its entry in the outer ZIP, and the members inside it are not read.
+    nested = make_dated_zip([("outliers.xlsx", (2030, 1, 1, 0, 0, 0), b"draft AO")])
+    payload = make_dated_zip(
+        [
+            ("outliers.xlsx", (2021, 3, 16, 10, 0, 0), b"AO"),
+            ("ces.spec.other.zip", (2021, 2, 1, 10, 0, 0), nested),
+        ]
+    )
+    assert newest_member(payload) == "2021-03-16T10:00:00"
+
+
+def test_newest_member_ignores_directory_entries():
+    payload = make_dated_zip(
+        [
+            ("ces.spec.ae/", (2030, 1, 1, 0, 0, 0), b""),
+            ("ces.spec.ae/AE1011330000.spc", (2026, 2, 3, 11, 5, 0), b"series{}"),
+        ]
+    )
+    assert newest_member(payload) == "2026-02-03T11:05:00"
+
+
 def test_parse_cdx_reads_utc_timestamps_and_keeps_every_status():
     text = (
         "20140719134601 http://www.bls.gov/web/empsit/ces.spec.other.zip 200 "
@@ -282,6 +330,7 @@ def test_captures_round_trip_through_csv_rows():
         "ZSL4N7HMBW6G454PPITPXXHNHP34TVXH",
         prior_adjustment="ab12",
         outliers="cd34",
+        newest_member="2014-07-03T16:20:00",
     )
     assert capture_from_row(capture_row(original)) == original
 
@@ -333,11 +382,13 @@ def test_collect_captures_records_an_unreplayable_copy_instead_of_failing(monkey
     monkeypatch.setattr(archive_inventory, "fetch", fake_fetch)
     monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
     captures = archive_inventory.collect_captures(datetime(2026, 9, 13, 15, tzinfo=UTC))
-    assert [(c.source, c.status, bool(c.outliers)) for c in captures] == [
-        ("bls_current", "200", True),
-        ("internet_archive", "200", True),
-        ("internet_archive", "301", False),
-        ("internet_archive", "unreplayable", False),
+    assert [
+        (c.source, c.status, bool(c.outliers), c.newest_member) for c in captures
+    ] == [
+        ("bls_current", "200", True, "2026-09-01T15:33:00"),
+        ("internet_archive", "200", True, "2026-09-01T15:33:00"),
+        ("internet_archive", "301", False, ""),
+        ("internet_archive", "unreplayable", False, ""),
     ]
     assert (
         captures[1].url == f"https://web.archive.org/web/20150321061757id_/{original}"
@@ -503,6 +554,166 @@ def test_a_revisit_record_without_an_opened_twin_evidences_nothing():
     vintages = [vintage("2003-05", "2003-06-06")]
     revisit = replace(capture("2003-06-10T00:00:00+00:00"), status="-", digest="ALONE")
     assert inventory_rows(vintages, [revisit])[0]["outliers"] == "not_archived"
+
+
+def test_a_revisit_record_takes_its_twins_newest_member():
+    opened = replace(
+        capture("2003-06-10T00:00:00+00:00", outliers="o"),
+        digest="SAME",
+        newest_member="2003-06-04T10:00:00",
+    )
+    revisit = replace(capture("2003-07-10T00:00:00+00:00"), status="-", digest="SAME")
+    assert resolve_revisits([opened, revisit])[1].newest_member == "2003-06-04T10:00:00"
+
+
+SUMMER_2015 = [
+    vintage("2015-06", "2015-07-02"),
+    vintage("2015-07", "2015-08-07"),
+    vintage("2015-08", "2015-09-04"),
+    vintage("2015-09", "2015-10-02"),
+]
+
+
+def statuses(rows: list[dict[str, str]], file_type: str) -> dict[str, str]:
+    """One file type's status by reference month, for the months that had a release."""
+    return {
+        row["reference_month"]: row[file_type] for row in rows if row["release_date"]
+    }
+
+
+def test_a_monthly_copy_counts_for_the_release_its_files_were_made_for():
+    # The Internet Archive's copy of 2015-09-05, a day after the August release, holds files dated
+    # 2015-08-04: they were made for the July release of 2015-08-07.
+    stale = replace(
+        capture("2015-09-05T16:47:51+00:00", prior_adjustment="p", outliers="o"),
+        newest_member="2015-08-04T13:40:50",
+    )
+    rows = inventory_rows(SUMMER_2015, [stale])
+    for file_type in ("prior_adjustment", "outliers"):
+        assert statuses(rows, file_type) == {
+            "2015-06": "not_archived",
+            "2015-07": "internet_archive",
+            "2015-08": "not_archived",
+            "2015-09": "not_archived",
+        }
+
+
+def test_files_dated_on_a_release_day_belong_to_that_release():
+    copy = replace(
+        capture("2015-08-10T00:00:00+00:00", outliers="o"),
+        newest_member="2015-08-07T07:00:00",
+    )
+    assert statuses(inventory_rows(SUMMER_2015, [copy]), "outliers")["2015-07"] == (
+        "internet_archive"
+    )
+
+
+def test_a_monthly_copy_with_files_newer_than_every_release_evidences_none():
+    copy = replace(
+        capture("2015-10-20T00:00:00+00:00", outliers="o"),
+        newest_member="2015-10-05T09:00:00",
+    )
+    assert set(statuses(inventory_rows(SUMMER_2015, [copy]), "outliers").values()) == {
+        "not_archived"
+    }
+
+
+def test_specification_files_are_still_credited_by_the_copy_time():
+    vintages = [vintage("2014-12", "2015-01-09"), vintage("2015-01", "2015-02-06")]
+    # By member date these files would belong to the December release, before the benchmark.
+    copy = replace(
+        capture("2015-02-10T00:00:00+00:00", specification="s"),
+        newest_member="2015-01-05T09:00:00",
+    )
+    assert statuses(inventory_rows(vintages, [copy]), "specification") == {
+        "2014-12": "not_archived",
+        "2015-01": "internet_archive",
+    }
+
+
+# --- Committed evidence: member dates against the live windows -----------------------------
+
+
+def test_only_an_opened_copy_records_a_member_date():
+    # The no-payload rule. Only a copy whose ZIP was downloaded and opened has members to date:
+    # BLS's current file and an Internet Archive copy with status 200. A redirect (301), a refusal
+    # (403), an `unreplayable` copy, and a revisit record (`-`), which `captures` never downloads,
+    # record no date. A revisit takes its twin's date in `resolve_revisits`, as its fingerprints do.
+    rows = read_csv(CAPTURES_PATH)
+    assert rows
+    assert [
+        row["url"]
+        for row in rows
+        if bool(row["newest_member"]) != (row["status"] == "200")
+    ] == []
+
+
+# Days from a monthly copy's newest member to the release its files were made for. The evidence of
+# 2026-11-15 spans 0 to 4 days over 33 copies, and releases are about 4 weeks apart.
+BUILD_LEAD_DAYS = 7
+
+
+def test_every_copy_was_made_after_the_release_its_files_were_made_for():
+    """Each copy's files must predate the copy and belong to a release already out by then.
+
+    `inventory` credits a prior-adjustment or outlier copy to the release its files were made
+    for, the first on or after its newest member's date (`member_release`), and not to the
+    release whose window holds the copy: on the August 2015 and May 2026 release days, BLS
+    posted as current a ZIP built for an earlier release (July 2015 and February 2026).
+
+    Each copy that `file_status` can credit (status 200, or a revisit resolved to an opened twin)
+    is checked. A ZIP member's time is the zipping machine's clock with no timezone, so member
+    times are compared as calendar dates:
+
+    - Every such copy: the newest member's date is on or before the copy's UTC date. For a clock
+      at or west of UTC, as BLS's Eastern clock is, the local date of an instant never exceeds
+      its UTC date.
+    - A copy with any prior-adjustment or outlier fingerprint: the 8:30 a.m. Eastern embargo of
+      the release its files were made for precedes the copy, so the files were not posted early.
+      Their newest member's date is also at most `BUILD_LEAD_DAYS` before that release. A ZIP
+      rebuilt after a release would be credited to the next release, about 4 weeks later, and
+      fails here, as would a change in how far ahead BLS builds the files.
+
+    A specification-only copy is credited by its own time under the annual benchmark window, so
+    it gets only the first check.
+    """
+    vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
+    captures = resolve_revisits(
+        [capture_from_row(row) for row in read_csv(CAPTURES_PATH)]
+    )
+    credited = [
+        capture
+        for capture in captures
+        if capture.status in ("200", "-")
+        and (capture.specification or capture.prior_adjustment or capture.outliers)
+    ]
+    monthly = [copy for copy in credited if copy.prior_adjustment or copy.outliers]
+    assert len(credited) > len(monthly) > 0
+    outside = []
+    for copy in credited:
+        if not copy.newest_member:
+            outside.append(f"{copy.url}: credited but has no member date")
+            continue
+        member_day = datetime.fromisoformat(copy.newest_member).date()
+        if member_day > copy.timestamp.date():
+            outside.append(f"{copy.url}: files dated {member_day}, after the copy")
+        if copy in monthly:
+            release = member_release(copy, vintages)
+            if release is None:
+                outside.append(
+                    f"{copy.url}: files dated {member_day}, after every release"
+                )
+            elif release_instant(release.release_date) > copy.timestamp:
+                outside.append(
+                    f"{copy.url}: files dated {member_day}, made for the release of"
+                    f" {release.release_date}, which came after the copy"
+                )
+            elif (release.release_date - member_day).days > BUILD_LEAD_DAYS:
+                outside.append(
+                    f"{copy.url}: files dated {member_day}, more than {BUILD_LEAD_DAYS}"
+                    f" days before the release of {release.release_date}"
+                )
+    assert outside == []
 
 
 def test_generated_blocks_are_replaced_in_place():

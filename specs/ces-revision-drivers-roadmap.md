@@ -34,7 +34,7 @@ Choices made:
 | O7 | Each driver's effect on revision variance, estimated jointly in the model with the news/noise split | B | 3 | after O6. Only a real run can tell |
 | O8 | Which model predicts revision size best in real time, and a predicted revision scale for each new release | B | 4 | about 280 refits at past release dates (old roadmap) |
 | O9 | The share of SA revision variance that comes from changes in seasonal adjustment, by sector, transition and regime | C | 1 | small: the table exists (110 rows) and is not yet reported |
-| O10 | The same share with seasonal factors reproduced from BLS's archived X-13 files, for the 28 releases with complete archives | C | 2 | only a real run can tell. The inputs are rounded, so reproduction may fail |
+| O10 | The same share with seasonal factors reproduced from BLS's archived X-13 files, for the 29 releases with complete archives | C | 2 | only a real run can tell. The inputs are rounded, so reproduction may fail |
 | O11 | How revision size moves with BLS funding and staffing, FY2009–2026 | D | 1 | a fiscal-year panel keyed by hand from budget documents. The review document names the sources |
 | O12 | The same back to FY1979 | D | 2 | archived budget justifications keyed by hand, with definition breaks |
 | O13 | How birth–death forecast error relates to benchmark revisions, by supersector | E | 1 | the data is on disk. It waits on the open question below |

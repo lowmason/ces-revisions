@@ -236,3 +236,58 @@ def test_panel_levels_carry_the_stage_their_vintage_serves():
         (pl.col("source") == "cesvinall") & pl.col("vintage_id").is_not_null()
     )
     assert staged.height == labeled.height
+
+
+# --- Plan 5's evidence for the stage rule (Deviation 5) -------------------------------------
+
+WEDGE_MONTHS = {
+    "April-October": (4, 5, 6, 7, 8, 9, 10),
+    "January-March": (1, 2, 3),
+    "November-December": (11, 12),
+}
+
+
+def benchmark_wedge_unit_months() -> pl.DataFrame:
+    """B and M for every not seasonally adjusted unit-month whose two stages both hold a value.
+
+    The stage labels give each unit-month's B and M release: B is the first January release after
+    the third estimate's release, and not seasonally adjusted M is the second. The levels give
+    the values those releases published. A unit-month whose M is still to come, or beyond the
+    vintage files' frontier, has no M value and drops out.
+    """
+    labels = vintage_data.labels().filter(
+        (pl.col("source") == "cesvinall")
+        & (pl.col("seasonal_status") == "NSA")
+        & (pl.col("status") == "observed")
+        & pl.col("release_stage").is_in(["B", "M"])
+    )
+    values = vintage_data.levels().select(*UNIT, "vintage_id", "value_thousands")
+    return (
+        labels.join(values, on=[*UNIT, "vintage_id"], how="inner")
+        .pivot("release_stage", index=UNIT, values="value_thousands")
+        .drop_nulls(["B", "M"])
+    )
+
+
+def test_the_value_moves_between_b_and_m_in_nearly_every_april_to_october_unit_month():
+    """The January benchmark release that makes M revises the not seasonally adjusted values
+    from the April two years before it. A reference month from April to October lies inside
+    that window, so its value moves between B and M. A reference month from January to March,
+    or from November to December, lies before the window, so its B and M seldom differ. This
+    is the evidence for counting stages from T."""
+    wedges = benchmark_wedge_unit_months()
+    assert wedges["sector"].n_unique() == len(raw.SECTORS)
+    assert (wedges["reference_month"].min(), wedges["reference_month"].max()) == (
+        date(2003, 5, 1),
+        date(2024, 10, 1),
+    )
+    assert wedges.height == 3096
+    moved = {}
+    for group, months in WEDGE_MONTHS.items():
+        frame = wedges.filter(pl.col("reference_month").dt.month().is_in(months))
+        moved[group] = (frame.height, frame.filter(pl.col("B") != pl.col("M")).height)
+    assert moved == {
+        "April-October": (1836, 1775),
+        "January-March": (756, 46),
+        "November-December": (504, 35),
+    }
