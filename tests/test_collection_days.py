@@ -2,7 +2,10 @@
 
 from datetime import date
 
-from ces_revisions.vintages.collection_days import collection_days
+import polars as pl
+import vintage_data
+
+from ces_revisions.vintages.collection_days import LAPSE_DELAYED_MONTHS, collection_days
 
 
 def test_window_runs_from_after_the_12th_to_before_the_release():
@@ -28,3 +31,33 @@ def test_holidays_count_from_their_first_observance():
 def test_lapse_days_count_as_business_days():
     assert collection_days(date(2026, 1, 1), date(2026, 2, 11)) == 20
     assert collection_days(date(2013, 9, 1), date(2013, 10, 22)) == 26
+
+
+def test_every_release_has_one_day_count():
+    frame = vintage_data.collection_days()
+    assert frame.height == 571
+    assert frame["reference_month"].is_unique().all()
+    assert date(2025, 10, 1) not in frame["reference_month"].to_list()
+    assert frame["collection_days"].null_count() == 0
+
+
+def test_only_the_five_lapse_delayed_releases_are_flagged():
+    frame = vintage_data.collection_days()
+    assert LAPSE_DELAYED_MONTHS == (
+        date(1995, 12, 1),
+        date(2013, 9, 1),
+        date(2013, 10, 1),
+        date(2025, 11, 1),
+        date(2026, 1, 1),
+    )
+    assert frame.filter("lapse_delayed")["reference_month"].to_list() == list(
+        LAPSE_DELAYED_MONTHS
+    )
+
+
+def test_built_day_counts_match_hand_counts():
+    months = [date(1995, 12, 1), date(2013, 9, 1), date(2025, 9, 1), date(2026, 8, 1)]
+    rows = vintage_data.collection_days().filter(
+        pl.col("reference_month").is_in(months)
+    )
+    assert rows.sort("reference_month")["collection_days"].to_list() == [24, 26, 46, 16]

@@ -8,6 +8,7 @@ import polars as pl
 
 from ces_revisions.vintages import (
     accounting,
+    collection_days,
     differencing,
     panel,
     raw,
@@ -30,6 +31,7 @@ class VintageBuild:
     revision_reconciliation: pl.DataFrame
     average_checks: pl.DataFrame
     accounting_decomposition: pl.DataFrame
+    collection_days: pl.DataFrame
 
 
 def build(raw_dir: Path = raw.RAW_DIR) -> VintageBuild:
@@ -63,6 +65,7 @@ def build(raw_dir: Path = raw.RAW_DIR) -> VintageBuild:
         revision_reconciliation=differencing.revision_reconciliation(at_stages, cells),
         average_checks=revision_table.average_checks(values),
         accounting_decomposition=accounting.decomposition(terms),
+        collection_days=collection_days.build_collection_days(index),
     )
 
 
