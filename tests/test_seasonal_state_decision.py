@@ -104,3 +104,51 @@ def test_the_decision_record_states_its_evidence():
     expected = [*decision_lines(comparison), *seasonal_rows(comparison), *timings]
     missing = [line for line in expected if line not in text]
     assert missing == []
+
+
+def test_decision_lines_name_the_layout_the_rule_chose():
+    comparison = COMPARISON | {"rule": COMPARISON["rule"] | {"layout": "trig"}}
+    assert decision_lines(comparison) == [
+        "The seasonal state for O6 and every later fit of this model is `trig`."
+    ]
+
+
+def test_seasonal_rows_sign_a_gain_and_mark_a_layout_that_fails_req18():
+    candidate = COMPARISON["candidates"]["trig4"] | {"meets_req18": False}
+    comparison = {
+        "runs": [{"layout": "trig4"}],
+        "candidates": {"trig4": candidate},
+        "rule": {
+            "all_blocks": {"differences": {"trig4": {"diff": 12.83, "se": 8.648}}},
+            "reliable_blocks": {"differences": {"trig4": {"diff": 10.5, "se": 8.49}}},
+        },
+    }
+    assert seasonal_rows(comparison) == [
+        (
+            "| `trig4` | 214 | +12.8 ± 8.6 | +10.5 ± 8.5 | no | failed "
+            "| 2286, 1514, 1507 | — |"
+        )
+    ]
+
+
+def test_timing_rows_cover_every_record_in_order():
+    def record(label, seconds):
+        batch = {
+            "batch": 1,
+            "median_seconds": seconds,
+            "memory_analysis": {"total_bytes": 1_000_000_000},
+        }
+        entry = {
+            "stage": 7,
+            "wedge": "low",
+            "steps": 280,
+            "states": 190,
+            "cells": 37,
+            "batches": [batch],
+        }
+        return {"label": label, "entries": [entry]}
+
+    assert timing_rows([record("mac", 0.642), record("a10", 0.101)], "dummy") == [
+        "| mac | 7 | low | 280 | 190 | 37 | 1 | 0.642 | 1.0 |",
+        "| a10 | 7 | low | 280 | 190 | 37 | 1 | 0.101 | 1.0 |",
+    ]
