@@ -652,6 +652,22 @@ def test_only_an_opened_copy_records_a_member_date():
 # 2026-11-15 spans 0 to 4 days over 33 copies, and releases are about 4 weeks apart.
 BUILD_LEAD_DAYS = 7
 
+# The specification copies whose newest member postdates the benchmark release whose window holds
+# them. Every copy in the 2024 window has newest member 2024-03-06, 33 days after the 2024-02-02
+# benchmark release, while every other benchmark year's copies predate their release by 1 to 11
+# days. No copy between 2024-02-02 and 2024-03-06 survives to show whether the `.spc` files or only
+# the readme changed, so 2024-01's specification status rests on files built after its release.
+SPECIFICATIONS_BUILT_AFTER_THEIR_BENCHMARK = {
+    f"https://web.archive.org/web/{stamp}id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip"
+    for stamp in (
+        "20240927002315",
+        "20241127194400",
+        "20241211002903",
+        "20250101154028",
+        "20250202014522",
+    )
+}
+
 
 def test_every_copy_was_made_after_the_release_its_files_were_made_for():
     """Each copy's files must predate the copy and belong to a release already out by then.
@@ -674,10 +690,14 @@ def test_every_copy_was_made_after_the_release_its_files_were_made_for():
       rebuilt after a release would be credited to the next release, about 4 weeks later, and
       fails here, as would a change in how far ahead BLS builds the files.
 
-    A specification-only copy is credited by its own time under the annual benchmark window, so
-    it gets only the first check.
+    A specification-only copy is credited by its own time under the annual benchmark window. Its
+    newest member's date must also be on or before the benchmark release whose window holds the
+    copy, since BLS builds the specification files before that release. The copies that break
+    this are exactly `SPECIFICATIONS_BUILT_AFTER_THEIR_BENCHMARK`, so a new one fails here, and
+    so does a change to the evidence for those.
     """
     vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
+    benchmarks = [vintage for vintage in vintages if vintage.reference_month.month == 1]
     captures = resolve_revisits(
         [capture_from_row(row) for row in read_csv(CAPTURES_PATH)]
     )
@@ -690,6 +710,7 @@ def test_every_copy_was_made_after_the_release_its_files_were_made_for():
     monthly = [copy for copy in credited if copy.prior_adjustment or copy.outliers]
     assert len(credited) > len(monthly) > 0
     outside = []
+    built_after_benchmark = set()
     for copy in credited:
         if not copy.newest_member:
             outside.append(f"{copy.url}: credited but has no member date")
@@ -713,7 +734,16 @@ def test_every_copy_was_made_after_the_release_its_files_were_made_for():
                     f"{copy.url}: files dated {member_day}, more than {BUILD_LEAD_DAYS}"
                     f" days before the release of {release.release_date}"
                 )
+        else:
+            opened = [
+                benchmark
+                for benchmark in benchmarks
+                if release_instant(benchmark.release_date) <= copy.timestamp
+            ]
+            if opened and member_day > opened[-1].release_date:
+                built_after_benchmark.add(copy.url)
     assert outside == []
+    assert built_after_benchmark == SPECIFICATIONS_BUILT_AFTER_THEIR_BENCHMARK
 
 
 def test_generated_blocks_are_replaced_in_place():

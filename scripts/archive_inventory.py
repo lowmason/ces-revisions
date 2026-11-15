@@ -505,8 +505,9 @@ def resolve_revisits(captures: list[Capture]) -> list[Capture]:
 
     The Internet Archive lists a copy identical to an earlier one as a revisit, with status `-`,
     and `captures` does not download it. The same digest means the same bytes, so a revisit
-    evidences the same files, with the same member dates, at its own time. A revisit with no
-    opened twin stays empty.
+    evidences the same files, with the same member dates. A specification revisit counts at its
+    own time, and a prior-adjustment or outlier revisit counts by its member date
+    (`monthly_moment`). A revisit with no opened twin stays empty.
     """
     opened = {
         (capture.artifact, capture.digest): capture
