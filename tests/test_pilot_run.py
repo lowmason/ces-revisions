@@ -242,3 +242,49 @@ def test_sbc_stop_defaults_to_the_replicate_count_and_can_be_overridden(
     pilot_run.main([*base, "--replicates", "7"])
     pilot_run.main([*base, "--replicates", "7", "--start", "2", "--stop", "4"])
     assert [(call["start"], call["stop"]) for call in calls] == [(0, 7), (2, 4)]
+
+
+def fake_summary(indices):
+    return {
+        "num_replicates": len(indices),
+        "indices": list(indices),
+        "passed": True,
+        "ecdf_failures": [],
+        "recovery_checks": {"share_s": True, "share_t": True},
+        "divergent_replicates": 0,
+        "replicate_seconds_median": 1.0,
+    }
+
+
+def test_sbc_summary_names_the_replicates_that_are_missing(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.setattr(
+        pilot_run, "write_summary", lambda out_dir: fake_summary([0, 2, 3])
+    )
+    argv = ["sbc-summary", "--out-dir", str(tmp_path), "--replicates", "5"]
+    assert pilot_run.main(argv) == 1
+    printed = json.loads(capsys.readouterr().out)
+    assert printed["missing"] == [1, 4]
+    assert printed["num_replicates"] == 3
+
+
+def test_sbc_summary_succeeds_when_every_replicate_is_there(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.setattr(
+        pilot_run, "write_summary", lambda out_dir: fake_summary(range(5))
+    )
+    argv = ["sbc-summary", "--out-dir", str(tmp_path), "--replicates", "5"]
+    assert pilot_run.main(argv) == 0
+    assert json.loads(capsys.readouterr().out)["missing"] == []
+
+
+def test_sbc_summary_expects_the_registered_hundred_replicates_by_default(
+    monkeypatch, tmp_path, capsys
+):
+    monkeypatch.setattr(
+        pilot_run, "write_summary", lambda out_dir: fake_summary(range(99))
+    )
+    assert pilot_run.main(["sbc-summary", "--out-dir", str(tmp_path)]) == 1
+    assert json.loads(capsys.readouterr().out)["missing"] == [99]

@@ -123,6 +123,7 @@ FIT_SEED = sum(map(ord, "ces-revisions-stage-6-pilot-fit"))
 INIT_DRAWS_SEED = sum(map(ord, "ces-revisions-stage-6-init-prior-draws"))
 NUM_INIT_DRAWS = 4000
 SBC_SEED = sum(map(ord, "ces-revisions-stage-6-sbc"))
+SBC_REPLICATES = 100  # the registered count: sbc runs it, sbc-summary expects it
 APRIL_2020_FILE = "april_2020.json"
 MODEL_NAME = "stage6-pilot"
 # The seasonal comparison's residual check: Ljung-Box over a year of lags.
@@ -275,8 +276,15 @@ def run_sbc_command(arguments: argparse.Namespace) -> int:
 
 
 def run_sbc_summary(arguments: argparse.Namespace) -> int:
-    print(json.dumps(brief_summary(write_summary(arguments.out_dir))))
-    return 0
+    """Summarize the replicates in a directory, and fail when any expected one is missing.
+
+    A replicate that failed leaves no file, so the summary's verdict covers only the
+    rest. Naming the missing indices keeps a short run from reading as a passed one.
+    """
+    summary = write_summary(arguments.out_dir)
+    missing = sorted(set(range(arguments.replicates)) - set(summary["indices"]))
+    print(json.dumps({**brief_summary(summary), "missing": missing}))
+    return 1 if missing else 0
 
 
 def brief_summary(summary: dict) -> dict:
@@ -550,7 +558,7 @@ def main(argv: list[str] | None = None) -> int:
 
     sbc = commands.add_parser("sbc", help="simulation-based calibration replicates")
     sbc.add_argument("--layout", choices=sorted(LAYOUTS), default="dummy")
-    sbc.add_argument("--replicates", type=int, default=100)
+    sbc.add_argument("--replicates", type=int, default=SBC_REPLICATES)
     sbc.add_argument("--start", type=int, default=0)
     sbc.add_argument("--stop", type=int, default=None)
     sbc.add_argument("--workers", type=int, default=6)
@@ -566,6 +574,12 @@ def main(argv: list[str] | None = None) -> int:
 
     summary = commands.add_parser("sbc-summary", help="summarize an SBC directory")
     summary.add_argument("--out-dir", type=Path, required=True)
+    summary.add_argument(
+        "--replicates",
+        type=int,
+        default=SBC_REPLICATES,
+        help="how many replicates the run should hold; exit 1 and name any missing",
+    )
     summary.set_defaults(handler=run_sbc_summary)
 
     compare = commands.add_parser("compare-seasonal", help="compare fitted layouts")
