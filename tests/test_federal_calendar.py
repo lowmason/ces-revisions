@@ -73,3 +73,8 @@ def test_memorial_day_is_the_last_monday_when_may_has_five():
 def test_thanksgiving_is_the_fourth_thursday_when_november_has_five():
     assert date(2012, 11, 22) in federal_holidays(2012)
     assert date(2012, 11, 29) not in federal_holidays(2012)
+
+
+def test_columbus_day_is_the_second_monday_not_october_12():
+    assert date(2024, 10, 14) in federal_holidays(2024)
+    assert date(2024, 10, 11) not in federal_holidays(2024)
