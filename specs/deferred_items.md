@@ -12,6 +12,7 @@
       Size: quick-fix. Done when: the first stage that samples a parameter
       entering `transition_matrix` or `observation_matrix` adds a dense-oracle
       gradient check along it.
+      → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Waits for O6 in specs/ces-revision-drivers-roadmap.md, the first model that samples parameters inside those matrices
 - [ ] Review recommendation: dispersed chain starts for Req 18 (whole-branch
       review of plan 1, triaged defer). NumPyro's default
       `init_to_uniform(radius=2)` starts each LogNormal scale in roughly
@@ -22,6 +23,7 @@
       `specs/plans/completed/1-ces-revisions.md`. Size: quick-fix. Done when:
       the Stage 6 run harness starts the four chains from dispersed points
       and records the initialization strategy with each run.
+      → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
 
 ## 2-ces-revisions — 2026-09-13
 - [ ] Review Important: test the monthly live window against member dates
@@ -38,6 +40,7 @@
       run. See `specs/plans/completed/2-ces-revisions.md`. Size: quick-fix.
       Done when: `captures` records member dates and a test checks every copy
       against them.
+      → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Waits for a captures run
 - [x] Review Minor: releases before May 1999 in `es-vintages.csv` (whole-branch
       review of plan 2, triaged defer). `parse_release_index` in
       `scripts/archive_inventory.py` reads only links with a four-digit year, so
@@ -127,6 +130,7 @@
       Size: quick-fix. Done when: the first stage that reads the
       `rtdsm_employ` rows (roadmap Stage 6 consumes the 1979 leg) flags or
       drops the repeat vintage.
+      → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
 - [ ] Review recommendations: evidence tests for two planning findings
       (whole-branch review of plan 5, triaged defer). Two findings in plan 5's
       Planning evidence rest on one-off queries: EMPLOY's same-vintage
@@ -139,6 +143,7 @@
       `tests/vintage_data.py`'s frames, in `tests/test_vintage_panel.py` and
       `tests/test_stage_labels.py`, would keep those choices auditable. Size:
       quick-fix. Done when: tests pin the 10 cells and the three counts.
+      → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Half done in plan 11 (the ten EMPLOY cells), which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
 
 ## ces-revisions-roadmap — 2026-11-15
 
