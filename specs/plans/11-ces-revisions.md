@@ -9717,6 +9717,8 @@ Expected: each Lambda record shows 20 entries, its price, the `gpu` backend, and
 
 ### Task 14: The seasonal-state decision record and the docs
 
+> Deviation: re-scoped to the seasonal-state decision alone by roadmap Stage 2 (specs/ces-revision-drivers-roadmap.md:75). Step 1, the GPU table and gpu-choice.json moved to O6. Plan 13's Task 2 executed the rest.
+
 **Files:**
 - Create: `src/ces_revisions/pilot/decision_tables.py`
 - Create: `docs/runs/stage-6/gpu-choice.json`
