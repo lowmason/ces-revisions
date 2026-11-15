@@ -54,7 +54,7 @@ Tracks: A — Collection window (research). B — Revision model (research). Spl
 
 The order follows the owner's track ranking. Each core stage is a cheap answer on data that is already built, so the core stages come first. This diverges from the old roadmap, which put the model before every driver answer. Stages 1–7 are independent of one another and may run in any order. Stage 8 reads the findings of the stages that have ticked.
 
-- [ ] Stage 1: Collection window and revision size, total nonfarm\
+- [x] Stage 1: Collection window and revision size, total nonfarm\
       Objective: Measure how mean absolute F→S and F→T revisions of total nonfarm change with the day count `D_t`, 1979–2026, at the owner's smallest standard.\
       Outcomes: O1\
       Track: A\
@@ -63,6 +63,9 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Exit: the findings file holds the mean absolute F→S and F→T revision for each `D_t` value, NSA and SA, with March 2020 to December 2021 apart, and the `D_t` coefficient with its standard error from the regression with year and calendar-month controls (O1). It records the wall time of the real run and the sessions used.\
       Leaves out: full validation suites (SBC, prior and posterior predictive checks): O17 in the Track B Ranked list. Point-in-time awareness (`observable_at` for each value): O8 in the Track B Ranked list. Traceability: Stage 8. Manifests and recorded fixtures: none, because the stage adds no source. O3's fetch follows CLAUDE.md's rules for `data/raw/`. The GPU measurement: O6 in the Track B Ranked list.\
       ROUTING: writing-plans
+
+> Stage 1: COMPLETE (2026-11-15) — implemented by plan 12 (specs/plans/completed/12-ces-revision-drivers-stage-1.md). Its Handoff section names what Stage 8 consumes.
+> Next: resume the roadmap.
 
 - [ ] Stage 2: Finish the aggregate news/noise pilot\
       Objective: Finish plan 11 without its GPU work, so that the total-nonfarm news/noise split and the run harness reach `main`.\

@@ -43,6 +43,7 @@ def composed() -> dict[str, pl.DataFrame]:
         "accounting_decomposition": accounting.decomposition(
             vintage_data.identity_terms()
         ),
+        "collection_days": vintage_data.collection_days(),
     }
 
 

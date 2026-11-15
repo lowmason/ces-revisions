@@ -13,6 +13,7 @@ from ces_revisions.vintages import (
     revision_table,
     stages,
 )
+from ces_revisions.vintages.collection_days import build_collection_days
 from ces_revisions.vintages.months import add_months
 
 
@@ -77,3 +78,8 @@ def identity_terms() -> pl.DataFrame:
     return accounting.identity_terms(
         accounting.accounting_changes(stage_changes(), table_estimates())
     )
+
+
+@cache
+def collection_days() -> pl.DataFrame:
+    return build_collection_days(index())
