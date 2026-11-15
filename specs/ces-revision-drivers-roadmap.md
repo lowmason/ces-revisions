@@ -20,7 +20,7 @@ Choices made:
 - Smallest standard for O1 (owner, 2026-11-15): total nonfarm, NSA and SA, 1979–2026. Mean absolute F→S and F→T revision for each `D_t` value, and one regression with year and calendar-month controls. March 2020 to December 2021 reported apart. One findings file with the table and no figure.
 - Target for O1 (owner, 2026-11-15): one session, on the same day.
 - Process for Stage 1 (owner, 2026-11-15): lighter. Test-driven development for the day count and one whole-branch Opus review stay. Brainstorming, code blocks in the plan, per-task reviewers and subagent dispatch are skipped.
-- Finish for O5 (owner, 2026-11-15): without plan 11's GPU task, Task 13, which moves to O6.
+- Finish for O5 (owner, 2026-11-15): without plan 11's GPU work, which moves to O6: the Lambda measurement of Task 13 and the GPU rule of Task 14.
 
 | # | Outcome | Track | Rank | Cost (estimate; basis) |
 |---|---|---|---|---|
@@ -64,13 +64,13 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       ROUTING: writing-plans
 
 - [ ] Stage 2: Finish the aggregate news/noise pilot\
-      Objective: Finish plan 11 without its GPU task, so that the total-nonfarm news/noise split and the run harness reach `main`.\
+      Objective: Finish plan 11 without its GPU work, so that the total-nonfarm news/noise split and the run harness reach `main`.\
       Outcomes: O5\
       Track: B\
-      Consumes: Plan 11 on branch `claude/ces-revisions-stage-6-bd9ab7`, 22 commits ahead of `main` and 2 behind. Its Tasks 1–12 are committed, with the pilot fit that meets Req 18, the 100-replicate SBC, the prior predictive, the Mac timing grid and the seasonal-layout comparison under `docs/runs/stage-6/`. Its run directories, with the pilot's `inference_data.nc`, are untracked in `data/runs/` of the `ces-revisions-stage-6-bd9ab7` worktree. Its `Roadmap:` header still names the old roadmap's Stage 6. Its Task 1 amends `specs/ces-revisions.md`, which this reset moved to `specs/completed/`, so the merge carries that amendment to the new path. Built inputs from plans 1, 5, 6 and 8.\
-      Produces: plan 11 retired, with the pilot model (`ces_revisions.pilot`), the run harness (`ces_revisions.runs`) and the seasonal-state decision on `main`. `specs/ces-revision-drivers-stage-2-findings.md`, with the news shares and the measured cost.\
+      Consumes: Plan 11 on branch `claude/ces-revisions-stage-6-bd9ab7`, 22 commits ahead of `main` and 2 behind. Its Tasks 1–12 are committed, with the pilot fit that meets Req 18, the 100-replicate SBC, the prior predictive, the Mac timing grid and the seasonal-layout comparison under `docs/runs/stage-6/`. Its run directories, with the pilot's `inference_data.nc`, are untracked in `data/runs/` of the `ces-revisions-stage-6-bd9ab7` worktree. Its `Roadmap:` header still names the old roadmap's Stage 6. Its Task 14 applies the GPU rule first and stops as `unmeasured` without a priced GPU record, so this stage re-scopes Task 14 to the seasonal-state decision alone, recorded as a plan Deviation. Its Task 1 amends `specs/ces-revisions.md`, which this reset moved to `specs/completed/`, so the merge carries that amendment to the new path. Built inputs from plans 1, 5, 6 and 8.\
+      Produces: plan 11 retired, with the pilot model (`ces_revisions.pilot`), the run harness (`ces_revisions.runs`) and the seasonal-state decision on `main`, that decision written from the seasonal-layout comparison and the Mac timing grid. `specs/ces-revision-drivers-stage-2-findings.md`, with the news shares and the measured cost.\
       Exit: the findings file reports the posterior news share of the S and T revisions (`share_s`, `share_t`) of total nonfarm, with intervals, from the pilot fit's run directory, or from a refit if that directory is gone (O5). The committed JSON evidence does not hold these shares. Plan 11's header names this roadmap's Stage 2. The plan 1 dispersed-starts item and the plan 5 repeated-EMPLOY item in `specs/deferred_items.md` are ticked. The file records the fit's sampling time and the sessions used.\
-      Leaves out: the GPU measurement (plan 11 Task 13, up to \$40): O6 in the Track B Ranked list. Full validation suites at supersector scale: O17 in the Track B Ranked list.\
+      Leaves out: the GPU measurement and the GPU choice (plan 11's Task 13, up to \$40, and the GPU rule and `docs/runs/stage-6/gpu-choice.json` of its Task 14): O6 in the Track B Ranked list. Full validation suites at supersector scale: O17 in the Track B Ranked list.\
       ROUTING: writing-plans
 
 - [ ] Stage 3: Seasonal share of SA revisions\
@@ -99,7 +99,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Track: E\
       Consumes: Built inputs (plan 6): `data/annual/panel/birth_death.parquet` (7,074 rows, with forecast-versus-realized rows, zero for government) and `data/annual/panel/benchmarks.parquet`. The owner's answer to the open question on Req 11.\
       Produces: `specs/ces-revision-drivers-stage-5-findings.md`, with the association and the measured cost.\
-      Exit: the findings file reports, for each supersector and benchmark year, the birth–death forecast error beside the benchmark revision, with the method-change dates the owner chose marked, and their association (O13). It records the sessions used.\
+      Exit: the findings file reports, for each supersector and benchmark year, the birth–death forecast error beside the benchmark revision, with the method-change dates the owner chose marked, and their association with its uncertainty (O13). It records the sessions used.\
       Leaves out: nothing. Its inputs already carry provenance and `observable_at` (plan 6).\
       ROUTING: brainstorming
 
@@ -109,7 +109,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Track: F\
       Consumes: Built inputs (plan 6): `data/annual/panel/sample_panel.parquet` (288 rows, Table 1's coverage proxy, RSE with definition-break flags, March 2012 missing). Built input (plan 5): `data/panel/stage_changes.parquet` (12 sectors, 2003-05 to 2026-08).\
       Produces: `specs/ces-revision-drivers-stage-6-findings.md`, with the association and the measured cost.\
-      Exit: the findings file reports the mean absolute F→S and F→T revision for each supersector and year beside coverage and RSE, with the RSE breaks and the missing 2012 table marked, and their association (O14). It records the sessions used.\
+      Exit: the findings file reports the mean absolute F→S and F→T revision for each supersector and year beside coverage and RSE, with the RSE breaks and the missing 2012 table marked, and their association with its uncertainty (O14). It records the sessions used.\
       Leaves out: nothing. Its inputs already carry provenance and `observable_at` (plans 5 and 6).\
       ROUTING: brainstorming
 
@@ -129,7 +129,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Track: G\
       Consumes: The findings file of each ticked stage, and of any stage promoted from a Ranked list. From Stage 7: the finished review document.\
       Produces: the report under `docs/`.\
-      Exit: the report has a section for each outcome whose stage has ticked, with its interval and its limits. Every number and table in it is generated by code from committed artifacts, which places traceability for the report here. `uv run ruff format --check` passes on it (O16).\
+      Exit: the report has a section for each outcome whose stage has ticked, with its limits and with the interval or uncertainty that its findings file reports. Where a findings file reports none, as Stage 3's descriptive shares may not, the section says the result is descriptive. Every number and table in it is generated by code from committed artifacts, which places traceability for the report here. `uv run ruff format --check` passes on it (O16).\
       Leaves out: nothing.\
       ROUTING: brainstorming
 
@@ -141,7 +141,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
 
 ## Ranked list — Track B
 
-1. O6 — about 64 h per fit on the Mac (an estimate). The GPU measurement, plan 11's Task 13 with its \$40 cap, chooses the GPU here.
+1. O6 — about 64 h per fit on the Mac (an estimate). It picks up the GPU measurement and the GPU choice: plan 11's Task 13 with its \$40 cap, and the GPU rule of its Task 14.
 2. O7 — after O6. Only a real run can tell.
 3. O8 — about 280 refits at past release dates. It picks up point-in-time awareness: `observable_at` for every input, the day count and the funding and staffing values included.
 4. O17 — full validation suites, approved 2026-11-15. SBC multiplies each fit's cost.
