@@ -13,7 +13,7 @@
 
 **Tech Stack:** Python 3.14; Polars 1.44.2; fastexcel, a new runtime dependency and Polars' calamine Excel engine, whose `cp310-abi3` wheels import on CPython 3.14; the standard library's `zipfile`, `csv`, `html`, `fractions`, and `zoneinfo`; pytest 9.1.1; ruff 0.16.7; and `pdftotext` (poppler), for the fetch step only.
 
-**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 1, Req 2, Req 4, Req 5, Req 9 (the accounting identity), Req 14 (the composite 2003 regime), and Verification bullet 1; [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 3; the pre-May-1999 item of [`specs/deferred_items.md`](../../deferred_items.md).
+**Source:** [`specs/ces-revisions.md`](../../completed/ces-revisions.md) Req 1, Req 2, Req 4, Req 5, Req 9 (the accounting identity), Req 14 (the composite 2003 regime), and Verification bullet 1; [`specs/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md) Stage 3; the pre-May-1999 item of [`specs/deferred_items.md`](../../deferred_items.md).
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 3 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 3: COMPLETE (YYYY-MM-DD) — implemented by plan 5 (specs/plans/completed/5-ces-revisions.md). Next: resume the roadmap.`

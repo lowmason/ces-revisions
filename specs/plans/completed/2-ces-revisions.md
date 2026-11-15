@@ -13,7 +13,7 @@
 
 **Tech Stack:** Python 3.14 standard library (`urllib`, `zipfile`, `csv`, `zoneinfo`), Polars 1.44.2 for one-off LABSTAT computations, pytest 9.1.1, ruff 0.16.7, `pdftotext` (poppler), and the Internet Archive CDX API.
 
-**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 20, Req 9 (the (open) archive item), Req 3, the Rollout note, and Verification bullets 4 and 13 (inventory half); [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 2.
+**Source:** [`specs/ces-revisions.md`](../../completed/ces-revisions.md) Req 20, Req 9 (the (open) archive item), Req 3, the Rollout note, and Verification bullets 4 and 13 (inventory half); [`specs/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md) Stage 2.
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 2 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 2: COMPLETE (YYYY-MM-DD) — implemented by plan 2 (specs/plans/completed/2-ces-revisions.md). Next: resume the roadmap.`

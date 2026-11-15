@@ -7,7 +7,7 @@
 
 ## Context
 
-Req 10 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) preserves BLS's post-March calculation as either (1) a recursion in previously published matched-sample link relatives and revised net birth–death forecasts or (2) a linear cumulative operator when only job-change contributions are available. The two representations may not be mixed. Roadmap Stage 5 must determine, for each benchmark year 2003–2025, whether the required public series is recovered or inferred and must assign positive reconstruction-error variance to inferred years.
+Req 10 of [`specs/completed/ces-revisions.md`](../../specs/completed/ces-revisions.md) preserves BLS's post-March calculation as either (1) a recursion in previously published matched-sample link relatives and revised net birth–death forecasts or (2) a linear cumulative operator when only job-change contributions are available. The two representations may not be mixed. Roadmap Stage 5 must determine, for each benchmark year 2003–2025, whether the required public series is recovered or inferred and must assign positive reconstruction-error variance to inferred years.
 
 The committed vintage triangles contain published NSA and SA levels, not matched-sample employment sums, weighted link relatives, or sample-only job changes. The Stage 4 birth–death table contains the initial January–December schedule from 2004 onward and each revised post-benchmark April–December schedule. It contains no initial April–December 2003 schedule.
 

@@ -37,7 +37,7 @@
 
 ## Source and numbering
 
-This plan implements [`specs/ces-revisions.md`](../../ces-revisions.md) Req 1's benchmark sources, Req 3's sample rows, Req 10's preliminary/final and QCEW inputs, and Req 11's data half. It implements Stage 4 of [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md), using the findings in [`docs/ces-revisions-review.md`](../../../docs/ces-revisions-review.md) and the coverage item in [`specs/deferred_items.md`](../../deferred_items.md).
+This plan implements [`specs/ces-revisions.md`](../../completed/ces-revisions.md) Req 1's benchmark sources, Req 3's sample rows, Req 10's preliminary/final and QCEW inputs, and Req 11's data half. It implements Stage 4 of [`specs/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md), using the findings in [`docs/ces-revisions-review.md`](../../../docs/ces-revisions-review.md) and the coverage item in [`specs/deferred_items.md`](../../deferred_items.md).
 
 The plan ID is **6**, although this is roadmap Stage 4. Plans 3 and 4 are reserved by the cloud-GPU amendment on branch `claude/cloud-gpu-ces-revisions-ee5804`; plan 5 implemented Stage 3 and is retired at `specs/plans/completed/5-ces-revisions.md`.
 

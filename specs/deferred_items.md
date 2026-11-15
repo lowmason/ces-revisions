@@ -139,3 +139,142 @@
       `tests/vintage_data.py`'s frames, in `tests/test_vintage_panel.py` and
       `tests/test_stage_labels.py`, would keep those choices auditable. Size:
       quick-fix. Done when: tests pin the 10 cells and the three counts.
+
+## ces-revisions-roadmap — 2026-11-15
+
+The owner parked this roadmap and replaced it with the outcome-first
+`specs/ces-revision-drivers-roadmap.md`, for the reasons in
+`specs/findings/ces-revision-drivers-reset-review.md`. "Spec" below means the
+parked `specs/completed/ces-revisions.md`, and O-numbers are outcomes of the new
+roadmap. Stage 6 is not here, because Stage 2 of the new roadmap finishes its
+plan 11.
+- [ ] Parked Stage 7, Gaussian closing-stage core across supersectors
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Widens plan 11's aggregate pilot to the eleven
+      supersectors with the common factor, cross-sector news factors, shared
+      noise and reconciliation. Covered by O6 in the Track B Ranked list.
+      Size: plan. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O6 ticks.
+- [ ] Parked Stage 8, benchmark anchors, wedge, post-March recursion and
+      mature horizon in the model (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Enters the preliminary
+      and final benchmarks, the B vintage through the wedge operator in
+      `src/ces_revisions/operators/`, the post-March recursion with its
+      reconstruction error, and right-censored M. Covered by O6. Size: design.
+      Done when: the stage of `specs/ces-revision-drivers-roadmap.md` that
+      delivers O6 ticks.
+- [ ] Parked Stage 9, joint NSA/SA measurement and the model-based seasonal
+      decomposition (`specs/completed/ces-revisions-roadmap.md`, parked
+      2026-11-15 by the outcome-first reset). Adds the SA vintages through one
+      mature seasonal component (spec Req 9, channel (a)). Covered by O6, and
+      O9 is its descriptive counterpart. Size: plan. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O6 ticks.
+- [ ] Parked Stage 10, Student-t news, noise and process innovations
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Comparator (1) of spec Req 8. Covered by O7. Size:
+      plan. Done when: the stage of `specs/ces-revision-drivers-roadmap.md`
+      that delivers O7 ticks.
+- [ ] Parked Stage 11, stochastic volatility per transition and the sampler
+      benchmark (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15
+      by the outcome-first reset). Comparator (2) of spec Req 8, with the Req
+      17 step (5) benchmark record. Covered by O7. Size: plan. Done when: the
+      stage of `specs/ces-revision-drivers-roadmap.md` that delivers O7 ticks.
+- [ ] Parked Stage 12, collection-window panel, first-stage C1 model and macro
+      controls (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15
+      by the outcome-first reset). Spec Req 3, collection and macro rows.
+      Stage 1 of the new roadmap builds the business-day count. The collection
+      rates C1–C3 and RR are O3, and the calendar-predicted C1 split and the
+      macro controls enter the model under O7. Size: plan. Done when: the
+      stages of `specs/ces-revision-drivers-roadmap.md` that deliver O3 and O7
+      have all ticked.
+- [ ] Parked Stage 13, institutional capacity panel and shutdown events,
+      FY2009 on (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15
+      by the outcome-first reset). Spec Req 3 institutional rows and Req 13
+      inputs. The funding and staffing panel is O11. The four-field
+      shutdown-events table enters the model under O7, and the descriptive
+      party-composition table belongs to the report, O16. Size: plan. Done
+      when: the stages of `specs/ces-revision-drivers-roadmap.md` that deliver
+      O11, O7 and O16 have all ticked.
+- [ ] Parked Stage 14, seasonal-adjustment file store, seasonal-flag panel,
+      birth–death covariates and interventions table
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Spec Req 3 seasonal rows, Req 11 and Req 14. The
+      file store is part of O10, the birth–death columns are part of O13, and
+      the seasonal flags and the interventions enter the model under O7. Size:
+      plan. Done when: the stages of `specs/ces-revision-drivers-roadmap.md`
+      that deliver O10, O13 and O7 have all ticked.
+- [ ] Parked Stage 15, closing-stage scale layer
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). The F→S, S→T and seasonal rows of the spec Req 8
+      map, with the Req 12 hierarchy and the Req 13 and Req 14 terms. Covered
+      by O7. Size: plan. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O7 ticks.
+- [ ] Parked Stage 16, annual-stage scale, capacity factor and the full
+      prior-predictive gate (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Completes comparator (3)
+      of spec Req 8 and passes the complete Req 15 prior-predictive plan.
+      Covered by O7, with the gate under O17. Size: plan. Done when: the
+      stages of `specs/ces-revision-drivers-roadmap.md` that deliver O7 and
+      O17 have all ticked.
+- [ ] Parked Stage 17, first fit of comparator (3), the kernel decision and
+      the hierarchy geometry (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Spec Req 17 step (5) and
+      Req 12. Covered by O7. Size: plan. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O7 ticks.
+- [ ] Parked Stage 18, posterior predictive checks and full-panel SBC
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Spec Req 18. Covered by O17 in the Track B Ranked
+      list. Size: plan. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O17 ticks.
+- [ ] Parked Stage 19, nested comparison of comparators (0)–(3)
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Blocked PSIS-LOO, leave-future-out and
+      leave-one-benchmark-year-out under spec Req 18. Covered by O8. Size:
+      plan. Done when: the stage of `specs/ces-revision-drivers-roadmap.md`
+      that delivers O8 ticks.
+- [ ] Parked Stage 20, pseudo-real-time evaluation, leakage audit and the
+      predictive-scale artifact (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Spec Req 18 and Req 19,
+      about 280 refits at past release dates. Covered by O8. Size: design.
+      Done when: the stage of `specs/ces-revision-drivers-roadmap.md` that
+      delivers O8 ticks.
+- [ ] Parked Stage 21, sensitivity suite and identification checks
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Spec Req 16 and the variants that Req 6, 7, 13, 14
+      and 18 list. No outcome of the new roadmap covers it. Size: plan. Done
+      when: the sensitivity registry, the capacity overlap table and the
+      (a)/(b)/(c) decomposition tables that the parked stage names exist for
+      the joint model of O7.
+- [ ] Parked Stage 22, non-marginal sensitivities: exact interval censoring
+      and unknown change points (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Spec Req 15 and Req 14.
+      No outcome of the new roadmap covers it. Size: design. Done when: the
+      censored reduced-panel model and the change-point model are registered
+      as sensitivity-only fits beside the joint model of O7.
+- [ ] Parked Stage 23, verified literature review and bibliography
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Spec Req 20. Committed as Stage 7 of the new
+      roadmap (O15). Size: plan. Done when: Stage 7 of
+      `specs/ces-revision-drivers-roadmap.md` ticks.
+- [ ] Parked Stage 24, report (`specs/completed/ces-revisions-roadmap.md`,
+      parked 2026-11-15 by the outcome-first reset). Spec Req 19, Req 16 and
+      Req 13. Committed as Stage 8 of the new roadmap (O16). Size: plan. Done
+      when: Stage 8 of `specs/ces-revision-drivers-roadmap.md` ticks.
+- [ ] Parked Stage 25, X-13 vintage reproduction
+      (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15 by the
+      outcome-first reset). Reproduces the X-13 factors for the 28
+      archive-complete releases (spec Req 9, channel (b)). Covered by O10 in
+      the Track C Ranked list. Size: design. Done when: the stage of
+      `specs/ces-revision-drivers-roadmap.md` that delivers O10 ticks.
+- [ ] Parked Stage 26, channel (b) observation and the re-reported
+      decomposition (`specs/completed/ces-revisions-roadmap.md`, parked
+      2026-11-15 by the outcome-first reset). Spec Req 9, channel (b), in the
+      model. Covered by O10 and O7. Size: plan. Done when: the stages of
+      `specs/ces-revision-drivers-roadmap.md` that deliver O10 and O7 have all
+      ticked.
+- [ ] Parked Stage 27, FY1979 institutional-panel extension and the full-leg
+      capacity refits (`specs/completed/ces-revisions-roadmap.md`, parked
+      2026-11-15 by the outcome-first reset). Spec Req 3 and Req 13. Covered
+      by O12 in the Track D Ranked list, with the refits under O7. Size:
+      design. Done when: the stages of `specs/ces-revision-drivers-roadmap.md`
+      that deliver O12 and O7 have all ticked.

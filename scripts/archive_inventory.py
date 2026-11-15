@@ -1,6 +1,6 @@
 """Enumerate CES vintages and inventory the seasonal-adjustment files that survive for each.
 
-Roadmap Stage 2 (specs/ces-revisions-roadmap.md) answers Req 9's open question: which vintages
+Roadmap Stage 2 (specs/completed/ces-revisions-roadmap.md) answers Req 9's open question: which vintages
 have archived specification, prior-adjustment, and outlier files. BLS serves only the current
 files (https://www.bls.gov/web/empsit/cesseasadj.htm), so a past vintage's files survive only
 where the Internet Archive copied them. Network capture and offline derivation are separate

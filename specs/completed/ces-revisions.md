@@ -49,7 +49,7 @@ The literature characterizes the **sign and mean bias** of CES revisions well an
   **dispersion** rests on pooled correlations of ~0.18 over two years and four industries
   (chatgpt §2.2). Collection rates in 2024 averaged 60.4 / 89.0 / 90.9 percent at the three
   closings (C1–C3 series, monthly from 1981 — C1 and C3 from January, C2 from March, per Stage 2's
-  [collection-rate ruling](../docs/ces-revisions-review.md#collection-rate-versus-response-rate));
+  [collection-rate ruling](../../docs/ces-revisions-review.md#collection-rate-versus-response-rate));
   the distinct third-release response rate fell from ~58 percent pre-2020 to ~43 percent in 2024
   (chatgpt §2.2; claude §2 Driver 2).
   The gemini draft's "~40 percent first-closing rate" conflates the two (rejected).
@@ -60,7 +60,7 @@ The literature characterizes the **sign and mean bias** of CES revisions well an
   claude §3). The March 2025 final benchmark was −861 thousand NSA in Table 5 of the CES
   technical notes and the benchmark article's summary, −862 in the article's Table 3 (no source
   explains the difference), and −898 SA; the preliminary was −911 (Stage 2's
-  [benchmark ruling](../docs/ces-revisions-review.md#the-2024-and-2025-preliminary-and-final-benchmark-revisions)).
+  [benchmark ruling](../../docs/ces-revisions-review.md#the-2024-and-2025-preliminary-and-final-benchmark-revisions)).
 - No study — peer-reviewed or agency — relates real BLS appropriations, continuing
   resolutions, sequestration, shutdown exposure, or FTE to any CES revision scale. Budget
   authority, FTE, and sample size are slow, trending, collinear, and definition-broken

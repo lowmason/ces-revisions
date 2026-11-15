@@ -13,7 +13,7 @@
 
 **Tech Stack:** Python 3.14, uv, JAX 0.11.1 (float64), NumPyro 0.21.0, ArviZ 1.3.0, Polars 1.44.2 (pinned now, first used in Stage 3), Dynamax 1.0.2 (dev group), pytest, ruff.
 
-**Source:** [`specs/ces-revisions.md`](../../ces-revisions.md) Req 17, the Rollout note, and Verification bullet 5; [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md) Stage 1.
+**Source:** [`specs/ces-revisions.md`](../../completed/ces-revisions.md) Req 17, the Rollout note, and Verification bullet 5; [`specs/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md) Stage 1.
 
 **Retirement:** When this plan retires to `specs/plans/completed/`, `specs/ces-revisions.md` does **not** retire with it. The spec, roadmap, prompt, and research drafts retire together under the roadmap's Completion section. At completion, tick Stage 1 in the roadmap and append this authoritative stamp to the spec's Rollout note:\
 `Stage 1: COMPLETE (YYYY-MM-DD) — implemented by plan 1 (specs/plans/completed/1-ces-revisions.md). Next: resume the roadmap.`

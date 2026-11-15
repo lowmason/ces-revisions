@@ -7,7 +7,7 @@
 
 ## Context
 
-Req 17 of [`specs/ces-revisions.md`](../../specs/ces-revisions.md) marginalizes the employment, trend, seasonal, and common-factor states analytically. It uses a differentiable Kalman filter whose log marginal likelihood is the NumPyro likelihood term. Req 17 leaves two matters open, to be resolved by verification rather than argument. First, does each of NumPyro, JAX, Dynamax, ArviZ, and Polars support Python 3.14? Second, does Dynamax's linear-Gaussian SSM support the time-varying emission rows, missing cells, and irregular annual observations the model needs, or is a hand-written Kalman `scan` required? Req 20 adds that a fact about a package's behavior is settled by running the package.
+Req 17 of [`specs/completed/ces-revisions.md`](../../specs/completed/ces-revisions.md) marginalizes the employment, trend, seasonal, and common-factor states analytically. It uses a differentiable Kalman filter whose log marginal likelihood is the NumPyro likelihood term. Req 17 leaves two matters open, to be resolved by verification rather than argument. First, does each of NumPyro, JAX, Dynamax, ArviZ, and Polars support Python 3.14? Second, does Dynamax's linear-Gaussian SSM support the time-varying emission rows, missing cells, and irregular annual observations the model needs, or is a hand-written Kalman `scan` required? Req 20 adds that a fact about a package's behavior is settled by running the package.
 
 The engine must accept:
 - time-varying transition and observation matrices and offsets;

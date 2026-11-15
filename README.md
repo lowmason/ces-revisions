@@ -25,16 +25,13 @@ The design requirements call for a latent "true" employment path with vintage-sp
 
 ## Status
 
-Early stage: the research design is specified and staged, and the Python package holds the marginalized Kalman engine and the vintage panel of CES revisions that later model stages build on.
+Early stage: the research design is specified and staged, and the Python package holds the marginalized Kalman engine and the vintage panel of CES revisions that later model stages build on. Stage numbers below refer to the parked roadmap in `specs/completed/ces-revisions-roadmap.md`.
 
 ```text
 specs/
-  ces-revisions.md                    design spec
-  ces-revisions-roadmap.md            staged implementation roadmap
-  ces-revisions-prompt.md             research brief: scope, required outputs, design requirements
-  ces-revisions-research-chatgpt.md   literature review, gap analysis, and design draft
-  ces-revisions-research-claude.md    literature review, gap analysis, and design draft
-  ces-revisions-research-gemini.md    literature review, gap analysis, and design draft
+  ces-revision-drivers-roadmap.md     outcome-first roadmap: one usable answer per revision driver
+  findings/                           the reset review and each stage's findings
+  completed/                          the parked design spec and roadmap, the research brief, and three drafts
   plans/                              implementation plans for the roadmap stages
 docs/decisions/                       decision records (engine.md: the Kalman engine)
   cloud-gpu-probe/                    engine timing records, starting with the Mac baseline
@@ -107,6 +104,6 @@ runs copy the JSON record into their provenance.
 
 On a Linux host with an NVIDIA GPU, `uv sync --extra cuda` also installs JAX's CUDA 13 plugin; the extra is Linux-only, so on the Mac it installs nothing. `src/ces_revisions/devices.py` picks NumPyro's chain method from the devices JAX sees, and `uv run python -m ces_revisions.engine_probe` times the engine's value and gradient on the current host and writes a JSON record like those in [`docs/decisions/cloud-gpu-probe/`](docs/decisions/cloud-gpu-probe/).
 
-GPU fits run on an instance rented from [Lambda](https://lambda.ai) and set up by hand, with no infrastructure code in this repo. The model's needs set the GPU type and count. Stage 6 of the [roadmap](specs/ces-revisions-roadmap.md) measures them with the engine probe. On a new instance, install uv from the 0.13 series, because the `required-version` pin refuses any other. JAX's CUDA 13 wheels need NVIDIA driver 580 or later, so check `nvidia-smi` before `uv sync --extra cuda`. Lambda bills by the minute until you terminate the instance in its console or API. Shutting down the operating system does not stop billing. Termination deletes the instance's disk, so copy results off first.
+GPU fits run on an instance rented from [Lambda](https://lambda.ai) and set up by hand, with no infrastructure code in this repo. The model's needs set the GPU type and count. Outcome O6 of the [roadmap](specs/ces-revision-drivers-roadmap.md) measures them with the engine probe. On a new instance, install uv from the 0.13 series, because the `required-version` pin refuses any other. JAX's CUDA 13 wheels need NVIDIA driver 580 or later, so check `nvidia-smi` before `uv sync --extra cuda`. Lambda bills by the minute until you terminate the instance in its console or API. Shutting down the operating system does not stop billing. Termination deletes the instance's disk, so copy results off first.
 
 The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).

@@ -33,8 +33,8 @@
 
 ## Source and numbering
 
-- Source spec: [`specs/ces-revisions.md`](../../ces-revisions.md), Req 5, Req 9, Req 10, Req 11, Req 17 step (1), and Verification bullets 2–3.
-- Roadmap stage: [`specs/ces-revisions-roadmap.md`](../../ces-revisions-roadmap.md), Stage 5.
+- Source spec: [`specs/ces-revisions.md`](../../completed/ces-revisions.md), Req 5, Req 9, Req 10, Req 11, Req 17 step (1), and Verification bullets 2–3.
+- Roadmap stage: [`specs/ces-revisions-roadmap.md`](../../completed/ces-revisions-roadmap.md), Stage 5.
 - Inputs: completed plans 5 and 6 under `specs/plans/completed/`, the Stage 3 source archive and builders, and the Stage 4 benchmark/reconstruction/birth–death builders.
 - Plan id: existing ids are 1, 2, 5, 6, and 7; therefore this is plan **8**.
 - Retirement: this shared spec does not retire with Stage 5. On completion, tick Stage 5 and add the Stage 5 completion stamp to the spec's Rollout note; then resume the roadmap.
