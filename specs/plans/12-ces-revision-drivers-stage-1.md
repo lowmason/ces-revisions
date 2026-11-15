@@ -41,8 +41,14 @@ Process: lighter. Keep TDD for the day count and one whole-branch Opus review. S
 - **D2** (owner, brief, 2026-11-15): Execute inline in the planning session with executing-plans and no subagents, so Stage 1 takes one session. For Stage 1 only, this replaces the global routing to Sonnet in a fresh session. Applied in: header.
 - **D3** (owner, brief, 2026-11-15): Keep executing-plans' Codex seat at the final review and its mutant gate at each task. The one whole-branch Opus review is executing-plans' final code-reviewer dispatch. Applied in: Tasks 1–3, final review.
 - **D4** (owner, brief, 2026-11-15): Commit on a branch cut from local `main` at `0b9324b` (`claude/stage-1-collection-window-plan-5c7756`), merged later through finishing-a-development-branch. Nothing is committed on `main`. Applied in: every commit step.
+- **D5** (owner, plan review, 2026-11-15): Inauguration Day is not a holiday (F2). Applied in: Global Constraints, Task 1.
+- **D6** (owner, plan review, 2026-11-15): The pandemic months stay out of the regression (F5). Applied in: Global Constraints, Task 3.
+- **D7** (owner, plan review, 2026-11-15): Standard errors cluster by reference year, with the CR1 factor (F6). Applied in: Global Constraints, Task 3.
+- **D8** (owner, plan review, 2026-11-15): The findings state the benchmark effect in November F→T and December F→S as a limit, and the specification stays unchanged (F7). Applied in: Task 3.
 
-## Defaults settled in this plan (for the owner's review)
+## Defaults settled in this plan
+
+The owner approved the plan with these defaults on 2026-11-15, and chose F2, F5, F6 and F7 explicitly (D5–D8).
 
 - **F1** (brief): a test step gives the test's name and its assertions as one-line inline code, with no fenced blocks. Test-first covers the day count. The Review Focus pins add tests in Tasks 2 and 3, and the table and regression get verification steps.
 - **F2:** Inauguration Day is not a holiday. 6103(c) covers only employees in the Washington area, and CES collection runs nationwide. Counting it would lower January `D_t` by 1 in 1981, 1985, 1989, 1993, 2005, 2009, 2017 and 2021.
