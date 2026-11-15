@@ -53,6 +53,7 @@ uv run python scripts/vintage_sources.py build  # rebuild data/panel/ from the c
 uv run python scripts/annual_sources.py manifest  # rehash committed Stage 4 sources (offline)
 uv run python scripts/annual_sources.py build     # rebuild data/annual/panel/ (offline)
 uv run python scripts/operator_artifacts.py build
+uv run python scripts/collection_window.py report  # rewrite the Stage 1 findings tables from data/panel/ (offline; run the vintage build first)
 uv add <package>                                # add a runtime dependency (updates pyproject.toml + uv.lock)
 uv add --dev <package>                          # add to the `dev` dependency group
 ```
