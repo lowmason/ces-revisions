@@ -5,7 +5,11 @@ from datetime import date
 import polars as pl
 import vintage_data
 
-from ces_revisions.vintages.collection_days import LAPSE_DELAYED_MONTHS, collection_days
+from ces_revisions.vintages.collection_days import (
+    LAPSE_DELAYED_MONTHS,
+    build_collection_days,
+    collection_days,
+)
 
 
 def test_window_runs_from_after_the_12th_to_before_the_release():
@@ -61,3 +65,14 @@ def test_built_day_counts_match_hand_counts():
         pl.col("reference_month").is_in(months)
     )
     assert rows.sort("reference_month")["collection_days"].to_list() == [24, 26, 46, 16]
+
+
+def test_day_counts_come_sorted_with_the_stated_schema():
+    frame = build_collection_days(vintage_data.index().reverse())
+    assert frame["reference_month"].is_sorted()
+    assert frame.schema == {
+        "reference_month": pl.Date,
+        "release_date": pl.Date,
+        "collection_days": pl.Int32,
+        "lapse_delayed": pl.Boolean,
+    }
