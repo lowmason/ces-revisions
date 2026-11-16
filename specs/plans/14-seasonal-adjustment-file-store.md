@@ -36,6 +36,7 @@
 - **D1** (owner, brief, 2026-11-16): the parked Stage 14 item's text in `specs/deferred_items.md` stays unedited. The spec's section "Relation to parked stages and O10" records which half of Stage 14 this plan delivers. Applied in: Global Constraints, Task 9.
 - **D2** (owner, brief, 2026-11-16): each network step needs the owner's yes each time: the first full `captures` run with the new code, and `current` after each release. Applied in: Global Constraints, Task 8.
 - **D3** (owner, plan review, 2026-11-16): split the store's `.gitattributes` rule: `data/seasonal/raw/** -text` for every file, and `-diff` for the ZIPs only, so `manifest.csv` diffs as text. The spec gave one `-text -diff` line. Applied in: Task 2 (spec amendment).
+- **D4** (owner, plan review, 2026-11-16): execute with subagent-driven-development in a fresh session on Sonnet, with the Opus code-reviewer for the whole-branch review. Applied in: header, Task 9.
 
 ## Files
 
