@@ -8,6 +8,7 @@ from pathlib import Path
 import archive_inventory
 import pytest
 from archive_inventory import (
+    BLS_SOURCE,
     CAPTURES_PATH,
     FIRST_REFERENCE_MONTH,
     RELEASE_INDEX_URL,
@@ -28,6 +29,7 @@ from archive_inventory import (
     newest_member,
     parse_cdx,
     parse_release_index,
+    payload_digest,
     read_csv,
     release_instant,
     render_blocks,
@@ -443,19 +445,26 @@ def test_retrying_gives_up_after_the_last_attempt(monkeypatch):
         retrying(attempt, what="test fetch")
 
 
-def test_collect_captures_records_an_unreplayable_copy_instead_of_failing(monkeypatch):
+def test_collect_archive_copies_records_an_unreplayable_copy_instead_of_failing(
+    monkeypatch,
+):
     artifact = archive_inventory.Artifact(
         "other_inputs",
         "https://www.bls.gov/web/empsit/ces.spec.other.zip",
         ("bls.gov/web/empsit/ces.spec.other.zip",),
     )
     original = "http://www.bls.gov/web/empsit/ces.spec.other.zip"
+    payload = make_zip({"outliers.xlsx": b"AO"})
     listing = [
-        (datetime(2015, 3, 21, 6, 17, 57, tzinfo=UTC), original, "200", "KEPT"),
+        (
+            datetime(2015, 3, 21, 6, 17, 57, tzinfo=UTC),
+            original,
+            "200",
+            payload_digest(payload),
+        ),
         (datetime(2017, 1, 2, 4, 57, 40, tzinfo=UTC), original, "301", "MOVED"),
         (datetime(2020, 10, 18, 12, 35, 3, tzinfo=UTC), original, "200", "LOST"),
     ]
-    payload = make_zip({"outliers.xlsx": b"AO"})
 
     def fake_fetch(url):
         if "20201018123503" in url:
@@ -466,17 +475,17 @@ def test_collect_captures_records_an_unreplayable_copy_instead_of_failing(monkey
     monkeypatch.setattr(archive_inventory, "list_captures", lambda key: listing)
     monkeypatch.setattr(archive_inventory, "fetch", fake_fetch)
     monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
-    captures = archive_inventory.collect_captures(datetime(2026, 9, 13, 15, tzinfo=UTC))
+    copies = archive_inventory.collect_archive_copies()
     assert [
-        (c.source, c.status, bool(c.outliers), c.newest_member) for c in captures
+        (c.source, c.status, bool(c.outliers), c.newest_member) for c, _ in copies
     ] == [
-        ("bls_current", "200", True, "2026-09-01T15:33:00"),
         ("internet_archive", "200", True, "2026-09-01T15:33:00"),
         ("internet_archive", "301", False, ""),
         ("internet_archive", "unreplayable", False, ""),
     ]
+    assert [held for _, held in copies] == [payload, None, None]
     assert (
-        captures[1].url == f"https://web.archive.org/web/20150321061757id_/{original}"
+        copies[0][0].url == f"https://web.archive.org/web/20150321061757id_/{original}"
     )
 
 
@@ -543,7 +552,7 @@ def test_file_status_prefers_the_bls_copy_and_ignores_captures_without_content()
     archived = capture("2026-09-05T00:00:00+00:00", outliers="same")
     current = Capture(
         "other_inputs",
-        "bls_current",
+        BLS_SOURCE,
         datetime(2026, 9, 13, 15, 0, tzinfo=UTC),
         "https://www.bls.gov/web/empsit/ces.spec.other.zip",
         "200",
@@ -559,7 +568,7 @@ def test_file_status_prefers_the_bls_copy_and_ignores_captures_without_content()
         "DIGEST",
     )
     assert file_status([archived, current, redirect], "outliers", window) == (
-        "bls_current",
+        BLS_SOURCE,
         current.url,
     )
 

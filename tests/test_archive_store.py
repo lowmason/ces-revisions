@@ -1,32 +1,62 @@
 """scripts/archive_inventory.py: the content-addressed store for seasonal-adjustment ZIPs."""
 
+import csv
 import hashlib
 import pathlib
 import re
 import subprocess
-from dataclasses import replace
-from datetime import UTC, datetime
+from dataclasses import FrozenInstanceError, replace
+from datetime import UTC, date, datetime, timedelta
+from operator import attrgetter
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import archive_inventory
 import pytest
 from archive_inventory import (
+    ATTEMPTS,
+    BLS_SOURCE,
+    CAPTURE_COLUMNS,
+    CAPTURES_PATH,
+    EVIDENCE,
+    FILE_TYPES,
+    PAUSE_SECONDS,
+    RELEASE_INDEX_URL,
     ROOT,
     STORE_DIR,
     STORE_MANIFEST,
     STORE_MANIFEST_COLUMNS,
+    VINTAGE_COLUMNS,
+    VINTAGES_PATH,
     Capture,
+    EvidencePaths,
+    Vintage,
+    capture_evidence,
+    capture_from_row,
     capture_key,
+    capture_row,
     check_store,
+    fetch_and_inspect,
+    fetch_bls_copies,
+    fetch_current,
+    fetch_vintages,
+    inspect_zip,
+    inventory_rows,
+    main,
     merge_captures,
+    newest_member,
+    parse_release_index,
     payload_digest,
     read_csv,
+    record_run,
+    select_vintages,
     staging,
     store_folder,
     stored_file,
+    vintage_rows,
     write_csv,
 )
-from zip_fixtures import make_zip
+from zip_fixtures import make_dated_zip, make_zip
 
 AE = "all_employees_specifications"
 OTHER = "other_inputs"
@@ -635,6 +665,908 @@ def test_an_unchanged_listing_returns_the_committed_rows_as_they_were():
     once = merge_captures(rows, rows)
     assert once == merge_captures(rows, [])
     assert merge_captures(once, rows) == once
+
+
+# --- Commands ------------------------------------------------------------------------------
+
+OTHER_URL = "https://www.bls.gov/web/empsit/ces.spec.other.zip"
+OTHER_KEY = "bls.gov/web/empsit/ces.spec.other.zip"
+ORIGINAL = "http://www.bls.gov/web/empsit/ces.spec.other.zip"
+INDEX_EXCERPT = (
+    Path(__file__).parent
+    / "fixtures"
+    / "archive_inventory"
+    / "empsit-index-excerpt.html"
+)
+T1 = datetime(2026, 10, 5, 15, tzinfo=UTC)
+T2 = datetime(2026, 11, 10, 15, tzinfo=UTC)
+BOTH_COMMANDS = pytest.mark.parametrize(
+    "command", [fetch_current, capture_evidence], ids=["current", "captures"]
+)
+
+
+def replay_url(moment: datetime) -> str:
+    return archive_inventory.REPLAY_URL.format(
+        stamp=f"{moment:%Y%m%d%H%M%S}", original=ORIGINAL
+    )
+
+
+def listed(moment: datetime, status: str, digest: str):
+    """One line of the Internet Archive's listing, as `list_captures` returns it."""
+    return (moment, ORIGINAL, status, digest)
+
+
+def archive_copy(moment: datetime, status: str, digest: str, **changes) -> Capture:
+    return Capture(
+        OTHER,
+        "internet_archive",
+        moment,
+        replay_url(moment),
+        status,
+        digest,
+        **changes,
+    )
+
+
+def monthly_zip(made: tuple[int, ...], tag: bytes) -> bytes:
+    """Prior-adjustment and outlier files dated `made`, so made for the release that follows."""
+    return make_dated_zip(
+        [
+            ("prior_adjustment_file.xlsx", made, b"P" + tag),
+            ("outliers.xlsx", made, b"O" + tag),
+        ]
+    )
+
+
+def opened(payload: bytes) -> dict[str, str]:
+    """The fingerprints and member date that opening `payload` records."""
+    return {**inspect_zip(payload), "newest_member": newest_member(payload)}
+
+
+def fake_network(monkeypatch, *, bls, listing=None, replays=None) -> list[str]:
+    """Serve BLS, the release index and the Internet Archive from memory.
+
+    `bls` maps a current URL, and `replays` a replay URL, to bytes, to an exception to raise, or
+    to a list of these to serve one after another. `listing` maps a CDX key to its lines.
+    Returns the list that collects every URL fetched.
+    """
+    listing, replays = listing or {}, replays or {}
+    fetched: list[str] = []
+    index = INDEX_EXCERPT.read_bytes()
+
+    def fake_fetch(url):
+        fetched.append(url)
+        if url == RELEASE_INDEX_URL:
+            return index
+        served = bls[url] if url in bls else replays[url]
+        if isinstance(served, list):
+            served = served.pop(0)
+        if isinstance(served, Exception):
+            raise served
+        return served
+
+    other = next(a for a in archive_inventory.ARTIFACTS if a.name == OTHER)
+    monkeypatch.setattr(
+        archive_inventory,
+        "ARTIFACTS",
+        (replace(other, archive_keys=other.archive_keys[:1]),),
+    )
+    monkeypatch.setattr(archive_inventory, "fetch", fake_fetch)
+    monkeypatch.setattr(
+        archive_inventory, "list_captures", lambda key: listing.get(key, [])
+    )
+    monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
+    return fetched
+
+
+def capture_lines(paths: EvidencePaths) -> list[str]:
+    return paths.captures.read_text(encoding="utf-8").splitlines()[1:]
+
+
+def lines_of(paths: EvidencePaths, source: str) -> list[str]:
+    column = CAPTURE_COLUMNS.index("source")
+    return [
+        line
+        for line in capture_lines(paths)
+        if next(csv.reader([line]))[column] == source
+    ]
+
+
+def commit(paths: EvidencePaths, *captures: Capture) -> None:
+    """Commit rows in the order a run writes them."""
+    ordered = sorted(captures, key=attrgetter("artifact", "source", "timestamp", "url"))
+    write_csv(paths.captures, [capture_row(c) for c in ordered], CAPTURE_COLUMNS)
+
+
+OLD_VINTAGE = Vintage(
+    date(2026, 8, 1),
+    date(2026, 9, 4),
+    "https://www.bls.gov/news.release/archives/empsit_09042026.htm",
+)
+
+
+def commit_everything(paths: EvidencePaths) -> Capture:
+    """Commit an old vintage list, one stored ZIP and the one Archive row that names it."""
+    payload = zip_b()
+    kept = archive_copy(
+        datetime(2015, 3, 21, 6, 17, 57, tzinfo=UTC),
+        "200",
+        payload_digest(payload),
+        outliers="o",
+        newest_member="2015-03-20T12:00:00",
+    )
+    write_csv(paths.vintages, vintage_rows([OLD_VINTAGE]), VINTAGE_COLUMNS)
+    commit(paths, kept)
+    store_zips(paths.store, (OTHER, payload))
+    return kept
+
+
+def no_staging_left(tmp_path: Path) -> bool:
+    return not list(tmp_path.rglob(".staging-*"))
+
+
+def credit(paths: EvidencePaths, month: str = "2026-09") -> dict[str, str]:
+    """What the committed rows say about one release's files, as the inventory derives it."""
+    vintages = select_vintages(
+        parse_release_index(INDEX_EXCERPT.read_text(encoding="utf-8")), now=T2
+    )
+    committed = [capture_from_row(r) for r in read_csv(paths.captures)]
+    found = next(
+        r for r in inventory_rows(vintages, committed) if r["reference_month"] == month
+    )
+    return {
+        name: found[name]
+        for name in (*FILE_TYPES, *(f"{t}_evidence" for t in FILE_TYPES))
+    }
+
+
+def stored(paths: EvidencePaths, artifact: str, payload: bytes) -> bool:
+    return (paths.store / stored_file(artifact, payload_digest(payload))).is_file()
+
+
+@BOTH_COMMANDS
+def test_two_runs_keep_the_first_copy_and_its_release_status(
+    monkeypatch, tmp_path, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    x = monthly_zip((2026, 9, 29, 12, 0, 0), b"X")
+    y = monthly_zip((2026, 10, 30, 12, 0, 0), b"Y")
+    fake_network(monkeypatch, bls={OTHER_URL: x})
+    command(T1, paths)
+    after_first = capture_lines(paths)
+    first_credit = credit(paths)
+    fake_network(monkeypatch, bls={OTHER_URL: y})
+    command(T2, paths)
+    assert after_first[0] in capture_lines(paths)
+    assert stored(paths, OTHER, x)
+    assert stored(paths, OTHER, y)
+    assert credit(paths) == first_credit
+
+
+@BOTH_COMMANDS
+def test_the_first_copy_credits_the_release_its_files_were_made_for(
+    monkeypatch, tmp_path, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    fake_network(
+        monkeypatch, bls={OTHER_URL: monthly_zip((2026, 9, 29, 12, 0, 0), b"X")}
+    )
+    command(T1, paths)
+    assert credit(paths) == {
+        "specification": "not_archived",
+        "prior_adjustment": BLS_SOURCE,
+        "outliers": BLS_SOURCE,
+        "specification_evidence": "",
+        "prior_adjustment_evidence": OTHER_URL,
+        "outliers_evidence": OTHER_URL,
+    }
+    assert credit(paths, "2026-08")["outliers"] == "not_archived"
+
+
+@BOTH_COMMANDS
+def test_the_second_run_adds_its_own_row_beside_the_first(
+    monkeypatch, tmp_path, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    fake_network(
+        monkeypatch, bls={OTHER_URL: monthly_zip((2026, 9, 29, 12, 0, 0), b"X")}
+    )
+    command(T1, paths)
+    fake_network(
+        monkeypatch, bls={OTHER_URL: monthly_zip((2026, 10, 30, 12, 0, 0), b"Y")}
+    )
+    command(T2, paths)
+    assert [(r["source"], r["timestamp"]) for r in read_csv(paths.captures)] == [
+        (BLS_SOURCE, "2026-10-05T15:00:00Z"),
+        (BLS_SOURCE, "2026-11-10T15:00:00Z"),
+    ]
+
+
+def test_current_makes_no_internet_archive_request_and_keeps_the_archive_rows(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    kept = archive_copy(
+        datetime(2026, 9, 10, 12, tzinfo=UTC),
+        "200",
+        "KEPT",
+        outliers="o",
+        newest_member="2026-09-01T12:00:00",
+    )
+    moved = archive_copy(datetime(2017, 1, 2, 4, 57, 40, tzinfo=UTC), "301", "MOVED")
+    commit(paths, kept, moved)
+    archive_lines = lines_of(paths, "internet_archive")
+    fetched = fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+
+    def refuse(key):
+        raise AssertionError(f"listed {key}")
+
+    monkeypatch.setattr(archive_inventory, "list_captures", refuse)
+    fetch_current(T1, paths)
+    assert not any(urlsplit(url).hostname == "web.archive.org" for url in fetched)
+    assert lines_of(paths, "internet_archive") == archive_lines
+    assert len(archive_lines) == 2
+    assert len(lines_of(paths, BLS_SOURCE)) == 1
+
+
+def test_current_fetches_only_the_release_index_and_the_current_files(
+    monkeypatch, tmp_path
+):
+    fetched = fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+    fetch_current(T1, EvidencePaths.at(tmp_path))
+    assert fetched == [RELEASE_INDEX_URL, OTHER_URL]
+
+
+def test_current_does_not_report_a_committed_200_row_that_has_no_stored_zip(
+    monkeypatch, tmp_path, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    commit(paths, archive_copy(datetime(2026, 9, 10, 12, tzinfo=UTC), "200", "KEPT"))
+    fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+    assert fetch_current(T1, paths) == 0
+    assert capsys.readouterr().err == ""
+
+
+@BOTH_COMMANDS
+def test_the_same_bls_bytes_on_two_runs_add_two_rows_and_one_zip(
+    monkeypatch, tmp_path, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    fake_network(monkeypatch, bls={OTHER_URL: payload})
+    command(T1, paths)
+    command(T2, paths)
+    assert len(read_csv(paths.captures)) == 2
+    assert len(list(paths.store.rglob("*.zip"))) == 1
+
+
+@BOTH_COMMANDS
+def test_a_bls_fetch_that_fails_every_attempt_stops_the_run_and_writes_nothing(
+    monkeypatch, tmp_path, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    commit_everything(paths)
+    before = snapshot(tmp_path)
+    fake_network(monkeypatch, bls={OTHER_URL: OSError("down")})
+    with pytest.raises(RuntimeError, match="failed after 5 attempts"):
+        command(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert no_staging_left(tmp_path)
+
+
+def test_a_full_run_stores_every_opened_copy(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_b()
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={
+            OTHER_KEY: [
+                listed(copied, "200", payload_digest(payload)),
+                listed(datetime(2017, 1, 2, tzinfo=UTC), "301", "MOVED"),
+                listed(
+                    datetime(2026, 9, 11, 12, tzinfo=UTC), "-", payload_digest(payload)
+                ),
+            ]
+        },
+        replays={replay_url(copied): payload},
+    )
+    assert capture_evidence(T1, paths) == 0
+    for found in read_csv(paths.captures):
+        if found["status"] == "200":
+            assert (
+                paths.store / stored_file(found["artifact"], found["digest"])
+            ).is_file()
+
+
+def test_a_full_run_records_each_copy_it_lists_and_leaves_a_sound_store(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_b()
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    revisit = datetime(2026, 9, 11, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={
+            OTHER_KEY: [
+                listed(copied, "200", payload_digest(payload)),
+                listed(datetime(2017, 1, 2, tzinfo=UTC), "301", "MOVED"),
+                listed(revisit, "-", payload_digest(payload)),
+            ]
+        },
+        replays={replay_url(copied): payload},
+    )
+    capture_evidence(T1, paths)
+    assert [(r["source"], r["status"]) for r in read_csv(paths.captures)] == [
+        (BLS_SOURCE, "200"),
+        ("internet_archive", "301"),
+        ("internet_archive", "200"),
+        ("internet_archive", "-"),
+    ]
+    assert stored(paths, OTHER, payload)
+    assert stored(paths, OTHER, zip_a())
+    assert check_store(paths.store) == []
+
+
+def test_a_throttled_full_run_keeps_every_credit_and_exits_1(
+    monkeypatch, tmp_path, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    lost = archive_copy(
+        datetime(2026, 10, 3, 12, tzinfo=UTC),
+        "200",
+        "DIGESTA",
+        outliers="fpA",
+        newest_member="2026-09-29T12:00:00",
+    )
+    commit(paths, lost)
+    line_of_lost = capture_lines(paths)[0]
+    first_credit = credit(paths)
+    new_zip = make_dated_zip([("outliers.xlsx", (2026, 9, 1, 12, 0, 0), b"OB")])
+    new_copy = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: make_zip({"readme.txt": b"hello"})},
+        listing={
+            OTHER_KEY: [
+                listed(lost.timestamp, "200", "DIGESTA"),
+                listed(new_copy, "200", payload_digest(new_zip)),
+            ]
+        },
+        replays={
+            lost.url: OSError("throttled"),
+            replay_url(new_copy): new_zip,
+        },
+    )
+    assert capture_evidence(T1, paths) == 1
+    assert lost.url in capsys.readouterr().err
+    assert line_of_lost in capture_lines(paths)
+    assert stored(paths, OTHER, new_zip)
+    assert credit(paths) == first_credit
+
+
+def test_replayed_bytes_that_miss_their_digest_count_as_failed_attempts(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fetched = fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", "NOTTHEPAYLOAD")]},
+        replays={replay_url(copied): zip_b()},
+    )
+    capture_evidence(T1, paths)
+    assert fetched.count(replay_url(copied)) == ATTEMPTS
+    found = next(r for r in read_csv(paths.captures) if r["source"] != BLS_SOURCE)
+    assert found["status"] == "unreplayable"
+    assert not stored(paths, OTHER, zip_b())
+
+
+def test_bytes_that_miss_the_digest_once_are_retried(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    payload = zip_b()
+    fetched = fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", payload_digest(payload))]},
+        replays={replay_url(copied): [b"<html>throttled</html>", payload]},
+    )
+    assert capture_evidence(T1, paths) == 0
+    assert fetched.count(replay_url(copied)) == 2
+    found = next(r for r in read_csv(paths.captures) if r["source"] != BLS_SOURCE)
+    assert found["status"] == "200"
+    assert stored(paths, OTHER, payload)
+
+
+def test_an_unchanged_listing_gives_byte_identical_archive_rows(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    redirect = datetime(2017, 1, 2, 4, 57, 40, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={
+            OTHER_KEY: [
+                listed(redirect, "301", "MOVED"),
+                listed(redirect, "301", "MOVED"),
+            ]
+        },
+    )
+    capture_evidence(T1, paths)
+    after_first = lines_of(paths, "internet_archive")
+    capture_evidence(T2, paths)
+    assert lines_of(paths, "internet_archive") == after_first
+    assert len(after_first) == 2
+
+
+def test_an_unchanged_listing_with_an_opened_copy_replays_it_and_keeps_its_row(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_b()
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fetched = fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", payload_digest(payload))]},
+        replays={replay_url(copied): payload},
+    )
+    capture_evidence(T1, paths)
+    after_first = lines_of(paths, "internet_archive")
+    assert capture_evidence(T2, paths) == 0
+    assert lines_of(paths, "internet_archive") == after_first
+    assert fetched.count(replay_url(copied)) == 2
+
+
+def test_a_run_that_fails_while_fetching_writes_nothing(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    commit_everything(paths)
+    before = snapshot(tmp_path)
+    fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+
+    def fail(key):
+        raise RuntimeError("the listing is down")
+
+    monkeypatch.setattr(archive_inventory, "list_captures", fail)
+    with pytest.raises(RuntimeError, match="the listing is down"):
+        capture_evidence(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert no_staging_left(tmp_path)
+
+
+def test_a_run_that_fails_while_staging_writes_nothing(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    commit_everything(paths)
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    replayed = make_zip({"outliers.xlsx": b"AO-other"})
+    # A stored ZIP whose bytes are not its name: staging the copy that names it raises, after
+    # BLS's own ZIP has been staged.
+    corrupt = paths.store / stored_file(OTHER, payload_digest(replayed))
+    corrupt.write_bytes(b"not the bytes of its name")
+    before = snapshot(tmp_path)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", payload_digest(replayed))]},
+        replays={replay_url(copied): replayed},
+    )
+    with pytest.raises(ValueError, match="different payload under"):
+        capture_evidence(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert not stored(EvidencePaths.at(tmp_path), OTHER, zip_a())
+    assert no_staging_left(tmp_path)
+
+
+def test_nothing_is_written_before_the_run_is_promoted(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    commit_everything(paths)
+    before = snapshot(tmp_path)
+    fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+
+    def refuse(self):
+        raise RuntimeError("stopped before the move")
+
+    monkeypatch.setattr(archive_inventory.Staging, "promote", refuse)
+    with pytest.raises(RuntimeError, match="stopped before the move"):
+        fetch_current(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert no_staging_left(tmp_path)
+
+
+def test_a_listed_digest_that_contradicts_a_committed_row_writes_nothing(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    kept = commit_everything(paths)
+    before = snapshot(tmp_path)
+    contradicting = zip_a()
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={
+            OTHER_KEY: [listed(kept.timestamp, "200", payload_digest(contradicting))]
+        },
+        replays={kept.url: contradicting},
+    )
+    with pytest.raises(ValueError, match=re.escape(kept.url)):
+        capture_evidence(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert no_staging_left(tmp_path)
+
+
+def test_an_opened_copy_that_contradicts_the_committed_fingerprints_writes_nothing(
+    monkeypatch, tmp_path
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    recorded = archive_copy(
+        datetime(2026, 9, 10, 12, tzinfo=UTC),
+        "200",
+        payload_digest(payload),
+        **{**opened(payload), "outliers": "someotherfp"},
+    )
+    commit(paths, recorded)
+    before = snapshot(tmp_path)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_b()},
+        listing={OTHER_KEY: [listed(recorded.timestamp, "200", recorded.digest)]},
+        replays={recorded.url: payload},
+    )
+    with pytest.raises(ValueError, match=re.escape(recorded.url)):
+        capture_evidence(T1, paths)
+    assert snapshot(tmp_path) == before
+
+
+def test_a_committed_200_row_without_a_zip_gets_its_zip_when_its_bytes_match(
+    monkeypatch, tmp_path, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    recorded = archive_copy(
+        datetime(2026, 9, 10, 12, tzinfo=UTC),
+        "200",
+        payload_digest(payload),
+        **opened(payload),
+    )
+    commit(paths, recorded)
+    line = capture_lines(paths)[0]
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_b()},
+        listing={OTHER_KEY: [listed(recorded.timestamp, "200", recorded.digest)]},
+        replays={recorded.url: payload},
+    )
+    assert capture_evidence(T1, paths) == 0
+    assert capsys.readouterr().err == ""
+    assert line in capture_lines(paths)
+    assert stored(paths, OTHER, payload)
+
+
+MISSING_ZIP = "no stored ZIP for"
+
+
+@pytest.mark.parametrize(
+    "situation", ["unlisted", "replay fails", "bytes miss the digest"]
+)
+def test_a_committed_200_row_that_still_has_no_zip_is_named_and_the_run_exits_1(
+    monkeypatch, tmp_path, capsys, situation
+):
+    paths = EvidencePaths.at(tmp_path)
+    recorded = archive_copy(
+        datetime(2026, 9, 10, 12, tzinfo=UTC),
+        "200",
+        "DIGESTA",
+        outliers="fpA",
+        newest_member="2026-09-01T12:00:00",
+    )
+    commit(paths, recorded)
+    line = capture_lines(paths)[0]
+    listing = (
+        {}
+        if situation == "unlisted"
+        else {OTHER_KEY: [listed(recorded.timestamp, "200", "DIGESTA")]}
+    )
+    replays = {
+        "replay fails": {recorded.url: OSError("throttled")},
+        "bytes miss the digest": {recorded.url: zip_b()},
+    }.get(situation, {})
+    fake_network(
+        monkeypatch, bls={OTHER_URL: zip_a()}, listing=listing, replays=replays
+    )
+    assert capture_evidence(T1, paths) == 1
+    assert f"{MISSING_ZIP} {recorded.url}" in capsys.readouterr().err
+    assert line in capture_lines(paths)
+    assert len(lines_of(paths, BLS_SOURCE)) == 1
+
+
+@BOTH_COMMANDS
+def test_unexplained_members_are_reported_after_the_run_is_promoted(
+    monkeypatch, tmp_path, capsys, command
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = make_zip({"mystery.dat": b"?"})
+    fake_network(monkeypatch, bls={OTHER_URL: payload})
+    assert command(T1, paths) == 1
+    err = capsys.readouterr().err
+    assert OTHER_URL in err
+    assert "mystery.dat" in err
+    assert stored(paths, OTHER, payload)
+    assert len(capture_lines(paths)) == 1
+
+
+def test_a_full_run_reports_unexplained_members_of_an_archive_copy(
+    monkeypatch, tmp_path, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = make_zip({"mystery.dat": b"?"})
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", payload_digest(payload))]},
+        replays={replay_url(copied): payload},
+    )
+    assert capture_evidence(T1, paths) == 1
+    err = capsys.readouterr().err
+    assert replay_url(copied) in err
+    assert "mystery.dat" in err
+    assert MISSING_ZIP not in err
+
+
+def test_a_full_run_replays_with_a_pause_before_each_200_copy_only(
+    monkeypatch, tmp_path
+):
+    events: list[str] = []
+    first, second = zip_a(), zip_b()
+    moments = [datetime(2026, 9, day, 12, tzinfo=UTC) for day in (10, 11, 12)]
+    served = {replay_url(moments[0]): first, replay_url(moments[2]): second}
+    listing = [
+        listed(moments[0], "200", payload_digest(first)),
+        listed(moments[1], "301", "MOVED"),
+        listed(moments[2], "200", payload_digest(second)),
+    ]
+    monkeypatch.setattr(archive_inventory, "list_captures", lambda key: listing)
+    monkeypatch.setattr(
+        archive_inventory,
+        "fetch",
+        lambda url: events.append(url) or served[url],
+    )
+    monkeypatch.setattr(
+        archive_inventory, "sleep", lambda seconds: events.append(f"sleep {seconds}")
+    )
+    monkeypatch.setattr(
+        archive_inventory,
+        "ARTIFACTS",
+        (archive_inventory.Artifact(OTHER, OTHER_URL, (OTHER_KEY,)),),
+    )
+    archive_inventory.collect_archive_copies()
+    pause = f"sleep {PAUSE_SECONDS}"
+    assert events == [pause, replay_url(moments[0]), pause, replay_url(moments[2])]
+
+
+def test_every_archive_key_of_every_artifact_is_listed_in_order(monkeypatch):
+    keys: list[str] = []
+    monkeypatch.setattr(
+        archive_inventory,
+        "list_captures",
+        lambda key: keys.append(key) or [(T1, ORIGINAL, "301", key)],
+    )
+    copies = archive_inventory.collect_archive_copies()
+    assert keys == [
+        key for artifact in archive_inventory.ARTIFACTS for key in artifact.archive_keys
+    ]
+    assert [(c.artifact, c.digest) for c, held in copies] == [
+        (artifact.name, key)
+        for artifact in archive_inventory.ARTIFACTS
+        for key in artifact.archive_keys
+    ]
+    assert all(held is None for _, held in copies)
+
+
+def test_a_listing_that_fails_once_is_retried(monkeypatch):
+    calls: list[str] = []
+
+    def flaky(key):
+        calls.append(key)
+        if len(calls) == 1:
+            raise OSError("reset")
+        return [(T1, ORIGINAL, "301", "MOVED")]
+
+    monkeypatch.setattr(archive_inventory, "list_captures", flaky)
+    monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
+    monkeypatch.setattr(
+        archive_inventory,
+        "ARTIFACTS",
+        (archive_inventory.Artifact(OTHER, OTHER_URL, (OTHER_KEY,)),),
+    )
+    assert len(archive_inventory.collect_archive_copies()) == 1
+    assert calls == [OTHER_KEY, OTHER_KEY]
+
+
+def test_fetch_and_inspect_returns_bytes_that_match_the_digest(monkeypatch):
+    payload = zip_a()
+    monkeypatch.setattr(archive_inventory, "fetch", lambda url: payload)
+    found, fingerprints = fetch_and_inspect(
+        "https://example.test/x", payload_digest(payload)
+    )
+    assert found == payload
+    assert fingerprints == opened(payload)
+
+
+def test_fetch_and_inspect_without_a_digest_takes_any_bytes(monkeypatch):
+    payload = zip_a()
+    monkeypatch.setattr(archive_inventory, "fetch", lambda url: payload)
+    assert fetch_and_inspect("https://example.test/x")[0] == payload
+    assert fetch_and_inspect("https://example.test/x", None)[0] == payload
+
+
+def test_fetch_and_inspect_rejects_bytes_that_miss_the_digest(monkeypatch):
+    monkeypatch.setattr(archive_inventory, "fetch", lambda url: zip_a())
+    with pytest.raises(ValueError, match=re.escape("https://example.test/x")):
+        fetch_and_inspect("https://example.test/x", "NOTTHEPAYLOAD")
+
+
+def test_fetch_vintages_drops_releases_still_under_embargo(monkeypatch):
+    monkeypatch.setattr(
+        archive_inventory, "fetch", lambda url: INDEX_EXCERPT.read_bytes()
+    )
+    before = fetch_vintages(datetime(2026, 9, 13, 15, tzinfo=UTC))
+    after = fetch_vintages(T1)
+    assert max(v.release_date for v in before) == date(2026, 9, 4)
+    assert max(v.release_date for v in after) == date(2026, 10, 2)
+
+
+def test_fetch_vintages_retries_a_failed_fetch(monkeypatch):
+    calls: list[str] = []
+
+    def flaky(url):
+        calls.append(url)
+        if len(calls) == 1:
+            raise OSError("reset")
+        return INDEX_EXCERPT.read_bytes()
+
+    monkeypatch.setattr(archive_inventory, "fetch", flaky)
+    monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
+    assert fetch_vintages(T1)
+    assert calls == [RELEASE_INDEX_URL, RELEASE_INDEX_URL]
+
+
+def test_fetch_bls_copies_gives_one_current_row_for_each_artifact(monkeypatch):
+    payloads = {
+        artifact.current_url: make_zip({"outliers.xlsx": artifact.name.encode()})
+        for artifact in archive_inventory.ARTIFACTS
+    }
+    monkeypatch.setattr(archive_inventory, "fetch", lambda url: payloads[url])
+    copies = fetch_bls_copies(T1)
+    assert [capture.artifact for capture, _ in copies] == [
+        artifact.name for artifact in archive_inventory.ARTIFACTS
+    ]
+    for capture, payload in copies:
+        assert payload == payloads[capture.url]
+        assert capture == Capture(
+            capture.artifact,
+            BLS_SOURCE,
+            T1,
+            capture.url,
+            "200",
+            payload_digest(payload),
+            **opened(payload),
+        )
+
+
+def test_evidence_paths_sit_under_a_root_and_the_default_is_the_repository():
+    root = Path("/some/root")
+    assert EvidencePaths.at(root) == EvidencePaths(
+        root / "docs" / "inventory" / "es-vintages.csv",
+        root / "docs" / "inventory" / "archive-captures.csv",
+        root / "data" / "seasonal" / "raw",
+    )
+    assert EVIDENCE == EvidencePaths(VINTAGES_PATH, CAPTURES_PATH, STORE_DIR)
+    assert EvidencePaths.at(ROOT) == EVIDENCE
+    with pytest.raises(FrozenInstanceError):
+        EVIDENCE.store = root
+
+
+def test_record_run_reads_no_rows_from_a_missing_csv_and_returns_the_merged_rows(
+    tmp_path,
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    fresh = Capture(
+        OTHER,
+        BLS_SOURCE,
+        T1,
+        OTHER_URL,
+        "200",
+        payload_digest(payload),
+        **opened(payload),
+    )
+    plain = archive_copy(datetime(2017, 1, 2, tzinfo=UTC), "301", "MOVED")
+    merged = record_run([(fresh, payload), (plain, None)], [OLD_VINTAGE], paths)
+    assert merged == [fresh, plain]
+    assert [capture_from_row(r) for r in read_csv(paths.captures)] == merged
+    assert [r["reference_month"] for r in read_csv(paths.vintages)] == ["2026-08"]
+    assert stored(paths, OTHER, payload)
+    assert len(list(paths.store.rglob("*.zip"))) == 1
+
+
+def test_a_run_rewrites_the_vintage_list_from_the_release_index(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    write_csv(paths.vintages, vintage_rows([OLD_VINTAGE]), VINTAGE_COLUMNS)
+    fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+    fetch_current(T1, paths)
+    rows = read_csv(paths.vintages)
+    assert rows == vintage_rows(
+        select_vintages(
+            parse_release_index(INDEX_EXCERPT.read_text(encoding="utf-8")), now=T1
+        )
+    )
+    assert rows[-1]["release_date"] == "2026-10-02"
+
+
+def test_an_unreplayable_copy_is_noted_on_stderr_with_its_replay_url(
+    monkeypatch, tmp_path, capsys
+):
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", "DIGESTA")]},
+        replays={replay_url(copied): OSError("throttled")},
+    )
+    assert capture_evidence(T1, EvidencePaths.at(tmp_path)) == 0
+    err = capsys.readouterr().err
+    assert f"{replay_url(copied)} failed after {ATTEMPTS} attempts" in err
+    assert "recorded as unreplayable" in err
+    assert MISSING_ZIP not in err
+
+
+def test_main_runs_the_command_it_names_with_the_time_now(monkeypatch):
+    calls: list[tuple] = []
+    for name, result in (("capture_evidence", 0), ("fetch_current", 1)):
+        monkeypatch.setattr(
+            archive_inventory,
+            name,
+            lambda *args, name=name, result=result: (
+                calls.append((name, *args)) or result
+            ),
+        )
+    monkeypatch.setattr(
+        archive_inventory,
+        "derive_inventory",
+        lambda *args: calls.append(("derive_inventory", *args)) or 0,
+    )
+    assert main(["captures"]) == 0
+    assert main(["current"]) == 1
+    assert main(["inventory"]) == 0
+    assert [call[0] for call in calls] == [
+        "capture_evidence",
+        "fetch_current",
+        "derive_inventory",
+    ]
+    for _, now in calls[:2]:
+        assert now.tzinfo is UTC
+        assert now.microsecond == 0
+        assert abs(datetime.now(UTC) - now) < timedelta(minutes=1)
+    assert calls[2] == ("derive_inventory",)
+
+
+@pytest.mark.parametrize("argv", [[], ["fetch"], ["captures", "extra"]])
+def test_main_refuses_a_missing_or_unknown_command(monkeypatch, argv, capsys):
+    def forbidden(*args):
+        raise AssertionError("no command should run")
+
+    # A wrong parser must fail here, never reach the network.
+    for name in ("fetch", "capture_evidence", "fetch_current", "derive_inventory"):
+        monkeypatch.setattr(archive_inventory, name, forbidden)
+    with pytest.raises(SystemExit) as stopped:
+        main(argv)
+    assert stopped.value.code == 2
 
 
 # --- Repository rules ----------------------------------------------------------------------

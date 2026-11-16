@@ -6,11 +6,14 @@ files (https://www.bls.gov/web/empsit/cesseasadj.htm), so a past vintage's files
 where the Internet Archive copied them. Network capture and offline derivation are separate
 subcommands, so the inventory can be rebuilt from the committed evidence without the network:
 
-    uv run python scripts/archive_inventory.py captures    # writes the evidence CSVs
+    uv run python scripts/archive_inventory.py captures    # full run: BLS and every Archive copy
+    uv run python scripts/archive_inventory.py current     # light run: BLS's current files only
     uv run python scripts/archive_inventory.py inventory   # derives the inventory from them
 
-`captures` writes docs/inventory/es-vintages.csv and docs/inventory/archive-captures.csv.
-`inventory` writes docs/inventory/archive-inventory.csv and regenerates the inventory tables in
+`captures` and `current` merge what they observe into docs/inventory/archive-captures.csv, so no
+recorded row is dropped, rewrite docs/inventory/es-vintages.csv, and store every ZIP they open
+in data/seasonal/raw/ (specs/seasonal-adjustment-file-store.md). `inventory` writes
+docs/inventory/archive-inventory.csv and regenerates the inventory tables in
 docs/ces-revisions-review.md.
 """
 
@@ -305,12 +308,16 @@ def newest_member(payload: bytes) -> str:
     return "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(*max(times))
 
 
+# The `source` of a row for a ZIP fetched from BLS itself.
+BLS_SOURCE = "bls_current"
+
+
 @dataclass(frozen=True)
 class Capture:
     """One copy of a seasonal-adjustment ZIP: an Internet Archive capture or BLS's current file."""
 
     artifact: str
-    source: str  # "internet_archive" or "bls_current"
+    source: str  # "internet_archive" or BLS_SOURCE
     timestamp: datetime  # UTC: when the copy was made, or when BLS's file was fetched
     url: str  # where these bytes can be fetched again
     status: str
@@ -417,29 +424,58 @@ def payload_digest(payload: bytes) -> str:
     ).decode()
 
 
-def fetch_and_inspect(url: str) -> tuple[bytes, dict[str, str]]:
+def fetch_and_inspect(
+    url: str, digest: str | None = None
+) -> tuple[bytes, dict[str, str]]:
+    """Fetch a ZIP and fingerprint it. With a `digest`, bytes that do not hash to it are an error.
+
+    The error is a ValueError, so `retrying` counts the attempt as failed: the Internet Archive
+    answers a throttled replay with a page that is not the copy.
+    """
     payload = fetch(url)
+    if digest is not None and payload_digest(payload) != digest:
+        raise ValueError(
+            f"{url}: the bytes' digest {payload_digest(payload)} is not the listed {digest}"
+        )
     return payload, {**inspect_zip(payload), "newest_member": newest_member(payload)}
 
 
-def collect_captures(now: datetime) -> list[Capture]:
-    """Fetch BLS's current copy and every Internet Archive capture of each artifact."""
-    captures = []
+def fetch_vintages(now: datetime) -> list[Vintage]:
+    """The Employment Situation releases whose embargo has lifted at `now`."""
+    index = retrying(partial(fetch, RELEASE_INDEX_URL), what=RELEASE_INDEX_URL)
+    return select_vintages(
+        parse_release_index(index.decode("utf-8", "replace")), now=now
+    )
+
+
+def fetch_bls_copies(now: datetime) -> list[tuple[Capture, bytes]]:
+    """BLS's current copy of each artifact, as a row stamped `now` and the bytes it describes."""
+    copies = []
     for artifact in ARTIFACTS:
         payload, found = retrying(
             partial(fetch_and_inspect, artifact.current_url), what=artifact.current_url
         )
-        captures.append(
-            Capture(
-                artifact.name,
-                "bls_current",
-                now,
-                artifact.current_url,
-                "200",
-                payload_digest(payload),
-                **found,
-            )
+        capture = Capture(
+            artifact.name,
+            BLS_SOURCE,
+            now,
+            artifact.current_url,
+            "200",
+            payload_digest(payload),
+            **found,
         )
+        copies.append((capture, payload))
+    return copies
+
+
+def collect_archive_copies() -> list[tuple[Capture, bytes | None]]:
+    """Every Internet Archive capture of each artifact, each `200` copy replayed and opened.
+
+    A replay counts only when its bytes hash to the digest the listing gives. One that fails
+    every attempt becomes `unreplayable` with no bytes.
+    """
+    copies = []
+    for artifact in ARTIFACTS:
         for key in artifact.archive_keys:
             for moment, original, status, digest in retrying(
                 partial(list_captures, key), what=f"CDX listing of {key}"
@@ -447,28 +483,27 @@ def collect_captures(now: datetime) -> list[Capture]:
                 replay = REPLAY_URL.format(
                     stamp=f"{moment:%Y%m%d%H%M%S}", original=original
                 )
-                found, outcome = {}, status
+                payload, found, outcome = None, {}, status
                 if status == "200":
                     sleep(PAUSE_SECONDS)
                     try:
-                        _, found = retrying(
-                            partial(fetch_and_inspect, replay), what=replay
+                        payload, found = retrying(
+                            partial(fetch_and_inspect, replay, digest), what=replay
                         )
                     except RuntimeError as error:
                         print(f"{error}; recorded as unreplayable", file=sys.stderr)
                         outcome = "unreplayable"
-                captures.append(
-                    Capture(
-                        artifact.name,
-                        "internet_archive",
-                        moment,
-                        replay,
-                        outcome,
-                        digest,
-                        **found,
-                    )
+                capture = Capture(
+                    artifact.name,
+                    "internet_archive",
+                    moment,
+                    replay,
+                    outcome,
+                    digest,
+                    **found,
                 )
-    return captures
+                copies.append((capture, payload))
+    return copies
 
 
 # --- File store ----------------------------------------------------------------------------
@@ -665,9 +700,63 @@ def merge_captures(committed: list[Capture], observed: list[Capture]) -> list[Ca
     return sorted(merged, key=attrgetter("artifact", "source", "timestamp", "url"))
 
 
+# --- Record --------------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class EvidencePaths:
+    """Where a network run reads and writes the committed evidence."""
+
+    vintages: Path
+    captures: Path
+    store: Path
+
+    @classmethod
+    def at(cls, root: Path) -> EvidencePaths:
+        return cls(
+            root / "docs" / "inventory" / "es-vintages.csv",
+            root / "docs" / "inventory" / "archive-captures.csv",
+            root / "data" / "seasonal" / "raw",
+        )
+
+
+EVIDENCE = EvidencePaths(VINTAGES_PATH, CAPTURES_PATH, STORE_DIR)
+
+
+def record_run(
+    observed: list[tuple[Capture, bytes | None]],
+    vintages: list[Vintage],
+    paths: EvidencePaths,
+) -> list[Capture]:
+    """Merge a run's observations into the committed rows and write the run's evidence.
+
+    The merge raises before anything is staged. Every opened ZIP, the vintage list, the merged
+    rows and the store manifest then move into place together, ZIPs first, or not at all.
+    Returns the merged rows.
+    """
+    committed = (
+        [capture_from_row(row) for row in read_csv(paths.captures)]
+        if paths.captures.is_file()
+        else []
+    )
+    merged = merge_captures(committed, [capture for capture, _ in observed])
+    with staging(paths.store) as run:
+        for capture, payload in observed:
+            if payload is not None:
+                run.put(capture.artifact, payload)
+        write_csv(run.path_for(paths.vintages), vintage_rows(vintages), VINTAGE_COLUMNS)
+        write_csv(
+            run.path_for(paths.captures),
+            [capture_row(capture) for capture in merged],
+            CAPTURE_COLUMNS,
+        )
+        run.promote()
+    return merged
+
+
 # --- Inventory -----------------------------------------------------------------------------
 
-PRESENT = ("bls_current", "internet_archive")
+PRESENT = (BLS_SOURCE, "internet_archive")
 STATUSES = (*PRESENT, "conflicting_captures", "not_archived", "no_release")
 INVENTORY_COLUMNS = [
     "reference_month",
@@ -796,7 +885,7 @@ def file_status(
         return "not_archived", ""
     if len({getattr(capture, file_type) for capture in holding}) > 1:
         return "conflicting_captures", " ".join(capture.url for capture in holding)
-    chosen = min(holding, key=lambda capture: capture.source != "bls_current")
+    chosen = min(holding, key=lambda capture: capture.source != BLS_SOURCE)
     return chosen.source, chosen.url
 
 
@@ -966,25 +1055,53 @@ def replace_generated(document: str, name: str, body: str) -> str:
 # --- Command line --------------------------------------------------------------------------
 
 
-def capture_evidence() -> int:
-    """Network step: write the vintage list and every copy's fingerprints."""
-    now = datetime.now(UTC).replace(microsecond=0)
-    index = retrying(partial(fetch, RELEASE_INDEX_URL), what=RELEASE_INDEX_URL)
-    vintages = select_vintages(
-        parse_release_index(index.decode("utf-8", "replace")), now=now
-    )
-    write_csv(VINTAGES_PATH, vintage_rows(vintages), VINTAGE_COLUMNS)
-    captures = collect_captures(now)
-    write_csv(
-        CAPTURES_PATH, [capture_row(capture) for capture in captures], CAPTURE_COLUMNS
-    )
-    unexplained = [capture for capture in captures if capture.unexpected]
+def report_unexplained(merged: list[Capture]) -> bool:
+    """Print each row with members no readme explains. True when there was one."""
+    unexplained = [capture for capture in merged if capture.unexpected]
     for capture in unexplained:
         print(
             f"unexplained members in {capture.url}: {capture.unexpected}",
             file=sys.stderr,
         )
-    return 1 if unexplained else 0
+    return bool(unexplained)
+
+
+def report_missing_zips(merged: list[Capture], store: Path) -> bool:
+    """Print each `200` row whose ZIP is not in the store. True when there was one."""
+    missing = [
+        capture
+        for capture in merged
+        if capture.status == "200"
+        and not (store / stored_file(capture.artifact, capture.digest)).is_file()
+    ]
+    for capture in missing:
+        print(
+            f"no stored ZIP for {capture.url} "
+            f"({stored_file(capture.artifact, capture.digest)}); the row keeps its credit",
+            file=sys.stderr,
+        )
+    return bool(missing)
+
+
+def capture_evidence(now: datetime, paths: EvidencePaths = EVIDENCE) -> int:
+    """Network step, full run: BLS's files and every Internet Archive copy.
+
+    Exits 1 when a copy holds unexplained members or a `200` row still has no stored ZIP, after
+    writing everything else.
+    """
+    vintages = fetch_vintages(now)
+    observed = [*fetch_bls_copies(now), *collect_archive_copies()]
+    merged = record_run(observed, vintages, paths)
+    unexplained = report_unexplained(merged)
+    missing = report_missing_zips(merged, paths.store)
+    return 1 if unexplained or missing else 0
+
+
+def fetch_current(now: datetime, paths: EvidencePaths = EVIDENCE) -> int:
+    """Network step, light run: BLS's current files only, with no Internet Archive request."""
+    vintages = fetch_vintages(now)
+    merged = record_run(fetch_bls_copies(now), vintages, paths)
+    return 1 if report_unexplained(merged) else 0
 
 
 def derive_inventory() -> int:
@@ -1000,13 +1117,23 @@ def derive_inventory() -> int:
     return 0
 
 
-COMMANDS = {"captures": capture_evidence, "inventory": derive_inventory}
-
-
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("command", choices=COMMANDS)
-    return COMMANDS[parser.parse_args(argv).command]()
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser(
+        "captures", help="network, full run: BLS and every Archive copy"
+    )
+    commands.add_parser("current", help="network, light run: BLS's current files only")
+    commands.add_parser(
+        "inventory", help="offline: derive the inventory from the evidence"
+    )
+    command = parser.parse_args(argv).command
+    if command == "inventory":
+        return derive_inventory()
+    now = datetime.now(UTC).replace(microsecond=0)
+    if command == "captures":
+        return capture_evidence(now)
+    return fetch_current(now)
 
 
 if __name__ == "__main__":
