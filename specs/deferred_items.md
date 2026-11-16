@@ -266,7 +266,7 @@ plan 11.
       `data/raw/`. Size: design. Done when: a later `captures` run keeps every
       earlier `bls_current` row and its payload, and a test shows that a
       release credited by such a copy keeps its status after that run.
-      → planned 2026-11-16: specs/seasonal-adjustment-file-store.md
+      → planned 2026-11-16: specs/plans/14-seasonal-adjustment-file-store.md
 
 ## 12-ces-revision-drivers-stage-1 — 2026-11-15
 - [ ] Declined review line: `absolute_revisions` in
