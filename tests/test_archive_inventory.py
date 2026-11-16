@@ -1,8 +1,6 @@
 """scripts/archive_inventory.py: vintages, Internet Archive captures, and per-vintage statuses."""
 
-import io
 import urllib.request
-import zipfile
 from dataclasses import replace
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -40,6 +38,7 @@ from archive_inventory import (
     vintage_rows,
     vintages_from_rows,
 )
+from zip_fixtures import make_dated_zip, make_zip
 
 FIXTURES = Path(__file__).parent / "fixtures" / "archive_inventory"
 
@@ -54,21 +53,6 @@ def vintage(reference_month: str, released: str) -> Vintage:
         date.fromisoformat(released),
         f"https://www.bls.gov/news.release/archives/empsit_{reference_month}.htm",
     )
-
-
-def make_zip(members: dict[str, bytes], date_time=(2026, 9, 1, 15, 33, 0)) -> bytes:
-    return make_dated_zip(
-        [(name, date_time, payload) for name, payload in members.items()]
-    )
-
-
-def make_dated_zip(members: list[tuple[str, tuple[int, ...], bytes]]) -> bytes:
-    """A ZIP whose members, written in the order given, each carry their own date."""
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w") as archive:
-        for name, date_time, payload in members:
-            archive.writestr(zipfile.ZipInfo(name, date_time=date_time), payload)
-    return buffer.getvalue()
 
 
 def capture(timestamp: str, **fingerprints: str) -> Capture:

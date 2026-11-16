@@ -4,3 +4,7 @@ data/annual/raw/** -text
 data/annual/raw/bls/** -diff
 data/annual/raw/dol/** -diff
 data/annual/raw/internet-archive/** -diff
+# data/seasonal/raw/manifest.csv pins each stored ZIP's SHA-256, so git never converts their bytes
+# and the manifest, unlike the ZIPs, diffs as text
+data/seasonal/raw/** -text
+data/seasonal/raw/*/*.zip -diff

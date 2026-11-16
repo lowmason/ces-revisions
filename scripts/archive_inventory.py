@@ -22,9 +22,11 @@ import io
 import os
 import re
 import sys
+import tempfile
 import urllib.request
 import zipfile
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, fields, replace
 from datetime import UTC, date, datetime, time
 from functools import partial
@@ -466,6 +468,147 @@ def collect_captures(now: datetime) -> list[Capture]:
                     )
                 )
     return captures
+
+
+# --- File store ----------------------------------------------------------------------------
+
+# Each artifact's ZIPs are kept once per digest (specs/seasonal-adjustment-file-store.md).
+STORE_DIR = ROOT / "data" / "seasonal" / "raw"
+STORE_MANIFEST = "manifest.csv"
+STORE_MANIFEST_COLUMNS = ["file", "sha256", "bytes", "digest"]
+
+
+def store_folder(artifact: str) -> str:
+    """The artifact's folder in the store: its current URL's file name without `.zip`."""
+    for known in ARTIFACTS:
+        if known.name == artifact:
+            return PurePosixPath(urlsplit(known.current_url).path).stem
+    raise ValueError(f"unknown artifact {artifact!r}")
+
+
+def stored_file(artifact: str, digest: str) -> str:
+    """A stored ZIP's path relative to the store."""
+    return f"{store_folder(artifact)}/{digest}.zip"
+
+
+class Staging:
+    """New files held in a temporary folder until `promote` moves them into place."""
+
+    def __init__(self, store_dir: Path, folder: Path):
+        self.store_dir = store_dir
+        self.folder = folder
+        self._zip_rows: dict[str, dict[str, str]] = {}
+        self._files: dict[Path, Path] = {}
+
+    def _staged_zip(self, file: str) -> Path:
+        return self.folder / "store" / file
+
+    def has(self, artifact: str, digest: str) -> bool:
+        file = stored_file(artifact, digest)
+        return file in self._zip_rows or (self.store_dir / file).is_file()
+
+    def put(self, artifact: str, payload: bytes) -> str:
+        """Stage a ZIP unless its bytes are already stored. Returns its digest."""
+        digest = payload_digest(payload)
+        file = stored_file(artifact, digest)
+        held = (
+            self._staged_zip(file) if file in self._zip_rows else self.store_dir / file
+        )
+        if held.is_file():
+            if held.read_bytes() != payload:
+                raise ValueError(f"different payload under {file}")
+            return digest
+        staged = self._staged_zip(file)
+        staged.parent.mkdir(parents=True, exist_ok=True)
+        staged.write_bytes(payload)
+        self._zip_rows[file] = {
+            "file": file,
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "bytes": str(len(payload)),
+            "digest": digest,
+        }
+        return digest
+
+    def path_for(self, target: Path) -> Path:
+        """Where to write `target`'s new content. `promote` moves it to `target`."""
+        if target not in self._files:
+            staged = self.folder / "files" / str(len(self._files)) / target.name
+            staged.parent.mkdir(parents=True)
+            self._files[target] = staged
+        return self._files[target]
+
+    def promote(self) -> None:
+        """Move everything staged into place, ZIPs first so no row names a missing file."""
+        manifest = self.folder / STORE_MANIFEST
+        manifest_path = self.store_dir / STORE_MANIFEST
+        rows = dict(self._zip_rows)
+        if manifest_path.is_file():
+            rows.update({row["file"]: row for row in read_csv(manifest_path)})
+        write_csv(
+            manifest,
+            [rows[file] for file in sorted(rows)],
+            STORE_MANIFEST_COLUMNS,
+        )
+        moves = [
+            (self._staged_zip(file), self.store_dir / file)
+            for file in sorted(self._zip_rows)
+        ]
+        moves.append((manifest, manifest_path))
+        moves.extend((staged, target) for target, staged in self._files.items())
+        for staged, target in moves:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            staged.replace(target)
+        self._zip_rows.clear()
+        self._files.clear()
+
+
+@contextmanager
+def staging(store_dir: Path) -> Iterator[Staging]:
+    """Stage a run's new files beside the store. Nothing is promoted unless the caller says so."""
+    store_dir.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=".staging-", dir=store_dir.parent
+    ) as folder:
+        yield Staging(store_dir, Path(folder))
+
+
+def check_store(store_dir: Path) -> list[str]:
+    """One message per file that breaks the store's rules. Empty when the store is sound."""
+    manifest_path = store_dir / STORE_MANIFEST
+    listed = (
+        {row["file"]: row for row in read_csv(manifest_path)}
+        if manifest_path.is_file()
+        else {}
+    )
+    present = {
+        path.relative_to(store_dir).as_posix()
+        for path in store_dir.rglob("*")
+        if path.is_file() and path.name != ".DS_Store"
+    } - {STORE_MANIFEST}
+    problems = []
+    for file in sorted(present | set(listed)):
+        if file not in present:
+            problems.append(f"{file}: listed in the manifest but missing")
+            continue
+        payload = (store_dir / file).read_bytes()
+        actual = {
+            "sha256": hashlib.sha256(payload).hexdigest(),
+            "bytes": str(len(payload)),
+            "digest": payload_digest(payload),
+        }
+        reasons = []
+        if file.endswith(".zip") and actual["digest"] != PurePosixPath(file).stem:
+            reasons.append(f"its bytes have digest {actual['digest']}, not its name")
+        if file not in listed:
+            reasons.append("not in the manifest")
+        reasons.extend(
+            f"manifest {column} is {listed[file].get(column)}, the file's is {value}"
+            for column, value in actual.items()
+            if file in listed and listed[file].get(column) != value
+        )
+        if reasons:
+            problems.append(f"{file}: {'; '.join(reasons)}")
+    return problems
 
 
 # --- Inventory -----------------------------------------------------------------------------
