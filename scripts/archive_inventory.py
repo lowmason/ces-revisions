@@ -31,6 +31,7 @@ from functools import partial
 from operator import attrgetter
 from pathlib import Path, PurePosixPath
 from time import sleep
+from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -187,14 +188,31 @@ def read_csv(path: Path) -> list[dict[str, str]]:
 # --- Network -------------------------------------------------------------------------------
 
 
-def user_agent() -> str:
-    """BLS asks automated clients for a contact address, which BLS_CONTACT_EMAIL supplies."""
-    contact = os.environ.get("BLS_CONTACT_EMAIL")
-    return f"ces-revisions/0.1.0 ({contact})" if contact else "ces-revisions/0.1.0"
+USER_AGENT_PRODUCT = "ces-revisions/0.1.0"
+
+
+def is_bls_host(url: str) -> bool:
+    """True for bls.gov and its subdomains. The host decides, never the path."""
+    host = urlsplit(url).hostname or ""
+    return host == "bls.gov" or host.endswith(".bls.gov")
+
+
+def user_agent(url: str, contact: str | None = None) -> str:
+    """The User-Agent for a request to `url`.
+
+    BLS asks automated clients for a contact address, which BLS_CONTACT_EMAIL supplies when
+    `contact` is None. Only bls.gov hosts get it: every other host, the Internet Archive's
+    replays of BLS pages included, gets the bare product name.
+    """
+    if contact is None:
+        contact = os.environ.get("BLS_CONTACT_EMAIL")
+    if contact and is_bls_host(url):
+        return f"{USER_AGENT_PRODUCT} ({contact})"
+    return USER_AGENT_PRODUCT
 
 
 def fetch(url: str) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": user_agent()})
+    request = urllib.request.Request(url, headers={"User-Agent": user_agent(url)})
     with urllib.request.urlopen(request, timeout=120) as response:
         return response.read()
 

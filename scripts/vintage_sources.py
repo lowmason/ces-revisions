@@ -126,10 +126,7 @@ def convert_pdf(source: Path, target: Path) -> None:
 
 def user_agent_for(url: str) -> str:
     """BLS asks automated clients for a contact address; other hosts get none."""
-    host = urlsplit(url).hostname or ""
-    if host == "bls.gov" or host.endswith(".bls.gov"):
-        return archive_inventory.user_agent()
-    return "ces-revisions/0.1.0"
+    return archive_inventory.user_agent(url)
 
 
 def download(url: str) -> tuple[bytes, str]:

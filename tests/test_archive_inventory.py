@@ -1,6 +1,7 @@
 """scripts/archive_inventory.py: vintages, Internet Archive captures, and per-vintage statuses."""
 
 import io
+import urllib.request
 import zipfile
 from dataclasses import replace
 from datetime import UTC, date, datetime
@@ -190,6 +191,106 @@ def test_live_release_index_starts_the_modern_vintages_on_june_6_2003():
     missing = missing_reference_months(vintages)
     assert date(2025, 10, 1) in missing
     assert all(month >= date(2025, 10, 1) for month in missing)
+
+
+# --- Network -------------------------------------------------------------------------------
+
+WITH_CONTACT = "ces-revisions/0.1.0 (someone@example.org)"
+BARE = "ces-revisions/0.1.0"
+REPLAY = "https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip"
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    [
+        ("https://www.bls.gov/web/empsit/ces.spec.ae.zip", WITH_CONTACT),
+        ("https://download.bls.gov/pub/time.series/ce/ce.series", WITH_CONTACT),
+        ("https://bls.gov/", WITH_CONTACT),
+        (REPLAY, BARE),
+        (
+            "https://web.archive.org/cdx/search/cdx?url=bls.gov/web/empsit/ces.spec.ae.zip",
+            BARE,
+        ),
+        ("https://bls.gov.example.com/", BARE),
+        ("https://fraser.stlouisfed.org/title/employment-situation-4910", BARE),
+        ("https://www.dol.gov/agencies/oasp", BARE),
+    ],
+)
+def test_only_bls_hosts_get_the_contact_address(monkeypatch, url, expected):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    assert archive_inventory.user_agent(url) == expected
+    monkeypatch.delenv("BLS_CONTACT_EMAIL")
+    assert archive_inventory.user_agent(url, "someone@example.org") == expected
+    assert archive_inventory.user_agent(url) == BARE
+
+
+@pytest.mark.parametrize(
+    ("url", "is_bls"),
+    [
+        ("https://bls.gov/", True),
+        ("https://www.bls.gov/web/empsit/ces.spec.ae.zip", True),
+        ("https://download.bls.gov:443/pub/time.series/ce/ce.series", True),
+        ("HTTPS://WWW.BLS.GOV/web/empsit/", True),
+        ("https://notbls.gov/", False),
+        ("https://www.bls.gov.example.com/", False),
+        ("https://www.bls.gov@example.com/", False),
+        ("https://example.com/?next=https://www.bls.gov/", False),
+        ("https://example.com/www.bls.gov/", False),
+        ("not a url", False),
+    ],
+)
+def test_a_host_is_bls_when_it_is_bls_gov_or_a_subdomain(url, is_bls):
+    assert archive_inventory.is_bls_host(url) is is_bls
+
+
+def test_an_explicit_contact_beats_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "environment@example.org")
+    url = "https://www.bls.gov/"
+    assert archive_inventory.user_agent(url, "someone@example.org") == WITH_CONTACT
+    assert archive_inventory.user_agent(url) == (
+        "ces-revisions/0.1.0 (environment@example.org)"
+    )
+
+
+def test_an_explicit_blank_contact_is_not_replaced_by_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "environment@example.org")
+    assert archive_inventory.user_agent("https://www.bls.gov/", "") == BARE
+
+
+@pytest.mark.parametrize("contact", [None, ""])
+def test_a_blank_contact_leaves_the_user_agent_bare(monkeypatch, contact):
+    url = "https://www.bls.gov/"
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "")
+    assert archive_inventory.user_agent(url, contact) == BARE
+    monkeypatch.delenv("BLS_CONTACT_EMAIL")
+    assert archive_inventory.user_agent(url, contact) == BARE
+
+
+class FakeResponse:
+    headers: dict[str, str] = {}  # noqa: RUF012
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        return False
+
+    def read(self) -> bytes:
+        return b""
+
+
+def test_fetch_sends_the_contact_to_bls_hosts_only(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    sent = []
+
+    def fake_urlopen(request, timeout):
+        sent.append(request.get_header("User-agent"))
+        return FakeResponse()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    fetch("https://www.bls.gov/web/empsit/ces.spec.ae.zip")
+    fetch(REPLAY)
+    assert sent == [WITH_CONTACT, BARE]
 
 
 # --- Captures ------------------------------------------------------------------------------

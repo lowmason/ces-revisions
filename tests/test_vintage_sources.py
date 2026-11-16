@@ -11,6 +11,8 @@ import vintage_sources
 
 from ces_revisions.vintages import raw
 
+REPLAY_URL = "https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip"
+
 
 def manifest() -> list[dict[str, str]]:
     with (raw.RAW_DIR / raw.MANIFEST).open(newline="", encoding="utf-8") as handle:
@@ -47,6 +49,7 @@ def test_bls_requests_name_a_contact_and_other_hosts_do_not(monkeypatch):
         vintage_sources.user_agent_for("https://bls.gov.example.com/")
         == "ces-revisions/0.1.0"
     )
+    assert vintage_sources.user_agent_for(REPLAY_URL) == "ces-revisions/0.1.0"
 
 
 def test_comment_rows_keep_the_entries_below_the_header():

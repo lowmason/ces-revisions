@@ -1,6 +1,7 @@
 """The Stage 4 fetch/build script and committed source manifest."""
 
 import csv
+import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -27,9 +28,40 @@ def test_dotenv_supplies_the_contact_without_exposing_it(monkeypatch, tmp_path: 
     env_file.write_text("BLS_CONTACT_EMAIL=someone@example.org\n", encoding="utf-8")
     contact = annual_sources.load_contact_email(env_file)
     assert contact == "someone@example.org"
-    assert annual_sources.user_agent(contact) == (
-        "ces-revisions/0.1.0 (someone@example.org)"
-    )
+
+
+def test_annual_downloads_send_the_contact_to_bls_hosts_only(monkeypatch):
+    # The argument, not the environment, supplies the address.
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "environment@example.org")
+    sent = []
+
+    class Response:
+        headers: dict[str, str] = {}  # noqa: RUF012
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            return False
+
+        def read(self) -> bytes:
+            return b""
+
+    def fake_urlopen(request, timeout):
+        sent.append(request.get_header("User-agent"))
+        return Response()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    for url in (
+        annual_sources.QCEW_REVISIONS_URL,
+        "https://fraser.stlouisfed.org/files/docs/publications/employment/1980s/empl_061980.pdf",
+        "https://www.dol.gov/sites/dolgov/files/general/budget/2024/CBJ-2024-V3-01.pdf",
+        "https://web.archive.org/web/20030620192417id_/http://www.bls.gov:80/web/cestntab.htm",
+    ):
+        annual_sources.download(url, "someone@example.org")
+    with_contact = "ces-revisions/0.1.0 (someone@example.org)"
+    bare = "ces-revisions/0.1.0"
+    assert sent == [with_contact, bare, bare, bare]
 
 
 def test_exported_contact_takes_precedence_over_dotenv(monkeypatch, tmp_path: Path):
