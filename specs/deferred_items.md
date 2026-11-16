@@ -52,7 +52,7 @@
       none of the copies that disagree; no such cell exists today. Size:
       quick-fix. Revisit if: `docs/inventory/archive-inventory.csv` shows a
       `conflicting_captures` status.
-- [ ] BLS request: first-closing dates, matched-sample counts, and lapse
+- [x] BLS request: first-closing dates, matched-sample counts, and lapse
       operations (user decisions of 2026-09-14). Req 3 uses two labeled proxies
       because BLS publishes neither input: the release date ends the collection
       window `D_t`, and Table 1's active-report coverage share stands in for
@@ -64,6 +64,7 @@
       Stage 4 swaps in matched-sample counts, and Stage 13 codes any lapse
       values the answer documents.
       → triggered 2026-11-16: BLS answered with all three inputs (first-closing dates, matched-sample counts by supersector, the six lapse values), on the owner's word in a /deferred pass. The reply is not yet in the repo
+      → retired 2026-11-16: BLS declined by phone on 2026-09-14. A QCEW economist at BLS said it would share no first-closing dates or rules, no matched-sample counts and no lapse values. The triggered note above misread the answer
 
 ## 5-ces-revisions — 2026-09-14
 - [ ] BLS's next vintage-file refresh (plan 5, Deviation 1). The committed
