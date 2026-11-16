@@ -612,6 +612,14 @@ def test_file_status_lists_the_evidence_of_each_conflicting_copy():
     )
 
 
+def test_file_status_ignores_a_copy_whose_payload_nobody_holds():
+    window = (datetime(2026, 9, 4, 12, 30, tzinfo=UTC), None)
+    lost = replace(
+        capture("2026-09-13T17:11:32+00:00", outliers="o"), status="payload_lost"
+    )
+    assert file_status([lost], "outliers", window) == ("not_archived", "")
+
+
 def test_file_status_without_a_copy_is_not_archived():
     window = (
         datetime(2008, 2, 1, 13, 30, tzinfo=UTC),
