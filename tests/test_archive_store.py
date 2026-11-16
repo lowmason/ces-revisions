@@ -1765,6 +1765,7 @@ def test_adopt_stores_a_recorded_zip_and_fills_an_empty_member_date(
     write_csv(paths.vintages, vintage_rows([OLD_VINTAGE]), VINTAGE_COLUMNS)
     vintages = paths.vintages.read_bytes()
     before = read_csv(paths.captures)
+    old_lines = paths.captures.read_text(encoding="utf-8").splitlines()
     file = rescued(tmp_path, payload)
 
     assert adopt_payloads([file], paths) == 0
@@ -1776,6 +1777,10 @@ def test_adopt_stores_a_recorded_zip_and_fills_an_empty_member_date(
         else old
         for old in before
     ]
+    # Only the one filled cell changed, so only the one line differs.
+    new_lines = paths.captures.read_text(encoding="utf-8").splitlines()
+    assert len(new_lines) == len(old_lines)
+    assert sum(a != b for a, b in zip(old_lines, new_lines, strict=True)) == 1
     assert [r["file"] for r in read_csv(paths.store / STORE_MANIFEST)] == [
         stored_file(OTHER, digest)
     ]
@@ -1846,7 +1851,9 @@ def test_adopt_refuses_bytes_whose_fingerprints_differ_from_the_row(
     assert "outliers" in err
 
 
-@pytest.mark.parametrize("field", FINGERPRINTS[:4])
+@pytest.mark.parametrize(
+    "field", ["specification", "prior_adjustment", "outliers", "unexpected"]
+)
 def test_adopt_refuses_a_difference_in_any_one_fingerprint(
     tmp_path, offline, capsys, field
 ):

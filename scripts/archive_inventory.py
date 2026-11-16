@@ -13,7 +13,8 @@ subcommands, so the inventory can be rebuilt from the committed evidence without
 
 `captures` and `current` merge what they observe into docs/inventory/archive-captures.csv, so no
 recorded row is dropped, rewrite docs/inventory/es-vintages.csv, and store every ZIP they open
-in data/seasonal/raw/ (specs/seasonal-adjustment-file-store.md). `inventory` writes
+in data/seasonal/raw/ (specs/seasonal-adjustment-file-store.md). `adopt` stores a local ZIP whose
+digest a committed row records, and uses only the standard library. `inventory` writes
 docs/inventory/archive-inventory.csv and regenerates the inventory tables in
 docs/ces-revisions-review.md.
 """
