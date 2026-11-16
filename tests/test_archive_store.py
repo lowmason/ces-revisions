@@ -542,6 +542,12 @@ def test_a_row_without_a_payload_takes_an_observation_that_has_none_either(
     assert merge_captures([committed], [observed]) == [observed]
 
 
+@pytest.mark.parametrize("committed_status", ["302", "404", "503"])
+def test_a_row_with_any_other_status_takes_the_new_observation(committed_status):
+    committed = row(status=committed_status, outliers="")
+    assert merge_captures([committed], [row()]) == [row()]
+
+
 def test_a_listed_digest_that_differs_from_the_committed_one_is_an_error():
     with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
         merge_captures([row()], [row(digest="E")])
