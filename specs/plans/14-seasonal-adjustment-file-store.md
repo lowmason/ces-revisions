@@ -35,6 +35,7 @@
 
 - **D1** (owner, brief, 2026-11-16): the parked Stage 14 item's text in `specs/deferred_items.md` stays unedited. The spec's section "Relation to parked stages and O10" records which half of Stage 14 this plan delivers. Applied in: Global Constraints, Task 9.
 - **D2** (owner, brief, 2026-11-16): each network step needs the owner's yes each time: the first full `captures` run with the new code, and `current` after each release. Applied in: Global Constraints, Task 8.
+- **D3** (owner, plan review, 2026-11-16): split the store's `.gitattributes` rule: `data/seasonal/raw/** -text` for every file, and `-diff` for the ZIPs only, so `manifest.csv` diffs as text. The spec gave one `-text -diff` line. Applied in: Task 2 (spec amendment).
 
 ## Files
 
@@ -130,6 +131,7 @@ git commit -m "Send the contact address to BLS hosts only, from all three fetche
 **Files:**
 - Modify: `scripts/archive_inventory.py` (new section `# --- File store ---` after `# --- Captures ---`)
 - Modify: `.gitattributes`, `.gitignore`
+- Modify: `specs/seasonal-adjustment-file-store.md:202` (the D3 amendment)
 - Create: `tests/zip_fixtures.py`, `tests/test_archive_store.py`
 - Modify: `tests/test_archive_inventory.py:58-70` (import the ZIP builders from `zip_fixtures`)
 
@@ -181,7 +183,20 @@ data/seasonal/raw/** -text
 data/seasonal/raw/*/*.zip -diff
 ```
 
-The rules follow the `data/annual/raw/` pattern, so `manifest.csv` diffs as text. Add `data/seasonal/.staging-*/` to `.gitignore`, with a comment that a killed run can leave one.
+The rules follow the `data/annual/raw/` pattern, so `manifest.csv` diffs as text (D3). Add `data/seasonal/.staging-*/` to `.gitignore`, with a comment that a killed run can leave one.
+
+Amend the spec to match (D3), and leave its status line unchanged. In `specs/seasonal-adjustment-file-store.md:202`, replace:
+
+```text
+- `.gitattributes` gets `data/seasonal/raw/** -text -diff`, as `data/annual/raw/` has.
+```
+
+with:
+
+```text
+- `.gitattributes` gets `data/seasonal/raw/** -text` and `data/seasonal/raw/*/*.zip -diff`, as
+  `data/annual/raw/` has, so `manifest.csv` diffs as text (owner, plan 14, 2026-11-16).
+```
 
 - [ ] **Step 6: Run the tests to verify they pass**
 
@@ -191,7 +206,7 @@ Expected: PASS.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add scripts/archive_inventory.py .gitattributes .gitignore tests/zip_fixtures.py tests/test_archive_store.py tests/test_archive_inventory.py
+git add scripts/archive_inventory.py .gitattributes .gitignore specs/seasonal-adjustment-file-store.md tests/zip_fixtures.py tests/test_archive_store.py tests/test_archive_inventory.py
 git commit -m "Add the content-addressed store for seasonal-adjustment ZIPs"
 ```
 
