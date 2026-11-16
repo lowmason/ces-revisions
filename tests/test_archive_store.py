@@ -1404,6 +1404,20 @@ def forbid_fetch(monkeypatch) -> None:
     monkeypatch.setattr(archive_inventory, "fetch", forbidden)
 
 
+def forbid_pause_and_listing(monkeypatch) -> None:
+    """Fail on a pause or an Archive listing, which a BLS-only path must never reach.
+
+    A test that patches `fetch` for such a path calls this too, so a regression cannot sleep
+    for real through `retrying` or list the Internet Archive.
+    """
+
+    def forbidden(*args):
+        raise AssertionError("no pause or Archive listing expected")
+
+    monkeypatch.setattr(archive_inventory, "sleep", forbidden)
+    monkeypatch.setattr(archive_inventory, "list_captures", forbidden)
+
+
 def test_every_archive_key_of_every_artifact_is_listed_in_order(monkeypatch):
     keys: list[str] = []
     forbid_fetch(monkeypatch)
@@ -1447,6 +1461,7 @@ def test_a_listing_that_fails_once_is_retried(monkeypatch):
 
 
 def test_fetch_and_inspect_returns_bytes_that_match_the_digest(monkeypatch):
+    forbid_pause_and_listing(monkeypatch)
     payload = zip_a()
     monkeypatch.setattr(archive_inventory, "fetch", lambda url: payload)
     found, fingerprints = fetch_and_inspect(
@@ -1457,6 +1472,7 @@ def test_fetch_and_inspect_returns_bytes_that_match_the_digest(monkeypatch):
 
 
 def test_fetch_and_inspect_without_a_digest_takes_any_bytes(monkeypatch):
+    forbid_pause_and_listing(monkeypatch)
     payload = zip_a()
     monkeypatch.setattr(archive_inventory, "fetch", lambda url: payload)
     assert fetch_and_inspect("https://example.test/x")[0] == payload
@@ -1464,12 +1480,14 @@ def test_fetch_and_inspect_without_a_digest_takes_any_bytes(monkeypatch):
 
 
 def test_fetch_and_inspect_rejects_bytes_that_miss_the_digest(monkeypatch):
+    forbid_pause_and_listing(monkeypatch)
     monkeypatch.setattr(archive_inventory, "fetch", lambda url: zip_a())
     with pytest.raises(ValueError, match=re.escape("https://example.test/x")):
         fetch_and_inspect("https://example.test/x", "NOTTHEPAYLOAD")
 
 
 def test_fetch_vintages_drops_releases_still_under_embargo(monkeypatch):
+    forbid_pause_and_listing(monkeypatch)
     monkeypatch.setattr(
         archive_inventory, "fetch", lambda url: INDEX_EXCERPT.read_bytes()
     )
@@ -1495,6 +1513,7 @@ def test_fetch_vintages_retries_a_failed_fetch(monkeypatch):
 
 
 def test_fetch_bls_copies_gives_one_current_row_for_each_artifact(monkeypatch):
+    forbid_pause_and_listing(monkeypatch)
     payloads = {
         artifact.current_url: make_zip({"outliers.xlsx": artifact.name.encode()})
         for artifact in archive_inventory.ARTIFACTS
@@ -1585,6 +1604,7 @@ def test_an_unreplayable_copy_is_noted_on_stderr_with_its_replay_url(
 
 
 def test_current_stores_each_artifacts_zip_in_its_own_folder(monkeypatch, tmp_path):
+    forbid_pause_and_listing(monkeypatch)
     paths = EvidencePaths.at(tmp_path)
     payloads = {
         artifact.current_url: make_zip({"outliers.xlsx": artifact.name.encode()})
@@ -1633,6 +1653,8 @@ def test_record_run_stores_each_zip_under_its_own_artifact(tmp_path):
 
 
 def test_main_runs_the_command_it_names_with_the_time_now(monkeypatch):
+    forbid_fetch(monkeypatch)
+    forbid_pause_and_listing(monkeypatch)
     calls: list[tuple] = []
     for name, result in (("capture_evidence", 0), ("fetch_current", 1)):
         monkeypatch.setattr(
