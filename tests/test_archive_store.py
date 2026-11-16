@@ -502,7 +502,7 @@ def test_a_capture_key_is_artifact_source_url_timestamp():
 
 
 def test_a_committed_row_the_run_does_not_observe_stays():
-    bls = row(source="bls_current", url="https://www.bls.gov/ces.spec.ae.zip")
+    bls = row(source=BLS_SOURCE, url="https://www.bls.gov/ces.spec.ae.zip")
     archived = row()
     assert merge_captures([bls, archived], []) == [bls, archived]
 
@@ -512,7 +512,7 @@ def test_an_observed_row_with_a_new_key_is_added():
     later = row(timestamp=datetime(2021, 4, 1, tzinfo=UTC))
     other_url = row(url=ARCHIVE_URL + "?other")
     other_artifact = row(artifact=OTHER)
-    other_source = row(source="bls_current")
+    other_source = row(source=BLS_SOURCE)
     for added in (later, other_url, other_artifact, other_source):
         merged = merge_captures([committed], [added])
         assert len(merged) == 2
@@ -641,11 +641,11 @@ def test_merged_rows_sort_by_artifact_source_timestamp_url():
     early = datetime(2020, 1, 1, tzinfo=UTC)
     late = datetime(2021, 1, 1, tzinfo=UTC)
     in_order = [
-        row(artifact=AE, source="bls_current", timestamp=late, url="https://a"),
+        row(artifact=AE, source=BLS_SOURCE, timestamp=late, url="https://a"),
         row(artifact=AE, source="internet_archive", timestamp=early, url="https://z"),
         row(artifact=AE, source="internet_archive", timestamp=late, url="https://a"),
         row(artifact=AE, source="internet_archive", timestamp=late, url="https://b"),
-        row(artifact=OTHER, source="bls_current", timestamp=early, url="https://a"),
+        row(artifact=OTHER, source=BLS_SOURCE, timestamp=early, url="https://a"),
     ]
     assert merge_captures([], list(reversed(in_order))) == in_order
     assert merge_captures(list(reversed(in_order)), []) == in_order
@@ -660,7 +660,7 @@ def test_doubled_rows_keep_their_order_through_the_sort():
 
 def test_an_unchanged_listing_returns_the_committed_rows_as_they_were():
     rows = [
-        row(source="bls_current", url="https://www.bls.gov/ces.spec.ae.zip"),
+        row(source=BLS_SOURCE, url="https://www.bls.gov/ces.spec.ae.zip"),
         row(status="301", outliers=""),
         row(status="301", outliers=""),
         row(timestamp=datetime(2021, 4, 1, tzinfo=UTC)),
@@ -852,17 +852,18 @@ def test_the_first_copy_credits_the_release_its_files_were_made_for(
     monkeypatch, tmp_path, command
 ):
     paths = EvidencePaths.at(tmp_path)
-    fake_network(
-        monkeypatch, bls={OTHER_URL: monthly_zip((2026, 9, 29, 12, 0, 0), b"X")}
-    )
+    payload = monthly_zip((2026, 9, 29, 12, 0, 0), b"X")
+    fake_network(monkeypatch, bls={OTHER_URL: payload})
     command(T1, paths)
+    # A BLS copy's evidence is its stored ZIP, as a path from the repository root.
+    kept = f"{STORE_DIR.relative_to(ROOT).as_posix()}/{stored_file(OTHER, payload_digest(payload))}"
     assert credit(paths) == {
         "specification": "not_archived",
         "prior_adjustment": BLS_SOURCE,
         "outliers": BLS_SOURCE,
         "specification_evidence": "",
-        "prior_adjustment_evidence": OTHER_URL,
-        "outliers_evidence": OTHER_URL,
+        "prior_adjustment_evidence": kept,
+        "outliers_evidence": kept,
     }
     assert credit(paths, "2026-08")["outliers"] == "not_archived"
 

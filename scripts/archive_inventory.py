@@ -311,7 +311,7 @@ def newest_member(payload: bytes) -> str:
 
 
 # The `source` of a row for a ZIP fetched from BLS itself.
-BLS_SOURCE = "bls_current"
+BLS_SOURCE = "bls_fetched"
 
 
 @dataclass(frozen=True)
@@ -321,7 +321,7 @@ class Capture:
     artifact: str
     source: str  # "internet_archive" or BLS_SOURCE
     timestamp: datetime  # UTC: when the copy was made, or when BLS's file was fetched
-    url: str  # where these bytes can be fetched again
+    url: str  # where these bytes were fetched
     status: str
     # The base-32 SHA-1 of the payload, the Internet Archive's own digest format.
     digest: str
@@ -527,6 +527,19 @@ def store_folder(artifact: str) -> str:
 def stored_file(artifact: str, digest: str) -> str:
     """A stored ZIP's path relative to the store."""
     return f"{store_folder(artifact)}/{digest}.zip"
+
+
+def evidence(capture: Capture) -> str:
+    """What backs a status that a copy credits.
+
+    A BLS copy's URL serves another file once BLS replaces it, so its stored ZIP is the evidence,
+    as a path relative to the repository root. An Internet Archive copy's URL still serves the
+    same bytes.
+    """
+    if capture.source == BLS_SOURCE:
+        folder = STORE_DIR.relative_to(ROOT).as_posix()
+        return f"{folder}/{stored_file(capture.artifact, capture.digest)}"
+    return capture.url
 
 
 class Staging:
@@ -868,7 +881,7 @@ def file_status(
     window: tuple[datetime, datetime | None],
     moment: Callable[[Capture], datetime | None] = attrgetter("timestamp"),
 ) -> tuple[str, str]:
-    """One file type's status for one vintage, with the URL of the copy that evidences it.
+    """One file type's status for one vintage, with the `evidence` of the copy behind it.
 
     Opened copies count, and so do revisit records once `resolve_revisits` has filled them in.
     `moment` gives the time a copy evidences, by default its own, and None leaves it out.
@@ -886,9 +899,11 @@ def file_status(
     if not holding:
         return "not_archived", ""
     if len({getattr(capture, file_type) for capture in holding}) > 1:
-        return "conflicting_captures", " ".join(capture.url for capture in holding)
+        return "conflicting_captures", " ".join(
+            evidence(capture) for capture in holding
+        )
     chosen = min(holding, key=lambda capture: capture.source != BLS_SOURCE)
-    return chosen.source, chosen.url
+    return chosen.source, evidence(chosen)
 
 
 def inventory_rows(
@@ -940,7 +955,10 @@ def inventory_rows(
 def _status_cell(row: dict[str, str], file_type: str) -> str:
     status = row[file_type]
     if status in PRESENT:
-        return f"[`{status}`]({row[f'{file_type}_evidence']})"
+        target = row[f"{file_type}_evidence"]
+        # The review sits in docs/, and a stored ZIP's evidence is relative to the repository root.
+        link = f"../{target}" if status == BLS_SOURCE else target
+        return f"[`{status}`]({link})"
     return f"`{status}`"
 
 
