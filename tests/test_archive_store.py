@@ -1866,6 +1866,40 @@ def test_adopt_refuses_a_difference_in_any_one_fingerprint(
     assert field in err
 
 
+@pytest.mark.parametrize(
+    "field", ["specification", "prior_adjustment", "outliers", "unexpected"]
+)
+def test_adopt_refuses_a_row_that_records_absent_what_the_zip_has(
+    tmp_path, offline, capsys, field
+):
+    """An empty fingerprint means "absent", so only the member date may be filled in."""
+    paths = EvidencePaths.at(tmp_path)
+    payload = make_zip(
+        {
+            "ces.spec.ae/AE1011330000.spc": b"series{}",
+            "prior_adjustment_file.xlsx": b"AP",
+            "outliers.xlsx": b"AO",
+            "stray.dat": b"S",
+        }
+    )
+    assert inspect_zip(payload)[field]
+    commit(paths, recorded(payload, **{field: ""}))
+    file = rescued(tmp_path, payload)
+    err = refused(tmp_path, paths, [file], capsys)
+    assert str(file) in err
+    assert field in err
+    assert not paths.store.exists()
+
+
+def test_adopt_refuses_an_outliers_file_the_row_records_as_absent(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    commit(paths, recorded(zip_a(), outliers=""))
+    file = rescued(tmp_path, zip_a())
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+
+
 def test_adopt_refuses_a_member_date_that_differs_from_the_row(
     tmp_path, offline, capsys
 ):
