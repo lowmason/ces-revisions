@@ -33,10 +33,14 @@ specs/
   findings/                           the reset review and each stage's findings
   completed/                          the parked design spec and roadmap, the research brief, and three drafts
   plans/                              implementation plans for the roadmap stages
-docs/decisions/                       decision records (engine.md: the Kalman engine)
-  cloud-gpu-probe/                    engine timing records, starting with the Mac baseline
+docs/decisions/                       decision records (engine.md: the Kalman engine;
+                                      link-relatives.md: the post-March operator;
+                                      seasonal-state.md: the pilot's seasonal state)
+  cloud-gpu-probe/                    engine timing records: the Mac baseline and the Mac grid
+docs/runs/stage-6/                    the aggregate pilot's committed evidence
 src/ces_revisions/                    Python package (src layout): kalman.py is the state-space engine,
-                                      vintages/ and annual/ build the Stage 3/4 inputs,
+                                      vintages/ and annual/ build the Stage 3/4 inputs, operators/ the
+                                      Stage 5 maps, pilot/ the aggregate pilot, runs/ the run harness,
                                       devices.py picks the chain method, engine_probe.py times the engine
 data/raw/                             committed source files for the vintage panel, with a manifest of their hashes
 data/annual/raw/                      committed annual benchmark, birth-death, QCEW, and sample sources
@@ -106,4 +110,4 @@ On a Linux host with an NVIDIA GPU, `uv sync --extra cuda` also installs JAX's C
 
 GPU fits run on an instance rented from [Lambda](https://lambda.ai) and set up by hand, with no infrastructure code in this repo. The model's needs set the GPU type and count. Outcome O6 of the [roadmap](specs/ces-revision-drivers-roadmap.md) measures them with the engine probe. On a new instance, install uv from the 0.13 series, because the `required-version` pin refuses any other. JAX's CUDA 13 wheels need NVIDIA driver 580 or later, so check `nvidia-smi` before `uv sync --extra cuda`. Lambda bills by the minute until you terminate the instance in its console or API. Shutting down the operating system does not stop billing. Termination deletes the instance's disk, so copy results off first.
 
-The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).
+The modeling stack is JAX, NumPyro, ArviZ, and Polars on Python 3.14, with fastexcel to read the source workbooks, SciPy for ranks and test statistics, and h5netcdf with h5py to write each run's InferenceData. The state-space engine is hand-written rather than taken from Dynamax, for the reasons recorded in [`docs/decisions/engine.md`](docs/decisions/engine.md).

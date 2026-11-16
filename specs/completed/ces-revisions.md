@@ -208,8 +208,13 @@ national turning point is not read as eleven independent measurement errors. Pro
 innovations are $`t_5`$ scale mixtures whose scale carries a known crisis multiplier
 $`\exp\{\kappa_x\mathbf 1(t\in\text{Mar–Jun 2020})\}`$, $`\kappa_x\sim N(\log 50,0.5^2)`$, so
 the ~20-million April 2020 movement lives in the latent state rather than in measurement error;
-a sensitivity run replaces the multiplier with unrestricted level-jump states. A trigonometric
-seasonal state may replace the dummy recursion if diagnostics favor it.
+a sensitivity run replaces the multiplier with unrestricted level-jump states.
+The multiplier scales the non-news level innovation and the `F→S` and `S→T` news increments,
+which enter the truth's own innovation (Req 7). It does not scale the slope or seasonal
+innovations, the transitory noise, or the post-third-print news, whose yearly total the
+benchmark rows pin.
+(Lowell, plan 11, 2026-10-21) A trigonometric seasonal state may replace the dummy recursion
+if diagnostics favor it.
 
 **Req 7 — Multi-vintage news and noise.** Sequential-revelation Jacobs–van Norden measurement
 for the closing stages $`j\in\{F,S,T\}`$ (chosen — chatgpt §4.3; claude §4.1 and gemini §1
@@ -222,7 +227,22 @@ y^N_{s,t,j}=x_{s,t}-\sum_{k\in\mathcal F(j)}n^N_{s,t,k}+e^N_{s,t,j},
 ```
 
 where $`n^N_{s,t,k}`$ is news first revealed at stage $`k`$ and $`e^N_{s,t,j}`$ transitory
-noise. The `B` and `M` increments are **not** free monthly shocks: they are induced by the
+noise. The display above fixes which news each closing stage still lacks. The closing
+stages enter the likelihood not as those levels but as the same-release over-the-month
+change, the published change from $`t-1`$ to $`t`$ in the release that first prints stage
+$`j`$ for month $`t`$:
+$`d^N_{s,t,j}=\Delta x_{s,t}-\sum_{k\in\mathcal F(j)}n^N_{s,t,k}+e^N_{s,t,j}`$,
+with $`n^N_{s,t,k}`$ and $`e^N_{s,t,j}`$ read as the news and noise of month $`t`$'s change.
+So a print's news and noise attach to that month's change, and its distance from the truth
+does not carry into later months' prints. This holds for every NSA closing cell, the 1979+
+total-nonfarm leg of Req 4 included. Stage 9 settles whether Req 9's SA rows take the same
+form. The news increments enter the latent process's own innovation (the Jacobs–van Norden
+form), so each closing change is the true change less the news still to come, plus noise.
+Benchmark anchors stay level observations of $`x`$. Before the wedge rows enter
+(Stages 6–7), the news that a month's third print still lacks is one monthly increment, with
+the Req 15 `T→B` prior spread evenly over twelve months, and the March anchors pin its yearly
+total. (Lowell, plan 11, 2026-10-21)
+From Stage 8 the `B` and `M` increments are **not** free monthly shocks: they are induced by the
 benchmark observations and operators of Req 10. Each transition carries one cross-sector news
 factor, $`n^N_{s,t,k}=a^N_{s,k}q^N_{t,k}+\tilde n^N_{s,t,k}`$, sign-identified by a positive
 total-private-weighted mean loading, so total-nonfarm revision scale is not the root-sum-square
@@ -713,3 +733,9 @@ Stage 3: COMPLETE (2026-09-14) — implemented by plan 5 (specs/plans/completed/
 Stage 4: COMPLETE (2026-09-15) — implemented by plan 6 (specs/plans/completed/6-ces-revisions.md). Next: resume the roadmap.
 
 Stage 5: COMPLETE (2026-09-16) — implemented by plan 8 (specs/plans/completed/8-ces-revisions.md). Next: resume the roadmap.
+
+Amended 2026-10-21 at plan 11 (user decisions): Req 7 states that closing stages enter as
+same-release over-the-month changes in the Jacobs–van Norden form, that benchmark anchors stay
+levels, and that the post-third-print news is one monthly increment until Stage 8's wedge
+rows (Req 10's B-vintage rows) induce the `B` and `M` increments. Req 6 states which
+innovations the crisis multiplier scales. Stage 6 implements these. Stages 7–17 inherit them.

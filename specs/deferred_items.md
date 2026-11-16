@@ -14,7 +14,7 @@
       gradient check along it.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Waits for O6 in specs/ces-revision-drivers-roadmap.md, the first model that samples parameters inside those matrices
       → done 2026-11-15 (/deferred quick fix)
-- [ ] Review recommendation: dispersed chain starts for Req 18 (whole-branch
+- [x] Review recommendation: dispersed chain starts for Req 18 (whole-branch
       review of plan 1, triaged defer). NumPyro's default
       `init_to_uniform(radius=2)` starts each LogNormal scale in roughly
       [0.14, 7.4], below five of the six true scales in
@@ -25,7 +25,8 @@
       the Stage 6 run harness starts the four chains from dispersed points
       and records the initialization strategy with each run.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
-      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
+      → planned 2026-11-15: specs/plans/13-ces-revision-drivers-stage-2.md
+      → done 2026-11-15 (plan 13)
 
 ## 2-ces-revisions — 2026-09-13
 - [x] Review Important: test the monthly live window against member dates
@@ -79,7 +80,7 @@
       See `specs/plans/completed/5-ces-revisions.md`. Size: quick-fix. Revisit
       if: `test_bls_has_not_refreshed_the_vintage_files_since_the_manifest`
       fails under `uv run pytest -m network`.
-- [ ] Review Minor: two EMPLOY vintages map to one release (whole-branch
+- [x] Review Minor: two EMPLOY vintages map to one release (whole-branch
       review of plan 5, triaged defer). `rtdsm_levels` in
       `src/ces_revisions/vintages/panel.py` joins each EMPLOY vintage to the
       release made in its calendar month or the latest before it. October 2025
@@ -91,7 +92,8 @@
       `rtdsm_employ` rows (roadmap Stage 6 consumes the 1979 leg) flags or
       drops the repeat vintage.
       → acknowledged 2026-11-15 (claude/roadmap-reset-faster-answers-881246): roadmap reset 2026-11-15. Done in plan 11, which Stage 2 of specs/ces-revision-drivers-roadmap.md finishes
-      → planned 2026-11-15: specs/ces-revision-drivers-roadmap.md
+      → planned 2026-11-15: specs/plans/13-ces-revision-drivers-stage-2.md
+      → done 2026-11-15 (plan 13)
 - [x] Review recommendations: evidence tests for two planning findings
       (whole-branch review of plan 5, triaged defer). Two findings in plan 5's
       Planning evidence rest on one-off queries: EMPLOY's same-vintage
@@ -277,3 +279,78 @@ plan 11.
       a test that two sectors' estimates for one month never pair. Size:
       quick-fix. Revisit if: a stage of
       `specs/ces-revision-drivers-roadmap.md` lists O2 in its Outcomes line.
+
+## 11-ces-revisions — 2026-11-15
+- [ ] The pilot's `sigma_slope` posterior conflicts with its prior (plan 11,
+      planning choice 9). The pilot fit's run directory
+      (`data/runs/stage6-pilot-seed2995-20261022T020454Z`, gitignored; its
+      `inference_data.nc` has SHA-256 `b0480b97…`) gives a posterior median of
+      65.9 and an SD of 6.4 for `sigma_slope`, against its HalfNormal(15)
+      prior, whose median is 10.1 and SD 9.0. The median is 4.4 times the
+      prior's scale. The fit still meets Req 18 and the April 2020 check, and
+      the news shares do not read `sigma_slope`. The committed
+      `docs/runs/stage-6/pilot-fit/diagnostics.json` holds only its R-hat and
+      ESS. Size: design. Revisit if: O6's fit or O17's prior-predictive gate
+      still leaves it above 3 prior scales.
+- [ ] The doubled-prior rerun misses Req 15's monthly constraint (plan 11,
+      planning choice 9). `docs/runs/stage-6/prior-predictive-doubled.json`
+      shows 13.3% of months with an F→T revision above 250 thousand, where the
+      allowed range is 0.1% to 5%. It also shows a median |F→T| revision in
+      20 to 100 thousand in 66.9% of prior draws, where the minimum is 80%. The
+      base prior passes (2.9% and 94.8%). Size: design. Revisit if: O17's
+      prior-sensitivity run starts, meaning a stage of
+      `specs/ces-revision-drivers-roadmap.md` lists O17 in its Outcomes line.
+- [ ] Residual seasonality at lags 11 and 12 in every layout (plan 11,
+      planning choice 9). `docs/runs/stage-6/seasonal-comparison.json` gives
+      the Ljung–Box Q (F, S, T) of 84, 49 and 61 for `dummy`, 43, 28 and 41 for
+      `trig`, and 2303, 1526 and 1519 for `trig4`. Every test rejects at 1%.
+      The decision record `docs/decisions/seasonal-state.md` keeps the dummy
+      state anyway. Size: design. Revisit if: O17's posterior predictive suite
+      traces a misfit to the seasonal block.
+- [ ] Plan 11's GPU work (Task 13, and Task 14 Step 1, descoped by roadmap
+      Stage 2, `specs/ces-revision-drivers-roadmap.md:24`). It covers the
+      \$40 Lambda measurement of one on-demand instance each of A10, A100 40 GB
+      and GH200 (Task 13), the GPU rule applied by
+      `scripts/pilot_run.py choose-gpu` that writes
+      `docs/runs/stage-6/gpu-choice.json` (Task 14 Step 1), and decision D8,
+      which keeps the parallel-in-time Kalman filter out until a model is
+      infeasible. The GPU code ships unused (`pilot/gpu_choice.py`,
+      `pilot/dimensions.py`, `scripts/gpu_probe_grid.py`). Only the owner rents
+      Lambda GPUs. The GPU rule has four open points from plan 11's reviews:
+      the `fit_usd` tie rule and the record-order tie-break are unspecified,
+      a `--max-bytes` skip counts as infeasible like a real out-of-memory,
+      `gpu_choice.py`'s chain-method strings are labels only, and the free-form
+      `--label` makes matching a GPU type by label fragile. See
+      `specs/plans/completed/11-ces-revisions.md`. Size: plan. Done when: the
+      stage that delivers O6 ticks.
+- [ ] Review Minor findings left open by plan 11's per-task reviews and by the
+      whole-branch review that plan 13 ran (the owner ruled carry as one item,
+      2026-11-15). None hurts a person today. In
+      `src/ces_revisions/pilot/`: `panel.py` has no hermetic test of
+      `window()`; `__init__.py`'s docstring forward-references later modules;
+      `model.py` ties the shock-SD column order to `layout.shock_names` order
+      implicitly and has no test of its own for `TARGET_ACCEPT_PROB` and the
+      `NOISE_*` constants; `simulate.py`'s `revision_statistics` gives NaN and
+      a RuntimeWarning when no row has both F and T; `sbc.py` has no named
+      finite check for the truth log likelihood, step size and truth values,
+      does not enforce the 1999–2021 window or the counts, hard-codes 3 in the
+      key `share_abs_z_above_3`, and no test pins the recovery thresholds
+      (0.25 and 5%) or the ECDF alpha of 0.05/23; `seasonal.py` gives a NaN
+      SE when fewer than two blocks are reliable. In `src/ces_revisions/runs/`:
+      `fit.py` measures `meets_req18` at the run's own maximum tree depth, has
+      no float64 guard in `run_nuts`, and `diagnostics_record` also checks
+      deterministic sites, which the pilot lacks; `inits.py` labels its
+      strategy "dispersed_prior_quantiles" for a median-plus-or-minus-k-SD
+      method. In tests: `tests/pilot_synthetic.py`'s `shell_panel` fails
+      unclearly above about 39 steps and `crisis_panel`'s only anchor has
+      offset 0.0; the `sigma_seasonal` prior test in
+      `tests/test_pilot_layout.py` is circular; `tests/test_pilot_simulate.py`
+      cites a spike report that is not in the repo; two test warnings leak
+      (ArviZ's RuntimeWarning in the NaN-statistic test and a Pareto-k
+      UserWarning in `test_loo_runs_on_both_blocks`). In `scripts/pilot_run.py`:
+      it imports `devices`, and so JAX, before `_configure_xla`, and no test
+      runs `run_compare_seasonal` end to end. One more point comes from plan
+      13's review: `shares` checks only the panel hash, so a `trig` run fit to
+      the same panel would give shares for `trig`. Size: quick-fix. Done when: a
+      plan for O17 lists each point as fixed, dropped on the owner's word, or
+      kept with a reason.

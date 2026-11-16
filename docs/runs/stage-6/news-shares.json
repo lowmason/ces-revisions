@@ -1,0 +1,18 @@
+{
+  "inference_data_sha256": "b0480b9795f80b5d56bf32163b01a1e62c44381fba99f94aff7f9a759165c0af",
+  "interval_prob": 0.9,
+  "num_draws": 4000,
+  "panel_sha256": "c197e079f08f9b43d40f277f552e5fc25b262bbb8dc1734a3cfb2894da249973",
+  "run_dir": "data/runs/stage6-pilot-seed2995-20261022T020454Z",
+  "sampling_seconds": 1659.6018157910003,
+  "share_s": {
+    "lower": 0.553243842310219,
+    "median": 0.7231535087430649,
+    "upper": 0.852585811794601
+  },
+  "share_t": {
+    "lower": 0.30023056866686354,
+    "median": 0.651994724542622,
+    "upper": 0.8466309962253954
+  }
+}

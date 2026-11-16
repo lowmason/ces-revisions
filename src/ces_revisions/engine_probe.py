@@ -8,10 +8,7 @@ writes one JSON record, so runs on the Mac and on each GPU host compare field by
 """
 
 import argparse
-import importlib.metadata
 import json
-import shutil
-import subprocess
 import time
 from collections.abc import Callable
 from datetime import UTC, datetime
@@ -22,6 +19,7 @@ import jax.numpy as jnp
 import numpy as np
 import numpyro
 
+from ces_revisions.devices import jax_versions, nvidia_driver
 from ces_revisions.kalman import LinearGaussianSSM, kalman_filter
 
 # Each transition matrix is this multiple of a random orthogonal matrix, so every
@@ -60,6 +58,17 @@ def synthetic_problem(
     return ssm, panel
 
 
+def batched_value_and_grad() -> Callable[..., object]:
+    """The jitted value and gradient the probe times, vmapped over a (batch, 2) array.
+
+    It maps ``(log_scales, ssm, panel)`` to the batch's log likelihoods and their
+    gradients with respect to the two log scales; ``ssm`` and ``panel`` are shared.
+    """
+    return jax.jit(
+        jax.vmap(jax.value_and_grad(_log_likelihood), in_axes=(0, None, None))
+    )
+
+
 def time_batches(
     ssm: LinearGaussianSSM,
     panel: np.ndarray,
@@ -75,9 +84,7 @@ def time_batches(
     """
     ssm = LinearGaussianSSM(*(jnp.asarray(array) for array in ssm))
     panel = jnp.asarray(panel)
-    value_and_grad = jax.jit(
-        jax.vmap(jax.value_and_grad(_log_likelihood), in_axes=(0, None, None))
-    )
+    value_and_grad = batched_value_and_grad()
     rng = np.random.default_rng(seed)
     timings = []
     for batch in batch_sizes:
@@ -115,8 +122,8 @@ def main(argv: list[str] | None = None) -> None:
         "repeats": args.repeats,
         "batches": time_batches(ssm, panel, args.batch, args.repeats, args.seed),
         "backend": jax.default_backend(),
-        "versions": _jax_versions(),
-        "nvidia_driver": _nvidia_driver(),
+        "versions": jax_versions(),
+        "nvidia_driver": nvidia_driver(),
         "timestamp_utc": started.isoformat(timespec="seconds"),
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -183,25 +190,6 @@ def _call_seconds(function: Callable[..., object], *args: object) -> float:
     # Pulling the result to the host waits for the device to finish computing it.
     jax.tree.map(np.asarray, function(*args))
     return time.perf_counter() - start
-
-
-def _jax_versions() -> dict[str, str]:
-    """Versions of jax, jaxlib, and any installed JAX CUDA plugin."""
-    versions = {}
-    for dist in importlib.metadata.distributions():
-        name = dist.name.lower().replace("_", "-")
-        if name in {"jax", "jaxlib"} or name.startswith("jax-cuda"):
-            versions[name] = dist.version
-    return dict(sorted(versions.items()))
-
-
-def _nvidia_driver() -> str | None:
-    """The NVIDIA driver version, or None on a host without nvidia-smi."""
-    if shutil.which("nvidia-smi") is None:
-        return None
-    query = ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"]
-    output = subprocess.run(query, capture_output=True, text=True, check=True).stdout
-    return output.splitlines()[0].strip()
 
 
 if __name__ == "__main__":
