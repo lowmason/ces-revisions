@@ -10,8 +10,10 @@ import pytest
 from archive_inventory import (
     BLS_SOURCE,
     CAPTURES_PATH,
+    FILE_TYPES,
     FIRST_REFERENCE_MONTH,
     RELEASE_INDEX_URL,
+    STATUSES,
     VINTAGES_PATH,
     Capture,
     Vintage,
@@ -631,6 +633,23 @@ def test_files_complete_needs_all_three_file_types():
     two = capture("2003-06-10T00:00:00+00:00", specification="s", prior_adjustment="p")
     assert inventory_rows(vintages, [all_three])[0]["files_complete"] == "true"
     assert inventory_rows(vintages, [two])[0]["files_complete"] == "false"
+
+
+def test_a_bls_copy_counts_as_present_for_each_file_type():
+    vintages = [vintage("2003-05", "2003-06-06")]
+    fetched = replace(
+        capture(
+            "2003-06-10T00:00:00+00:00",
+            specification="s",
+            prior_adjustment="p",
+            outliers="o",
+        ),
+        source=BLS_SOURCE,
+    )
+    row = inventory_rows(vintages, [fetched])[0]
+    assert [row[file_type] for file_type in FILE_TYPES] == [BLS_SOURCE] * 3
+    assert row["files_complete"] == "true"
+    assert BLS_SOURCE in STATUSES
 
 
 def test_a_revisit_record_evidences_its_window_with_its_twin_fingerprints():
