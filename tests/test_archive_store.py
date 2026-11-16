@@ -1395,8 +1395,19 @@ def test_a_full_run_replays_with_a_pause_before_each_200_copy_only(
     assert events == [pause, replay_url(moments[0]), pause, replay_url(moments[2])]
 
 
+def forbid_fetch(monkeypatch) -> None:
+    """Fail any request, so a regression in a listing-only test cannot reach the network."""
+
+    def forbidden(url):
+        raise AssertionError(f"no request expected: {url}")
+
+    monkeypatch.setattr(archive_inventory, "fetch", forbidden)
+
+
 def test_every_archive_key_of_every_artifact_is_listed_in_order(monkeypatch):
     keys: list[str] = []
+    forbid_fetch(monkeypatch)
+    monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
     monkeypatch.setattr(
         archive_inventory,
         "list_captures",
@@ -1423,6 +1434,7 @@ def test_a_listing_that_fails_once_is_retried(monkeypatch):
             raise OSError("reset")
         return [(T1, ORIGINAL, "301", "MOVED")]
 
+    forbid_fetch(monkeypatch)
     monkeypatch.setattr(archive_inventory, "list_captures", flaky)
     monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
     monkeypatch.setattr(
