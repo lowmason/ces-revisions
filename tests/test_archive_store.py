@@ -1572,6 +1572,54 @@ def test_an_unreplayable_copy_is_noted_on_stderr_with_its_replay_url(
     assert MISSING_ZIP not in err
 
 
+def test_current_stores_each_artifacts_zip_in_its_own_folder(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    payloads = {
+        artifact.current_url: make_zip({"outliers.xlsx": artifact.name.encode()})
+        for artifact in archive_inventory.ARTIFACTS
+    }
+    monkeypatch.setattr(
+        archive_inventory,
+        "fetch",
+        lambda url: (
+            INDEX_EXCERPT.read_bytes() if url == RELEASE_INDEX_URL else payloads[url]
+        ),
+    )
+    assert fetch_current(T1, paths) == 0
+    for artifact in archive_inventory.ARTIFACTS:
+        payload = payloads[artifact.current_url]
+        assert stored(paths, artifact.name, payload)
+        assert [
+            r["url"] for r in read_csv(paths.captures) if r["artifact"] == artifact.name
+        ] == [artifact.current_url]
+    assert len(list(paths.store.rglob("*.zip"))) == len(archive_inventory.ARTIFACTS)
+    assert check_store(paths.store) == []
+
+
+def test_record_run_stores_each_zip_under_its_own_artifact(tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    for_ae, for_other = zip_a(), zip_b()
+    held = [
+        (
+            Capture(
+                artifact,
+                BLS_SOURCE,
+                T1,
+                f"https://www.bls.gov/{artifact}.zip",
+                "200",
+                payload_digest(payload),
+            ),
+            payload,
+        )
+        for artifact, payload in ((AE, for_ae), (OTHER, for_other))
+    ]
+    record_run(held, [OLD_VINTAGE], paths)
+    assert stored(paths, AE, for_ae)
+    assert stored(paths, OTHER, for_other)
+    assert not stored(paths, OTHER, for_ae)
+    assert not stored(paths, AE, for_other)
+
+
 def test_main_runs_the_command_it_names_with_the_time_now(monkeypatch):
     calls: list[tuple] = []
     for name, result in (("capture_evidence", 0), ("fetch_current", 1)):
