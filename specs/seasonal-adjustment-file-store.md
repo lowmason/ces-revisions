@@ -278,7 +278,9 @@ into `archive_inventory` (for example a `user_agent(url)`). `vintage_sources.use
 
 ### One-time migration
 
-The plan runs these offline steps as code, in this order, before any network run:
+The plan runs these offline steps as code, in this order, before any network run. Steps 1 and 2
+land in one commit. Between them, the restored `ces.spec.ae.zip` row has status `200` and no
+member date, which fails `test_only_an_opened_copy_records_a_member_date`.
 
 1. Restore the two 2026-09-13 rows from commit `1f1061a`, relabeled `bls_fetched`. The
    other-inputs row gets status `payload_lost`.
