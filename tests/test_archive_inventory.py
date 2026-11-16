@@ -594,6 +594,24 @@ def test_file_status_flags_copies_that_disagree_within_one_window():
     )
 
 
+def test_file_status_lists_the_evidence_of_each_conflicting_copy():
+    window = (datetime(2026, 9, 4, 12, 30, tzinfo=UTC), None)
+    archived = capture("2026-09-05T00:00:00+00:00", outliers="a")
+    fetched = Capture(
+        "other_inputs",
+        BLS_SOURCE,
+        datetime(2026, 9, 13, 15, 0, tzinfo=UTC),
+        "https://www.bls.gov/web/empsit/ces.spec.other.zip",
+        "200",
+        "DIGEST",
+        outliers="b",
+    )
+    assert file_status([fetched, archived], "outliers", window) == (
+        "conflicting_captures",
+        f"{archived.url} data/seasonal/raw/ces.spec.other/DIGEST.zip",
+    )
+
+
 def test_file_status_without_a_copy_is_not_archived():
     window = (
         datetime(2008, 2, 1, 13, 30, tzinfo=UTC),
