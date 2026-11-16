@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 import vintage_sources
+from bls_contact import require_bls_contact
 
 from ces_revisions.vintages import raw
 
@@ -447,8 +448,9 @@ def test_downloads_record_their_origin_and_bls_file_dates():
 
 
 @pytest.mark.network
-def test_bls_has_not_refreshed_the_vintage_files_since_the_manifest():
+def test_bls_has_not_refreshed_the_vintage_files_since_the_manifest(monkeypatch):
     """BLS refreshes cesvinall.zip about once a year; when this fails, fetch and rebuild."""
+    require_bls_contact(monkeypatch)
     rows = {row["file"]: row for row in manifest()}
     url = "https://www.bls.gov/web/empsit/cesvinall.zip"
     request = urllib.request.Request(

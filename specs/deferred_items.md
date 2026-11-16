@@ -63,6 +63,7 @@
       Revisit if: BLS answers; then Stage 12 swaps in first-closing dates,
       Stage 4 swaps in matched-sample counts, and Stage 13 codes any lapse
       values the answer documents.
+      → triggered 2026-11-16: BLS answered with all three inputs (first-closing dates, matched-sample counts by supersector, the six lapse values), on the owner's word in a /deferred pass. The reply is not yet in the repo
 
 ## 5-ces-revisions — 2026-09-14
 - [ ] BLS's next vintage-file refresh (plan 5, Deviation 1). The committed

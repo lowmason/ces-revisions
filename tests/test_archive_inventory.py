@@ -39,6 +39,7 @@ from archive_inventory import (
     vintage_rows,
     vintages_from_rows,
 )
+from bls_contact import require_bls_contact
 
 FIXTURES = Path(__file__).parent / "fixtures" / "archive_inventory"
 
@@ -182,7 +183,8 @@ def test_vintages_round_trip_through_csv_rows():
 
 
 @pytest.mark.network
-def test_live_release_index_starts_the_modern_vintages_on_june_6_2003():
+def test_live_release_index_starts_the_modern_vintages_on_june_6_2003(monkeypatch):
+    require_bls_contact(monkeypatch)
     html = fetch(RELEASE_INDEX_URL).decode("utf-8", "replace")
     vintages = select_vintages(parse_release_index(html), now=datetime.now(UTC))
     first = next(v for v in vintages if v.reference_month == FIRST_REFERENCE_MONTH)
