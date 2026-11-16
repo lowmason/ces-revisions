@@ -941,13 +941,22 @@ def test_the_same_bls_bytes_on_two_runs_add_two_rows_and_one_zip(
 
 
 @BOTH_COMMANDS
+@pytest.mark.parametrize("down", [RELEASE_INDEX_URL, OTHER_URL])
 def test_a_bls_fetch_that_fails_every_attempt_stops_the_run_and_writes_nothing(
-    monkeypatch, tmp_path, command
+    monkeypatch, tmp_path, command, down
 ):
     paths = EvidencePaths.at(tmp_path)
     commit_everything(paths)
     before = snapshot(tmp_path)
-    fake_network(monkeypatch, bls={OTHER_URL: OSError("down")})
+    fake_network(monkeypatch, bls={OTHER_URL: zip_a()})
+    serving = archive_inventory.fetch
+
+    def fetch_unless_down(url):
+        if url == down:
+            raise OSError("down")
+        return serving(url)
+
+    monkeypatch.setattr(archive_inventory, "fetch", fetch_unless_down)
     with pytest.raises(RuntimeError, match="failed after 5 attempts"):
         command(T1, paths)
     assert snapshot(tmp_path) == before
@@ -1120,6 +1129,43 @@ def test_an_unchanged_listing_with_an_opened_copy_replays_it_and_keeps_its_row(
     assert capture_evidence(T2, paths) == 0
     assert lines_of(paths, "internet_archive") == after_first
     assert fetched.count(replay_url(copied)) == 2
+
+
+def test_a_doubled_200_row_stays_two_rows_with_one_zip(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_b()
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={
+            OTHER_KEY: [listed(copied, "200", payload_digest(payload))] * 2,
+        },
+        replays={replay_url(copied): payload},
+    )
+    capture_evidence(T1, paths)
+    after_first = lines_of(paths, "internet_archive")
+    assert capture_evidence(T2, paths) == 0
+    assert lines_of(paths, "internet_archive") == after_first
+    assert len(after_first) == 2
+    assert len(list(paths.store.rglob("*.zip"))) == 2
+
+
+def test_a_replay_that_fails_in_an_unexpected_way_writes_nothing(monkeypatch, tmp_path):
+    paths = EvidencePaths.at(tmp_path)
+    commit_everything(paths)
+    before = snapshot(tmp_path)
+    copied = datetime(2026, 9, 10, 12, tzinfo=UTC)
+    fake_network(
+        monkeypatch,
+        bls={OTHER_URL: zip_a()},
+        listing={OTHER_KEY: [listed(copied, "200", payload_digest(zip_b()))]},
+        replays={replay_url(copied): KeyError("not an Archive failure")},
+    )
+    with pytest.raises(KeyError):
+        capture_evidence(T1, paths)
+    assert snapshot(tmp_path) == before
+    assert no_staging_left(tmp_path)
 
 
 def test_a_run_that_fails_while_fetching_writes_nothing(monkeypatch, tmp_path):
