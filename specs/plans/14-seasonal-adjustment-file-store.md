@@ -19,7 +19,8 @@
 - **Mismatches:** where the spec says computed fingerprints or member dates "must equal" a row's, a mismatch in a network run raises `ValueError` naming the row's URL, and the run writes nothing. `adopt` refuses instead: it prints the reason to stderr, returns 1 and writes nothing.
 - **Leave alone:** the text of the parked Stage 14 item in `specs/deferred_items.md` (D1). Also leave the text of the item "Keep each `bls_current` copy as evidence across `captures` runs", apart from its markers (`spec:212-213`).
 - **Timing:** `current` must reach `main` before BLS's January 2027 release (`spec:129-132`).
-- **Branch:** commit on this plan's branch. It carries the spec commits `3827a64` and `5867868`. Never commit in the main checkout, `/Users/lowell/Projects/ces-revisions`, because other sessions switch its branch.
+- **Branch:** start the executing worktree from `claude/captures-evidence-design-0fce4f`, not from `main`. That branch carries the spec commits `3827a64` and `5867868` and this plan. Never commit in the main checkout, `/Users/lowell/Projects/ces-revisions`, because other sessions switch its branch.
+- **Contact file:** `.project.env` is gitignored and exists only in the main checkout. Network commands read it by its absolute path, `/Users/lowell/Projects/ces-revisions/.project.env`, through `uv run --env-file`. uv stops with an error if the file is missing.
 - **Style:** stage files by explicit path. Run `uv run ruff format` and `uv run ruff check` on the files each commit touches. Markdown follows CLAUDE.md's rules for `specs/`. The fast suite, `uv run pytest -m "not slow and not network"`, passes at every commit.
 
 ## Review Focus
@@ -277,7 +278,7 @@ In `tests/test_archive_store.py`, add a `fake_network(monkeypatch, *, bls, listi
 
 Paths come from `EvidencePaths.at(tmp_path)`.
 
-- `test_two_current_runs_keep_the_first_copy_and_its_release_status` (spec Test 1, `spec:316-319`). ZIP X holds `prior_adjustment_file.xlsx` and `outliers.xlsx`, both dated 2026-09-29, so they were made for the release of 2026-10-02. ZIP Y has the same members with other bytes, dated 2026-10-30. Run `fetch_current` at 2026-10-05 15:00 UTC serving X, then at 2026-11-10 15:00 UTC serving Y. After the second run, X's CSV line is byte for byte the line after the first run, and both ZIPs are in the store. `inventory_rows` gives reference month 2026-09 the same `prior_adjustment`, `outliers` and `*_evidence` values after both runs.
+- `test_two_runs_keep_the_first_copy_and_its_release_status` (spec Test 1, `spec:316-319`). Parametrize it over `fetch_current` and `capture_evidence`, with an empty listing, so it shows the deferred item's "Done when" for both commands. ZIP X holds `prior_adjustment_file.xlsx` and `outliers.xlsx`, both dated 2026-09-29, so they were made for the release of 2026-10-02. ZIP Y has the same members with other bytes, dated 2026-10-30. Run the command at 2026-10-05 15:00 UTC serving X, then at 2026-11-10 15:00 UTC serving Y. After the second run, X's CSV line is byte for byte the line after the first run, and both ZIPs are in the store. `inventory_rows` gives reference month 2026-09 the same `prior_adjustment`, `outliers` and `*_evidence` values after both runs.
 - `test_current_makes_no_internet_archive_request_and_keeps_the_archive_rows`. The committed CSV holds one Archive row with status `200` and one with status `301`. `list_captures` raises `AssertionError`. After `fetch_current`, no fetched URL has host `web.archive.org`, the two Archive lines are unchanged, and one `BLS_SOURCE` row was added.
 - `test_the_same_bls_bytes_on_two_runs_add_two_rows_and_one_zip` (Review Focus 3).
 - `test_a_full_run_stores_every_opened_copy`. The listing holds a `200` copy, a `301` and a revisit `-` with the `200` copy's digest. `capture_evidence` returns 0, and every `200` row's `stored_file` exists.
@@ -402,7 +403,7 @@ Expected: FAIL, because the committed CSVs still say `bls_current`.
 
 - [ ] **Step 3: Relabel and restore the rows**
 
-Write `/tmp/migrate_captures.py`, then run `uv run python /tmp/migrate_captures.py` from the worktree root.
+Make a fresh folder with `mktemp -d` and write `migrate_captures.py` alone in it, so no other file sits beside the script on `sys.path`. Run `uv run python <folder>/migrate_captures.py` from the worktree root. Put the Step 6 helper in such a folder too.
 
 ```python
 """Plan 14, Task 6: relabel the BLS rows and restore the two BLS rows of 2026-09-13 (commit 1f1061a)."""
@@ -509,7 +510,7 @@ The content comes from `spec:296-310`.
 - Add these three lines to the Commands block:
 
 ```bash
-uv run --env-file .project.env python scripts/archive_inventory.py captures  # network, owner's yes: record and store every BLS and Internet Archive copy
+uv run --env-file .project.env python scripts/archive_inventory.py captures  # network, owner's yes: record and store every BLS and Internet Archive copy (from the main checkout; a worktree passes its absolute path)
 uv run --env-file .project.env python scripts/archive_inventory.py current   # network, owner's yes: after each release, fetch and store BLS's two ZIPs
 uv run python -I scripts/archive_inventory.py adopt <zip>...                 # offline: store a local copy of a recorded ZIP
 ```
@@ -536,30 +537,40 @@ git commit -m "Describe the file store, current and adopt in the review and CLAU
 
 Ask: "Run `captures` now? It sends about 100 requests to bls.gov and web.archive.org, with the contact address to bls.gov only, and stores about 40 ZIPs (about 3.5 MB)." Go on only after an explicit yes. If the owner declines, leave this task unchecked, go to Task 9, and let the completion gate defer this task.
 
-- [ ] **Step 2: Run it**
+- [ ] **Step 2: Check the contact address without printing it**
+
+Run: `uv run --env-file /Users/lowell/Projects/ces-revisions/.project.env python -c "import os; print(bool(os.environ.get('BLS_CONTACT_EMAIL')))"`
+Expected: `True`. Otherwise stop and ask the owner.
+
+- [ ] **Step 3: Run it**
 
 Run it in the background, because it takes several minutes:
 
 ```bash
-uv run --env-file .project.env python scripts/archive_inventory.py captures
+uv run --env-file /Users/lowell/Projects/ces-revisions/.project.env python scripts/archive_inventory.py captures
 ```
 
-Record the exit code and every stderr line. Exit 1 with named rows is the throttled case: keep going.
+Record the exit code and every stderr line. Exit 1 means one of two things:
 
-- [ ] **Step 3: Check that no committed row changed**
+- Stderr names `200` rows with no stored ZIP. This is the throttled case: keep going.
+- Stderr names unexplained members. This is a finding about BLS's files: stop and report to the owner.
+
+Stop and report in two more cases. One is a new copy that fails `test_no_copy_of_a_seasonal_adjustment_zip_holds_an_unexplained_file`. The other is a new copy that fails `test_every_copy_was_made_after_the_release_its_files_were_made_for`. Never change `_EXPLAINED`, `BUILD_LEAD_DAYS` or `SPECIFICATIONS_BUILT_AFTER_THEIR_BENCHMARK` without the owner's yes.
+
+- [ ] **Step 4: Check that no committed row changed**
 
 Run: `uv run python scripts/archive_inventory.py inventory`, then `git diff -U0 docs/inventory/archive-captures.csv | grep '^-[^-]'`
 Expected: no output, so every change is an added row. The only allowed removed line belongs to a row that was `unreplayable` and is now `200` (merge point 5). There is none at this plan's base.
 
-- [ ] **Step 4: Update the pinned evidence**
+- [ ] **Step 5: Update the pinned evidence**
 
 Set `AWAITING_A_STORED_ZIP` to the URLs that the run named, which is an empty set after a clean run. If the archive-complete count rose, set `ARCHIVE_COMPLETE` to the new count. If it fell, stop and report to the owner.
 
-- [ ] **Step 5: Update the prose counts**
+- [ ] **Step 6: Update the prose counts**
 
 Recount the copy counts at `review:132` and `review:486` from `archive-captures.csv` with a short script, and edit the prose to match.
 
-- [ ] **Step 6: Verify and commit everything together**
+- [ ] **Step 7: Verify and commit everything together**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS.
@@ -569,7 +580,7 @@ git add data/seasonal/raw docs/inventory/archive-captures.csv docs/inventory/es-
 git commit -m "Store every opened Internet Archive copy from the first full captures run"
 ```
 
-- [ ] **Step 7: Tell the owner the rescue folder can go**
+- [ ] **Step 8: Tell the owner the rescue folder can go**
 
 Tell the owner that `/Users/lowell/Projects/ces-sa-rescue/` can now be deleted (`spec:361-362`). Do not delete it yourself.
 
@@ -581,4 +592,4 @@ Dispatch code-reviewer (Opus) over the range from the merge base with `origin/ma
 
 - [ ] **Step 2: Run the Plan Completion Protocol of writing-plans**
 
-Tick the item "Keep each `bls_current` copy as evidence across `captures` runs" with `→ done <date>`. Its "Done when" is met by Task 4's two-run test and by Task 8. If Task 8 was deferred, defer the full run as a new item instead. Leave the parked Stage 14 item's text unchanged (D1). Retire this plan and the spec.
+Tick the item "Keep each `bls_current` copy as evidence across `captures` runs" with `→ done <date>`. Its "Done when" is met by Task 4's two-run test, which covers both commands, and by Task 8. If Task 8 was deferred, defer the full run as a new item instead. Leave the parked Stage 14 item's text unchanged (D1). Retire this plan and the spec.
