@@ -542,12 +542,15 @@ def test_a_row_without_a_payload_takes_an_observation_that_has_none_either(
     assert merge_captures([committed], [observed]) == [observed]
 
 
+def test_a_listed_digest_that_differs_from_the_committed_one_is_an_error():
+    with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
+        merge_captures([row()], [row(digest="E")])
+
+
 @pytest.mark.parametrize(
     "committed_status", ["200", "payload_lost", "301", "403", "-", "unreplayable"]
 )
-def test_a_listed_digest_that_differs_from_the_committed_one_is_an_error(
-    committed_status,
-):
+def test_a_listed_digest_is_checked_whatever_the_committed_status(committed_status):
     committed = row(status=committed_status)
     with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
         merge_captures([committed], [row(digest="E")])
