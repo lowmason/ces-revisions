@@ -2,7 +2,10 @@
 
 import hashlib
 import pathlib
+import re
 import subprocess
+from dataclasses import replace
+from datetime import UTC, datetime
 from pathlib import Path
 
 import archive_inventory
@@ -12,7 +15,10 @@ from archive_inventory import (
     STORE_DIR,
     STORE_MANIFEST,
     STORE_MANIFEST_COLUMNS,
+    Capture,
+    capture_key,
     check_store,
+    merge_captures,
     payload_digest,
     read_csv,
     staging,
@@ -421,6 +427,205 @@ def test_check_store_without_a_manifest_finds_every_zip_unlisted(tmp_path):
     problems = check_store(store)
     assert [ae_file in problems[0], other_file in problems[1]] == [True, True]
     assert len(problems) == 2
+
+
+# --- Merging -------------------------------------------------------------------------------
+
+ARCHIVE_URL = (
+    "https://web.archive.org/web/20210318120000id_/https://www.bls.gov/ces.spec.ae.zip"
+)
+FINGERPRINTS = (
+    "specification",
+    "prior_adjustment",
+    "outliers",
+    "unexpected",
+    "newest_member",
+)
+
+
+def row(**changes) -> Capture:
+    """One opened Internet Archive copy, with `changes` applied."""
+    base = Capture(
+        artifact=AE,
+        source="internet_archive",
+        timestamp=datetime(2021, 3, 18, 12, 0, tzinfo=UTC),
+        url=ARCHIVE_URL,
+        status="200",
+        digest="D",
+        outliers="o",
+    )
+    return replace(base, **changes)
+
+
+def test_a_capture_key_is_artifact_source_url_timestamp():
+    capture = row()
+    assert capture_key(capture) == (
+        AE,
+        "internet_archive",
+        ARCHIVE_URL,
+        datetime(2021, 3, 18, 12, 0, tzinfo=UTC),
+    )
+
+
+def test_a_committed_row_the_run_does_not_observe_stays():
+    bls = row(source="bls_current", url="https://www.bls.gov/ces.spec.ae.zip")
+    archived = row()
+    assert merge_captures([bls, archived], []) == [bls, archived]
+
+
+def test_an_observed_row_with_a_new_key_is_added():
+    committed = row()
+    later = row(timestamp=datetime(2021, 4, 1, tzinfo=UTC))
+    other_url = row(url=ARCHIVE_URL + "?other")
+    other_artifact = row(artifact=OTHER)
+    other_source = row(source="bls_current")
+    for added in (later, other_url, other_artifact, other_source):
+        merged = merge_captures([committed], [added])
+        assert len(merged) == 2
+        assert committed in merged
+        assert added in merged
+    assert merge_captures([], [committed]) == [committed]
+
+
+def test_a_committed_opened_row_keeps_its_credit_when_its_replay_fails():
+    assert merge_captures([row()], [row(status="unreplayable", outliers="")]) == [row()]
+
+
+@pytest.mark.parametrize("observed_status", ["301", "403", "-", "unreplayable"])
+def test_a_committed_opened_row_stays_against_any_observation_without_a_payload(
+    observed_status,
+):
+    observed = row(status=observed_status, outliers="")
+    assert merge_captures([row()], [observed]) == [row()]
+
+
+def test_an_opened_copy_with_other_fingerprints_is_an_error():
+    with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
+        merge_captures([row()], [row(outliers="x")])
+
+
+@pytest.mark.parametrize("column", FINGERPRINTS)
+def test_an_opened_copy_with_any_other_fingerprint_or_member_date_is_an_error(column):
+    committed = row(**{column: "same"})
+    with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
+        merge_captures([committed], [row(**{column: "other"})])
+
+
+@pytest.mark.parametrize("column", FINGERPRINTS)
+def test_an_opened_copy_with_the_same_fingerprints_leaves_the_row_unchanged(column):
+    committed = row(**{column: "same"})
+    assert merge_captures([committed], [row(**{column: "same"})]) == [committed]
+
+
+def test_a_payload_lost_row_never_changes():
+    lost = row(status="payload_lost", outliers="")
+    assert merge_captures([lost], [row()]) == [lost]
+    assert merge_captures([lost], [row(outliers="x")]) == [lost]
+    assert merge_captures([lost], [row(status="unreplayable", outliers="")]) == [lost]
+    assert merge_captures([lost], []) == [lost]
+
+
+@pytest.mark.parametrize("committed_status", ["301", "403", "-", "unreplayable"])
+def test_a_row_without_a_payload_takes_the_new_observation(committed_status):
+    committed = row(status=committed_status, outliers="")
+    assert merge_captures([committed], [row()]) == [row()]
+
+
+@pytest.mark.parametrize("committed_status", ["301", "403", "-", "unreplayable"])
+def test_a_row_without_a_payload_takes_an_observation_that_has_none_either(
+    committed_status,
+):
+    committed = row(status=committed_status, outliers="")
+    observed = row(
+        status="unreplayable" if committed_status != "unreplayable" else "301"
+    )
+    assert merge_captures([committed], [observed]) == [observed]
+
+
+@pytest.mark.parametrize(
+    "committed_status", ["200", "payload_lost", "301", "403", "-", "unreplayable"]
+)
+def test_a_listed_digest_that_differs_from_the_committed_one_is_an_error(
+    committed_status,
+):
+    committed = row(status=committed_status)
+    with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
+        merge_captures([committed], [row(digest="E")])
+
+
+@pytest.mark.parametrize("observed_status", ["301", "403", "-", "unreplayable"])
+def test_a_listed_digest_is_checked_whatever_the_observed_status(observed_status):
+    with pytest.raises(ValueError, match=re.escape(ARCHIVE_URL)):
+        merge_captures([row()], [row(status=observed_status, digest="E")])
+
+
+def test_rows_listed_twice_pair_as_a_multiset():
+    r = row()
+    assert merge_captures([r, r], [r]) == [r, r]
+    assert merge_captures([r, r], [r, r]) == [r, r]
+    assert merge_captures([r, r], [r, r, r]) == [r, r, r]
+
+
+def test_rows_listed_twice_for_the_first_time_stay_two_rows():
+    r = row(status="301", outliers="")
+    assert merge_captures([], [r, r]) == [r, r]
+    assert merge_captures([r], [r, r]) == [r, r]
+
+
+def test_the_ith_committed_row_pairs_with_the_ith_observed_row():
+    committed = [row(status="301", outliers=""), row()]
+    observed = [row(status="403", outliers=""), row(status="unreplayable", outliers="")]
+    assert merge_captures(committed, observed) == [observed[0], row()]
+
+
+def test_an_extra_committed_row_under_a_key_stays_and_an_extra_observed_row_is_added():
+    first = row(status="301", outliers="")
+    second = row(status="403", outliers="")
+    third = row(status="unreplayable", outliers="")
+    assert merge_captures([first, second], [third]) == [third, second]
+    assert merge_captures([first], [second, third]) == [second, third]
+
+
+def test_the_inputs_are_left_as_they_were():
+    committed = [row(status="301", outliers="")]
+    observed = [row(), row(url=ARCHIVE_URL + "?other")]
+    merge_captures(committed, observed)
+    assert committed == [row(status="301", outliers="")]
+    assert observed == [row(), row(url=ARCHIVE_URL + "?other")]
+
+
+def test_merged_rows_sort_by_artifact_source_timestamp_url():
+    early = datetime(2020, 1, 1, tzinfo=UTC)
+    late = datetime(2021, 1, 1, tzinfo=UTC)
+    in_order = [
+        row(artifact=AE, source="bls_current", timestamp=late, url="https://a"),
+        row(artifact=AE, source="internet_archive", timestamp=early, url="https://z"),
+        row(artifact=AE, source="internet_archive", timestamp=late, url="https://a"),
+        row(artifact=AE, source="internet_archive", timestamp=late, url="https://b"),
+        row(artifact=OTHER, source="bls_current", timestamp=early, url="https://a"),
+    ]
+    assert merge_captures([], list(reversed(in_order))) == in_order
+    assert merge_captures(list(reversed(in_order)), []) == in_order
+
+
+def test_doubled_rows_keep_their_order_through_the_sort():
+    first = row(status="403", outliers="")
+    second = row(status="301", outliers="")
+    assert merge_captures([first, second], []) == [first, second]
+    assert merge_captures([second, first], []) == [second, first]
+
+
+def test_an_unchanged_listing_returns_the_committed_rows_as_they_were():
+    rows = [
+        row(source="bls_current", url="https://www.bls.gov/ces.spec.ae.zip"),
+        row(status="301", outliers=""),
+        row(status="301", outliers=""),
+        row(timestamp=datetime(2021, 4, 1, tzinfo=UTC)),
+        row(artifact=OTHER, status="payload_lost", outliers=""),
+    ]
+    once = merge_captures(rows, rows)
+    assert once == merge_captures(rows, [])
+    assert merge_captures(once, rows) == once
 
 
 # --- Repository rules ----------------------------------------------------------------------

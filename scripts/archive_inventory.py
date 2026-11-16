@@ -25,6 +25,7 @@ import sys
 import tempfile
 import urllib.request
 import zipfile
+from collections import defaultdict, deque
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, fields, replace
@@ -609,6 +610,59 @@ def check_store(store_dir: Path) -> list[str]:
         if reasons:
             problems.append(f"{file}: {'; '.join(reasons)}")
     return problems
+
+
+# --- Merge ---------------------------------------------------------------------------------
+
+_OPENED_FIELDS = (
+    "specification",
+    "prior_adjustment",
+    "outliers",
+    "unexpected",
+    "newest_member",
+)
+
+
+def capture_key(capture: Capture) -> tuple[str, str, str, datetime]:
+    return (capture.artifact, capture.source, capture.url, capture.timestamp)
+
+
+def _merge_pair(old: Capture, new: Capture) -> Capture:
+    """The row that stands for a committed row and the observation that shares its key."""
+    if old.digest != new.digest:
+        raise ValueError(
+            f"{old.url}: the listed digest {new.digest} differs from the committed {old.digest}"
+        )
+    if old.status == "200":
+        if new.status == "200":
+            for name in _OPENED_FIELDS:
+                if getattr(old, name) != getattr(new, name):
+                    raise ValueError(
+                        f"{old.url}: the opened copy's {name} {getattr(new, name)!r} differs "
+                        f"from the committed {getattr(old, name)!r}"
+                    )
+        return old
+    if old.status == "payload_lost":
+        return old
+    return new
+
+
+def merge_captures(committed: list[Capture], observed: list[Capture]) -> list[Capture]:
+    """Merge a run's observations into the committed rows (specs/seasonal-adjustment-file-store.md).
+
+    Rows with one key pair up as a multiset, the ith committed row with the ith observed row.
+    A committed row with no partner stays, and an observed row with no partner is added. Any
+    mismatch raises ValueError, so a run that merges writes nothing.
+    """
+    waiting: defaultdict[tuple, deque[Capture]] = defaultdict(deque)
+    for new in observed:
+        waiting[capture_key(new)].append(new)
+    merged = []
+    for old in committed:
+        partners = waiting[capture_key(old)]
+        merged.append(_merge_pair(old, partners.popleft()) if partners else old)
+    merged.extend(new for partners in waiting.values() for new in partners)
+    return sorted(merged, key=attrgetter("artifact", "source", "timestamp", "url"))
 
 
 # --- Inventory -----------------------------------------------------------------------------
