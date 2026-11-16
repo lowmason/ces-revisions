@@ -9,6 +9,7 @@ subcommands, so the inventory can be rebuilt from the committed evidence without
     uv run python scripts/archive_inventory.py captures    # full run: BLS and every Archive copy
     uv run python scripts/archive_inventory.py current     # light run: BLS's current files only
     uv run python scripts/archive_inventory.py inventory   # derives the inventory from them
+    uv run python -I scripts/archive_inventory.py adopt ZIP...  # offline: store a recorded local ZIP
 
 `captures` and `current` merge what they observe into docs/inventory/archive-captures.csv, so no
 recorded row is dropped, rewrite docs/inventory/es-vintages.csv, and store every ZIP they open
@@ -1104,6 +1105,100 @@ def fetch_current(now: datetime, paths: EvidencePaths = EVIDENCE) -> int:
     return 1 if report_unexplained(merged) else 0
 
 
+class AdoptRefusal(Exception):
+    """A local ZIP that `adopt` will not store. The message says why."""
+
+
+def _adopt_rows(
+    payload: bytes, committed: list[Capture], store: Path, held: set[str]
+) -> tuple[str, list[Capture]]:
+    """The artifact of a ZIP `adopt` may store and the committed rows with its rows updated.
+
+    `held` holds the stored files of the ZIPs the run has accepted so far, and gains this one's.
+    Raises AdoptRefusal when no row, or rows under two artifacts, record the ZIP's digest, when
+    the file is already held, or when a row's fingerprints or member date differ from the ZIP's.
+    """
+    digest = payload_digest(payload)
+    matching = [
+        index
+        for index, capture in enumerate(committed)
+        if capture.digest == digest and capture.status in ("200", "payload_lost")
+    ]
+    if not matching:
+        raise AdoptRefusal(
+            f"no committed row with status 200 or payload_lost records digest {digest}"
+        )
+    artifacts = sorted({committed[index].artifact for index in matching})
+    if len(artifacts) > 1:
+        raise AdoptRefusal(
+            f"rows for digest {digest} name two artifacts: {', '.join(artifacts)}"
+        )
+    file = stored_file(artifacts[0], digest)
+    if file in held:
+        raise AdoptRefusal(f"this run already holds {file}")
+    if (store / file).is_file():
+        raise AdoptRefusal(f"the store already holds {file}")
+    computed = {**inspect_zip(payload), "newest_member": newest_member(payload)}
+    rows = list(committed)
+    for index in matching:
+        row = committed[index]
+        adopted = replace(
+            row,
+            status="200",
+            newest_member=row.newest_member or computed["newest_member"],
+        )
+        for name in _OPENED_FIELDS:
+            if getattr(adopted, name) != computed[name]:
+                raise AdoptRefusal(
+                    f"the row for {row.url} at {row.timestamp.strftime(_TIMESTAMP)} records "
+                    f"{name} {getattr(row, name)!r}, but the ZIP's is {computed[name]!r}"
+                )
+        rows[index] = adopted
+    held.add(file)
+    return artifacts[0], rows
+
+
+def adopt_payloads(zips: list[Path], paths: EvidencePaths = EVIDENCE) -> int:
+    """Offline step: store each local ZIP whose digest a committed row records.
+
+    A ZIP's rows are the committed rows with its digest and status `200` or `payload_lost`.
+    Their fingerprints and member date must equal the ZIP's. A row with no member date gets the
+    ZIP's, and a `payload_lost` row becomes `200`. Every other row stays as it was, and no row is
+    added. Every ZIP is checked before any is staged, so one refusal prints its reason to stderr,
+    returns 1 and writes nothing. Otherwise the ZIPs and the updated captures move into place
+    together. `es-vintages.csv` is never written.
+    """
+    committed = (
+        [capture_from_row(row) for row in read_csv(paths.captures)]
+        if paths.captures.is_file()
+        else []
+    )
+    accepted: list[tuple[Path, str, bytes]] = []
+    held: set[str] = set()
+    for zip_path in zips:
+        try:
+            payload = zip_path.read_bytes()
+            artifact, committed = _adopt_rows(payload, committed, paths.store, held)
+        except (OSError, AdoptRefusal) as refusal:
+            print(f"{zip_path}: {refusal}", file=sys.stderr)
+            return 1
+        accepted.append((zip_path, artifact, payload))
+    with staging(paths.store) as run:
+        stored = [
+            (zip_path, stored_file(artifact, run.put(artifact, payload)))
+            for zip_path, artifact, payload in accepted
+        ]
+        write_csv(
+            run.path_for(paths.captures),
+            [capture_row(capture) for capture in committed],
+            CAPTURE_COLUMNS,
+        )
+        run.promote()
+    for zip_path, file in stored:
+        print(f"{zip_path}: stored {file}")
+    return 0
+
+
 def derive_inventory() -> int:
     """Offline step: derive the inventory from the evidence and regenerate the review's tables."""
     vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
@@ -1127,9 +1222,16 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser(
         "inventory", help="offline: derive the inventory from the evidence"
     )
-    command = parser.parse_args(argv).command
+    adopt = commands.add_parser(
+        "adopt", help="offline: store a local copy of a recorded ZIP"
+    )
+    adopt.add_argument("zips", nargs="+", type=Path, metavar="ZIP")
+    arguments = parser.parse_args(argv)
+    command = arguments.command
     if command == "inventory":
         return derive_inventory()
+    if command == "adopt":
+        return adopt_payloads(arguments.zips, EVIDENCE)
     now = datetime.now(UTC).replace(microsecond=0)
     if command == "captures":
         return capture_evidence(now)

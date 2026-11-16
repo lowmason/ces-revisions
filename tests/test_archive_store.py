@@ -5,6 +5,7 @@ import hashlib
 import pathlib
 import re
 import subprocess
+import sys
 from dataclasses import FrozenInstanceError, replace
 from datetime import UTC, date, datetime, timedelta
 from operator import attrgetter
@@ -31,6 +32,7 @@ from archive_inventory import (
     Capture,
     EvidencePaths,
     Vintage,
+    adopt_payloads,
     capture_evidence,
     capture_from_row,
     capture_key,
@@ -1695,6 +1697,342 @@ def test_main_refuses_a_missing_or_unknown_command(monkeypatch, argv, capsys):
     with pytest.raises(SystemExit) as stopped:
         main(argv)
     assert stopped.value.code == 2
+
+
+# --- Adopting ------------------------------------------------------------------------------
+
+MOMENT = datetime(2026, 11, 15, 12, tzinfo=UTC)
+FAKE_FINGERPRINT = "0000000000000000"
+FAKE_MEMBER_DATE = "2020-01-01T00:00:00"
+
+
+@pytest.fixture
+def offline(monkeypatch) -> None:
+    """`adopt` is offline: a request, a pause or an Archive listing fails the test."""
+    forbid_fetch(monkeypatch)
+    forbid_pause_and_listing(monkeypatch)
+
+
+def rescued(tmp_path: Path, payload: bytes, name: str = "rescued.zip") -> Path:
+    """A local copy of `payload`, the way a rescued file sits outside the repository."""
+    file = tmp_path / "rescue" / name
+    file.parent.mkdir(parents=True, exist_ok=True)
+    file.write_bytes(payload)
+    return file
+
+
+def recorded(payload: bytes, artifact: str = OTHER, **changes) -> Capture:
+    """A committed BLS row for `payload`'s digest, with what opening `payload` records."""
+    base = Capture(
+        artifact,
+        BLS_SOURCE,
+        MOMENT,
+        f"https://www.bls.gov/{artifact}.zip",
+        "200",
+        payload_digest(payload),
+        **opened(payload),
+    )
+    return replace(base, **changes)
+
+
+def adopted_file(paths: EvidencePaths, artifact: str, payload: bytes) -> Path:
+    return paths.store / stored_file(artifact, payload_digest(payload))
+
+
+def refused(tmp_path: Path, paths: EvidencePaths, files: list[Path], capsys) -> str:
+    """Run `adopt`, check that it exits 1 and changes no file at all, and return its stderr."""
+    before = snapshot(tmp_path)
+    assert adopt_payloads(files, paths) == 1
+    assert snapshot(tmp_path) == before
+    return capsys.readouterr().err
+
+
+def test_adopt_stores_a_recorded_zip_and_fills_an_empty_member_date(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    digest = payload_digest(payload)
+    bare = recorded(payload, newest_member="")
+    dated = archive_copy(
+        datetime(2021, 3, 18, 12, tzinfo=UTC), "200", digest, **opened(payload)
+    )
+    revisit = archive_copy(datetime(2021, 3, 19, 12, tzinfo=UTC), "-", digest)
+    elsewhere = recorded(zip_b(), status="payload_lost", newest_member="")
+    commit(paths, bare, dated, revisit, elsewhere)
+    write_csv(paths.vintages, vintage_rows([OLD_VINTAGE]), VINTAGE_COLUMNS)
+    vintages = paths.vintages.read_bytes()
+    before = read_csv(paths.captures)
+    file = rescued(tmp_path, payload)
+
+    assert adopt_payloads([file], paths) == 0
+
+    assert adopted_file(paths, OTHER, payload).read_bytes() == payload
+    assert read_csv(paths.captures) == [
+        {**old, "newest_member": newest_member(payload)}
+        if old == capture_row(bare)
+        else old
+        for old in before
+    ]
+    assert [r["file"] for r in read_csv(paths.store / STORE_MANIFEST)] == [
+        stored_file(OTHER, digest)
+    ]
+    assert check_store(paths.store) == []
+    assert paths.vintages.read_bytes() == vintages
+    assert stored_file(OTHER, digest) in capsys.readouterr().out
+    assert no_staging_left(tmp_path)
+
+
+def test_adopt_refuses_a_digest_no_row_records(tmp_path, offline, capsys):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    # Same fingerprints and member date as the ZIP, so only the digest sets it apart.
+    commit(paths, recorded(payload, digest="ANOTHERDIGEST"))
+    file = rescued(tmp_path, payload)
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+    assert not paths.store.exists()
+
+
+@pytest.mark.parametrize("status", ["-", "301", "403", "404", "unreplayable"])
+def test_adopt_refuses_a_digest_that_only_rows_with_another_status_record(
+    tmp_path, offline, capsys, status
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, status=status))
+    file = rescued(tmp_path, payload)
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+    assert not paths.store.exists()
+
+
+def test_adopt_refuses_a_digest_already_stored(tmp_path, offline, capsys):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, newest_member=""))
+    store_zips(paths.store, (OTHER, payload))
+    file = rescued(tmp_path, payload)
+    err = refused(tmp_path, paths, [file], capsys)
+    assert str(file) in err
+    assert stored_file(OTHER, payload_digest(payload)) in err
+
+
+def test_adopt_refuses_the_same_bytes_given_twice_and_stores_neither(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, newest_member=""))
+    first, second = (
+        rescued(tmp_path, payload, "a.zip"),
+        rescued(tmp_path, payload, "b.zip"),
+    )
+    err = refused(tmp_path, paths, [first, second], capsys)
+    assert str(second) in err
+    assert str(first) not in err
+    assert not paths.store.exists()
+
+
+def test_adopt_refuses_bytes_whose_fingerprints_differ_from_the_row(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, outliers="0000000000000000"))
+    file = rescued(tmp_path, payload)
+    err = refused(tmp_path, paths, [file], capsys)
+    assert str(file) in err
+    assert "outliers" in err
+
+
+@pytest.mark.parametrize("field", FINGERPRINTS[:4])
+def test_adopt_refuses_a_difference_in_any_one_fingerprint(
+    tmp_path, offline, capsys, field
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, **{field: "stray.dat"}))
+    file = rescued(tmp_path, payload)
+    err = refused(tmp_path, paths, [file], capsys)
+    assert str(file) in err
+    assert field in err
+
+
+def test_adopt_refuses_a_member_date_that_differs_from_the_row(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, newest_member=FAKE_MEMBER_DATE))
+    file = rescued(tmp_path, payload)
+    err = refused(tmp_path, paths, [file], capsys)
+    assert str(file) in err
+    assert "newest_member" in err
+
+
+@pytest.mark.parametrize("bad_year", [2015, 2018, 2021])
+@pytest.mark.parametrize(
+    ("field", "wrong"),
+    [("outliers", FAKE_FINGERPRINT), ("newest_member", FAKE_MEMBER_DATE)],
+)
+def test_adopt_checks_every_row_that_has_the_digest(
+    tmp_path, offline, capsys, bad_year, field, wrong
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(
+        paths,
+        *(
+            recorded(
+                payload,
+                timestamp=datetime(year, 3, 18, 12, tzinfo=UTC),
+                **({field: wrong} if year == bad_year else {}),
+            )
+            for year in (2015, 2018, 2021)
+        ),
+    )
+    file = rescued(tmp_path, payload)
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+
+
+def test_adopt_refuses_rows_with_the_digest_under_two_artifacts(
+    tmp_path, offline, capsys
+):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, AE), recorded(payload, OTHER))
+    file = rescued(tmp_path, payload)
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+    assert not paths.store.exists()
+
+
+def test_adopt_turns_a_payload_lost_row_into_200(tmp_path, offline):
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    lost = recorded(payload, status="payload_lost", newest_member="")
+    also_lost = recorded(
+        payload,
+        status="payload_lost",
+        timestamp=datetime(2026, 9, 13, 12, tzinfo=UTC),
+    )
+    still_lost = recorded(zip_b(), status="payload_lost", newest_member="")
+    commit(paths, lost, also_lost, still_lost)
+    before = read_csv(paths.captures)
+    assert adopt_payloads([rescued(tmp_path, payload)], paths) == 0
+    assert read_csv(paths.captures) == [
+        {**old, "status": "200", "newest_member": newest_member(payload)}
+        if old["digest"] == payload_digest(payload)
+        else old
+        for old in before
+    ]
+    assert adopted_file(paths, OTHER, payload).read_bytes() == payload
+
+
+def test_adopt_stores_each_zip_under_its_own_artifact_in_one_run(tmp_path, offline):
+    paths = EvidencePaths.at(tmp_path)
+    for_ae, for_other = zip_a(), zip_b()
+    commit(
+        paths,
+        recorded(for_ae, AE, newest_member=""),
+        recorded(for_other, OTHER, newest_member=""),
+    )
+    files = [
+        rescued(tmp_path, for_ae, "ae.zip"),
+        rescued(tmp_path, for_other, "other.zip"),
+    ]
+    assert adopt_payloads(files, paths) == 0
+    assert adopted_file(paths, AE, for_ae).read_bytes() == for_ae
+    assert adopted_file(paths, OTHER, for_other).read_bytes() == for_other
+    assert len(list(paths.store.rglob("*.zip"))) == 2
+    assert len(read_csv(paths.store / STORE_MANIFEST)) == 2
+    assert [r["newest_member"] for r in read_csv(paths.captures)] == [
+        newest_member(for_ae),
+        newest_member(for_other),
+    ]
+    assert check_store(paths.store) == []
+
+
+@pytest.mark.parametrize("bad_first", [True, False], ids=["bad first", "bad last"])
+def test_adopt_checks_every_zip_before_it_stores_any(
+    tmp_path, offline, capsys, bad_first
+):
+    paths = EvidencePaths.at(tmp_path)
+    good, unknown = zip_a(), zip_b()
+    commit(paths, recorded(good, newest_member=""))
+    files = [rescued(tmp_path, good, "good.zip"), rescued(tmp_path, unknown, "bad.zip")]
+    err = refused(tmp_path, paths, files[::-1] if bad_first else files, capsys)
+    assert str(files[1]) in err
+    assert str(files[0]) not in err
+    assert not paths.store.exists()
+
+
+def test_adopt_refuses_a_file_it_cannot_read(tmp_path, offline, capsys):
+    paths = EvidencePaths.at(tmp_path)
+    commit(paths, recorded(zip_a()))
+    missing = tmp_path / "rescue" / "missing.zip"
+    assert str(missing) in refused(tmp_path, paths, [missing], capsys)
+
+
+def test_adopt_refuses_every_zip_when_no_captures_csv_exists(tmp_path, offline, capsys):
+    paths = EvidencePaths.at(tmp_path)
+    file = rescued(tmp_path, zip_a())
+    assert str(file) in refused(tmp_path, paths, [file], capsys)
+    assert not paths.captures.exists()
+    assert not paths.store.exists()
+
+
+def test_main_passes_the_adopt_zip_paths_and_the_evidence_to_adopt_payloads(
+    monkeypatch,
+):
+    calls: list[tuple] = []
+    monkeypatch.setattr(
+        archive_inventory,
+        "adopt_payloads",
+        lambda *args: calls.append(args) or 1,
+    )
+    assert main(["adopt", "a.zip", "dir/b.zip"]) == 1
+    assert calls == [([Path("a.zip"), Path("dir/b.zip")], EVIDENCE)]
+
+
+def test_main_adopt_works_on_the_evidence_paths_it_names(
+    tmp_path, monkeypatch, offline
+):
+    paths = EvidencePaths.at(tmp_path)
+    monkeypatch.setattr(archive_inventory, "EVIDENCE", paths)
+    payload = zip_a()
+    commit(paths, recorded(payload, newest_member=""))
+    assert main(["adopt", str(rescued(tmp_path, payload))]) == 0
+    assert adopted_file(paths, OTHER, payload).read_bytes() == payload
+
+
+def test_main_refuses_adopt_without_a_zip(monkeypatch):
+    def forbidden(*args):
+        raise AssertionError("adopt should not run")
+
+    monkeypatch.setattr(archive_inventory, "adopt_payloads", forbidden)
+    with pytest.raises(SystemExit) as stopped:
+        main(["adopt"])
+    assert stopped.value.code == 2
+
+
+def test_adopt_runs_in_an_isolated_interpreter_on_the_standard_library_alone(tmp_path):
+    # The committed rows record no such digest, so `adopt` refuses and writes nothing.
+    file = rescued(tmp_path, make_zip({"outliers.xlsx": b"not a recorded ZIP"}))
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-I",
+            str(ROOT / "scripts" / "archive_inventory.py"),
+            "adopt",
+            str(file),
+        ],
+        cwd=tmp_path,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 1
+    assert "Traceback" not in result.stderr
+    assert str(file) in result.stderr
 
 
 # --- Repository rules ----------------------------------------------------------------------
