@@ -1,9 +1,11 @@
 """scripts/archive_inventory.py: the content-addressed store for seasonal-adjustment ZIPs."""
 
+import ast
 import csv
 import hashlib
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 from dataclasses import FrozenInstanceError, replace
@@ -2014,25 +2016,53 @@ def test_main_refuses_adopt_without_a_zip(monkeypatch):
     assert stopped.value.code == 2
 
 
-def test_adopt_runs_in_an_isolated_interpreter_on_the_standard_library_alone(tmp_path):
-    # The committed rows record no such digest, so `adopt` refuses and writes nothing.
-    file = rescued(tmp_path, make_zip({"outliers.xlsx": b"not a recorded ZIP"}))
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-I",
-            str(ROOT / "scripts" / "archive_inventory.py"),
-            "adopt",
-            str(file),
-        ],
-        cwd=tmp_path,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    assert result.returncode == 1
-    assert "Traceback" not in result.stderr
-    assert str(file) in result.stderr
+def test_adopt_runs_in_an_isolated_interpreter_on_a_copy_of_the_script_alone(tmp_path):
+    # The copy has no sibling module to import, and its evidence paths sit under `tmp_path`.
+    script = tmp_path / "scripts" / "archive_inventory.py"
+    script.parent.mkdir()
+    shutil.copy(ROOT / "scripts" / "archive_inventory.py", script)
+    paths = EvidencePaths.at(tmp_path)
+    payload = zip_a()
+    commit(paths, recorded(payload, newest_member=""))
+    file = rescued(tmp_path, payload)
+
+    def adopt() -> subprocess.CompletedProcess:
+        return subprocess.run(
+            [sys.executable, "-I", str(script), "adopt", str(file)],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+    first = adopt()
+    assert first.stderr == ""
+    assert first.returncode == 0
+    assert adopted_file(paths, OTHER, payload).read_bytes() == payload
+    assert [r["newest_member"] for r in read_csv(paths.captures)] == [
+        newest_member(payload)
+    ]
+    # The store now holds the ZIP, so the same command refuses and exits 1.
+    second = adopt()
+    assert second.returncode == 1
+    assert str(file) in second.stderr
+    assert "Traceback" not in second.stderr
+
+
+def test_archive_inventory_imports_only_the_standard_library():
+    tree = ast.parse((ROOT / "scripts" / "archive_inventory.py").read_text("utf-8"))
+    imported = {
+        name
+        for node in ast.walk(tree)
+        for name in (
+            [alias.name for alias in node.names]
+            if isinstance(node, ast.Import)
+            else [("." * node.level) + (node.module or "")]
+            if isinstance(node, ast.ImportFrom)
+            else []
+        )
+    }
+    assert {name.split(".")[0] for name in imported} <= sys.stdlib_module_names
 
 
 # --- Repository rules ----------------------------------------------------------------------
