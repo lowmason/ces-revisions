@@ -1,6 +1,7 @@
 """The Stage 4 fetch/build script and committed source manifest."""
 
 import csv
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -30,6 +31,18 @@ def test_dotenv_supplies_the_contact_without_exposing_it(monkeypatch, tmp_path: 
     assert annual_sources.user_agent(contact) == (
         "ces-revisions/0.1.0 (someone@example.org)"
     )
+
+
+def test_loading_the_contact_leaves_the_environment_unchanged(
+    monkeypatch, tmp_path: Path
+):
+    # monkeypatch cannot undo a write to a variable that was absent, so a loader that
+    # exported the file's value would hand it to every later test, live ones included.
+    monkeypatch.delenv("BLS_CONTACT_EMAIL", raising=False)
+    env_file = tmp_path / ".project.env"
+    env_file.write_text("BLS_CONTACT_EMAIL=someone@example.org\n", encoding="utf-8")
+    assert annual_sources.load_contact_email(env_file) == "someone@example.org"
+    assert "BLS_CONTACT_EMAIL" not in os.environ
 
 
 def test_exported_contact_takes_precedence_over_dotenv(monkeypatch, tmp_path: Path):
