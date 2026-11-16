@@ -2,6 +2,7 @@
 
 import hashlib
 import pathlib
+import subprocess
 from pathlib import Path
 
 import archive_inventory
@@ -223,6 +224,19 @@ def test_the_manifest_rows_are_sorted_whatever_order_the_zips_arrive_in(tmp_path
     ]
 
 
+def test_a_later_run_leaves_the_earlier_zips_of_the_same_folder_in_place(tmp_path):
+    store = store_of(tmp_path)
+    earlier = [zip_a(), make_zip({"later.xlsx": b"later"})]
+    store_zips(store, *((AE, payload) for payload in earlier))
+    store_zips(store, (AE, zip_b()))
+    store_zips(store, (AE, zip_b()))
+    for payload in earlier:
+        stored = store / stored_file(AE, payload_digest(payload))
+        assert stored.read_bytes() == payload
+    assert len(list((store / "ces.spec.ae").glob("*.zip"))) == 3
+    assert check_store(store) == []
+
+
 def test_the_manifest_is_not_rehashed_from_the_committed_zips(tmp_path):
     store = store_of(tmp_path)
     store_zips(store, (OTHER, zip_a()))
@@ -407,3 +421,34 @@ def test_check_store_without_a_manifest_finds_every_zip_unlisted(tmp_path):
     problems = check_store(store)
     assert [ae_file in problems[0], other_file in problems[1]] == [True, True]
     assert len(problems) == 2
+
+
+# --- Repository rules ----------------------------------------------------------------------
+
+
+def git_attributes(*paths: str) -> dict[str, dict[str, str]]:
+    """What `git check-attr` reports for `text` and `diff` on each path, from the repository root."""
+    result = subprocess.run(
+        ["git", "check-attr", "text", "diff", "--", *paths],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    attributes: dict[str, dict[str, str]] = {}
+    for line in result.stdout.splitlines():
+        path, name, value = line.split(": ")
+        attributes.setdefault(path, {})[name] = value
+    return attributes
+
+
+def test_git_keeps_stored_zips_binary_and_the_manifest_a_text_diff():
+    manifest = "data/seasonal/raw/manifest.csv"
+    zips = [
+        "data/seasonal/raw/ces.spec.ae/DIGEST.zip",
+        "data/seasonal/raw/ces.spec.other/DIGEST.zip",
+    ]
+    attributes = git_attributes(manifest, *zips)
+    assert attributes[manifest] == {"text": "unset", "diff": "unspecified"}
+    for stored in zips:
+        assert attributes[stored] == {"text": "unset", "diff": "unset"}
