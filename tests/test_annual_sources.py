@@ -8,6 +8,7 @@ from pathlib import Path
 import annual_sources
 import polars as pl
 import pytest
+from bls_contact import require_bls_contact
 
 from ces_revisions.annual import raw
 
@@ -223,9 +224,8 @@ def test_build_command_reports_each_written_artifact(monkeypatch, capsys):
 
 
 @pytest.mark.network
-def test_live_qcew_header_has_not_changed():
-    contact = annual_sources.load_contact_email()
-    assert contact is not None
+def test_live_qcew_header_has_not_changed(monkeypatch):
+    contact = require_bls_contact(monkeypatch)
     payload, _ = annual_sources.download(annual_sources.QCEW_REVISIONS_URL, contact)
     assert payload.splitlines()[0].decode() == (
         "Year,Quarter,Area,Field,Initial Value,First Revised Value,"
