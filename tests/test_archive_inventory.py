@@ -917,8 +917,9 @@ def test_rendered_vintage_rows_link_the_copy_that_evidences_them():
 
 # --- Committed evidence: the file store ----------------------------------------------------
 
-# Releases with all three file types present. The migration keeps the count: the restored
-# other-inputs row of 2026-09-13 has status `payload_lost`, so it credits nothing.
+# Releases with all three file types present. The migration kept the count: the restored
+# other-inputs row of 2026-09-13 has status `payload_lost`, so it credits nothing. Set it to
+# the new count after each `current` and `inventory` run that raises it. If it falls, stop.
 ARCHIVE_COMPLETE = 29
 
 # The URLs of the opened copies (status 200) that a full `captures` run could not download
