@@ -24,13 +24,15 @@ Choices made:
 - Finish for O5 (owner, 2026-11-15): without plan 11's GPU work, which moves to O6: the Lambda measurement of Task 13 and the GPU rule of Task 14.
 - Track A after Stage 1 (owner, 2026-11-15, at the resume): O3 is promoted to Stage 9, and the Track A Ranked list keeps O2, then O4. Stage 1 found no clear `D_t` effect within 12 to 19 business days, and O2 would reuse that narrow range.
 - Resume of 2026-11-17 (owner, "Approve all"): O4 records BLS's refusal and stays ranked, and the Stage 8 and Stage 9 entries cite the Stage 1 work that landed after plan 12's Handoff (commit a3a54a1 and PR 21).
+- First closing (owner, 2026-11-17): first closing, when BLS stops collecting survey responses for the first estimate, falls one week before the release. No public BLS page states it. By this rule the window to first closing is `D_t` less 4 business days, or less 3 when a holiday falls in the release's final week.
+- Stage 9 after the first-closing rule (owner, 2026-11-17, at the same resume): O4 joins Stage 9, because the rule computes its dates and Stage 9 needs the window to first closing for the C1 rate. Stage 9 covers reference months 2003–2026, the scale model's sample, which the owner chose on 2026-11-17 because of the probability-sample redesign. This supersedes the line above for O4.
 
 | # | Outcome | Track | Rank | Cost (estimate; basis) |
 |---|---|---|---|---|
 | O1 | How mean absolute revision (F→S, F→T) changes with the length of the collection window, total nonfarm, 1979–2026 | A | 1 | about one session: every input is on disk, and the holiday rule is computed offline |
 | O2 | The same for each of the 11 supersectors, 2003–2026 | A | 3 | small after O1: the data is on disk, 12 series × 280 months |
-| O3 | Whether a longer window raises the first-closing collection rate, and how revision size moves with that rate, 1981–2026 | A | 2 | one LABSTAT fetch for C1–C3. First-published values need Internet Archive pages, which throttle bursts |
-| O4 | The O1 answer with BLS's first-closing dates in place of the release-date proxy | A | 4 | blocked: BLS declined by phone on 2026-09-14 to share first-closing dates or rules (`specs/deferred_items.md`, retired 2026-11-16; Resolved at resume, 2026-11-17) |
+| O3 | Whether a longer window raises the first-closing collection rate, and how revision size moves with that rate, 2003–2026 (1981–2026 until the resume of 2026-11-17) | A | 2 | one LABSTAT fetch for C1–C3. First-published values need Internet Archive pages, which throttle bursts |
+| O4 | The O1 answer with first-closing dates in place of the release-date proxy, 2003–2026 | A | 4 | small, in Stage 9: the owner's first-closing rule computes the dates. BLS declined on 2026-09-14 to share them (`specs/deferred_items.md`, retired 2026-11-16; Resolved at resume, 2026-11-17) |
 | O5 | How much of each total-nonfarm revision is news and how much is noise, 1979–2026 | B | 1 | the fit is done on plan 11's branch. About one session to finish without GPUs, and up to \$40 more with them |
 | O6 | The news/noise split for each supersector, with benchmark and seasonal revisions inside the model | B | 2 | about 64 h per fit on the Mac, above plan 11's 48 h cap. This is arithmetic from the measured Mac grid, not a measurement. GPUs are not yet measured |
 | O7 | Each driver's effect on revision variance, estimated jointly in the model with the news/noise split | B | 3 | after O6. Only a real run can tell |
@@ -51,6 +53,7 @@ Tracks: A — Collection window (research). B — Revision model (research). Spl
 ## Open questions
 
 - Req 11 of the old spec dates the birth–death method changes differently from the documented `birth_death_forecast` row of `docs/ces-revisions-review.md`. The owner has not decided whether to amend Req 11. Stage 5 needs that decision before its plan.
+- BLS's [response-rate page](https://www.bls.gov/osmr/response-rates/) gives "10–16 business days" of collection before the first preliminary release. The owner's first-closing rule gives 8 to 15 business days for the 278 releases of 2003–2026 that no lapse delayed, counted from the 13th through the closing day. The page does not say where its count starts. It is also open whether the rule holds for a release that a lapse delayed. Stage 9 needs both settled before its plan.
 
 ## Stages
 
@@ -143,19 +146,20 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       ROUTING: brainstorming
 
 - [ ] Stage 9: Collection window and the first-closing collection rate\
-      Objective: Measure whether a longer collection window raises the first-closing collection rate, and how revision size moves with that rate, 1981–2026.\
-      Outcomes: O3\
+      Objective: Measure whether a longer window to first closing raises the first-closing collection rate, how revision size moves with that rate, and how the Stage 1 answer changes when the window ends at first closing, 2003–2026.\
+      Outcomes: O3, O4\
       Track: A\
-      Consumes: From Stage 1: the day count `D_t` and the lapse flag of each release in `data/panel/collection_days.parquet`, which the vintage build writes, and `absolute_revisions` in `ces_revisions.collection_window` (plan 12, Handoff; Resolved at resume, 2026-11-15). Built inputs (plan 5): `data/panel/release_index.parquet` and the `cesnaicsrev` rows of `data/panel/panel.parquet`. Added after plan 12's Handoff (Resolved at resume, 2026-11-17): `five_week_interval` (commit a3a54a1) and `signed_revisions` (PR 21) in `ces_revisions.collection_window`, and the Stage 1 scale model in `ces_revisions.scale_model` (PR 21). Background: Req 3's collection rows of the old spec, the parked Stage 12 item in `specs/deferred_items.md`, and the scale model's `docs/runs/stage-1-scale-model/report.md` and `specs/stage-1-scale-model/recommendation.md`.\
+      Consumes: From Stage 1: the day count `D_t` and the lapse flag of each release in `data/panel/collection_days.parquet`, which the vintage build writes, and `absolute_revisions` in `ces_revisions.collection_window` (plan 12, Handoff; Resolved at resume, 2026-11-15). Built inputs (plan 5): `data/panel/release_index.parquet` and the `cesnaicsrev` rows of `data/panel/panel.parquet`. Added after plan 12's Handoff (Resolved at resume, 2026-11-17): `five_week_interval` (commit a3a54a1) and `signed_revisions` (PR 21) in `ces_revisions.collection_window`, and the Stage 1 scale model in `ces_revisions.scale_model` (PR 21). The first-closing rule and the 2003–2026 sample under Choices made (Resolved at resume, 2026-11-17). Background: Req 3's collection rows of the old spec, the parked Stage 12 item in `specs/deferred_items.md`, and the scale model's `docs/runs/stage-1-scale-model/report.md` and `specs/stage-1-scale-model/recommendation.md`.\
       Produces: the collection-rate sources in `data/raw/`, from one LABSTAT fetch and the first-published values on Internet Archive pages, each fetched and validated under CLAUDE.md's rules for `data/raw/`, with its manifest row. `specs/ces-revision-drivers-stage-9-findings.md`, with the associations and the measured cost.\
-      Exit: the findings file reports how the first-closing collection rate moves with `D_t`, and how the mean absolute F→S and F→T revisions move with that rate, each with its uncertainty (O3). It records the measured cost of the real run and the sessions used.\
+      Exit: the findings file reports how the first-closing collection rate moves with the window to first closing, and how the mean absolute F→S and F→T revisions move with that rate, each with its uncertainty (O3). It reports the Stage 1 regression with the window to first closing in place of `D_t`, with its uncertainty (O4). It records the measured cost of the real run and the sessions used.\
       Leaves out: point-in-time awareness: O8 in the Track B Ranked list. Traceability: Stage 8.\
       ROUTING: brainstorming
 
 ## Ranked list — Track A
 
 1. O2 — small after Stage 1. The data is on disk.
-2. O4 — blocked: BLS declined on 2026-09-14 to share first-closing dates. It parks with the track (Resolved at resume, 2026-11-17).
+
+O4 left this list for Stage 9 at the resume of 2026-11-17.
 
 ## Ranked list — Track B
 
