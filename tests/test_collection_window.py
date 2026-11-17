@@ -10,9 +10,11 @@ import vintage_data
 from archive_inventory import generated_block
 
 from ces_revisions.collection_window import (
+    CONTRAST_DAYS,
     DROPPED_MONTHS,
     absolute_revisions,
     days_regression,
+    five_week_interval,
     revisions_by_days,
 )
 from ces_revisions.vintages.collection_days import LAPSE_DELAYED_MONTHS
@@ -155,6 +157,77 @@ def test_regression_matches_an_independent_statsmodels_fit():
         assert got == pytest.approx(values, abs=1e-6)
 
 
+# statsmodels 0.14 OLS on `absolute_revision ~ collection_days + lapse + five + C(year) +
+# C(month)`, cluster="year", with the 5-week flag computed apart from the module.
+INTERVAL_REFERENCE = {
+    ("NSA", "F_S"): (-0.281258, 1.478216, -3.723391, 4.719865),
+    ("NSA", "F_T"): (-0.978559, 4.548771, 3.483145, 13.228987),
+    ("SA", "F_S"): (0.147948, 1.350108, -2.918767, 3.960225),
+    ("SA", "F_T"): (-0.090421, 1.655706, 5.829012, 4.928522),
+}
+
+
+@pytest.mark.parametrize(
+    ("month", "expected"),
+    [
+        # Reference weeks start 2024-01-07 and 2024-02-11: 35 days apart.
+        (date(2024, 2, 1), True),
+        # 2024-02-11 to 2024-03-10: 28 days.
+        (date(2024, 3, 1), False),
+        # December to January crosses a year: 2023-12-10 to 2024-01-07, 28 days.
+        (date(2024, 1, 1), False),
+        # 2025-12-07 to 2026-01-11: 35 days.
+        (date(2026, 1, 1), True),
+    ],
+)
+def test_five_week_interval_counts_weeks_between_reference_weeks(month, expected):
+    assert five_week_interval(month) is expected
+
+
+def test_five_week_flag_reaches_the_revisions():
+    frame = revisions().filter(
+        pl.col("seasonal_status") == "NSA", pl.col("transition") == "F_S"
+    )
+    flags = dict(frame.select("reference_month", "five_week").iter_rows())
+    assert flags[date(2024, 2, 1)] is True
+    assert flags[date(2024, 3, 1)] is False
+    # About 5 of every 17 months have a 5-week interval (52 weeks over 12 months).
+    assert 0.3 < frame["five_week"].mean() < 0.4
+
+
+def test_contrast_interval_spans_the_normal_window_with_a_t_quantile():
+    assert CONTRAST_DAYS == 7
+    row = days_regression(revisions()).row(0, named=True)
+    half = (row["contrast_high"] - row["contrast_low"]) / 2
+    middle = (row["contrast_high"] + row["contrast_low"]) / 2
+    assert middle == pytest.approx(CONTRAST_DAYS * row["days_coefficient"])
+    # t with 46 degrees of freedom (47 clusters), not the normal 1.96.
+    assert half == pytest.approx(CONTRAST_DAYS * 2.0129 * row["days_se"], rel=1e-4)
+
+
+def test_interval_control_matches_an_independent_statsmodels_fit():
+    """Reference values from statsmodels OLS with cluster="year" errors, 5-week dummy added."""
+    expected = INTERVAL_REFERENCE
+    fits = days_regression(revisions(), interval_control=True)
+    for row in fits.iter_rows(named=True):
+        values = expected[(row["seasonal_status"], row["transition"])]
+        got = [
+            row[name]
+            for name in (
+                "days_coefficient",
+                "days_se",
+                "interval_coefficient",
+                "interval_se",
+            )
+        ]
+        assert got == pytest.approx(values, abs=1e-6)
+
+
+def test_baseline_fit_has_no_interval_coefficient():
+    fits = days_regression(revisions())
+    assert fits["interval_coefficient"].is_null().all()
+
+
 def test_report_refuses_without_a_built_panel(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(report_script, "PANEL_DIR", tmp_path)
     assert report_script.main(["report"]) == 1
@@ -173,17 +246,48 @@ def test_report_lays_out_the_regression():
     lines = report_script.render_regression(revisions()).splitlines()
     assert (
         lines[0]
-        == "| Status | Transition | n | Years | `D_t` coefficient | SE | Lapse coefficient | SE |"
+        == "| Status | Transition | n | Years | `D_t` coefficient | SE | 12→19 days, 95% CI "
+        "| Lapse coefficient | SE |"
     )
-    assert lines[2] == "| NSA | F→S | 546 | 47 | -1.04 | 1.12 | -29.80 | 9.25 |"
-    assert lines[5] == "| SA | F→T | 544 | 47 | 1.10 | 1.23 | -40.43 | 10.74 |"
+    assert (
+        lines[2]
+        == "| NSA | F→S | 546 | 47 | -1.04 | 1.12 | -23.1 to 8.5 | -29.80 | 9.25 |"
+    )
+    assert (
+        lines[5]
+        == "| SA | F→T | 544 | 47 | 1.10 | 1.23 | -9.7 to 25.0 | -40.43 | 10.74 |"
+    )
 
 
-def test_report_fills_the_three_generated_blocks(tmp_path, monkeypatch, capsys):
+def test_report_lays_out_the_interval_controlled_regression():
+    lines = report_script.render_regression(
+        revisions(), interval_control=True
+    ).splitlines()
+    assert (
+        lines[0]
+        == "| Status | Transition | n | Years | `D_t` coefficient | SE | 12→19 days, 95% CI "
+        "| 5-week coefficient | SE |"
+    )
+    assert (
+        lines[2]
+        == "| NSA | F→S | 546 | 47 | -0.28 | 1.48 | -22.8 to 18.9 | -3.72 | 4.72 |"
+    )
+    assert (
+        lines[5]
+        == "| SA | F→T | 544 | 47 | -0.09 | 1.66 | -24.0 to 22.7 | 5.83 | 4.93 |"
+    )
+
+
+def test_report_fills_the_four_generated_blocks(tmp_path, monkeypatch, capsys):
     vintage_data.table_changes().write_parquet(tmp_path / "panel.parquet")
     vintage_data.collection_days().write_parquet(tmp_path / "collection_days.parquet")
     findings = tmp_path / "findings.md"
-    names = ("stage-1-main", "stage-1-pandemic", "stage-1-regression")
+    names = (
+        "stage-1-main",
+        "stage-1-pandemic",
+        "stage-1-regression",
+        "stage-1-regression-interval",
+    )
     findings.write_text(
         "".join(
             f"<!-- BEGIN GENERATED {name} -->\n<!-- END GENERATED {name} -->\n"
@@ -200,5 +304,13 @@ def test_report_fills_the_three_generated_blocks(tmp_path, monkeypatch, capsys):
     pandemic = generated_block(document, "stage-1-pandemic")
     assert "| All | 22 | 22 | 0 |" in pandemic
     regression = generated_block(document, "stage-1-regression")
-    assert "| SA | F→T | 544 | 47 | 1.10 | 1.23 | -40.43 | 10.74 |" in regression
+    assert (
+        "| SA | F→T | 544 | 47 | 1.10 | 1.23 | -9.7 to 25.0 | -40.43 | 10.74 |"
+        in regression
+    )
+    controlled = generated_block(document, "stage-1-regression-interval")
+    assert (
+        "| SA | F→T | 544 | 47 | -0.09 | 1.66 | -24.0 to 22.7 | 5.83 | 4.93 |"
+        in controlled
+    )
     assert "report: 2268 revisions" in capsys.readouterr().out
