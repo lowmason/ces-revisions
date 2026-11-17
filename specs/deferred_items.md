@@ -360,7 +360,7 @@ plan 11.
       kept with a reason.
 
 ## 14-seasonal-adjustment-file-store — 2026-11-17
-- [ ] Drop the contact address when a BLS request is redirected off bls.gov
+- [x] Drop the contact address when a BLS request is redirected off bls.gov
       (plan 14, Task 1 ruling on a declined review line). `user_agent` in
       `scripts/archive_inventory.py` decides from the request URL, and the
       three fetchers (`archive_inventory.fetch`, `scripts/vintage_sources.py`,
@@ -373,6 +373,7 @@ plan 11.
       Done when: every fetcher recomputes the `User-Agent` on each redirect
       hop, and a test shows that a bls.gov URL redirected to a non-BLS host
       sends only the bare product name to that host.
+      → done 2026-11-17 (/deferred quick fix)
 - [ ] Lift the 2026-09-13 `payload_lost` row to `200` when `captures` stores
       its bytes (plan 14's final review, a Declined to judge line; the owner
       chose a watch item). The BLS other-inputs row of 2026-09-13 in
@@ -399,7 +400,7 @@ plan 11.
       catches `http.client.IncompleteRead` beside `OSError` in `retrying`,
       with a test. Size: quick-fix. Revisit if: a `captures` or `current` run
       stops on `http.client.IncompleteRead`.
-- [ ] Keep the review's summary counts in step with the monthly `current`
+- [x] Keep the review's summary counts in step with the monthly `current`
       run (plan 14's final re-review, an observation). The summary bullets
       at the top of `docs/ces-revisions-review.md` hand-write the release
       count ("Of 281 releases from May 2003, specification files survive
@@ -410,3 +411,4 @@ plan 11.
       Done when: those counts are either written by `inventory` as generated
       text, or dated to the run they describe, and the `data/seasonal/raw/`
       bullet in `CLAUDE.md` says which.
+      → done 2026-11-17 (/deferred quick fix)

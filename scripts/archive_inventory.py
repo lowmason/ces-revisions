@@ -23,6 +23,7 @@ import argparse
 import base64
 import csv
 import hashlib
+import http.client
 import io
 import os
 import re
@@ -219,9 +220,43 @@ def user_agent(url: str, contact: str | None = None) -> str:
     return USER_AGENT_PRODUCT
 
 
+class ContactRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Recompute the User-Agent for each hop of a redirect.
+
+    urllib copies every non-content header of a request to its redirect target, so a bls.gov
+    response that redirected to another host would hand that host the contact address. Each hop
+    gets `user_agent` for its own URL instead. `contact` has the meaning it has there.
+    """
+
+    def __init__(self, contact: str | None = None) -> None:
+        self.contact = contact
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None:
+            redirected.add_header(
+                "User-Agent", user_agent(redirected.full_url, self.contact)
+            )
+        return redirected
+
+
+def open_url(
+    url: str, timeout: float, contact: str | None = None
+) -> http.client.HTTPResponse:
+    """Open `url` with a User-Agent chosen for every hop, redirects included.
+
+    Every fetcher in `scripts/` opens its URLs here, so none can send the contact address to a
+    host other than bls.gov and its subdomains. `contact` has the meaning it has in `user_agent`.
+    """
+    opener = urllib.request.build_opener(ContactRedirectHandler(contact))
+    request = urllib.request.Request(
+        url, headers={"User-Agent": user_agent(url, contact)}
+    )
+    return opener.open(request, timeout=timeout)
+
+
 def fetch(url: str) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": user_agent(url)})
-    with urllib.request.urlopen(request, timeout=120) as response:
+    with open_url(url, timeout=120) as response:
         return response.read()
 
 
@@ -1072,6 +1107,72 @@ def replace_generated(document: str, name: str, body: str) -> str:
     return document[:start] + body + document[stop:]
 
 
+# The review's prose quotes counts that move with every monthly run: the release count, how many
+# releases keep each file type, and the latest reference month. A figure marker wraps one count
+# inside a sentence, where the `BEGIN GENERATED` markers above wrap a whole block of lines, so
+# `inventory` rewrites the number and leaves the words around it alone.
+_FIGURE = re.compile(
+    r"<!-- BEGIN FIGURE (?P<name>[\w-]+) -->(?P<text>.*?)<!-- END FIGURE (?P=name) -->"
+)
+
+
+def _survivors(rows: list[dict[str, str]], file_type: str) -> list[str]:
+    """The reference months of the releases that keep `file_type`."""
+    return [
+        row["reference_month"]
+        for row in rows
+        if row["release_date"] and row[file_type] in PRESENT
+    ]
+
+
+def _month_name(reference_month: str) -> str:
+    year, month = reference_month.split("-")
+    return f"{MONTHS[int(month) - 1]} {year}"
+
+
+def render_figures(rows: list[dict[str, str]]) -> dict[str, str]:
+    """The counts the review's prose quotes, keyed by the name in their figure markers."""
+    released = [row for row in rows if row["release_date"]]
+    prior = _survivors(rows, "prior_adjustment")
+    if prior != _survivors(rows, "outliers"):
+        raise ValueError(
+            "the review's summary says prior-adjustment and outlier files survive for the "
+            "same releases, and they no longer do; reword the sentences that quote "
+            "prior-outlier-count"
+        )
+    return {
+        "releases": str(len(released)),
+        "specification-count": str(len(_survivors(rows, "specification"))),
+        "prior-outlier-count": str(len(prior)),
+        "complete-count": str(sum(row["files_complete"] == "true" for row in released)),
+        "latest-reference-month": _month_name(released[-1]["reference_month"]),
+    }
+
+
+def quoted_figures(document: str) -> list[tuple[str, str]]:
+    """Each figure marker in `document`, as its name and the text it wraps."""
+    return [(match["name"], match["text"]) for match in _FIGURE.finditer(document)]
+
+
+def replace_figures(document: str, figures: dict[str, str]) -> str:
+    """Set the text inside every figure marker to the figure it names."""
+    if document.count("<!-- BEGIN FIGURE ") != len(quoted_figures(document)):
+        raise ValueError(
+            "a figure marker in the document does not close with its own END marker"
+        )
+
+    def current(match: re.Match[str]) -> str:
+        name = match["name"]
+        if name not in figures:
+            raise ValueError(
+                f"the document quotes a figure named {name!r}, which the inventory "
+                "does not render"
+            )
+        return f"<!-- BEGIN FIGURE {name} -->{figures[name]}<!-- END FIGURE {name} -->"
+
+    return _FIGURE.sub(current, document)
+
+
 # --- Command line --------------------------------------------------------------------------
 
 
@@ -1223,10 +1324,13 @@ def derive_inventory() -> int:
     vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
     captures = [capture_from_row(row) for row in read_csv(CAPTURES_PATH)]
     rows = inventory_rows(vintages, captures)
-    write_csv(INVENTORY_PATH, rows, INVENTORY_COLUMNS)
+    # Build the whole review before writing anything, so a refusal leaves both files as they were.
+    figures = render_figures(rows)
     document = REVIEW_PATH.read_text(encoding="utf-8")
     for name, body in render_blocks(rows).items():
         document = replace_generated(document, name, body)
+    document = replace_figures(document, figures)
+    write_csv(INVENTORY_PATH, rows, INVENTORY_COLUMNS)
     REVIEW_PATH.write_text(document, encoding="utf-8")
     return 0
 

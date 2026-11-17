@@ -1,5 +1,6 @@
 """scripts/archive_inventory.py: vintages, Internet Archive captures, and per-vintage statuses."""
 
+import io
 import urllib.request
 from dataclasses import replace
 from datetime import UTC, date, datetime
@@ -12,7 +13,9 @@ from archive_inventory import (
     CAPTURES_PATH,
     FILE_TYPES,
     FIRST_REFERENCE_MONTH,
+    INVENTORY_COLUMNS,
     INVENTORY_PATH,
+    PRESENT,
     RELEASE_INDEX_URL,
     ROOT,
     STATUSES,
@@ -37,9 +40,12 @@ from archive_inventory import (
     parse_cdx,
     parse_release_index,
     payload_digest,
+    quoted_figures,
     read_csv,
     release_instant,
     render_blocks,
+    render_figures,
+    replace_figures,
     replace_generated,
     resolve_revisits,
     retrying,
@@ -49,6 +55,7 @@ from archive_inventory import (
     vintages_from_rows,
 )
 from bls_contact import require_bls_contact
+from fake_https import serve_https
 from zip_fixtures import make_dated_zip, make_zip
 
 FIXTURES = Path(__file__).parent / "fixtures" / "archive_inventory"
@@ -262,31 +269,60 @@ def test_a_blank_contact_leaves_the_user_agent_bare(monkeypatch, contact):
     assert archive_inventory.user_agent(url, contact) == BARE
 
 
-class FakeResponse:
-    headers: dict[str, str] = {}  # noqa: RUF012
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc_info):
-        return False
-
-    def read(self) -> bytes:
-        return b""
-
-
 def test_fetch_sends_the_contact_to_bls_hosts_only(monkeypatch):
     monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
-    sent = []
-
-    def fake_urlopen(request, timeout):
-        sent.append(request.get_header("User-agent"))
-        return FakeResponse()
-
-    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    seen = serve_https(monkeypatch)
     fetch("https://www.bls.gov/web/empsit/ces.spec.ae.zip")
     fetch(REPLAY)
-    assert sent == [WITH_CONTACT, BARE]
+    assert [agent for _, agent in seen] == [WITH_CONTACT, BARE]
+
+
+def redirect_target_header(contact, source, target):
+    """The User-Agent that the handler gives the request for `target` after a 302 from `source`."""
+    handler = archive_inventory.ContactRedirectHandler(contact)
+    first = urllib.request.Request(
+        source, headers={"User-Agent": archive_inventory.user_agent(source, contact)}
+    )
+    redirected = handler.redirect_request(first, io.BytesIO(), 302, "Found", {}, target)
+    return redirected.get_header("User-agent")
+
+
+@pytest.mark.parametrize(
+    ("source", "target", "expected"),
+    [
+        ("https://www.bls.gov/a", "https://www.example.com/b", BARE),
+        ("https://www.bls.gov/a", REPLAY, BARE),
+        ("https://www.bls.gov/a", "https://bls.gov.example.com/b", BARE),
+        ("https://www.bls.gov/a", "https://download.bls.gov/b", WITH_CONTACT),
+        ("https://www.bls.gov/a", "https://www.bls.gov/b", WITH_CONTACT),
+        # The header follows the host of each hop, so a hop onto bls.gov names the contact too.
+        ("https://www.example.com/a", "https://www.bls.gov/b", WITH_CONTACT),
+        ("https://www.example.com/a", "https://www.example.org/b", BARE),
+    ],
+)
+def test_a_redirect_names_the_contact_only_to_bls_hosts(source, target, expected):
+    assert redirect_target_header("someone@example.org", source, target) == expected
+
+
+def test_a_redirect_without_a_given_contact_reads_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    bls, other = "https://www.bls.gov/a", "https://www.example.com/b"
+    assert redirect_target_header(None, bls, bls) == WITH_CONTACT
+    assert redirect_target_header(None, bls, other) == BARE
+
+
+def test_a_redirect_keeps_every_header_but_the_user_agent():
+    handler = archive_inventory.ContactRedirectHandler("someone@example.org")
+    first = urllib.request.Request(
+        "https://www.bls.gov/a",
+        headers={"User-Agent": WITH_CONTACT, "Accept": "text/csv"},
+    )
+    redirected = handler.redirect_request(
+        first, io.BytesIO(), 302, "Found", {}, "https://www.example.com/b"
+    )
+    assert redirected.full_url == "https://www.example.com/b"
+    assert redirected.get_header("Accept") == "text/csv"
+    assert first.get_header("User-agent") == WITH_CONTACT
 
 
 # --- Captures ------------------------------------------------------------------------------
@@ -906,6 +942,167 @@ def test_generated_blocks_are_replaced_in_place():
 def test_a_missing_generated_block_is_an_error():
     with pytest.raises(ValueError, match="archive-vintages"):
         replace_generated("no markers here", "archive-vintages", "body\n")
+
+
+def figure_row(month, release="", **statuses):
+    """An inventory row that holds `statuses` and, with a release date, counts as released."""
+    row = dict.fromkeys(INVENTORY_COLUMNS, "")
+    row.update(reference_month=month, release_date=release)
+    row.update(dict.fromkeys(FILE_TYPES, "not_archived" if release else "no_release"))
+    row.update(statuses)
+    complete = all(row[file_type] in PRESENT for file_type in FILE_TYPES)
+    row["files_complete"] = "true" if complete else "false"
+    return row
+
+
+def figure_rows():
+    """Three releases and a gap month. Two releases hold all three file types."""
+    return [
+        figure_row(
+            "2025-08",
+            "2025-09-05",
+            specification="internet_archive",
+            prior_adjustment="internet_archive",
+            outliers="internet_archive",
+        ),
+        figure_row("2025-09", "2025-10-03", specification="internet_archive"),
+        figure_row("2025-10"),
+        figure_row(
+            "2025-11",
+            "2025-12-05",
+            specification="bls_fetched",
+            prior_adjustment="bls_fetched",
+            outliers="bls_fetched",
+        ),
+    ]
+
+
+def test_the_review_figures_count_the_releases_and_what_survives_for_them():
+    assert render_figures(figure_rows()) == {
+        "releases": "3",
+        "specification-count": "3",
+        "prior-outlier-count": "2",
+        "complete-count": "2",
+        "latest-reference-month": "November 2025",
+    }
+
+
+def test_the_summary_says_each_so_prior_adjustment_and_outlier_files_must_match():
+    rows = figure_rows()
+    rows[1]["prior_adjustment"] = "internet_archive"
+    with pytest.raises(ValueError, match="same releases"):
+        render_figures(rows)
+
+
+FIGURE_DOCUMENT = (
+    "Of <!-- BEGIN FIGURE releases -->1<!-- END FIGURE releases --> releases, "
+    "<!-- BEGIN FIGURE complete-count -->old<!-- END FIGURE complete-count --> "
+    "are complete, and <!-- BEGIN FIGURE complete-count -->older"
+    "<!-- END FIGURE complete-count --> again.\n"
+)
+
+
+def test_review_figures_are_replaced_in_place_wherever_they_appear():
+    updated = replace_figures(
+        FIGURE_DOCUMENT, {"releases": "281", "complete-count": "29"}
+    )
+    assert updated == (
+        "Of <!-- BEGIN FIGURE releases -->281<!-- END FIGURE releases --> releases, "
+        "<!-- BEGIN FIGURE complete-count -->29<!-- END FIGURE complete-count --> "
+        "are complete, and <!-- BEGIN FIGURE complete-count -->29"
+        "<!-- END FIGURE complete-count --> again.\n"
+    )
+    assert (
+        replace_figures(updated, {"releases": "281", "complete-count": "29"}) == updated
+    )
+
+
+def test_the_quoted_figures_list_each_marker_with_its_text():
+    assert quoted_figures(FIGURE_DOCUMENT) == [
+        ("releases", "1"),
+        ("complete-count", "old"),
+        ("complete-count", "older"),
+    ]
+
+
+def temporary_review(monkeypatch, tmp_path, prose):
+    """Point `inventory` at a review of three empty blocks and `prose`, and a new inventory file.
+
+    The committed evidence is still read. Returns the two paths that `inventory` writes.
+    """
+    blocks = "".join(
+        f"<!-- BEGIN GENERATED {name} -->\nold\n<!-- END GENERATED {name} -->\n"
+        for name in ("archive-findings", "archive-coverage", "archive-vintages")
+    )
+    review, inventory = tmp_path / "review.md", tmp_path / "inventory.csv"
+    review.write_text(blocks + prose, encoding="utf-8")
+    monkeypatch.setattr(archive_inventory, "REVIEW_PATH", review)
+    monkeypatch.setattr(archive_inventory, "INVENTORY_PATH", inventory)
+    return review, inventory
+
+
+def test_inventory_rewrites_the_review_figures_from_the_evidence(monkeypatch, tmp_path):
+    review, inventory = temporary_review(
+        monkeypatch,
+        tmp_path,
+        "Of <!-- BEGIN FIGURE releases -->stale<!-- END FIGURE releases --> releases, "
+        "<!-- BEGIN FIGURE complete-count -->stale<!-- END FIGURE complete-count -->.\n",
+    )
+    assert archive_inventory.derive_inventory() == 0
+    figures = render_figures(read_csv(inventory))
+    assert quoted_figures(review.read_text(encoding="utf-8")) == [
+        ("releases", figures["releases"]),
+        ("complete-count", figures["complete-count"]),
+    ]
+
+
+def test_inventory_writes_neither_file_when_a_figure_cannot_be_written(
+    monkeypatch, tmp_path
+):
+    review, inventory = temporary_review(
+        monkeypatch,
+        tmp_path,
+        "<!-- BEGIN FIGURE nonsense -->1<!-- END FIGURE nonsense -->\n",
+    )
+    before = review.read_text(encoding="utf-8")
+    with pytest.raises(ValueError, match="nonsense"):
+        archive_inventory.derive_inventory()
+    assert review.read_text(encoding="utf-8") == before
+    assert not inventory.exists()
+
+
+def test_inventory_writes_neither_file_when_the_figures_cannot_be_rendered(
+    monkeypatch, tmp_path
+):
+    review, inventory = temporary_review(monkeypatch, tmp_path, "no figures\n")
+    before = review.read_text(encoding="utf-8")
+
+    def refuse(rows):
+        raise ValueError("the figures cannot be rendered")
+
+    monkeypatch.setattr(archive_inventory, "render_figures", refuse)
+    with pytest.raises(ValueError, match="cannot be rendered"):
+        archive_inventory.derive_inventory()
+    assert review.read_text(encoding="utf-8") == before
+    assert not inventory.exists()
+
+
+def test_a_figure_the_inventory_does_not_render_is_an_error():
+    document = "<!-- BEGIN FIGURE nonsense -->1<!-- END FIGURE nonsense -->"
+    with pytest.raises(ValueError, match="nonsense"):
+        replace_figures(document, {"releases": "281"})
+
+
+@pytest.mark.parametrize(
+    "document",
+    [
+        "<!-- BEGIN FIGURE releases -->1",
+        "<!-- BEGIN FIGURE releases -->1<!-- END FIGURE complete-count -->",
+    ],
+)
+def test_a_figure_marker_that_does_not_close_is_an_error(document):
+    with pytest.raises(ValueError, match="does not close"):
+        replace_figures(document, {"releases": "281"})
 
 
 def test_rendered_vintage_rows_link_the_copy_that_evidences_them():

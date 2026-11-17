@@ -16,7 +16,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import urllib.request
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -131,8 +130,7 @@ def user_agent_for(url: str) -> str:
 
 def download(url: str) -> tuple[bytes, str]:
     """The payload and its Last-Modified header."""
-    request = urllib.request.Request(url, headers={"User-Agent": user_agent_for(url)})
-    with urllib.request.urlopen(request, timeout=300) as response:
+    with archive_inventory.open_url(url, timeout=300) as response:
         return response.read(), response.headers.get("Last-Modified", "")
 
 

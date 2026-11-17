@@ -6,7 +6,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 from time import sleep
@@ -35,10 +34,9 @@ def load_contact_email(env_file: Path = PROJECT_ENV) -> str | None:
 
 def download(url: str, contact_email: str) -> tuple[bytes, str]:
     """Fetch `url`; only a bls.gov host sees the contact address in the User-Agent."""
-    request = urllib.request.Request(
-        url, headers={"User-Agent": archive_inventory.user_agent(url, contact_email)}
-    )
-    with urllib.request.urlopen(request, timeout=300) as response:
+    with archive_inventory.open_url(
+        url, timeout=300, contact=contact_email
+    ) as response:
         return response.read(), response.headers.get("Last-Modified", "")
 
 
