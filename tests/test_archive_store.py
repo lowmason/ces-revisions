@@ -1056,7 +1056,9 @@ def test_a_throttled_full_run_keeps_every_credit_and_exits_1(
         },
     )
     assert capture_evidence(T1, paths) == 1
-    assert lost.url in capsys.readouterr().err
+    err = capsys.readouterr().err
+    assert lost.url in err
+    assert "recorded as unreplayable" not in err
     assert line_of_lost in capture_lines(paths)
     assert stored(paths, OTHER, new_zip)
     assert credit(paths) == first_credit
@@ -1604,7 +1606,8 @@ def test_an_unreplayable_copy_is_noted_on_stderr_with_its_replay_url(
     assert capture_evidence(T1, EvidencePaths.at(tmp_path)) == 0
     err = capsys.readouterr().err
     assert f"{replay_url(copied)} failed after {ATTEMPTS} attempts" in err
-    assert "recorded as unreplayable" in err
+    assert "not opened in this run" in err
+    assert "recorded as unreplayable" not in err
     assert MISSING_ZIP not in err
 
 

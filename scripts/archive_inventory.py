@@ -493,7 +493,7 @@ def collect_archive_copies() -> list[tuple[Capture, bytes | None]]:
                             partial(fetch_and_inspect, replay, digest), what=replay
                         )
                     except RuntimeError as error:
-                        print(f"{error}; recorded as unreplayable", file=sys.stderr)
+                        print(f"{error}; not opened in this run", file=sys.stderr)
                         outcome = "unreplayable"
                 capture = Capture(
                     artifact.name,
