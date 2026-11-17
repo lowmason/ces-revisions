@@ -614,7 +614,7 @@ Tell the owner that `/Users/lowell/Projects/ces-sa-rescue/` can now be deleted (
 
 - [x] **Step 1: Review the whole branch**
 
-> Deviation: the Codex second-opinion seat was skipped, because sending the diff to OpenAI was not approved. The review's two findings were fixed: the monthly routine in `CLAUDE.md` now raises `ARCHIVE_COMPLETE` (3edf644), and a failed replay's stderr line says "not opened in this run" (232b91b). Source: ledger, final review.
+> Deviation: the Codex second-opinion seat was skipped. Nobody asked the owner to approve sending the diff to OpenAI, so no approval is on record. The review's two findings were fixed: the monthly routine in `CLAUDE.md` now raises `ARCHIVE_COMPLETE` (3edf644), and a failed replay's stderr line says "not opened in this run" (232b91b). Source: ledger, final review.
 
 Dispatch code-reviewer (Opus) over the range from the merge base with `origin/main` to `HEAD`, against the spec and this plan. Fix or answer each finding.
 
