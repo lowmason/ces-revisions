@@ -1,6 +1,7 @@
 artifact,source,timestamp,url,status,digest,specification,prior_adjustment,outliers,unexpected,newest_member
 all_employees_specifications,bls_fetched,2026-09-13T17:11:32Z,https://www.bls.gov/web/empsit/ces.spec.ae.zip,200,UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X,8f91d65e24c47302,,,,2026-02-09T15:30:44
 all_employees_specifications,bls_fetched,2026-11-15T19:06:27Z,https://www.bls.gov/web/empsit/ces.spec.ae.zip,200,UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X,8f91d65e24c47302,,,,2026-02-09T15:30:44
+all_employees_specifications,bls_fetched,2026-11-17T15:37:17Z,https://www.bls.gov/web/empsit/ces.spec.ae.zip,200,UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X,8f91d65e24c47302,,,,2026-02-09T15:30:44
 all_employees_specifications,internet_archive,2014-07-19T15:55:42Z,https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip,200,P6BTQFPX2GARQGVQFYRB4RVNMCIR7IQM,8ba7aaacd046ae48,,,,2014-02-04T13:00:08
 all_employees_specifications,internet_archive,2015-03-21T06:08:19Z,https://web.archive.org/web/20150321060819id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip,200,LIFGVMPNIKE6TFYB77MFQBXZERNFA3JG,b441fc8c4e0f22db,,,,2015-01-30T11:12:42
 all_employees_specifications,internet_archive,2015-09-05T17:43:46Z,https://web.archive.org/web/20150905174346id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip,-,LIFGVMPNIKE6TFYB77MFQBXZERNFA3JG,,,,,
@@ -39,6 +40,7 @@ all_employees_specifications,internet_archive,2026-06-13T10:11:39Z,https://web.a
 all_employees_specifications,internet_archive,2026-08-19T19:23:41Z,https://web.archive.org/web/20260819192341id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip,200,UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X,8f91d65e24c47302,,,,2026-02-09T15:30:44
 other_inputs,bls_fetched,2026-09-13T17:11:32Z,https://www.bls.gov/web/empsit/ces.spec.other.zip,payload_lost,JRW4ECRTZ3X22BDLK7YHUZ6U3M7F5WUG,,70f4db3c9e3b4761,635b9e68f7634c73,,
 other_inputs,bls_fetched,2026-11-15T19:06:27Z,https://www.bls.gov/web/empsit/ces.spec.other.zip,200,GVSJRQMPDUNDJSKLZHWEUAMDANPU7KOU,,da5c847e339064d2,e7a2c3d41a4fecbd,,2026-11-03T15:25:46
+other_inputs,bls_fetched,2026-11-17T15:37:17Z,https://www.bls.gov/web/empsit/ces.spec.other.zip,200,GVSJRQMPDUNDJSKLZHWEUAMDANPU7KOU,,da5c847e339064d2,e7a2c3d41a4fecbd,,2026-11-03T15:25:46
 other_inputs,internet_archive,2014-07-19T13:46:01Z,https://web.archive.org/web/20140719134601id_/http://www.bls.gov/web/empsit/ces.spec.other.zip,200,ZSL4N7HMBW6G454PPITPXXHNHP34TVXH,,4588df967654ccea,a7b8bf5109600e11,,2014-06-30T15:52:08
 other_inputs,internet_archive,2015-03-21T06:17:57Z,https://web.archive.org/web/20150321061757id_/http://www.bls.gov/web/empsit/ces.spec.other.zip,200,UN2BSONV7KS3AZV7SMZO5WY7QBZDTK77,,60d3fed62aa1bcf1,e4949b6604918288,,2015-03-03T13:49:06
 other_inputs,internet_archive,2015-09-05T16:47:51Z,https://web.archive.org/web/20150905164751id_/http://www.bls.gov/web/empsit/ces.spec.other.zip,200,5O7OUKAXCRPYKHI5XPMJYQSBYXRM6FPR,,77310a9292fec02b,e6511c88213dd0a8,,2015-08-04T13:40:50

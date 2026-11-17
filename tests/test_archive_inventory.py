@@ -921,66 +921,10 @@ def test_rendered_vintage_rows_link_the_copy_that_evidences_them():
 # other-inputs row of 2026-09-13 has status `payload_lost`, so it credits nothing.
 ARCHIVE_COMPLETE = 29
 
-# The URLs of the opened copies (status 200) that have no stored ZIP yet. The first full
-# `captures` run downloads them again and the list is empty after it (specs/
-# seasonal-adjustment-file-store.md). Any other change to it fails the test that compares them.
-AWAITING_A_STORED_ZIP: set[str] = {
-    "https://web.archive.org/web/20140719134601id_/http://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20150321060819id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20150321061757id_/http://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20150905164751id_/http://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20160825173250id_/http://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20160825180042id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20170110014055id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20170110014114id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20170507080910id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20170507081200id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20170606104922id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20190111160920id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20190111220437id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20201018123503id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20201018125113id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20210318011343id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20210318044659id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20210917004804id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20210917004822id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20211105131924id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20221205142739id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20221205221206id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20240926232604id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20240927002315id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20241127192632id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20241127194400id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20241211002903id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20241211002914id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250101154028id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250101154107id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250202014501id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250202014522id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250208074215id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250208075248id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250320184452id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250327025357id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250404181956id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250404181957id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250802202734id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20250802202747id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250911000514id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20250911000632id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20251122085546id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20251122085617id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20251220081800id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20251220081843id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20251228094120id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20251228103627id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20260128104815id_/https://www.bls.gov/web/empsit/ces.spec.ae.zip",
-    "https://web.archive.org/web/20260214200550id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20260502095306id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20260516123319id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20260613101136id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-    "https://web.archive.org/web/20260819192341id_/https://www.bls.gov/web/empsit/ces.spec.other.zip",
-}
+# The URLs of the opened copies (status 200) that a full `captures` run could not download
+# again, so they have no stored ZIP. The list is empty after a clean run (specs/
+# seasonal-adjustment-file-store.md). Any change to it fails the test that compares them.
+AWAITING_A_STORED_ZIP: set[str] = set()
 
 
 def has_stored_zip(row: dict[str, str]) -> bool:
