@@ -2,7 +2,7 @@
 
 > For agentic workers: REQUIRED NEXT SKILL: writing-plans. This spec is one plan.
 
-Status: approved design, 2026-11-16.\
+Status: COMPLETE (2026-11-17), implemented by plan 14 (`specs/plans/completed/14-seasonal-adjustment-file-store.md`). Approved design, 2026-11-16.\
 Source: the deferred item "Keep each `bls_current` copy as evidence across `captures` runs" in
 `specs/deferred_items.md` (section `claude/deferred-063daa Step 4b review — 2026-11-15`), picked
 as a Design item in the `/deferred` pass of 2026-11-16.\
@@ -199,7 +199,8 @@ data/seasonal/raw/
   (status `-`) and every repeat of a digest resolve to that one file.
 - A stored ZIP never changes or disappears. Writing a different payload under an existing name
   is an error.
-- `.gitattributes` gets `data/seasonal/raw/** -text -diff`, as `data/annual/raw/` has.
+- `.gitattributes` gets `data/seasonal/raw/** -text` and `data/seasonal/raw/*/*.zip -diff`, as
+  `data/annual/raw/` has, so `manifest.csv` diffs as text (owner, plan 14, 2026-11-16).
 - Each network command stages its new ZIPs, the merged CSV and the new manifest in a temporary
   folder under `data/seasonal/`. It promotes them only when the run has finished, in the same
   way as `vintage_sources.promote_tree`. ZIPs are promoted before the CSV and the manifest, so

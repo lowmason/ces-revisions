@@ -1,7 +1,6 @@
 """scripts/archive_inventory.py: vintages, Internet Archive captures, and per-vintage statuses."""
 
-import io
-import zipfile
+import urllib.request
 from dataclasses import replace
 from datetime import UTC, date, datetime
 from pathlib import Path
@@ -9,14 +8,22 @@ from pathlib import Path
 import archive_inventory
 import pytest
 from archive_inventory import (
+    BLS_SOURCE,
     CAPTURES_PATH,
+    FILE_TYPES,
     FIRST_REFERENCE_MONTH,
+    INVENTORY_PATH,
     RELEASE_INDEX_URL,
+    ROOT,
+    STATUSES,
+    STORE_DIR,
     VINTAGES_PATH,
     Capture,
     Vintage,
     capture_from_row,
     capture_row,
+    check_store,
+    evidence,
     fetch,
     file_status,
     generated_block,
@@ -29,6 +36,7 @@ from archive_inventory import (
     newest_member,
     parse_cdx,
     parse_release_index,
+    payload_digest,
     read_csv,
     release_instant,
     render_blocks,
@@ -36,10 +44,12 @@ from archive_inventory import (
     resolve_revisits,
     retrying,
     select_vintages,
+    stored_file,
     vintage_rows,
     vintages_from_rows,
 )
 from bls_contact import require_bls_contact
+from zip_fixtures import make_dated_zip, make_zip
 
 FIXTURES = Path(__file__).parent / "fixtures" / "archive_inventory"
 
@@ -54,21 +64,6 @@ def vintage(reference_month: str, released: str) -> Vintage:
         date.fromisoformat(released),
         f"https://www.bls.gov/news.release/archives/empsit_{reference_month}.htm",
     )
-
-
-def make_zip(members: dict[str, bytes], date_time=(2026, 9, 1, 15, 33, 0)) -> bytes:
-    return make_dated_zip(
-        [(name, date_time, payload) for name, payload in members.items()]
-    )
-
-
-def make_dated_zip(members: list[tuple[str, tuple[int, ...], bytes]]) -> bytes:
-    """A ZIP whose members, written in the order given, each carry their own date."""
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w") as archive:
-        for name, date_time, payload in members:
-            archive.writestr(zipfile.ZipInfo(name, date_time=date_time), payload)
-    return buffer.getvalue()
 
 
 def capture(timestamp: str, **fingerprints: str) -> Capture:
@@ -192,6 +187,106 @@ def test_live_release_index_starts_the_modern_vintages_on_june_6_2003(monkeypatc
     missing = missing_reference_months(vintages)
     assert date(2025, 10, 1) in missing
     assert all(month >= date(2025, 10, 1) for month in missing)
+
+
+# --- Network -------------------------------------------------------------------------------
+
+WITH_CONTACT = "ces-revisions/0.1.0 (someone@example.org)"
+BARE = "ces-revisions/0.1.0"
+REPLAY = "https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip"
+
+
+@pytest.mark.parametrize(
+    ("url", "expected"),
+    [
+        ("https://www.bls.gov/web/empsit/ces.spec.ae.zip", WITH_CONTACT),
+        ("https://download.bls.gov/pub/time.series/ce/ce.series", WITH_CONTACT),
+        ("https://bls.gov/", WITH_CONTACT),
+        (REPLAY, BARE),
+        (
+            "https://web.archive.org/cdx/search/cdx?url=bls.gov/web/empsit/ces.spec.ae.zip",
+            BARE,
+        ),
+        ("https://bls.gov.example.com/", BARE),
+        ("https://fraser.stlouisfed.org/title/employment-situation-4910", BARE),
+        ("https://www.dol.gov/agencies/oasp", BARE),
+    ],
+)
+def test_only_bls_hosts_get_the_contact_address(monkeypatch, url, expected):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    assert archive_inventory.user_agent(url) == expected
+    monkeypatch.delenv("BLS_CONTACT_EMAIL")
+    assert archive_inventory.user_agent(url, "someone@example.org") == expected
+    assert archive_inventory.user_agent(url) == BARE
+
+
+@pytest.mark.parametrize(
+    ("url", "is_bls"),
+    [
+        ("https://bls.gov/", True),
+        ("https://www.bls.gov/web/empsit/ces.spec.ae.zip", True),
+        ("https://download.bls.gov:443/pub/time.series/ce/ce.series", True),
+        ("HTTPS://WWW.BLS.GOV/web/empsit/", True),
+        ("https://notbls.gov/", False),
+        ("https://www.bls.gov.example.com/", False),
+        ("https://www.bls.gov@example.com/", False),
+        ("https://example.com/?next=https://www.bls.gov/", False),
+        ("https://example.com/www.bls.gov/", False),
+        ("not a url", False),
+    ],
+)
+def test_a_host_is_bls_when_it_is_bls_gov_or_a_subdomain(url, is_bls):
+    assert archive_inventory.is_bls_host(url) is is_bls
+
+
+def test_an_explicit_contact_beats_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "environment@example.org")
+    url = "https://www.bls.gov/"
+    assert archive_inventory.user_agent(url, "someone@example.org") == WITH_CONTACT
+    assert archive_inventory.user_agent(url) == (
+        "ces-revisions/0.1.0 (environment@example.org)"
+    )
+
+
+def test_an_explicit_blank_contact_is_not_replaced_by_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "environment@example.org")
+    assert archive_inventory.user_agent("https://www.bls.gov/", "") == BARE
+
+
+@pytest.mark.parametrize("contact", [None, ""])
+def test_a_blank_contact_leaves_the_user_agent_bare(monkeypatch, contact):
+    url = "https://www.bls.gov/"
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "")
+    assert archive_inventory.user_agent(url, contact) == BARE
+    monkeypatch.delenv("BLS_CONTACT_EMAIL")
+    assert archive_inventory.user_agent(url, contact) == BARE
+
+
+class FakeResponse:
+    headers: dict[str, str] = {}  # noqa: RUF012
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        return False
+
+    def read(self) -> bytes:
+        return b""
+
+
+def test_fetch_sends_the_contact_to_bls_hosts_only(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    sent = []
+
+    def fake_urlopen(request, timeout):
+        sent.append(request.get_header("User-agent"))
+        return FakeResponse()
+
+    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    fetch("https://www.bls.gov/web/empsit/ces.spec.ae.zip")
+    fetch(REPLAY)
+    assert sent == [WITH_CONTACT, BARE]
 
 
 # --- Captures ------------------------------------------------------------------------------
@@ -360,19 +455,26 @@ def test_retrying_gives_up_after_the_last_attempt(monkeypatch):
         retrying(attempt, what="test fetch")
 
 
-def test_collect_captures_records_an_unreplayable_copy_instead_of_failing(monkeypatch):
+def test_collect_archive_copies_records_an_unreplayable_copy_instead_of_failing(
+    monkeypatch,
+):
     artifact = archive_inventory.Artifact(
         "other_inputs",
         "https://www.bls.gov/web/empsit/ces.spec.other.zip",
         ("bls.gov/web/empsit/ces.spec.other.zip",),
     )
     original = "http://www.bls.gov/web/empsit/ces.spec.other.zip"
+    payload = make_zip({"outliers.xlsx": b"AO"})
     listing = [
-        (datetime(2015, 3, 21, 6, 17, 57, tzinfo=UTC), original, "200", "KEPT"),
+        (
+            datetime(2015, 3, 21, 6, 17, 57, tzinfo=UTC),
+            original,
+            "200",
+            payload_digest(payload),
+        ),
         (datetime(2017, 1, 2, 4, 57, 40, tzinfo=UTC), original, "301", "MOVED"),
         (datetime(2020, 10, 18, 12, 35, 3, tzinfo=UTC), original, "200", "LOST"),
     ]
-    payload = make_zip({"outliers.xlsx": b"AO"})
 
     def fake_fetch(url):
         if "20201018123503" in url:
@@ -383,17 +485,17 @@ def test_collect_captures_records_an_unreplayable_copy_instead_of_failing(monkey
     monkeypatch.setattr(archive_inventory, "list_captures", lambda key: listing)
     monkeypatch.setattr(archive_inventory, "fetch", fake_fetch)
     monkeypatch.setattr(archive_inventory, "sleep", lambda seconds: None)
-    captures = archive_inventory.collect_captures(datetime(2026, 9, 13, 15, tzinfo=UTC))
+    copies = archive_inventory.collect_archive_copies()
     assert [
-        (c.source, c.status, bool(c.outliers), c.newest_member) for c in captures
+        (c.source, c.status, bool(c.outliers), c.newest_member) for c, _ in copies
     ] == [
-        ("bls_current", "200", True, "2026-09-01T15:33:00"),
         ("internet_archive", "200", True, "2026-09-01T15:33:00"),
         ("internet_archive", "301", False, ""),
         ("internet_archive", "unreplayable", False, ""),
     ]
+    assert [held for _, held in copies] == [payload, None, None]
     assert (
-        captures[1].url == f"https://web.archive.org/web/20150321061757id_/{original}"
+        copies[0][0].url == f"https://web.archive.org/web/20150321061757id_/{original}"
     )
 
 
@@ -460,7 +562,7 @@ def test_file_status_prefers_the_bls_copy_and_ignores_captures_without_content()
     archived = capture("2026-09-05T00:00:00+00:00", outliers="same")
     current = Capture(
         "other_inputs",
-        "bls_current",
+        BLS_SOURCE,
         datetime(2026, 9, 13, 15, 0, tzinfo=UTC),
         "https://www.bls.gov/web/empsit/ces.spec.other.zip",
         "200",
@@ -476,8 +578,8 @@ def test_file_status_prefers_the_bls_copy_and_ignores_captures_without_content()
         "DIGEST",
     )
     assert file_status([archived, current, redirect], "outliers", window) == (
-        "bls_current",
-        current.url,
+        BLS_SOURCE,
+        evidence(current),
     )
 
 
@@ -492,6 +594,32 @@ def test_file_status_flags_copies_that_disagree_within_one_window():
         "conflicting_captures",
         f"{first.url} {second.url}",
     )
+
+
+def test_file_status_lists_the_evidence_of_each_conflicting_copy():
+    window = (datetime(2026, 9, 4, 12, 30, tzinfo=UTC), None)
+    archived = capture("2026-09-05T00:00:00+00:00", outliers="a")
+    fetched = Capture(
+        "other_inputs",
+        BLS_SOURCE,
+        datetime(2026, 9, 13, 15, 0, tzinfo=UTC),
+        "https://www.bls.gov/web/empsit/ces.spec.other.zip",
+        "200",
+        "DIGEST",
+        outliers="b",
+    )
+    assert file_status([fetched, archived], "outliers", window) == (
+        "conflicting_captures",
+        f"{archived.url} data/seasonal/raw/ces.spec.other/DIGEST.zip",
+    )
+
+
+def test_file_status_ignores_a_copy_whose_payload_nobody_holds():
+    window = (datetime(2026, 9, 4, 12, 30, tzinfo=UTC), None)
+    lost = replace(
+        capture("2026-09-13T17:11:32+00:00", outliers="o"), status="payload_lost"
+    )
+    assert file_status([lost], "outliers", window) == ("not_archived", "")
 
 
 def test_file_status_without_a_copy_is_not_archived():
@@ -539,6 +667,23 @@ def test_files_complete_needs_all_three_file_types():
     two = capture("2003-06-10T00:00:00+00:00", specification="s", prior_adjustment="p")
     assert inventory_rows(vintages, [all_three])[0]["files_complete"] == "true"
     assert inventory_rows(vintages, [two])[0]["files_complete"] == "false"
+
+
+def test_a_bls_copy_counts_as_present_for_each_file_type():
+    vintages = [vintage("2003-05", "2003-06-06")]
+    fetched = replace(
+        capture(
+            "2003-06-10T00:00:00+00:00",
+            specification="s",
+            prior_adjustment="p",
+            outliers="o",
+        ),
+        source=BLS_SOURCE,
+    )
+    row = inventory_rows(vintages, [fetched])[0]
+    assert [row[file_type] for file_type in FILE_TYPES] == [BLS_SOURCE] * 3
+    assert row["files_complete"] == "true"
+    assert BLS_SOURCE in STATUSES
 
 
 def test_a_revisit_record_evidences_its_window_with_its_twin_fingerprints():
@@ -770,3 +915,164 @@ def test_rendered_vintage_rows_link_the_copy_that_evidences_them():
         f"| 2003-05 | 2003-06-06 | `not_archived` | `not_archived` | [`internet_archive`]({kept.url}) "
         "| `not_published` | false |"
     ) in render_blocks(rows)["archive-vintages"]
+
+
+# --- Committed evidence: the file store ----------------------------------------------------
+
+# Releases with all three file types present. The migration kept the count: the restored
+# other-inputs row of 2026-09-13 has status `payload_lost`, so it credits nothing. Set it to
+# the new count after each `current` and `inventory` run that raises it. If it falls, stop.
+ARCHIVE_COMPLETE = 29
+
+# The URLs of the opened copies (status 200) that a full `captures` run could not download
+# again, so they have no stored ZIP. The list is empty after a clean run
+# (specs/completed/seasonal-adjustment-file-store.md). Any change to it fails the test that
+# compares them.
+AWAITING_A_STORED_ZIP: set[str] = set()
+
+
+def has_stored_zip(row: dict[str, str]) -> bool:
+    return (STORE_DIR / stored_file(row["artifact"], row["digest"])).is_file()
+
+
+def test_the_store_matches_its_manifest():
+    assert check_store(STORE_DIR) == []
+
+
+def test_every_stored_zip_is_named_by_a_recorded_row():
+    named = {
+        stored_file(row["artifact"], row["digest"])
+        for row in read_csv(CAPTURES_PATH)
+        if row["status"] == "200"
+    }
+    stored = {
+        path.relative_to(STORE_DIR).as_posix() for path in STORE_DIR.rglob("*.zip")
+    }
+    assert stored
+    assert stored <= named
+
+
+def test_every_opened_copy_has_a_stored_zip_except_the_pinned_ones():
+    unstored = {
+        row["url"]
+        for row in read_csv(CAPTURES_PATH)
+        if row["status"] == "200" and not has_stored_zip(row)
+    }
+    assert unstored == AWAITING_A_STORED_ZIP
+
+
+def test_every_present_inventory_cell_resolves_to_a_stored_zip():
+    captures = read_csv(CAPTURES_PATH)
+    by_url = {row["url"]: row for row in captures}
+    awaiting = {
+        (row["artifact"], row["digest"])
+        for row in captures
+        if row["url"] in AWAITING_A_STORED_ZIP
+    }
+    store = STORE_DIR.relative_to(ROOT).as_posix()
+    unresolved, bls_cells, archive_cells = [], 0, 0
+    for inventory in read_csv(INVENTORY_PATH):
+        for file_type in FILE_TYPES:
+            status = inventory[file_type]
+            target = inventory[f"{file_type}_evidence"]
+            cell = f"{inventory['reference_month']} {file_type}: {target}"
+            if status == BLS_SOURCE:
+                bls_cells += 1
+                if not (target.startswith(f"{store}/") and (ROOT / target).is_file()):
+                    unresolved.append(cell)
+            elif status == "internet_archive":
+                archive_cells += 1
+                copy = by_url.get(target)
+                if copy is None or not (
+                    has_stored_zip(copy)
+                    or (copy["artifact"], copy["digest"]) in awaiting
+                ):
+                    unresolved.append(cell)
+    assert unresolved == []
+    assert bls_cells > 0
+    assert archive_cells > 0
+
+
+def test_release_2026_10_is_archive_complete_on_stored_bls_copies():
+    row = next(
+        row for row in read_csv(INVENTORY_PATH) if row["reference_month"] == "2026-10"
+    )
+    assert [row[file_type] for file_type in FILE_TYPES] == [BLS_SOURCE] * 3
+    assert row["files_complete"] == "true"
+    for file_type in FILE_TYPES:
+        assert (ROOT / row[f"{file_type}_evidence"]).is_file()
+
+
+def test_the_bls_copies_of_2026_09_13_are_restored():
+    restored = {
+        row["url"].rsplit("/", 1)[-1]: row
+        for row in read_csv(CAPTURES_PATH)
+        if row["source"] == BLS_SOURCE and row["timestamp"].startswith("2026-09-13")
+    }
+    assert sorted(restored) == ["ces.spec.ae.zip", "ces.spec.other.zip"]
+    specifications = restored["ces.spec.ae.zip"]
+    assert (
+        specifications["status"],
+        specifications["digest"],
+        specifications["specification"],
+        specifications["newest_member"],
+    ) == (
+        "200",
+        "UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X",
+        "8f91d65e24c47302",
+        "2026-02-09T15:30:44",
+    )
+    other = restored["ces.spec.other.zip"]
+    assert (
+        other["status"],
+        other["digest"],
+        other["prior_adjustment"],
+        other["outliers"],
+        other["newest_member"],
+    ) == (
+        "payload_lost",
+        "JRW4ECRTZ3X22BDLK7YHUZ6U3M7F5WUG",
+        "70f4db3c9e3b4761",
+        "635b9e68f7634c73",
+        "",
+    )
+    inventory = {row["reference_month"]: row for row in read_csv(INVENTORY_PATH)}
+    assert inventory["2026-08"]["prior_adjustment"] == "not_archived"
+    assert inventory["2026-08"]["outliers"] == "not_archived"
+    complete = sum(row["files_complete"] == "true" for row in inventory.values())
+    assert complete == ARCHIVE_COMPLETE
+
+
+def test_rendered_bls_cells_link_the_stored_zip():
+    digest = "JRW4ECRTZ3X22BDLK7YHUZ6U3M7F5WUG"
+    kept = Capture(
+        "other_inputs",
+        BLS_SOURCE,
+        datetime(2003, 6, 10, tzinfo=UTC),
+        "https://www.bls.gov/web/empsit/ces.spec.other.zip",
+        "200",
+        digest,
+        outliers="o",
+    )
+    rows = inventory_rows([vintage("2003-05", "2003-06-06")], [kept])
+    assert (
+        "| 2003-05 | 2003-06-06 | `not_archived` | `not_archived` | "
+        f"[`bls_fetched`](../data/seasonal/raw/ces.spec.other/{digest}.zip) "
+        "| `not_published` | false |"
+    ) in render_blocks(rows)["archive-vintages"]
+
+
+def test_evidence_is_the_stored_zip_of_a_bls_copy_and_the_url_of_an_archive_copy():
+    fetched = Capture(
+        "all_employees_specifications",
+        BLS_SOURCE,
+        datetime(2026, 9, 13, 17, 11, 32, tzinfo=UTC),
+        "https://www.bls.gov/web/empsit/ces.spec.ae.zip",
+        "200",
+        "UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X",
+    )
+    archived = capture("2026-09-05T00:00:00+00:00", outliers="o")
+    assert evidence(fetched) == (
+        "data/seasonal/raw/ces.spec.ae/UMPGBDVBRNEGZEZI5FGRTGMFDVXETU4X.zip"
+    )
+    assert evidence(archived) == archived.url

@@ -12,6 +12,7 @@ from pathlib import Path
 from time import sleep
 from urllib.parse import urlsplit
 
+import archive_inventory
 import polars as pl
 from dotenv import dotenv_values
 
@@ -19,7 +20,6 @@ from ces_revisions.annual import raw
 
 QCEW_REVISIONS_URL = "https://www.bls.gov/cew/revisions/qcew-revisions.csv"
 PROJECT_ENV = raw.ROOT / ".project.env"
-USER_AGENT_PRODUCT = "ces-revisions/0.1.0"
 ATTEMPTS = 5
 PAUSE_SECONDS = 3.0
 
@@ -33,14 +33,10 @@ def load_contact_email(env_file: Path = PROJECT_ENV) -> str | None:
     return value if "@" in value and not value.startswith("@") else None
 
 
-def user_agent(contact_email: str) -> str:
-    """Return the descriptive identity sent with every Stage 4 request."""
-    return f"{USER_AGENT_PRODUCT} ({contact_email})"
-
-
 def download(url: str, contact_email: str) -> tuple[bytes, str]:
+    """Fetch `url`; only a bls.gov host sees the contact address in the User-Agent."""
     request = urllib.request.Request(
-        url, headers={"User-Agent": user_agent(contact_email)}
+        url, headers={"User-Agent": archive_inventory.user_agent(url, contact_email)}
     )
     with urllib.request.urlopen(request, timeout=300) as response:
         return response.read(), response.headers.get("Last-Modified", "")

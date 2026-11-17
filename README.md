@@ -73,9 +73,9 @@ birth–death pages, and the national QCEW revisions CSV under
 table transcription by SHA-256. Built parquet is reproducible and remains
 gitignored under `data/annual/panel/`.
 
-Set `BLS_CONTACT_EMAIL` in the gitignored `.project.env`; every network
-request identifies that address in its `User-Agent` without recording it in
-logs or manifests. Then run:
+Set `BLS_CONTACT_EMAIL` in the gitignored `.project.env`. Requests to bls.gov
+hosts identify that address in their `User-Agent`, and every other host gets
+`ces-revisions/0.1.0`. No log or manifest records the address. Then run:
 
 ```bash
 uv run python scripts/annual_sources.py fetch     # network + PDF text extraction

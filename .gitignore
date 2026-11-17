@@ -31,3 +31,6 @@ data/operators/
 
 # Stage 6 run directories (InferenceData, diagnostics, provenance) are rebuilt by each fit
 data/runs/
+
+# Seasonal-adjustment file store: data/seasonal/raw/ is committed; a killed run can leave its staging folder
+data/seasonal/.staging-*/

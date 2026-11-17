@@ -25,5 +25,5 @@ def test_a_live_test_sends_the_project_contact_to_bls(monkeypatch, tmp_path: Pat
     env_file.write_text("BLS_CONTACT_EMAIL=someone@example.org\n", encoding="utf-8")
     assert require_bls_contact(monkeypatch, env_file) == "someone@example.org"
     expected = "ces-revisions/0.1.0 (someone@example.org)"
-    assert archive_inventory.user_agent() == expected
+    assert archive_inventory.user_agent(CESVINALL_URL) == expected
     assert vintage_sources.user_agent_for(CESVINALL_URL) == expected
