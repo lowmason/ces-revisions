@@ -75,3 +75,9 @@ Differences from the design:
 
 Closed earlier deferred items:
 - "Keep each `bls_current` copy as evidence across `captures` runs" (deferred by claude/deferred-063daa Step 4b review).
+
+## /deferred — 2026-11-17
+
+Closed deferred items:
+- "Drop the contact address when a BLS request is redirected off bls.gov" (deferred by 14-seasonal-adjustment-file-store): `ContactRedirectHandler` and `open_url` in `scripts/archive_inventory.py` set the User-Agent of each hop, and all three fetchers open their URLs through them.
+- "Keep the review's summary counts in step with the monthly `current`" (deferred by 14-seasonal-adjustment-file-store): `inventory` writes the review's counts inside figure markers (`render_figures`), so no count is hand-typed or dated.
