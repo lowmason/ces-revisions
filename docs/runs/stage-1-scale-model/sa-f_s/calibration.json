@@ -1,0 +1,22 @@
+{
+  "variable": "r",
+  "n_observations": 258,
+  "pit_method": "loo_pit",
+  "assessment": {
+    "pit_p_value": 0.418711612144693,
+    "coverage_p_value": 0.3094048674447307,
+    "alpha": 0.01,
+    "pit_test_passed": true,
+    "coverage_test_passed": true,
+    "mean_pit": 0.5008,
+    "location_t": 0.05,
+    "mean_coverage_deviation": 0.0084,
+    "findings": [],
+    "well_calibrated": true,
+    "calibration_diagnosis": "well-calibrated"
+  },
+  "plots": {
+    "pit_ecdf": "docs/runs/stage-1-scale-model/sa-f_s/loo_pit_ecdf.png",
+    "coverage": "docs/runs/stage-1-scale-model/sa-f_s/loo_pit_coverage.png"
+  }
+}

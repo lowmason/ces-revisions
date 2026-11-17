@@ -412,3 +412,42 @@ plan 11.
       text, or dated to the run they describe, and the `data/seasonal/raw/`
       bullet in `CLAUDE.md` says which.
       → done 2026-11-17 (/deferred quick fix)
+
+## stage-1-scale-model — 2026-11-17
+- [ ] Fit 2 of `specs/stage-1-scale-model/recommendation.md`: the joint fit
+      (bayesian-workflow run of 2026-11-17; the owner chose Fit 1, its checks
+      and SBC for that session). Reparameterize F→T as the increment S→T, pool
+      the window effect as `β_k = β + τ_β η_k` with `τ_β ~ HalfNormal(0.05)`,
+      and share the year effects with series deviations. Fit NSA and SA
+      separately. Fit 1's results, code and evidence are in
+      `docs/runs/stage-1-scale-model/report.md` and
+      `src/ces_revisions/scale_model/`. Size: plan. Done when: the joint fit
+      meets Req 18 and the report gives the pooled `exp(7β)` with its interval.
+- [ ] Compare A with A′ (a yearly random walk on log σ) by PSIS-LOO
+      (bayesian-workflow run of 2026-11-17, deferred with Fit 2). Pareto k is
+      above 0.7 at NSA F→S 2005-11, 2008-09 and 2022-02, SA F→S 2013-09, and
+      SA F→T 2008-09 and 2008-10, so get exact values there with
+      `azs.reloo` before ranking. The year-blocked LOO is unreliable for SA
+      F→T (k above 1 in 2008 and 2025). Size: plan, with Fit 2. Done when: the
+      report states the ELPD difference and its SE, and the model it keeps.
+- [ ] The Gamma GLM cross-check on |r| against the Stage 1 OLS
+      (recommendation §6, deferred in the bayesian-workflow run of
+      2026-11-17). Size: plan, with Fit 2. Done when: the report sets the
+      GLM's 12-to-19-day ratio beside the location-scale estimate.
+- [ ] SA F→T's serial dependence (recommendation open question 3). The fit
+      of 2026-11-17 confirms it: lag-1 autocorrelation of `r` 0.35 against
+      replicated values near 0 (p < 0.001). Confirm the cause (concurrent
+      seasonal-factor revision, `bls-data-context`), then add an AR(1) term on
+      the signed residual or keep the series secondary. Size: design. Done
+      when: the cause is cited from a BLS source and the report states the
+      choice.
+- [ ] The second release's collection window as a scale covariate for F→S
+      (recommendation open question 1). It changes the conditioning set, so
+      it is the owner's decision. Size: design. Revisit if: the owner wants
+      β read as the window's full effect on F→S.
+- [ ] Where the scale model's result lands (recommendation open question 2):
+      replace the OLS tables in
+      `specs/ces-revision-drivers-stage-1-findings.md` or sit beside them,
+      and whether the OLS moves to 2003+. The roadmap's exit test names the
+      1979–2026 OLS, so this is the owner's decision. Size: design. Done
+      when: the owner rules and the findings file follows.

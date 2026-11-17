@@ -1,0 +1,32 @@
+{
+  "beta": {
+    "diagnosis": "\u2713",
+    "likelihood": 0.088,
+    "prior": 0.032
+  },
+  "delta": {
+    "diagnosis": "\u2713",
+    "likelihood": 0.085,
+    "prior": 0.023
+  },
+  "gamma": {
+    "diagnosis": "potential prior-data conflict",
+    "likelihood": 0.103,
+    "prior": 0.071
+  },
+  "nu": {
+    "diagnosis": "potential prior-data conflict",
+    "likelihood": 0.326,
+    "prior": 0.256
+  },
+  "scale_ratio": {
+    "diagnosis": "\u2713",
+    "likelihood": 0.133,
+    "prior": 0.033
+  },
+  "tau_y": {
+    "diagnosis": "potential prior-data conflict",
+    "likelihood": 0.452,
+    "prior": 0.142
+  }
+}

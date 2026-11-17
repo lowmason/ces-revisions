@@ -16,6 +16,7 @@ from ces_revisions.collection_window import (
     days_regression,
     five_week_interval,
     revisions_by_days,
+    signed_revisions,
 )
 from ces_revisions.vintages.collection_days import LAPSE_DELAYED_MONTHS
 from ces_revisions.vintages.months import month_range
@@ -72,6 +73,47 @@ def test_revision_is_the_absolute_change_from_the_first_estimate():
     assert values[(date(1979, 1, 1), "NSA", "F_T")] == 78
     assert values[(date(2025, 8, 1), "SA", "F_S")] == 26
     assert values[(date(2025, 8, 1), "SA", "F_T")] == 48
+
+
+@cache
+def signed() -> pl.DataFrame:
+    return signed_revisions(
+        vintage_data.table_changes(), vintage_data.collection_days()
+    )
+
+
+def test_signed_revision_is_the_later_estimate_less_the_first():
+    frame = signed().filter(
+        pl.col("reference_month").is_in([date(1979, 1, 1), date(2025, 8, 1)])
+    )
+    values = {
+        (row["reference_month"], row["seasonal_status"], row["transition"]): row[
+            "revision"
+        ]
+        for row in frame.iter_rows(named=True)
+    }
+    # First estimates -1681 (NSA) and 22 (SA); later ones -1818, -1759, -4 and -26.
+    assert values[(date(1979, 1, 1), "NSA", "F_S")] == -137
+    assert values[(date(1979, 1, 1), "NSA", "F_T")] == -78
+    assert values[(date(2025, 8, 1), "SA", "F_S")] == -26
+    assert values[(date(2025, 8, 1), "SA", "F_T")] == -48
+
+
+def test_absolute_revisions_are_the_signed_revisions_made_absolute():
+    expected = signed().select(
+        pl.exclude("revision"), absolute_revision=pl.col("revision").abs()
+    )
+    assert revisions().equals(expected.select(revisions().columns))
+    assert signed().columns == [
+        "reference_month",
+        "seasonal_status",
+        "transition",
+        "revision",
+        "collection_days",
+        "lapse_delayed",
+        "period",
+        "five_week",
+    ]
 
 
 def test_only_the_revision_table_enters_from_the_long_panel():

@@ -1,0 +1,53 @@
+{
+  "convergence": {
+    "rating": "excellent",
+    "problematic_params": [],
+    "divergence_pct": 0.0,
+    "treedepth": {
+      "checked": true,
+      "ok": true,
+      "n_max": 0,
+      "pct": 0.0
+    },
+    "bfmi": {
+      "checked": true,
+      "ok": true,
+      "failed_chains": []
+    },
+    "unchecked": []
+  },
+  "loo": {
+    "rating": "poor",
+    "pareto_k": {
+      "max": 0.7014134056062648,
+      "good_k": 0.7,
+      "n_bad": 1,
+      "n_high": 1,
+      "n_nonfinite": 0,
+      "ok": false
+    },
+    "error": ""
+  },
+  "posterior_predictive": {
+    "available": true
+  },
+  "precision": {
+    "rating": "excellent",
+    "max_rel_mcse": 0.0286,
+    "max_rel_mcse_param": "tau_y"
+  },
+  "calibration": {
+    "rating": "excellent",
+    "diagnosis": "well-calibrated",
+    "findings": []
+  },
+  "summary": {
+    "convergence": "All convergence diagnostics passed (R-hat \u2264 1.01, ESS adequate, no divergences).",
+    "precision": "Monte Carlo precision: excellent (max relative MCSE 0.029 on tau_y; bar \u2264 0.05).",
+    "loo": "LOO Pareto-k: poor.",
+    "calibration": "Calibration is excellent \u2014 well-calibrated."
+  },
+  "next_steps": [
+    "LOO Pareto-k > 0.7 for 1 observation(s) \u2014 PSIS-LOO is unreliable there, and more draws will not fix it. Inspect them with az.plot_khat(loo) (often outliers or high-leverage points) and consider a more robust likelihood (StudentT). For exact values at those points, refit with azs.reloo (one refit per flagged point) or azs.loo_kfold (K refits) through an azs.SamplingWrapper subclass for your model, or run azs.loo_moment_match with your model's log-density functions (it builds them itself only for PyMC and Bambi)."
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "convergence": {
+    "rating": "excellent",
+    "problematic_params": [],
+    "divergence_pct": 0.0,
+    "treedepth": {
+      "checked": true,
+      "ok": true,
+      "n_max": 0,
+      "pct": 0.0
+    },
+    "bfmi": {
+      "checked": true,
+      "ok": true,
+      "failed_chains": []
+    },
+    "unchecked": []
+  },
+  "loo": {
+    "rating": "excellent",
+    "pareto_k": {
+      "max": 0.6937663495246343,
+      "good_k": 0.7,
+      "n_bad": 0,
+      "n_high": 0,
+      "n_nonfinite": 0,
+      "ok": true
+    },
+    "error": ""
+  },
+  "posterior_predictive": {
+    "available": true
+  },
+  "precision": {
+    "rating": "excellent",
+    "max_rel_mcse": 0.0271,
+    "max_rel_mcse_param": "tau_y"
+  },
+  "calibration": {
+    "rating": "excellent",
+    "diagnosis": "well-calibrated",
+    "findings": []
+  },
+  "summary": {
+    "convergence": "All convergence diagnostics passed (R-hat \u2264 1.01, ESS adequate, no divergences).",
+    "precision": "Monte Carlo precision: excellent (max relative MCSE 0.027 on tau_y; bar \u2264 0.05).",
+    "loo": "LOO Pareto-k: excellent.",
+    "calibration": "Calibration is excellent \u2014 well-calibrated."
+  },
+  "next_steps": [
+    "All diagnostics are within acceptable bounds \u2014 proceed to interpretation. Translate posteriors into decision-relevant terms and document the model assumptions in the report.",
+    "Not checked: prior sensitivity (run psense_summary(idata) and pass it with --psense, before publication if any conclusion is policy-relevant). Say so in the report."
+  ]
+}
