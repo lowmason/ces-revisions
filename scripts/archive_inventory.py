@@ -1107,6 +1107,72 @@ def replace_generated(document: str, name: str, body: str) -> str:
     return document[:start] + body + document[stop:]
 
 
+# The review's prose quotes counts that move with every monthly run: the release count, how many
+# releases keep each file type, and the latest reference month. A figure marker wraps one count
+# inside a sentence, where the `BEGIN GENERATED` markers above wrap a whole block of lines, so
+# `inventory` rewrites the number and leaves the words around it alone.
+_FIGURE = re.compile(
+    r"<!-- BEGIN FIGURE (?P<name>[\w-]+) -->(?P<text>.*?)<!-- END FIGURE (?P=name) -->"
+)
+
+
+def _survivors(rows: list[dict[str, str]], file_type: str) -> list[str]:
+    """The reference months of the releases that keep `file_type`."""
+    return [
+        row["reference_month"]
+        for row in rows
+        if row["release_date"] and row[file_type] in PRESENT
+    ]
+
+
+def _month_name(reference_month: str) -> str:
+    year, month = reference_month.split("-")
+    return f"{MONTHS[int(month) - 1]} {year}"
+
+
+def render_figures(rows: list[dict[str, str]]) -> dict[str, str]:
+    """The counts the review's prose quotes, keyed by the name in their figure markers."""
+    released = [row for row in rows if row["release_date"]]
+    prior = _survivors(rows, "prior_adjustment")
+    if prior != _survivors(rows, "outliers"):
+        raise ValueError(
+            "the review's summary says prior-adjustment and outlier files survive for the "
+            "same releases, and they no longer do; reword the sentences that quote "
+            "prior-outlier-count"
+        )
+    return {
+        "releases": str(len(released)),
+        "specification-count": str(len(_survivors(rows, "specification"))),
+        "prior-outlier-count": str(len(prior)),
+        "complete-count": str(sum(row["files_complete"] == "true" for row in released)),
+        "latest-reference-month": _month_name(released[-1]["reference_month"]),
+    }
+
+
+def quoted_figures(document: str) -> list[tuple[str, str]]:
+    """Each figure marker in `document`, as its name and the text it wraps."""
+    return [(match["name"], match["text"]) for match in _FIGURE.finditer(document)]
+
+
+def replace_figures(document: str, figures: dict[str, str]) -> str:
+    """Set the text inside every figure marker to the figure it names."""
+    if document.count("<!-- BEGIN FIGURE ") != len(quoted_figures(document)):
+        raise ValueError(
+            "a figure marker in the document does not close with its own END marker"
+        )
+
+    def current(match: re.Match[str]) -> str:
+        name = match["name"]
+        if name not in figures:
+            raise ValueError(
+                f"the document quotes a figure named {name!r}, which the inventory "
+                "does not render"
+            )
+        return f"<!-- BEGIN FIGURE {name} -->{figures[name]}<!-- END FIGURE {name} -->"
+
+    return _FIGURE.sub(current, document)
+
+
 # --- Command line --------------------------------------------------------------------------
 
 
@@ -1262,6 +1328,7 @@ def derive_inventory() -> int:
     document = REVIEW_PATH.read_text(encoding="utf-8")
     for name, body in render_blocks(rows).items():
         document = replace_generated(document, name, body)
+    document = replace_figures(document, render_figures(rows))
     REVIEW_PATH.write_text(document, encoding="utf-8")
     return 0
 

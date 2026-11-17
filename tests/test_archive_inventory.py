@@ -13,7 +13,9 @@ from archive_inventory import (
     CAPTURES_PATH,
     FILE_TYPES,
     FIRST_REFERENCE_MONTH,
+    INVENTORY_COLUMNS,
     INVENTORY_PATH,
+    PRESENT,
     RELEASE_INDEX_URL,
     ROOT,
     STATUSES,
@@ -38,9 +40,12 @@ from archive_inventory import (
     parse_cdx,
     parse_release_index,
     payload_digest,
+    quoted_figures,
     read_csv,
     release_instant,
     render_blocks,
+    render_figures,
+    replace_figures,
     replace_generated,
     resolve_revisits,
     retrying,
@@ -937,6 +942,128 @@ def test_generated_blocks_are_replaced_in_place():
 def test_a_missing_generated_block_is_an_error():
     with pytest.raises(ValueError, match="archive-vintages"):
         replace_generated("no markers here", "archive-vintages", "body\n")
+
+
+def figure_row(month, release="", **statuses):
+    """An inventory row that holds `statuses` and, with a release date, counts as released."""
+    row = dict.fromkeys(INVENTORY_COLUMNS, "")
+    row.update(reference_month=month, release_date=release)
+    row.update(dict.fromkeys(FILE_TYPES, "not_archived" if release else "no_release"))
+    row.update(statuses)
+    complete = all(row[file_type] in PRESENT for file_type in FILE_TYPES)
+    row["files_complete"] = "true" if complete else "false"
+    return row
+
+
+def figure_rows():
+    """Three releases and a gap month. Two releases hold all three file types."""
+    return [
+        figure_row(
+            "2025-08",
+            "2025-09-05",
+            specification="internet_archive",
+            prior_adjustment="internet_archive",
+            outliers="internet_archive",
+        ),
+        figure_row("2025-09", "2025-10-03", specification="internet_archive"),
+        figure_row("2025-10"),
+        figure_row(
+            "2025-11",
+            "2025-12-05",
+            specification="bls_fetched",
+            prior_adjustment="bls_fetched",
+            outliers="bls_fetched",
+        ),
+    ]
+
+
+def test_the_review_figures_count_the_releases_and_what_survives_for_them():
+    assert render_figures(figure_rows()) == {
+        "releases": "3",
+        "specification-count": "3",
+        "prior-outlier-count": "2",
+        "complete-count": "2",
+        "latest-reference-month": "November 2025",
+    }
+
+
+def test_the_summary_says_each_so_prior_adjustment_and_outlier_files_must_match():
+    rows = figure_rows()
+    rows[1]["prior_adjustment"] = "internet_archive"
+    with pytest.raises(ValueError, match="same releases"):
+        render_figures(rows)
+
+
+FIGURE_DOCUMENT = (
+    "Of <!-- BEGIN FIGURE releases -->1<!-- END FIGURE releases --> releases, "
+    "<!-- BEGIN FIGURE complete-count -->old<!-- END FIGURE complete-count --> "
+    "are complete, and <!-- BEGIN FIGURE complete-count -->older"
+    "<!-- END FIGURE complete-count --> again.\n"
+)
+
+
+def test_review_figures_are_replaced_in_place_wherever_they_appear():
+    updated = replace_figures(
+        FIGURE_DOCUMENT, {"releases": "281", "complete-count": "29"}
+    )
+    assert updated == (
+        "Of <!-- BEGIN FIGURE releases -->281<!-- END FIGURE releases --> releases, "
+        "<!-- BEGIN FIGURE complete-count -->29<!-- END FIGURE complete-count --> "
+        "are complete, and <!-- BEGIN FIGURE complete-count -->29"
+        "<!-- END FIGURE complete-count --> again.\n"
+    )
+    assert (
+        replace_figures(updated, {"releases": "281", "complete-count": "29"}) == updated
+    )
+
+
+def test_the_quoted_figures_list_each_marker_with_its_text():
+    assert quoted_figures(FIGURE_DOCUMENT) == [
+        ("releases", "1"),
+        ("complete-count", "old"),
+        ("complete-count", "older"),
+    ]
+
+
+def test_inventory_rewrites_the_review_figures_from_the_evidence(monkeypatch, tmp_path):
+    # The committed evidence is read, and only the inventory file and the review are written.
+    review = tmp_path / "review.md"
+    blocks = "".join(
+        f"<!-- BEGIN GENERATED {name} -->\nold\n<!-- END GENERATED {name} -->\n"
+        for name in ("archive-findings", "archive-coverage", "archive-vintages")
+    )
+    review.write_text(
+        f"{blocks}Of <!-- BEGIN FIGURE releases -->stale<!-- END FIGURE releases --> "
+        "releases, "
+        "<!-- BEGIN FIGURE complete-count -->stale<!-- END FIGURE complete-count -->.\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(archive_inventory, "REVIEW_PATH", review)
+    monkeypatch.setattr(archive_inventory, "INVENTORY_PATH", tmp_path / "inventory.csv")
+    assert archive_inventory.derive_inventory() == 0
+    figures = render_figures(read_csv(tmp_path / "inventory.csv"))
+    assert quoted_figures(review.read_text(encoding="utf-8")) == [
+        ("releases", figures["releases"]),
+        ("complete-count", figures["complete-count"]),
+    ]
+
+
+def test_a_figure_the_inventory_does_not_render_is_an_error():
+    document = "<!-- BEGIN FIGURE nonsense -->1<!-- END FIGURE nonsense -->"
+    with pytest.raises(ValueError, match="nonsense"):
+        replace_figures(document, {"releases": "281"})
+
+
+@pytest.mark.parametrize(
+    "document",
+    [
+        "<!-- BEGIN FIGURE releases -->1",
+        "<!-- BEGIN FIGURE releases -->1<!-- END FIGURE complete-count -->",
+    ],
+)
+def test_a_figure_marker_that_does_not_close_is_an_error(document):
+    with pytest.raises(ValueError, match="does not close"):
+        replace_figures(document, {"releases": "281"})
 
 
 def test_rendered_vintage_rows_link_the_copy_that_evidences_them():

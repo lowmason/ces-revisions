@@ -17,8 +17,10 @@ from archive_inventory import (
     generated_block,
     inventory_rows,
     next_month,
+    quoted_figures,
     read_csv,
     render_blocks,
+    render_figures,
     vintages_from_rows,
 )
 from review_document import (
@@ -233,6 +235,13 @@ def test_no_copy_of_a_seasonal_adjustment_zip_holds_an_unexplained_file():
 )
 def test_archive_tables_in_the_review_match_the_inventory(name):
     assert generated_block(read_review(), name) == render_blocks(archive_rows())[name]
+
+
+def test_the_review_quotes_every_inventory_figure_and_keeps_each_current():
+    figures = render_figures(archive_rows())
+    quoted = quoted_figures(read_review())
+    assert {name for name, _ in quoted} == set(figures)
+    assert [(name, text) for name, text in quoted if text != figures[name]] == []
 
 
 def test_archive_section_cites_primary_sources_only():

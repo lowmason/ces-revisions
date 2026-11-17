@@ -400,7 +400,7 @@ plan 11.
       catches `http.client.IncompleteRead` beside `OSError` in `retrying`,
       with a test. Size: quick-fix. Revisit if: a `captures` or `current` run
       stops on `http.client.IncompleteRead`.
-- [ ] Keep the review's summary counts in step with the monthly `current`
+- [x] Keep the review's summary counts in step with the monthly `current`
       run (plan 14's final re-review, an observation). The summary bullets
       at the top of `docs/ces-revisions-review.md` hand-write the release
       count ("Of 281 releases from May 2003, specification files survive
@@ -411,3 +411,4 @@ plan 11.
       Done when: those counts are either written by `inventory` as generated
       text, or dated to the run they describe, and the `data/seasonal/raw/`
       bullet in `CLAUDE.md` says which.
+      → done 2026-11-17 (/deferred quick fix)
