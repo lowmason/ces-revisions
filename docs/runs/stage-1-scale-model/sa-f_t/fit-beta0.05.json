@@ -3,7 +3,7 @@
     "no benchmark-cell term omega: from 2004 its cell is one calendar month in every year but 2003, so one observation would identify it against that month's effect",
     "the window is centered, and its year mean taken, over non-lapse months only",
     "month effects on log scale have prior SD 0.4, not 0.5: at 0.5 the prior's central 90% of adjacent-month scale ratios was 0.27-3.7, outside the recommendation's target of about 0.3-3",
-    "a lapse month's within-year window is 0, so the lapse indicator absorbs it whole: a shutdown, not the calendar, set its 18-26 days, and with them it leveraged beta"
+    "a lapse month's within-year window is 0: a shutdown, not the calendar, set its 18-26 days, and with them it leveraged beta and gamma; on log scale the lapse indicator absorbs it, and on the mean it keeps only its month and 5-week terms"
   ],
   "estimates": {
     "a": {
@@ -441,8 +441,8 @@
   "provenance": {
     "array_sha256": "6c43b8d1a06ba559bdb0fcca4ddb6b98b97574052fc854016e1ed6bf37b258f1",
     "git": {
-      "commit": "dbcad878d3bd77ccc36a634f7caefa4cfef8269f",
-      "dirty": true
+      "commit": "5060545e9adbc0b40b0112f0f49c27c847764278",
+      "dirty": false
     }
   },
   "req18": {
@@ -477,8 +477,8 @@
       "rhat_max": 1.0030990797699275
     }
   },
-  "run_dir": "stage1-scale-sa-f_t-beta0.05-seed1765-20261117T203605Z",
-  "sampling_seconds": 2.7945380420424044,
+  "run_dir": "stage1-scale-sa-f_t-beta0.05-seed1765-20261117T205335Z",
+  "sampling_seconds": 3.2233993750996888,
   "series": [
     "SA",
     "F_T"

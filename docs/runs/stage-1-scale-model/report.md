@@ -185,7 +185,7 @@ The recommendation's direct test refits each series with β's prior SD at 0.05, 
 5. **SA F→T's intervals are too narrow.** Its revisions are serially dependent (lag-1 autocorrelation 0.35), which the model does not include. Treat it as secondary. Whether the cause is concurrent seasonal-factor revision is open question 3 of the recommendation.
 6. **The four series are not independent evidence.** NSA F→T contains the NSA F→S revision (|r| correlation 0.90), and the NSA and SA series share the first estimate. The joint fit with a pooled β (Fit 2) is deferred.
 7. **The sample is 2003–2026 only** (the owner's choice, for the probability-sample redesign). The result says nothing about 1979–2002.
-8. **The fits ran on uncommitted code.** The provenance of each run records commit `dbcad87` with a dirty tree. Re-running from the committed branch reproduces the draws, because the seeds are fixed.
+8. **The evidence predates later code changes.** Each fit and the SBC ran from commit `5060545` with a clean tree, as their provenance records. A later change to `src/ces_revisions/scale_model/` or the run harness needs a refit before these figures still hold.
 
 ## Suggested Next Steps
 
