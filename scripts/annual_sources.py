@@ -14,7 +14,7 @@ from urllib.parse import urlsplit
 
 import archive_inventory
 import polars as pl
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 from ces_revisions.annual import raw
 
@@ -25,9 +25,11 @@ PAUSE_SECONDS = 3.0
 
 
 def load_contact_email(env_file: Path = PROJECT_ENV) -> str | None:
-    """Load project-local configuration; an exported value keeps precedence."""
-    load_dotenv(env_file)
-    value = os.environ.get("BLS_CONTACT_EMAIL", "").strip()
+    """Read project-local configuration without exporting it; an exported value wins."""
+    value = os.environ.get("BLS_CONTACT_EMAIL")
+    if value is None:
+        value = dotenv_values(env_file).get("BLS_CONTACT_EMAIL") or ""
+    value = value.strip()
     return value if "@" in value and not value.startswith("@") else None
 
 

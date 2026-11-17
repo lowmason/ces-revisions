@@ -1,6 +1,7 @@
 """The Stage 4 fetch/build script and committed source manifest."""
 
 import csv
+import os
 import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
@@ -8,6 +9,7 @@ from pathlib import Path
 import annual_sources
 import polars as pl
 import pytest
+from bls_contact import require_bls_contact
 
 from ces_revisions.annual import raw
 
@@ -62,6 +64,18 @@ def test_annual_downloads_send_the_contact_to_bls_hosts_only(monkeypatch):
     with_contact = "ces-revisions/0.1.0 (someone@example.org)"
     bare = "ces-revisions/0.1.0"
     assert sent == [with_contact, bare, bare, bare]
+
+
+def test_loading_the_contact_leaves_the_environment_unchanged(
+    monkeypatch, tmp_path: Path
+):
+    # monkeypatch cannot undo a write to a variable that was absent, so a loader that
+    # exported the file's value would hand it to every later test, live ones included.
+    monkeypatch.delenv("BLS_CONTACT_EMAIL", raising=False)
+    env_file = tmp_path / ".project.env"
+    env_file.write_text("BLS_CONTACT_EMAIL=someone@example.org\n", encoding="utf-8")
+    assert annual_sources.load_contact_email(env_file) == "someone@example.org"
+    assert "BLS_CONTACT_EMAIL" not in os.environ
 
 
 def test_exported_contact_takes_precedence_over_dotenv(monkeypatch, tmp_path: Path):
@@ -242,9 +256,8 @@ def test_build_command_reports_each_written_artifact(monkeypatch, capsys):
 
 
 @pytest.mark.network
-def test_live_qcew_header_has_not_changed():
-    contact = annual_sources.load_contact_email()
-    assert contact is not None
+def test_live_qcew_header_has_not_changed(monkeypatch):
+    contact = require_bls_contact(monkeypatch)
     payload, _ = annual_sources.download(annual_sources.QCEW_REVISIONS_URL, contact)
     assert payload.splitlines()[0].decode() == (
         "Year,Quarter,Area,Field,Initial Value,First Revised Value,"
