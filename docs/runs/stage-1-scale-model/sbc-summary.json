@@ -1,0 +1,193 @@
+{
+  "alpha": 0.004545454545454546,
+  "beta_recovery": {
+    "median_contraction": 0.8431703838762371,
+    "passed": true,
+    "share_abs_z_above_3": 0.0
+  },
+  "divergent_replicates": 0,
+  "ecdf_failures": [],
+  "ecdf_simulations": 100000,
+  "indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99
+  ],
+  "n_steps_mean": 24.206480000000003,
+  "num_quantities": 11,
+  "num_replicates": 100,
+  "passed": true,
+  "quantities": {
+    "a": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.304866480155696,
+      "passed": true
+    },
+    "beta": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.155141050477695,
+      "passed": true
+    },
+    "delta": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.02835067987078848,
+      "passed": true
+    },
+    "gamma": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.4474417896722419,
+      "passed": true
+    },
+    "kappa": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.028172547066339093,
+      "passed": true
+    },
+    "lam": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.011052502468059399,
+      "passed": true
+    },
+    "log_likelihood": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.004377772071359334,
+      "passed": true
+    },
+    "m": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.18972740156252127,
+      "passed": true
+    },
+    "nu": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.05313588487395136,
+      "passed": true
+    },
+    "phi": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.036271650357251106,
+      "passed": true
+    },
+    "tau_y": {
+      "critical": 0.00029886651493607637,
+      "gamma": 0.2526750034191412,
+      "passed": true
+    }
+  },
+  "replicate_seconds_median": 6.694327833130956,
+  "saturated_replicates": 0,
+  "settings": {
+    "base_seed": 2122,
+    "max_tree_depth": 10,
+    "num_kept": 100,
+    "num_months": 258,
+    "num_samples": 1000,
+    "num_warmup": 500,
+    "prior_reference_seed": 3711,
+    "priors": {
+      "beta_sd": 0.1
+    },
+    "series": [
+      "NSA",
+      "F_S"
+    ],
+    "target_accept_prob": 0.95
+  }
+}

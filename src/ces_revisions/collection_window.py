@@ -2,7 +2,8 @@
 
 Each revision is the absolute change from the first estimate of a month's over-the-month change
 to its second (F_S) or third (F_T), as BLS's revision table gives them, joined to the day count
-of the month's first release. Reference months 2025-09 and 2025-10 drop, and March 2020 to
+of the month's first release. ``signed_revisions`` keeps the sign, later estimate less first,
+for the Stage 1 scale model. Reference months 2025-09 and 2025-10 drop, and March 2020 to
 December 2021 form a period of their own. The regression fits the absolute revision of the main
 period on `D_t`, a lapse indicator, an intercept, and reference-year and calendar-month dummies,
 with standard errors clustered by reference year (CR1). A second fit adds a dummy for a 5-week
@@ -45,6 +46,14 @@ def five_week_interval(reference_month: date) -> bool:
 
 def absolute_revisions(changes: pl.DataFrame, days: pl.DataFrame) -> pl.DataFrame:
     """One row per month, seasonal status and transition whose two estimates are published."""
+    revisions = signed_revisions(changes, days)
+    return revisions.with_columns(pl.col("revision").abs()).rename(
+        {"revision": "absolute_revision"}
+    )
+
+
+def signed_revisions(changes: pl.DataFrame, days: pl.DataFrame) -> pl.DataFrame:
+    """The rows of ``absolute_revisions`` with the signed revision, later less first."""
     estimates = changes.filter(
         pl.col("source") == "cesnaicsrev",
         ~pl.col("reference_month").is_in(DROPPED_MONTHS),
@@ -63,7 +72,7 @@ def absolute_revisions(changes: pl.DataFrame, days: pl.DataFrame) -> pl.DataFram
         ).select(
             *KEYS,
             transition=pl.lit(transition),
-            absolute_revision=(pl.col("later") - pl.col("first")).abs(),
+            revision=pl.col("later") - pl.col("first"),
         )
         for transition, stage in TRANSITIONS.items()
     )

@@ -1,0 +1,22 @@
+{
+  "variable": "r",
+  "n_observations": 258,
+  "pit_method": "loo_pit",
+  "assessment": {
+    "pit_p_value": 0.4510561565171738,
+    "coverage_p_value": 0.4522472195833879,
+    "alpha": 0.01,
+    "pit_test_passed": true,
+    "coverage_test_passed": true,
+    "mean_pit": 0.5085,
+    "location_t": 0.47,
+    "mean_coverage_deviation": 0.0011,
+    "findings": [],
+    "well_calibrated": true,
+    "calibration_diagnosis": "well-calibrated"
+  },
+  "plots": {
+    "pit_ecdf": "docs/runs/stage-1-scale-model/nsa-f_s/loo_pit_ecdf.png",
+    "coverage": "docs/runs/stage-1-scale-model/nsa-f_s/loo_pit_coverage.png"
+  }
+}
