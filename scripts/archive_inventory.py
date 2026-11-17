@@ -23,6 +23,7 @@ import argparse
 import base64
 import csv
 import hashlib
+import http.client
 import io
 import os
 import re
@@ -219,9 +220,43 @@ def user_agent(url: str, contact: str | None = None) -> str:
     return USER_AGENT_PRODUCT
 
 
+class ContactRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Recompute the User-Agent for each hop of a redirect.
+
+    urllib copies every non-content header of a request to its redirect target, so a bls.gov
+    response that redirected to another host would hand that host the contact address. Each hop
+    gets `user_agent` for its own URL instead. `contact` has the meaning it has there.
+    """
+
+    def __init__(self, contact: str | None = None) -> None:
+        self.contact = contact
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        redirected = super().redirect_request(req, fp, code, msg, headers, newurl)
+        if redirected is not None:
+            redirected.add_header(
+                "User-Agent", user_agent(redirected.full_url, self.contact)
+            )
+        return redirected
+
+
+def open_url(
+    url: str, timeout: float, contact: str | None = None
+) -> http.client.HTTPResponse:
+    """Open `url` with a User-Agent chosen for every hop, redirects included.
+
+    Every fetcher in `scripts/` opens its URLs here, so none can send the contact address to a
+    host other than bls.gov and its subdomains. `contact` has the meaning it has in `user_agent`.
+    """
+    opener = urllib.request.build_opener(ContactRedirectHandler(contact))
+    request = urllib.request.Request(
+        url, headers={"User-Agent": user_agent(url, contact)}
+    )
+    return opener.open(request, timeout=timeout)
+
+
 def fetch(url: str) -> bytes:
-    request = urllib.request.Request(url, headers={"User-Agent": user_agent(url)})
-    with urllib.request.urlopen(request, timeout=120) as response:
+    with open_url(url, timeout=120) as response:
         return response.read()
 
 

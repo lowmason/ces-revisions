@@ -1,5 +1,6 @@
 """scripts/archive_inventory.py: vintages, Internet Archive captures, and per-vintage statuses."""
 
+import io
 import urllib.request
 from dataclasses import replace
 from datetime import UTC, date, datetime
@@ -49,6 +50,7 @@ from archive_inventory import (
     vintages_from_rows,
 )
 from bls_contact import require_bls_contact
+from fake_https import serve_https
 from zip_fixtures import make_dated_zip, make_zip
 
 FIXTURES = Path(__file__).parent / "fixtures" / "archive_inventory"
@@ -262,31 +264,60 @@ def test_a_blank_contact_leaves_the_user_agent_bare(monkeypatch, contact):
     assert archive_inventory.user_agent(url, contact) == BARE
 
 
-class FakeResponse:
-    headers: dict[str, str] = {}  # noqa: RUF012
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc_info):
-        return False
-
-    def read(self) -> bytes:
-        return b""
-
-
 def test_fetch_sends_the_contact_to_bls_hosts_only(monkeypatch):
     monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
-    sent = []
-
-    def fake_urlopen(request, timeout):
-        sent.append(request.get_header("User-agent"))
-        return FakeResponse()
-
-    monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+    seen = serve_https(monkeypatch)
     fetch("https://www.bls.gov/web/empsit/ces.spec.ae.zip")
     fetch(REPLAY)
-    assert sent == [WITH_CONTACT, BARE]
+    assert [agent for _, agent in seen] == [WITH_CONTACT, BARE]
+
+
+def redirect_target_header(contact, source, target):
+    """The User-Agent that the handler gives the request for `target` after a 302 from `source`."""
+    handler = archive_inventory.ContactRedirectHandler(contact)
+    first = urllib.request.Request(
+        source, headers={"User-Agent": archive_inventory.user_agent(source, contact)}
+    )
+    redirected = handler.redirect_request(first, io.BytesIO(), 302, "Found", {}, target)
+    return redirected.get_header("User-agent")
+
+
+@pytest.mark.parametrize(
+    ("source", "target", "expected"),
+    [
+        ("https://www.bls.gov/a", "https://www.example.com/b", BARE),
+        ("https://www.bls.gov/a", REPLAY, BARE),
+        ("https://www.bls.gov/a", "https://bls.gov.example.com/b", BARE),
+        ("https://www.bls.gov/a", "https://download.bls.gov/b", WITH_CONTACT),
+        ("https://www.bls.gov/a", "https://www.bls.gov/b", WITH_CONTACT),
+        # The header follows the host of each hop, so a hop onto bls.gov names the contact too.
+        ("https://www.example.com/a", "https://www.bls.gov/b", WITH_CONTACT),
+        ("https://www.example.com/a", "https://www.example.org/b", BARE),
+    ],
+)
+def test_a_redirect_names_the_contact_only_to_bls_hosts(source, target, expected):
+    assert redirect_target_header("someone@example.org", source, target) == expected
+
+
+def test_a_redirect_without_a_given_contact_reads_the_environment(monkeypatch):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    bls, other = "https://www.bls.gov/a", "https://www.example.com/b"
+    assert redirect_target_header(None, bls, bls) == WITH_CONTACT
+    assert redirect_target_header(None, bls, other) == BARE
+
+
+def test_a_redirect_keeps_every_header_but_the_user_agent():
+    handler = archive_inventory.ContactRedirectHandler("someone@example.org")
+    first = urllib.request.Request(
+        "https://www.bls.gov/a",
+        headers={"User-Agent": WITH_CONTACT, "Accept": "text/csv"},
+    )
+    redirected = handler.redirect_request(
+        first, io.BytesIO(), 302, "Found", {}, "https://www.example.com/b"
+    )
+    assert redirected.full_url == "https://www.example.com/b"
+    assert redirected.get_header("Accept") == "text/csv"
+    assert first.get_header("User-agent") == WITH_CONTACT
 
 
 # --- Captures ------------------------------------------------------------------------------
