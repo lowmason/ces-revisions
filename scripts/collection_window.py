@@ -2,7 +2,8 @@
 
 `report` (offline) reads the built data/panel/ and rewrites the generated blocks of the Stage 1
 findings file: the mean absolute revisions for each day count `D_t`, in the main period and in
-March 2020 to December 2021, and the regression's coefficients. Build data/panel/ first with
+March 2020 to December 2021, and the coefficients of the regression without and with the
+5-week survey-interval control. Build data/panel/ first with
 `uv run python scripts/vintage_sources.py build`.
 """
 
@@ -71,8 +72,16 @@ def render_by_days(revisions: pl.DataFrame, period: str) -> str:
     return "\n".join(lines)
 
 
-def render_regression(revisions: pl.DataFrame) -> str:
-    """The `D_t` and lapse coefficients of the four fits, in thousands."""
+def render_regression(
+    revisions: pl.DataFrame, *, interval_control: bool = False
+) -> str:
+    """The `D_t` coefficient of the four fits, its 12-to-19-day interval, and one more term.
+
+    The last pair of columns is the lapse coefficient, or with `interval_control` the 5-week
+    coefficient. Values are in thousands.
+    """
+    last = "5-week coefficient" if interval_control else "Lapse coefficient"
+    prefix = "interval" if interval_control else "lapse"
     header = [
         "Status",
         "Transition",
@@ -80,21 +89,23 @@ def render_regression(revisions: pl.DataFrame) -> str:
         "Years",
         "`D_t` coefficient",
         "SE",
-        "Lapse coefficient",
+        "12→19 days, 95% CI",
+        last,
         "SE",
     ]
     lines = [f"| {' | '.join(header)} |", "|---|---|" + "---:|" * (len(header) - 2)]
-    for row in days_regression(revisions).iter_rows(named=True):
+    fits = days_regression(revisions, interval_control=interval_control)
+    for row in fits.iter_rows(named=True):
         cells = [
             row["seasonal_status"],
             ARROWS[row["transition"]],
             str(row["n"]),
             str(row["clusters"]),
-            *(
-                f"{row[name]:.2f}"
-                for name in ("days_coefficient", "days_se", "lapse_coefficient")
-            ),
-            f"{row['lapse_se']:.2f}",
+            f"{row['days_coefficient']:.2f}",
+            f"{row['days_se']:.2f}",
+            f"{row['contrast_low']:.1f} to {row['contrast_high']:.1f}",
+            f"{row[f'{prefix}_coefficient']:.2f}",
+            f"{row[f'{prefix}_se']:.2f}",
         ]
         lines.append(f"| {' | '.join(cells)} |")
     return "\n".join(lines)
@@ -118,6 +129,9 @@ def report() -> int:
         "stage-1-main": render_by_days(revisions, "main"),
         "stage-1-pandemic": render_by_days(revisions, "pandemic"),
         "stage-1-regression": render_regression(revisions),
+        "stage-1-regression-interval": render_regression(
+            revisions, interval_control=True
+        ),
     }
     document = FINDINGS.read_text(encoding="utf-8")
     for name, body in blocks.items():
