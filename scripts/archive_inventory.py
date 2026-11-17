@@ -1324,11 +1324,13 @@ def derive_inventory() -> int:
     vintages = vintages_from_rows(read_csv(VINTAGES_PATH))
     captures = [capture_from_row(row) for row in read_csv(CAPTURES_PATH)]
     rows = inventory_rows(vintages, captures)
-    write_csv(INVENTORY_PATH, rows, INVENTORY_COLUMNS)
+    # Build the whole review before writing anything, so a refusal leaves both files as they were.
+    figures = render_figures(rows)
     document = REVIEW_PATH.read_text(encoding="utf-8")
     for name, body in render_blocks(rows).items():
         document = replace_generated(document, name, body)
-    document = replace_figures(document, render_figures(rows))
+    document = replace_figures(document, figures)
+    write_csv(INVENTORY_PATH, rows, INVENTORY_COLUMNS)
     REVIEW_PATH.write_text(document, encoding="utf-8")
     return 0
 

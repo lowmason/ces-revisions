@@ -1025,27 +1025,66 @@ def test_the_quoted_figures_list_each_marker_with_its_text():
     ]
 
 
-def test_inventory_rewrites_the_review_figures_from_the_evidence(monkeypatch, tmp_path):
-    # The committed evidence is read, and only the inventory file and the review are written.
-    review = tmp_path / "review.md"
+def temporary_review(monkeypatch, tmp_path, prose):
+    """Point `inventory` at a review of three empty blocks and `prose`, and a new inventory file.
+
+    The committed evidence is still read. Returns the two paths that `inventory` writes.
+    """
     blocks = "".join(
         f"<!-- BEGIN GENERATED {name} -->\nold\n<!-- END GENERATED {name} -->\n"
         for name in ("archive-findings", "archive-coverage", "archive-vintages")
     )
-    review.write_text(
-        f"{blocks}Of <!-- BEGIN FIGURE releases -->stale<!-- END FIGURE releases --> "
-        "releases, "
-        "<!-- BEGIN FIGURE complete-count -->stale<!-- END FIGURE complete-count -->.\n",
-        encoding="utf-8",
-    )
+    review, inventory = tmp_path / "review.md", tmp_path / "inventory.csv"
+    review.write_text(blocks + prose, encoding="utf-8")
     monkeypatch.setattr(archive_inventory, "REVIEW_PATH", review)
-    monkeypatch.setattr(archive_inventory, "INVENTORY_PATH", tmp_path / "inventory.csv")
+    monkeypatch.setattr(archive_inventory, "INVENTORY_PATH", inventory)
+    return review, inventory
+
+
+def test_inventory_rewrites_the_review_figures_from_the_evidence(monkeypatch, tmp_path):
+    review, inventory = temporary_review(
+        monkeypatch,
+        tmp_path,
+        "Of <!-- BEGIN FIGURE releases -->stale<!-- END FIGURE releases --> releases, "
+        "<!-- BEGIN FIGURE complete-count -->stale<!-- END FIGURE complete-count -->.\n",
+    )
     assert archive_inventory.derive_inventory() == 0
-    figures = render_figures(read_csv(tmp_path / "inventory.csv"))
+    figures = render_figures(read_csv(inventory))
     assert quoted_figures(review.read_text(encoding="utf-8")) == [
         ("releases", figures["releases"]),
         ("complete-count", figures["complete-count"]),
     ]
+
+
+def test_inventory_writes_neither_file_when_a_figure_cannot_be_written(
+    monkeypatch, tmp_path
+):
+    review, inventory = temporary_review(
+        monkeypatch,
+        tmp_path,
+        "<!-- BEGIN FIGURE nonsense -->1<!-- END FIGURE nonsense -->\n",
+    )
+    before = review.read_text(encoding="utf-8")
+    with pytest.raises(ValueError, match="nonsense"):
+        archive_inventory.derive_inventory()
+    assert review.read_text(encoding="utf-8") == before
+    assert not inventory.exists()
+
+
+def test_inventory_writes_neither_file_when_the_figures_cannot_be_rendered(
+    monkeypatch, tmp_path
+):
+    review, inventory = temporary_review(monkeypatch, tmp_path, "no figures\n")
+    before = review.read_text(encoding="utf-8")
+
+    def refuse(rows):
+        raise ValueError("the figures cannot be rendered")
+
+    monkeypatch.setattr(archive_inventory, "render_figures", refuse)
+    with pytest.raises(ValueError, match="cannot be rendered"):
+        archive_inventory.derive_inventory()
+    assert review.read_text(encoding="utf-8") == before
+    assert not inventory.exists()
 
 
 def test_a_figure_the_inventory_does_not_render_is_an_error():
