@@ -1,6 +1,6 @@
 # Stage 9 — Collection Window and the First-Closing Collection Rate Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via executing-plans (default F1, for the owner's review). Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via executing-plans (default F1, approved at plan review on 2026-11-17). Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 9 — on plan completion, tick the stage and re-validate later stages against what shipped.
 
@@ -44,7 +44,7 @@ None.
 
 ## Defaults settled in this plan
 
-For the owner's review at plan review.
+The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
 
 - **F1 (brief): process.** Stage 1's process (roadmap `:23`), which was the owner's choice for Stage 1 only: executing-plans inline, test first for `W_t`, executing-plans' final whole-branch review, no per-task reviewers or subagents, and test steps as names with inline assertions. Two additions the owner has not seen: parser tests on synthetic fixtures before the gated fetch (Task 2), and one task-reviewer pass on Task 3, which writes `data/raw/` and changes the manifest code of `scripts/vintage_sources.py`.
 - **F2: fetch shape.** The fetch is its own script, `scripts/collection_rate_sources.py`, with two network commands (`fetch-labstat`, `fetch-archive`) and three offline commands (`status`, `prose`, `promote`). Staging persists in the gitignored `data/cache/collection-rates/`, so the prose reading and a parser fix happen offline, between the fetch and `promote`. The first `fetch-archive` run fetches only the last copy of each year, which tests the parser on the real layouts before any walk. A later run, with its own yes, walks each year whose staged copies are all invalid down the year's captures until one parses or none remain. This follows the spec's walk-down rule in two or three yeses, and it never walks a year on a parser that has not met the real layouts.
