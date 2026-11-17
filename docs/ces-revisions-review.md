@@ -187,7 +187,7 @@ Releases by the year of their reference month, with how many keep each file type
 
 ### Per-vintage inventory
 
-Each surviving file's status links the copy that evidences it, and [`archive-inventory.csv`](inventory/archive-inventory.csv) holds the same rows with the evidence URLs.
+Each surviving file's status links the copy that evidences it. [`archive-inventory.csv`](inventory/archive-inventory.csv) holds the same rows with their evidence: the replay URL of an `internet_archive` copy, or the repository path of a `bls_fetched` copy's stored ZIP.
 
 <!-- BEGIN GENERATED archive-vintages -->
 
