@@ -2,7 +2,7 @@
 
 > For agentic workers: REQUIRED NEXT SKILL: writing-plans. This spec is one plan.
 
-Status: approved design, 2026-11-16.\
+Status: COMPLETE (2026-11-17), implemented by plan 14 (`specs/plans/completed/14-seasonal-adjustment-file-store.md`). Approved design, 2026-11-16.\
 Source: the deferred item "Keep each `bls_current` copy as evidence across `captures` runs" in
 `specs/deferred_items.md` (section `claude/deferred-063daa Step 4b review — 2026-11-15`), picked
 as a Design item in the `/deferred` pass of 2026-11-16.\

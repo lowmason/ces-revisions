@@ -13,7 +13,7 @@ subcommands, so the inventory can be rebuilt from the committed evidence without
 
 `captures` and `current` merge what they observe into docs/inventory/archive-captures.csv, so no
 recorded row is dropped, rewrite docs/inventory/es-vintages.csv, and store every ZIP they open
-in data/seasonal/raw/ (specs/seasonal-adjustment-file-store.md). `adopt` stores a local ZIP whose
+in data/seasonal/raw/ (specs/completed/seasonal-adjustment-file-store.md). `adopt` stores a local ZIP whose
 digest a committed row records, and uses only the standard library. `inventory` writes
 docs/inventory/archive-inventory.csv and regenerates the inventory tables in
 docs/ces-revisions-review.md.
@@ -510,7 +510,7 @@ def collect_archive_copies() -> list[tuple[Capture, bytes | None]]:
 
 # --- File store ----------------------------------------------------------------------------
 
-# Each artifact's ZIPs are kept once per digest (specs/seasonal-adjustment-file-store.md).
+# Each artifact's ZIPs are kept once per digest (specs/completed/seasonal-adjustment-file-store.md).
 STORE_DIR = ROOT / "data" / "seasonal" / "raw"
 STORE_MANIFEST = "manifest.csv"
 STORE_MANIFEST_COLUMNS = ["file", "sha256", "bytes", "digest"]
@@ -698,7 +698,7 @@ def _merge_pair(old: Capture, new: Capture) -> Capture:
 
 
 def merge_captures(committed: list[Capture], observed: list[Capture]) -> list[Capture]:
-    """Merge a run's observations into the committed rows (specs/seasonal-adjustment-file-store.md).
+    """Merge a run's observations into the committed rows (specs/completed/seasonal-adjustment-file-store.md).
 
     Rows with one key pair up as a multiset, the ith committed row with the ith observed row.
     A committed row with no partner stays, and an observed row with no partner is added. Any

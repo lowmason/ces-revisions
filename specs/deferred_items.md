@@ -249,7 +249,7 @@ plan 11.
       that deliver O12 and O7 have all ticked.
 
 ## claude/deferred-063daa Step 4b review — 2026-11-15
-- [ ] Keep each `bls_current` copy as evidence across `captures` runs
+- [x] Keep each `bls_current` copy as evidence across `captures` runs
       (code-reviewer's Declined to judge line in the Step 4b review of branch
       `claude/deferred-063daa`, carried by the owner). Each run of
       `scripts/archive_inventory.py captures` replaces the earlier `bls_current`
@@ -267,6 +267,7 @@ plan 11.
       earlier `bls_current` row and its payload, and a test shows that a
       release credited by such a copy keeps its status after that run.
       → planned 2026-11-16: specs/plans/14-seasonal-adjustment-file-store.md
+      → done 2026-11-17 (plan 14)
 
 ## 12-ces-revision-drivers-stage-1 — 2026-11-15
 - [ ] Declined review line: `absolute_revisions` in
@@ -355,3 +356,55 @@ plan 11.
       the same panel would give shares for `trig`. Size: quick-fix. Done when: a
       plan for O17 lists each point as fixed, dropped on the owner's word, or
       kept with a reason.
+
+## 14-seasonal-adjustment-file-store — 2026-11-17
+- [ ] Drop the contact address when a BLS request is redirected off bls.gov
+      (plan 14, Task 1 ruling on a declined review line). `user_agent` in
+      `scripts/archive_inventory.py` decides from the request URL, and the
+      three fetchers (`archive_inventory.fetch`, `scripts/vintage_sources.py`,
+      `scripts/annual_sources.py`) send that header once. urllib's
+      `HTTPRedirectHandler` copies every non-content header, the
+      `User-Agent` included, to the redirect target. So a bls.gov response
+      that redirects to another host would send `BLS_CONTACT_EMAIL` there.
+      No such BLS redirect is known. The fix is a redirect handler that
+      recomputes the header for each hop with `user_agent`. Size: quick-fix.
+      Done when: every fetcher recomputes the `User-Agent` on each redirect
+      hop, and a test shows that a bls.gov URL redirected to a non-BLS host
+      sends only the bare product name to that host.
+- [ ] Lift the 2026-09-13 `payload_lost` row to `200` when `captures` stores
+      its bytes (plan 14's final review, a Declined to judge line; the owner
+      chose a watch item). The BLS other-inputs row of 2026-09-13 in
+      `docs/inventory/archive-captures.csv` has status `payload_lost` and
+      digest `JRW4ECRTZ3X22BDLK7YHUZ6U3M7F5WUG`. If the Internet Archive
+      ever lists a copy with that digest, `captures` stores the ZIP, but
+      merge point 3 (`specs/completed/seasonal-adjustment-file-store.md`,
+      Merge rule) keeps the BLS row at `payload_lost`, and `adopt` then
+      refuses the ZIP as already stored. No credit is lost, because the
+      Archive row credits release 2026-08. But
+      `docs/ces-revisions-review.md` and the `data/seasonal/raw/` bullet in
+      `CLAUDE.md` say that `adopt` sets the row to `200`. The fix amends merge
+      point 3 so that a stored digest lifts the row, in
+      `_merge_pair` or `_adopt_rows` of `scripts/archive_inventory.py`.
+      Size: quick-fix. Revisit if: a row with digest
+      `JRW4ECRTZ3X22BDLK7YHUZ6U3M7F5WUG` and status `200` appears in
+      `docs/inventory/archive-captures.csv`.
+- [ ] Retry a truncated replay instead of stopping the run (plan 14's final
+      review, a Declined to judge line; the owner chose a watch item). A
+      truncated response raises `http.client.IncompleteRead`, which is not an
+      `OSError`, so `retrying` in `scripts/archive_inventory.py` does not
+      retry it. A full `captures` or `current` run then stops and writes
+      nothing. The behavior predates plan 14, and no run has met it. The fix
+      catches `http.client.IncompleteRead` beside `OSError` in `retrying`,
+      with a test. Size: quick-fix. Revisit if: a `captures` or `current` run
+      stops on `http.client.IncompleteRead`.
+- [ ] Keep the review's summary counts in step with the monthly `current`
+      run (plan 14's final re-review, an observation). The summary bullets
+      at the top of `docs/ces-revisions-review.md` hand-write the release
+      count ("Of 281 releases from May 2003, specification files survive
+      for 117") and the archive-complete count ("Only the 29 releases that
+      keep all three file types"). `inventory` regenerates the tables below
+      them after each monthly `current` run, but not these bullets, and no
+      test checks them. The staleness predates plan 14. Size: quick-fix.
+      Done when: those counts are either written by `inventory` as generated
+      text, or dated to the run they describe, and the `data/seasonal/raw/`
+      bullet in `CLAUDE.md` says which.

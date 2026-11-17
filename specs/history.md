@@ -56,3 +56,22 @@ Differences from the design:
 Closed earlier deferred items:
 - "Review recommendation: dispersed chain starts for Req 18 (whole-branch" (deferred by 1-ces-revisions).
 - "Review Minor: two EMPLOY vintages map to one release (whole-branch" (deferred by 5-ces-revisions).
+
+## 14-seasonal-adjustment-file-store — 2026-11-17
+Plan: specs/plans/completed/14-seasonal-adjustment-file-store.md · Spec: specs/completed/seasonal-adjustment-file-store.md (retired)
+
+Differences from the design:
+- Ruling (Task 1): Task 1 concern 1 / review Important 1 (README.md:76-78) -> reversed the earlier Task 7 ruling; fixed now by controller hand fix (one file, prose only), counts as fix attempt 1.
+- Ruling (Task 2): Task 2 finding 5 accepted — a subprocess `git check-attr` test is hermetic (no network), so the spec:202 Unreachable line does not hold — if wrong, one test depends on git being installed.
+- Ruling, contradicts spec (Task 6): Task 6 finding 2 — spec:294 vs the 55 pinned URLs: the plan test governs — spec:198 says "Revisit rows (status `-`) and every repeat of a digest resolve to that one file." — the five Archive rows sharing UMPG resolve to the adopted ZIP; spec:294 is left as written (approved design text) — if wrong, the pinned list is 5 short and Task 8's update corrects it.
+- Ruling (Task 7): Task 7 concern 1 (Stage 14 bullet says coverage contains the inventory "once a full captures run has stored the Internet Archive copies that the file store does not hold yet") accepted — the brief's plain claim is false until Task 8 — Task 8 drops the "once ..." clause after a clean run; if Task 8 is deferred, the clause stays true.
+- Deviation (Task 1): `README.md:76-78` was fixed in Task 1 too (ce357c6). Source: plan, Task 1.
+- Deviation (Task 6): the pin held 55 URLs, not every Archive `200` row (`spec:294`). Source: plan, Task 6.
+- Deviation (Task 7): the Stage 14 bullet kept a "once a full `captures` run…" clause until Task 8. Source: plan, Task 7.
+- Deviation (Task 8): the counts at `review:132` and `review:488` are dated to the run of 2026-11-17 (owner, completion gate). Source: plan, Task 8.
+- Deviation (Task 9): the Codex seat was skipped; the final review's two fixes are 3edf644 and 232b91b. Source: plan, Task 9.
+- Decision D3 (spec amendment): split the store's `.gitattributes` rule into `-text` for every file and `-diff` for the ZIPs. Source: plan, `## Decisions`.
+- Deferred: 4 items. Source: specs/deferred_items.md, § 14-seasonal-adjustment-file-store.
+
+Closed earlier deferred items:
+- "Keep each `bls_current` copy as evidence across `captures` runs" (deferred by claude/deferred-063daa Step 4b review).

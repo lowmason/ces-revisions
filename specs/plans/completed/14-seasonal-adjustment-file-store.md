@@ -1,5 +1,7 @@
 # Seasonal-Adjustment File Store Implementation Plan
 
+**Status: COMPLETE (2026-11-17)** — executed via subagent-driven-development; deferred items in specs/deferred_items.md
+
 > **For agentic workers:** REQUIRED SUB-SKILL: implement this plan task-by-task via subagent-driven-development (the default) — or executing-plans when your human partner chose inline execution at the handoff. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Keep every recorded copy of BLS's two seasonal-adjustment ZIPs as dated evidence. Store every ZIP that `captures` opens in a committed, content-addressed store, add the light `current` and the offline `adopt` commands, and send the contact address only to BLS hosts.
@@ -62,7 +64,7 @@
 **Interfaces:**
 - Produces: `archive_inventory.USER_AGENT_PRODUCT = "ces-revisions/0.1.0"`, `archive_inventory.is_bls_host(url: str) -> bool` and `archive_inventory.user_agent(url: str, contact: str | None = None) -> str`. `contact=None` reads `BLS_CONTACT_EMAIL` from the environment. `annual_sources.user_agent` and `annual_sources.USER_AGENT_PRODUCT` are removed.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 In `tests/test_archive_inventory.py`, under `# --- Network ---`:
 
@@ -102,25 +104,27 @@ In `tests/test_annual_sources.py`, replace the `user_agent` assertion at lines 3
 
 In `tests/test_vintage_sources.py:36-49`, add `assert vintage_sources.user_agent_for(REPLAY_URL) == "ces-revisions/0.1.0"`, where `REPLAY_URL` is the replay URL above.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_inventory.py tests/test_annual_sources.py tests/test_vintage_sources.py -m "not network" -q`
 Expected: FAIL. `user_agent()` takes no `url`, and `annual_sources.download` sends the contact to every host.
 
-- [ ] **Step 3: Implement the host rule**
+- [x] **Step 3: Implement the host rule**
 
 `is_bls_host` takes `urlsplit(url).hostname` and accepts `bls.gov` or a name that ends in `.bls.gov`. Move that test from `vintage_sources.user_agent_for` into it. `user_agent` returns `f"{USER_AGENT_PRODUCT} ({contact})"` only for a BLS host and a non-empty contact. `fetch` sends `user_agent(url)`. `vintage_sources.user_agent_for(url)` returns `archive_inventory.user_agent(url)`. `annual_sources.download(url, contact_email)` sends `archive_inventory.user_agent(url, contact_email)`. `load_contact_email` and its checks stay.
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_inventory.py tests/test_annual_sources.py tests/test_vintage_sources.py -m "not network" -q`
 Expected: PASS.
 
-- [ ] **Step 5: Update `CLAUDE.md:36`**
+- [x] **Step 5: Update `CLAUDE.md:36`**
+
+> Deviation: `README.md:76-78` made the same every-request claim, so Task 1 also fixed it by hand (ce357c6). Source: ledger, Task 1 rulings.
 
 Replace "and includes it in every HTTP `User-Agent`" with "and sends it in the `User-Agent` of requests to bls.gov hosts only, through `archive_inventory.user_agent`. Every other host gets `ces-revisions/0.1.0`".
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/archive_inventory.py scripts/vintage_sources.py scripts/annual_sources.py tests/test_archive_inventory.py tests/test_vintage_sources.py tests/test_annual_sources.py CLAUDE.md
@@ -146,11 +150,11 @@ git commit -m "Send the contact address to BLS hosts only, from all three fetche
   - `staging(store_dir: Path) -> Iterator[Staging]`, a `contextlib.contextmanager`.
   - `check_store(store_dir: Path) -> list[str]`: one message per problem, empty when the store is sound.
 
-- [ ] **Step 1: Move the ZIP builders**
+- [x] **Step 1: Move the ZIP builders**
 
 Move `make_zip` and `make_dated_zip` unchanged to `tests/zip_fixtures.py`, and import them in `tests/test_archive_inventory.py`. Run `uv run pytest tests/test_archive_inventory.py -m "not network" -q`. Expected: PASS.
 
-- [ ] **Step 2: Write the failing tests in `tests/test_archive_store.py`**
+- [x] **Step 2: Write the failing tests in `tests/test_archive_store.py`**
 
 Each test uses `store = tmp_path / "data" / "seasonal" / "raw"`.
 
@@ -162,12 +166,12 @@ Each test uses `store = tmp_path / "data" / "seasonal" / "raw"`.
 - `test_a_failed_run_leaves_the_committed_tree_untouched`: commit one ZIP and a CSV in an earlier run. In a new run, put another ZIP, write a staged CSV, then raise `RuntimeError` inside the `with`. Assert the store's files, the manifest bytes and the CSV bytes are unchanged, and `list(store.parent.glob(".staging-*")) == []`.
 - `test_check_store_finds_a_changed_an_unlisted_and_a_missing_zip`: a sound store gives `[]`. Each of the following gives one message naming the file: one changed byte in a stored ZIP, an extra ZIP not in the manifest, and a deleted listed ZIP.
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_store.py -q`
 Expected: FAIL with `ImportError` on `staging`.
 
-- [ ] **Step 4: Implement the store**
+- [x] **Step 4: Implement the store**
 
 - `staging` creates `store_dir.parent` if needed and opens `tempfile.TemporaryDirectory(prefix=".staging-", dir=store_dir.parent)`. The folder goes away on any exit.
 - `put` computes the digest. If the committed store or this run already holds that name, the bytes must be equal, else it raises `ValueError(f"different payload under {file}")`, and nothing new is staged. Otherwise it writes the ZIP into the staging folder.
@@ -175,7 +179,7 @@ Expected: FAIL with `ImportError` on `staging`.
 - `promote` writes the new manifest first. The manifest keeps every committed row as it is, without rehashing, adds one row per staged ZIP, and is sorted by `file`. A missing manifest reads as no rows. `promote` then moves every staged ZIP, and after that every other staged file and the manifest, with `Path.replace`.
 - `check_store` reports four problems: a ZIP whose `payload_digest` is not its file name, a manifest row whose `sha256`, `bytes` or `digest` differs from the file, a file that is not in the manifest, and a manifest row with no file. It ignores `.DS_Store`.
 
-- [ ] **Step 5: Add the repository rules**
+- [x] **Step 5: Add the repository rules**
 
 Add these rules to `.gitattributes`, with a comment:
 
@@ -199,12 +203,12 @@ with:
   `data/annual/raw/` has, so `manifest.csv` diffs as text (owner, plan 14, 2026-11-16).
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_store.py tests/test_archive_inventory.py -m "not network" -q`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/archive_inventory.py .gitattributes .gitignore specs/seasonal-adjustment-file-store.md tests/zip_fixtures.py tests/test_archive_store.py tests/test_archive_inventory.py
@@ -231,7 +235,7 @@ The rule is `spec:228-251`, in this order:
 6. An unpaired committed row stays, and an unpaired observed row is added (point 2).
 7. The result is sorted by `(artifact, source, timestamp, url)` with Python's stable sort, so doubled rows keep their order (point 8).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Build rows with a helper, `row(**changes) -> Capture`, which applies `replace` to one `internet_archive` row with status `200`, digest `"D"` and `outliers="o"`.
 
@@ -245,19 +249,19 @@ Build rows with a helper, `row(**changes) -> Capture`, which applies `replace` t
 - `test_rows_listed_twice_pair_as_a_multiset`: with committed `[r, r]`, observing `[r]` gives `[r, r]`, observing `[r, r]` gives `[r, r]`, and observing `[r, r, r]` gives `[r, r, r]`.
 - `test_merged_rows_sort_by_artifact_source_timestamp_url`.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_store.py -q`
 Expected: FAIL with `ImportError` on `merge_captures`.
 
-- [ ] **Step 3: Implement `capture_key` and `merge_captures`**
+- [x] **Step 3: Implement `capture_key` and `merge_captures`**
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_store.py -q`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/archive_inventory.py tests/test_archive_store.py
@@ -284,7 +288,7 @@ git commit -m "Merge each run's copies into the committed evidence rows"
   - `fetch_current(now: datetime, paths: EvidencePaths = EVIDENCE) -> int`: `fetch_vintages`, `fetch_bls_copies`, then `record_run`. It sends no Internet Archive request, reports unexplained members only, and returns 1 if there are any.
   - `main` uses argparse subcommands `captures`, `current`, `adopt` (Task 5) and `inventory`. `captures` and `current` pass `datetime.now(UTC).replace(microsecond=0)`. `collect_captures` and `COMMANDS` are removed.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 In `tests/test_archive_store.py`, add a `fake_network(monkeypatch, *, bls, listing, replays)` helper.
 
@@ -306,19 +310,19 @@ Paths come from `EvidencePaths.at(tmp_path)`.
 
 In `tests/test_archive_inventory.py:361-395`, rename the test to `test_collect_archive_copies_records_an_unreplayable_copy_instead_of_failing` and call `collect_archive_copies()`. Give the `KEPT` copy the digest `payload_digest(payload)`. The expected rows lose the BLS row, and each item is a `(Capture, payload)` pair. At lines 456-479, use `BLS_SOURCE` in place of the `"bls_current"` literal.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_store.py tests/test_archive_inventory.py -m "not network" -q`
 Expected: FAIL with `ImportError` on `EvidencePaths`.
 
-- [ ] **Step 3: Implement the collection functions, `record_run`, both commands and `main`**
+- [x] **Step 3: Implement the collection functions, `record_run`, both commands and `main`**
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS. The committed CSVs are not touched.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/archive_inventory.py tests/test_archive_store.py tests/test_archive_inventory.py
@@ -346,7 +350,7 @@ Behavior (`spec:266-271`):
 - Revisit rows and every other row stay unchanged, and `adopt` adds no row.
 - A run with no refusal stages the ZIPs and the updated `archive-captures.csv`, then promotes them. It does not write `es-vintages.csv`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 - `test_adopt_stores_a_recorded_zip_and_fills_an_empty_member_date`: it returns 0, the ZIP is at `stored_file`, the row has the computed `newest_member`, and the row count is unchanged.
 - `test_adopt_refuses_a_digest_no_row_records`: it returns 1, and the CSV bytes and the store are unchanged.
@@ -354,19 +358,19 @@ Behavior (`spec:266-271`):
 - `test_adopt_refuses_bytes_whose_fingerprints_differ_from_the_row`: the row has the payload's digest but `outliers="0000000000000000"`.
 - `test_adopt_turns_a_payload_lost_row_into_200`.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv run pytest tests/test_archive_store.py -q -k adopt`
 Expected: FAIL with `ImportError` on `adopt_payloads`.
 
-- [ ] **Step 3: Implement `adopt_payloads` and the subcommand**
+- [x] **Step 3: Implement `adopt_payloads` and the subcommand**
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv run pytest tests/test_archive_store.py -q`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/archive_inventory.py tests/test_archive_store.py
@@ -390,7 +394,7 @@ This task makes one commit, because the label flip, the restored rows and the ad
   - `_status_cell` links a `BLS_SOURCE` cell to `../<evidence>`, and an `internet_archive` cell to its URL as now.
   - The comment on `Capture.url` becomes "where these bytes were fetched" (`spec:213-216`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 The new section in `tests/test_archive_inventory.py` holds two constants and seven tests:
 
@@ -412,12 +416,12 @@ The new section in `tests/test_archive_inventory.py` holds two constants and sev
 
 Update `test_file_status_prefers_the_bls_copy_and_ignores_captures_without_content` to expect `(BLS_SOURCE, evidence(current))`.
 
-- [ ] **Step 2: Flip `BLS_SOURCE` and add `evidence`**
+- [x] **Step 2: Flip `BLS_SOURCE` and add `evidence`**
 
 Run: `uv run pytest tests/test_archive_inventory.py tests/test_review_document.py -m "not network" -q`
 Expected: FAIL, because the committed CSVs still say `bls_current`.
 
-- [ ] **Step 3: Relabel and restore the rows**
+- [x] **Step 3: Relabel and restore the rows**
 
 Make a fresh folder with `mktemp -d` and write `migrate_captures.py` alone in it, so no other file sits beside the script on `sys.path`. Run `uv run python <folder>/migrate_captures.py` from the worktree root. Put the Step 6 helper in such a folder too.
 
@@ -470,7 +474,7 @@ print(f"{len(committed)} -> {len(merged)} rows")
 
 Expected: `74 -> 76 rows`.
 
-- [ ] **Step 4: Adopt the rescued files**
+- [x] **Step 4: Adopt the rescued files**
 
 First check that `/Users/lowell/Projects/ces-sa-rescue/2026-11-16/` holds both ZIPs. If it does not, stop and ask the owner. Run from the worktree root:
 
@@ -480,21 +484,23 @@ uv run python -I scripts/archive_inventory.py adopt /Users/lowell/Projects/ces-s
 
 Expected: exit 0. `data/seasonal/raw/manifest.csv` has two rows, with the SHA-256 values `805f6afecb353ee89af2911ce55eb506f325f8c7b51b585cd5ef046928eb863e` (`ces.spec.ae`) and `155dccf7afb0fa20e5b7b6612b82af0e4f9ce63ac7276920b1ff7b2812fe91fb` (`ces.spec.other`), which match `fetch-record.json`. Seven rows match `UMPG…`: the two BLS rows and five Internet Archive copies from 2026-02-14 to 2026-08-19. Their fingerprints and member dates must agree, and only the 2026-09-13 row's empty member date changes.
 
-- [ ] **Step 5: Regenerate the inventory**
+- [x] **Step 5: Regenerate the inventory**
 
 Run: `uv run python scripts/archive_inventory.py inventory`
 Expected: exit 0. In `archive-inventory.csv`, `bls_current` cells become `bls_fetched`, with `data/seasonal/raw/…` evidence.
 
-- [ ] **Step 6: Pin the copies that await the full run**
+- [x] **Step 6: Pin the copies that await the full run**
+
+> Deviation: the pin held 55 URLs, not every Archive `200` row as `spec:294` says, because five Archive rows share the adopted `UMPG…` digest and resolve to its ZIP (`spec:198`). Source: ledger, Task 6 ruling.
 
 Set `AWAITING_A_STORED_ZIP` to the sorted URLs of the CSV's `200` rows without a stored ZIP. Generate the list with a short script that uses `read_csv`, `stored_file` and `STORE_DIR`. Expected: 55 URLs. That is the 60 `internet_archive` rows with status `200`, minus the five that share the adopted `UMPG…` digest.
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS, including `test_only_an_opened_copy_records_a_member_date` and `test_every_copy_was_made_after_the_release_its_files_were_made_for`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add scripts/archive_inventory.py tests/test_archive_inventory.py docs/inventory/archive-captures.csv docs/inventory/archive-inventory.csv docs/ces-revisions-review.md data/seasonal/raw
@@ -509,7 +515,9 @@ git commit -m "Store the rescued BLS ZIPs and restore the BLS copies of 2026-09-
 
 The content comes from `spec:296-310`.
 
-- [ ] **Step 1: Update the review's prose**
+- [x] **Step 1: Update the review's prose**
+
+> Deviation: the Stage 14 bullet kept a "once a full `captures` run…" clause until Task 8, because its plain claim was false before that run. Source: ledger, Task 7 ruling.
 
 - In Method step 1 (`review:131`), state four things. `captures` stores each ZIP it opens in `data/seasonal/raw/`, named by its digest. It keeps every earlier row. A replayed copy counts only when its SHA-1 equals its CDX digest. The step also describes `current` and `adopt`.
 - In the status list (`review:134`), `bls_fetched` replaces `bls_current`: it is a copy fetched from BLS's live URL and held in the store. Also define `payload_lost`.
@@ -519,7 +527,7 @@ The content comes from `spec:296-310`.
 - Rewrite the Stage 14 bullet (`review:593`). The file store exists in `data/seasonal/raw/`, and its coverage contains this inventory's. Stage 14 builds its flag panel on it.
 - Leave the counts in Method step 2 ("In all 33 copies…") for Task 8.
 
-- [ ] **Step 2: Update `CLAUDE.md`**
+- [x] **Step 2: Update `CLAUDE.md`**
 
 - Line 33 names `current`, `adopt` and the store.
 - A new bullet after line 36 covers `data/seasonal/raw/`. It is committed and hashed in `manifest.csv`, and only `archive_inventory.py`'s `captures`, `current` and `adopt` write it. Never hand-edit it. Each network command needs the owner's yes. `current` runs after each monthly release, followed by `inventory`.
@@ -531,12 +539,12 @@ uv run --env-file .project.env python scripts/archive_inventory.py current   # n
 uv run python -I scripts/archive_inventory.py adopt <zip>...                 # offline: store a local copy of a recorded ZIP
 ```
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run: `uv run pytest tests/test_review_document.py -q && uv run ruff format --check docs/ces-revisions-review.md CLAUDE.md`
 Expected: PASS, and the format check reports no changes.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add docs/ces-revisions-review.md CLAUDE.md
@@ -549,16 +557,16 @@ git commit -m "Describe the file store, current and adopt in the review and CLAU
 - Regenerate: `data/seasonal/raw/`, `docs/inventory/*.csv` and the review's generated blocks
 - Modify: `tests/test_archive_inventory.py` (`AWAITING_A_STORED_ZIP`, `ARCHIVE_COMPLETE`), and the prose counts at `review:132` and `review:486`
 
-- [ ] **Step 1: STOP and ask the owner**
+- [x] **Step 1: STOP and ask the owner**
 
 Ask: "Run `captures` now? It sends about 100 requests to bls.gov and web.archive.org, with the contact address to bls.gov only, and stores about 40 ZIPs (about 3.5 MB)." Go on only after an explicit yes. If the owner declines, leave this task unchecked, go to Task 9, and let the completion gate defer this task.
 
-- [ ] **Step 2: Check the contact address without printing it**
+- [x] **Step 2: Check the contact address without printing it**
 
 Run: `uv run --env-file /Users/lowell/Projects/ces-revisions/.project.env python -c "import os; print(bool(os.environ.get('BLS_CONTACT_EMAIL')))"`
 Expected: `True`. Otherwise stop and ask the owner.
 
-- [ ] **Step 3: Run it**
+- [x] **Step 3: Run it**
 
 Run it in the background, because it takes several minutes:
 
@@ -573,20 +581,22 @@ Record the exit code and every stderr line. Exit 1 means one of two things:
 
 Stop and report in two more cases. One is a new copy that fails `test_no_copy_of_a_seasonal_adjustment_zip_holds_an_unexplained_file`. The other is a new copy that fails `test_every_copy_was_made_after_the_release_its_files_were_made_for`. Never change `_EXPLAINED`, `BUILD_LEAD_DAYS` or `SPECIFICATIONS_BUILT_AFTER_THEIR_BENCHMARK` without the owner's yes.
 
-- [ ] **Step 4: Check that no committed row changed**
+- [x] **Step 4: Check that no committed row changed**
 
 Run: `uv run python scripts/archive_inventory.py inventory`, then `git diff -U0 docs/inventory/archive-captures.csv | grep '^-[^-]'`
 Expected: no output, so every change is an added row. The only allowed removed line belongs to a row that was `unreplayable` and is now `200` (merge point 5). There is none at this plan's base.
 
-- [ ] **Step 5: Update the pinned evidence**
+- [x] **Step 5: Update the pinned evidence**
 
 Set `AWAITING_A_STORED_ZIP` to the URLs that the run named, which is an empty set after a clean run. If the archive-complete count rose, set `ARCHIVE_COMPLETE` to the new count. If it fell, stop and report to the owner.
 
-- [ ] **Step 6: Update the prose counts**
+- [x] **Step 6: Update the prose counts**
+
+> Deviation: the second count sat at `review:488`. At the completion gate the owner had both counts dated to the run of 2026-11-17 (96029fb). Source: ledger, gate.
 
 Recount the copy counts at `review:132` and `review:486` from `archive-captures.csv` with a short script, and edit the prose to match.
 
-- [ ] **Step 7: Verify and commit everything together**
+- [x] **Step 7: Verify and commit everything together**
 
 Run: `uv run pytest -m "not slow and not network" -q`
 Expected: PASS.
@@ -596,16 +606,18 @@ git add data/seasonal/raw docs/inventory/archive-captures.csv docs/inventory/es-
 git commit -m "Store every opened Internet Archive copy from the first full captures run"
 ```
 
-- [ ] **Step 8: Tell the owner the rescue folder can go**
+- [x] **Step 8: Tell the owner the rescue folder can go**
 
 Tell the owner that `/Users/lowell/Projects/ces-sa-rescue/` can now be deleted (`spec:361-362`). Do not delete it yourself.
 
 ### Task 9: Whole-branch review and completion
 
-- [ ] **Step 1: Review the whole branch**
+- [x] **Step 1: Review the whole branch**
+
+> Deviation: the Codex second-opinion seat was skipped, because sending the diff to OpenAI was not approved. The review's two findings were fixed: the monthly routine in `CLAUDE.md` now raises `ARCHIVE_COMPLETE` (3edf644), and a failed replay's stderr line says "not opened in this run" (232b91b). Source: ledger, final review.
 
 Dispatch code-reviewer (Opus) over the range from the merge base with `origin/main` to `HEAD`, against the spec and this plan. Fix or answer each finding.
 
-- [ ] **Step 2: Run the Plan Completion Protocol of writing-plans**
+- [x] **Step 2: Run the Plan Completion Protocol of writing-plans**
 
 Tick the item "Keep each `bls_current` copy as evidence across `captures` runs" with `→ done <date>`. Its "Done when" is met by Task 4's two-run test, which covers both commands, and by Task 8. If Task 8 was deferred, defer the full run as a new item instead. Leave the parked Stage 14 item's text unchanged (D1). Retire this plan and the spec.

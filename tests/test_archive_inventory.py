@@ -923,8 +923,9 @@ def test_rendered_vintage_rows_link_the_copy_that_evidences_them():
 ARCHIVE_COMPLETE = 29
 
 # The URLs of the opened copies (status 200) that a full `captures` run could not download
-# again, so they have no stored ZIP. The list is empty after a clean run (specs/
-# seasonal-adjustment-file-store.md). Any change to it fails the test that compares them.
+# again, so they have no stored ZIP. The list is empty after a clean run
+# (specs/completed/seasonal-adjustment-file-store.md). Any change to it fails the test that
+# compares them.
 AWAITING_A_STORED_ZIP: set[str] = set()
 
 
