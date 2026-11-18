@@ -3,14 +3,17 @@
 import csv
 import subprocess
 import urllib.request
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 
+import collection_rate_sources
 import pytest
 import vintage_sources
 from bls_contact import require_bls_contact
 
 from ces_revisions.vintages import raw
+from ces_revisions.vintages.collection_rates import ARCHIVE_YEARS, RECON_COPY
 
 REPLAY_URL = "https://web.archive.org/web/20140719155542id_/http://www.bls.gov/web/empsit/ces.spec.ae.zip"
 
@@ -509,6 +512,25 @@ def test_downloads_record_their_origin_and_bls_file_dates():
     assert comments["derived_from"].startswith(vintage_sources.WORKBOOK_URL)
     assert len(comments["derived_from_sha256"]) == 64
     assert rows[raw.RESCHEDULES]["derived_from"].startswith("hand-keyed")
+
+
+def test_collection_rate_sources_record_their_origin():
+    rows = {row["file"]: row for row in manifest()}
+    extract = rows[raw.COLLECTION_RATES]
+    assert extract["derived_from"].startswith(collection_rate_sources.LABSTAT_URL)
+    assert len(extract["derived_from_sha256"]) == 64
+    assert extract["last_modified"].endswith(" GMT")
+    assert rows[raw.CE_FOOTNOTES]["url"] == collection_rate_sources.FOOTNOTE_URL
+    copies = {
+        Path(file).stem: row
+        for file, row in rows.items()
+        if file.startswith(f"{raw.REGISTRY_COPIES}/")
+    }
+    for stamp, row in copies.items():
+        assert row["url"].startswith(f"https://web.archive.org/web/{stamp}id_/"), stamp
+    assert RECON_COPY in copies
+    per_year = Counter(int(stamp[:4]) for stamp in copies)
+    assert all(per_year[year] <= 1 for year in ARCHIVE_YEARS)
 
 
 @pytest.mark.network
