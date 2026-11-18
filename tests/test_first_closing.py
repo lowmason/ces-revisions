@@ -243,6 +243,20 @@ def test_window_regressions_fit_each_window_on_the_same_rows():
         assert group["n"].n_unique() == 1
         on_window = group.filter(pl.col("window") == "first_closing_days")
         assert on_window["coefficient"][0] == pytest.approx(2)
+    on_days = fit_revisions(
+        months,
+        lambda row, status, transition: (
+            3
+            * (
+                row["first_closing_days"]
+                + (3 if row["reference_month"].month == 12 else 4)
+            )
+        ),
+    )
+    days_fits = window_regressions(on_days).filter(
+        pl.col("window") == "collection_days"
+    )
+    assert days_fits["coefficient"].to_list() == pytest.approx([3] * 4)
 
 
 def test_quintile_edges_put_a_tie_in_the_lower_quintile():
@@ -306,12 +320,20 @@ def test_lapse_releases_keep_missing_revisions_null():
 def test_holiday_closings_and_final_week_counts():
     months = pl.DataFrame(
         {
-            "reference_month": [date(2010, 11, 1), date(2010, 12, 1)],
-            "release_date": [date(2010, 12, 3), date(2011, 1, 7)],
-            "first_closing_date": [date(2010, 11, 26), date(2010, 12, 31)],
-            "collection_days": [14, 17],
-            "first_closing_days": [10, 14],
-            "period": ["main", "main"],
+            "reference_month": [
+                date(2009, 12, 1),
+                date(2010, 11, 1),
+                date(2010, 12, 1),
+            ],
+            "release_date": [date(2010, 1, 8), date(2010, 12, 3), date(2011, 1, 7)],
+            "first_closing_date": [
+                date(2010, 1, 1),
+                date(2010, 11, 26),
+                date(2010, 12, 31),
+            ],
+            "collection_days": [16, 14, 17],
+            "first_closing_days": [13, 10, 14],
+            "period": ["lapse", "main", "main"],
         }
     )
     closings = holiday_closings(months)
@@ -329,9 +351,9 @@ def test_revisions_by_quintile_counts_months_and_revisions():
     one, two, three = date(2010, 1, 1), date(2010, 2, 1), date(2010, 3, 1)
     quintiles = pl.DataFrame(
         {
-            "reference_month": [one, two, three],
-            "deviation": [-2.0, -1.0, 1.0],
-            "quintile": pl.Series([1, 1, 2], dtype=pl.Int8),
+            "reference_month": [one, two, three, date(2010, 4, 1)],
+            "deviation": [-2.0, -1.0, 1.0, 2.0],
+            "quintile": pl.Series([1, 1, 2, 2], dtype=pl.Int8),
         }
     )
     revisions = pl.DataFrame(
@@ -356,8 +378,8 @@ def test_revisions_by_quintile_counts_months_and_revisions():
     ]
     assert table.rows() == [
         (1, "NSA", "F_S", 2, -2.0, -1.0, 2, 15.0),
-        (2, "NSA", "F_S", 1, 1.0, 1.0, 1, 30.0),
-        (2, "SA", "F_S", 1, 1.0, 1.0, 1, 5.0),
+        (2, "NSA", "F_S", 2, 1.0, 2.0, 1, 30.0),
+        (2, "SA", "F_S", 2, 1.0, 2.0, 1, 5.0),
     ]
 
 
