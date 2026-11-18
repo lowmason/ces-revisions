@@ -352,7 +352,7 @@ def fetch_archive(now: datetime, staging: Path = STAGING_DIR) -> int:
     digests = {f"{moment:%Y%m%d%H%M%S}": digest for moment, _, _, digest in listing}
     candidates = year_candidates(listing)
     staged = staged_copies(staging)
-    unstaged_runs = 0
+    failed_replays = 0
     for year, status in year_status(candidates, staged).items():
         if status != PENDING:
             continue
@@ -361,14 +361,14 @@ def fetch_archive(now: datetime, staging: Path = STAGING_DIR) -> int:
         for timestamp, original in unstaged if tried else unstaged[:1]:
             valid = fetch_copy(staging, now, timestamp, original, digests[timestamp])
             if valid is None:
-                unstaged_runs += 1
+                failed_replays += 1
             if valid is not False:
                 break
     if RECON_COPY not in staged:
         recon_original, recon_digest = recon[0]
         if fetch_copy(staging, now, RECON_COPY, recon_original, recon_digest) is None:
-            unstaged_runs += 1
-    return 1 if unstaged_runs else 0
+            failed_replays += 1
+    return 1 if failed_replays else 0
 
 
 # --- Offline commands ----------------------------------------------------------------------
