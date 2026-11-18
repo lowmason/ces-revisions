@@ -161,3 +161,32 @@ def test_archive_differences_list_each_changed_value():
         "labstat_value",
     ]
     assert differences.rows() == [("CEU00000000C1", date(2010, 2, 1), COPY, 70.4, 70.5)]
+
+
+def test_a_note_row_inside_the_table_starts_no_section():
+    page = synthetic_page()
+    first_2003 = page.index("<tr><th>2003</th><td>55.1")
+    note = (
+        '<tr><td colspan="13">Note: the second preliminary and third rates '
+        "follow below.</td></tr>\n"
+    )
+    frame = registry_page_values(page[:first_2003] + note + page[first_2003:], COPY)
+    c1_2003 = frame.filter(
+        pl.col("series_id") == "CEU00000000C1",
+        pl.col("reference_month").dt.year() == 2003,
+    )
+    assert c1_2003.height == 12
+
+
+def test_archive_comparison_rounds_both_values_to_one_decimal():
+    c1 = "CEU00000000C1"
+    rates = rate_rows(
+        [
+            (c1, date(2010, 1, 1), LABSTAT_SOURCE, 70.5),
+            (c1, date(2010, 2, 1), LABSTAT_SOURCE, 70.5),
+            (c1, date(2010, 1, 1), COPY, 70.54),
+            (c1, date(2010, 2, 1), COPY, 70.56),
+        ]
+    )
+    assert archive_comparison(rates).rows() == [(COPY, 2, 1, 0)]
+    assert archive_differences(rates)["reference_month"].to_list() == [date(2010, 2, 1)]
