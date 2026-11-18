@@ -324,6 +324,22 @@ def test_year_status_walks_down_to_the_next_copy_and_marks_exhausted_years_missi
     assert sources.year_status(candidates, walked)[2011] == "20110301120000"
 
 
+def test_year_status_keeps_a_year_pending_while_a_newer_capture_is_unchecked():
+    candidates = {
+        2010: [
+            ("20101201120000", OLD_PAGE),
+            ("20100601120000", OLD_PAGE),
+            ("20100301120000", OLD_PAGE),
+        ]
+    }
+    older_valid = {"20100601120000": True}
+    assert sources.year_status(candidates, older_valid) == {2010: "pending"}
+    newer_invalid = {**older_valid, "20101201120000": False}
+    assert sources.year_status(candidates, newer_invalid) == {2010: "20100601120000"}
+    newer_valid = {**older_valid, "20101201120000": True}
+    assert sources.year_status(candidates, newer_valid) == {2010: "20101201120000"}
+
+
 def test_fetch_archive_fetches_only_the_latest_copy_of_a_year_with_none_staged(
     monkeypatch, tmp_path
 ):
@@ -394,6 +410,38 @@ def test_fetch_archive_walks_down_a_year_whose_staged_copies_are_invalid(
             sources.staged_copies(staging),
         )[2011]
         == "20110601120000"
+    )
+
+
+def test_fetch_archive_checks_newer_captures_and_stops_at_the_older_valid_copy(
+    monkeypatch, tmp_path
+):
+    old = [
+        ("20101201120000", OLD_PAGE, "200", INVALID_DIGEST),
+        ("20100901120000", OLD_PAGE, "200", INVALID_DIGEST),
+        ("20100601120000", OLD_PAGE, "200"),
+        ("20100301120000", OLD_PAGE, "200"),
+    ]
+    staging = tmp_path / "staging"
+    stage_copy(staging, "20100601120000", valid_page())
+    stage_copy(staging, RECON_COPY, valid_page())
+    bodies = listings(old, [recon_capture()])
+    bodies[replay("20101201120000")] = INVALID_PAGE
+    bodies[replay("20100901120000")] = INVALID_PAGE
+    network = FakeNetwork(monkeypatch, bodies)
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert network.requests == [
+        cdx(sources.PAGE_KEYS[0]),
+        cdx(sources.PAGE_KEYS[1]),
+        replay("20101201120000"),
+        replay("20100901120000"),
+    ]
+    assert (
+        sources.year_status(
+            sources.year_candidates(sources.read_listing(staging)),
+            sources.staged_copies(staging),
+        )[2010]
+        == "20100601120000"
     )
 
 

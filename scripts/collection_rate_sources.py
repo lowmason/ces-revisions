@@ -258,20 +258,22 @@ def year_candidates(listing: Listing) -> dict[int, list[tuple[str, str]]]:
 def year_status(
     candidates: dict[int, list[tuple[str, str]]], staged: dict[str, bool]
 ) -> dict[int, str]:
-    """Each year's chosen copy: its latest valid staged copy, else missing or pending.
+    """Each year's chosen copy, found by walking its captures latest first.
 
-    A year is missing when every candidate is staged and none is valid, and pending while a
-    candidate remains unstaged.
+    The walk passes over an invalid staged copy and takes the first valid one. An unstaged
+    capture ends it with the year pending, so an older valid copy waits until every newer
+    capture is checked. A year whose every capture is staged and invalid is missing.
     """
     status = {}
     for year, captures in candidates.items():
-        valid = [timestamp for timestamp, _ in captures if staged.get(timestamp)]
-        if valid:
-            status[year] = valid[0]
-        elif all(timestamp in staged for timestamp, _ in captures):
-            status[year] = MISSING
-        else:
-            status[year] = PENDING
+        status[year] = MISSING
+        for timestamp, _ in captures:
+            if timestamp not in staged:
+                status[year] = PENDING
+                break
+            if staged[timestamp]:
+                status[year] = timestamp
+                break
     return status
 
 
@@ -394,13 +396,16 @@ def fetch_archive(now: datetime, staging: Path = STAGING_DIR) -> int:
     for year, status in year_status(candidates, staged).items():
         if status != PENDING:
             continue
-        unstaged = [capture for capture in candidates[year] if capture[0] not in staged]
-        tried = len(unstaged) < len(candidates[year])
-        for timestamp, original in unstaged if tried else unstaged[:1]:
+        tried = any(timestamp in staged for timestamp, _ in candidates[year])
+        for timestamp, original in candidates[year]:
+            if timestamp in staged:
+                if staged[timestamp]:
+                    break
+                continue
             valid = fetch_copy(staging, now, timestamp, original, digests[timestamp])
             if valid is None:
                 failed_replays += 1
-            if valid is not False:
+            if valid is not False or not tried:
                 break
     if RECON_COPY not in staged:
         recon_original, recon_digest = recon[0]
