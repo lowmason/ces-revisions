@@ -10,7 +10,7 @@ A revision is the later value of a month's over-the-month employment change minu
 
 ## Answer
 
-The change in seasonal adjustment carries a large part of the SA revision variance in S→T and T→B, and little or none in F→S. For the 11 supersectors, the median adjustment share of the three regimes is 0.32 to 0.57 for S→T, 0.66 to 0.82 for T→B and -0.28 to -0.01 for F→S (medians of the supersector rows in the tables below). The shares are descriptive and carry no interval, and none is bounded in [0, 1]: the plain ratio is above 1 in 12 of 110 rows (largest 9.93), and the adjustment share is below 0 in 27 rows, all F→S, and above 1 in 2.
+The change in seasonal adjustment carries a large part of the SA revision variance in S→T and T→B, and little or none in F→S. For the 11 supersectors, the median adjustment share of the three regimes is 0.32 to 0.57 for S→T, 0.66 to 0.82 for T→B and -0.28 to -0.01 for F→S (medians of the supersector rows in the tables below). The shares are descriptive and carry no interval, and none is bounded in [0, 1]: the plain ratio is above 1 in 12 of 110 rows (largest 9.93, the total-nonfarm S→T row before 2003, which its March months drive), and the adjustment share is below 0 in 27 rows, all F→S, and above 1 in 2.
 
 ## Data and shares
 
@@ -192,12 +192,12 @@ The change in seasonal adjustment carries a large part of the SA revision varian
 ## Limits
 
 - **No interval.** The shares are descriptive. The decomposition table holds group variances, not the month-level terms that an interval needs.
-- **Shares outside [0, 1].** The tables show them as computed. No row is clipped, dropped or flagged. The 9.93 ratio is total nonfarm S→T before 2003: the NSA revision and the adjustment change nearly cancel there, so the SA variance is small beside both.
+- **Shares outside [0, 1].** The tables show them as computed. No row is clipped, dropped or flagged. The 9.93 ratio is total nonfarm S→T before 2003: the NSA revision and the adjustment change nearly cancel there, so the SA variance is small beside both. The 24 March reference months of that row, of 290, hold 93% of the NSA revision's sum of squares and 96% of the adjustment change's. Without them the ratio share is 0.48.
 - **Negative F→S splits.** In 27 F→S rows, the adjustment share is below 0 and the NSA share is above 1. There the adjustment change moves with the NSA revision. It offsets part of the NSA revision instead of adding variance. This is not an error.
-- **The benchmark release.** The December F→S, the November S→T and every T→B take their later value from the January benchmark release, which also revises the seasonal factors. So part of those shares comes from the benchmark, not from the monthly adjustment (compare the [Stage 1 findings](ces-revision-drivers-stage-1-findings.md), Benchmark effects).
+- **The benchmark release.** From 2004 on, the December F→S, the November S→T and every T→B take their later value from the January benchmark release, which also revises the seasonal factors. So part of those shares comes from the benchmark, not from the monthly adjustment (compare the [Stage 1 findings](ces-revision-drivers-stage-1-findings.md), Benchmark effects). The benchmark's timing before 2003 is unchecked, as the Stage 1 findings say.
 - **Short regimes.** The 2020 to 2022 regime has 36 months and the 2023 on regime has 34. A share from so few months is noisy, and it carries no interval.
 - **Rounding.** The inputs are whole thousands. This matters most where the SA variance is small. The smallest is about 1.0, for mining and logging S→T in 2023 on.
-- **Before 2003.** Only total nonfarm has rows, from the revision table, and there is no T→B row.
+- **Before 2003.** Only total nonfarm has rows, from the revision table, and there is no T→B row. Both rows rest on a few reference months. In the S→T row, the March months carry most of the variance (see above). In the F→S row, the April and May months hold 78% of the adjustment change's sum of squares. Without them, its ratio and adjustment shares fall from 0.07 and 0.09 to 0.02 and 0.04. The later value of the March S→T and of the April F→S both come from the release for May.
 
 ## Measured cost
 
