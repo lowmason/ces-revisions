@@ -308,6 +308,7 @@ def test_check_accepts_only_the_differences_the_owner_ruled_on(
     assert (
         f"{C1} 2012-06 20121114143627: 64.6 against LABSTAT 72.9, accepted" in printed
     )
+    assert "20121114143627: 1139 compared, 1 differ, 0 only in the copy" in printed
     monkeypatch.setattr(first_closing, "ACCEPTED_DIFFERENCES", frozenset())
     assert first_closing.main(["check"]) == 1
 
