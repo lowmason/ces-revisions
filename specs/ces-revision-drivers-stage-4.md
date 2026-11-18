@@ -2,7 +2,7 @@
 
 > For agentic workers: REQUIRED NEXT SKILL: writing-plans. This spec is one plan.
 
-Status: awaiting the owner's approval.\
+Status: Approved design, 2026-11-18.\
 Source: Stage 4 of `specs/ces-revision-drivers-roadmap.md` (outcome O11), brainstormed on 2026-11-18.\
 Owner decisions: the ones in [Decisions](#decisions), all of 2026-11-18. Every other choice is marked "my call".
 
