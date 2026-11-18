@@ -201,3 +201,23 @@ def test_a_year_row_before_any_section_gives_no_value():
     )
     assert 1999 not in frame["reference_month"].dt.year().to_list()
     assert frame["series_id"].null_count() == 0
+
+
+def test_a_registry_table_inside_a_layout_table_gives_its_values():
+    page = (FIXTURES / "cesregrec-20191212004825-excerpt.htm").read_text(
+        encoding="utf-8"
+    )
+    values = registry_page_values(page, "20191212004825")
+    counts = dict(values.group_by("series_id").len().iter_rows())
+    assert counts == {"CEU00000000C1": 24, "CEU00000000C2": 21, "CEU00000000C3": 23}
+    value = {
+        (series, month): number
+        for series, month, number in values.select(
+            "series_id", "reference_month", "value"
+        ).iter_rows()
+    }
+    assert value["CEU00000000C1", date(1981, 1, 1)] == 34.9
+    assert value["CEU00000000C1", date(1982, 12, 1)] == 45.3
+    assert value["CEU00000000C2", date(1981, 3, 1)] == 74.3
+    assert ("CEU00000000C2", date(1982, 5, 1)) not in value
+    assert value["CEU00000000C3", date(1982, 12, 1)] == 87.9

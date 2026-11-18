@@ -37,6 +37,10 @@ _MONTHLY_PERIOD = re.compile(r"M(0[1-9]|1[0-2])")
 _NUMBER = re.compile(r"\d+(?:\.\d+)?")
 _LEADING_NUMBER = re.compile(r"^\d+(?:\.\d+)?")
 _YEAR = re.compile(r"\d{4}")
+# A table with no table inside it. From 2008 to 2019 BLS's page nests the registry table in a
+# layout table, and a row read across both would merge the layout row with the registry
+# table's first row.
+INNERMOST_TABLE = re.compile(r"(?is)<table\b(?:(?!<table\b).)*?</table\s*>")
 
 
 def labstat_values(text: str) -> pl.DataFrame:
@@ -68,13 +72,19 @@ def labstat_values(text: str) -> pl.DataFrame:
 def registry_page_values(page: str, source: str) -> pl.DataFrame:
     """C1, C2 and C3 from the table rows of an archived registry-receipts page.
 
-    Only `<tr>` rows count, so numbers and section names in the page's prose give nothing. A row
-    with one non-empty cell that starts with a section's name opens that section, and a row whose
-    first cell is a year gives up to 12 monthly values, read as each cell's leading number.
+    Only `<tr>` rows of innermost tables count, so numbers and section names in the page's prose
+    or its layout give nothing. A row with one non-empty cell that starts with a section's name
+    opens that section, and a row whose first cell is a year gives up to 12 monthly values, read
+    as each cell's leading number.
     """
     rows = []
     series_id = None
-    for row in raw._ROW.findall(page):
+    table_rows = (
+        row
+        for table in INNERMOST_TABLE.findall(page)
+        for row in raw._ROW.findall(table)
+    )
+    for row in table_rows:
         cells = [raw.cell_text(cell) for cell in raw._CELL.findall(row)]
         filled = [cell for cell in cells if cell]
         if len(filled) == 1:

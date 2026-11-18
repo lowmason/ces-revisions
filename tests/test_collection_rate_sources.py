@@ -845,3 +845,14 @@ def test_main_reports_a_framing_refusal_and_exits_1(monkeypatch, capsys):
     assert sources.main(["fetch-labstat"]) == 1
     assert sources.main(["fetch-archive"]) == 1
     assert capsys.readouterr().err.count("example refusal") == 2
+
+
+def test_prose_keeps_the_text_of_a_layout_table_around_the_registry_table():
+    page = (FIXTURES / "cesregrec-20191212004825-excerpt.htm").read_text(
+        encoding="utf-8"
+    )
+    prose = sources.page_prose(page)
+    assert "BLS tracks collection rates for the CES sample" in prose
+    assert "NA = not available" in prose
+    assert "First preliminary release" not in prose
+    assert "34.9" not in prose

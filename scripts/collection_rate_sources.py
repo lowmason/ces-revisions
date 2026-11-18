@@ -35,6 +35,7 @@ import vintage_sources
 from ces_revisions.vintages import raw
 from ces_revisions.vintages.collection_rates import (
     ARCHIVE_YEARS,
+    INNERMOST_TABLE,
     RECON_COPY,
     labstat_values,
     registry_page_values,
@@ -458,10 +459,14 @@ def promoted_files(staging: Path) -> list[str]:
 
 
 def page_prose(page: str) -> str:
-    """A page's text outside its tables, scripts and styles, with tags stripped."""
-    for element in ("table", "script", "style"):
+    """A page's text outside its innermost tables, scripts and styles, with tags stripped.
+
+    A layout table's text stays, so the prose of a page that nests its registry table in one is
+    read too.
+    """
+    for element in ("script", "style"):
         page = re.sub(rf"(?is)<{element}\b.*?</{element}\s*>", " ", page)
-    return raw.cell_text(page)
+    return raw.cell_text(INNERMOST_TABLE.sub(" ", page))
 
 
 def show_prose(staging: Path = STAGING_DIR) -> int:
