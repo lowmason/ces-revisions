@@ -6,6 +6,8 @@
 
 Process (default F1): Stage 1's lighter process. Test first for `W_t` and for the source parsers, one task-reviewer pass on Task 3, and one whole-branch Opus review at the end. No per-task reviewers otherwise, no subagent dispatch, and no code blocks in this plan.
 
+**Status: COMPLETE (2026-11-18)** — executed via executing-plans; deferred items in specs/deferred_items.md
+
 **Goal:** Add the window to first closing `W_t` to every release, commit the C1 sources to `data/raw/`, check that no published C1 value changed, and report O3 (a), O3 (b) and O4 with their uncertainty in `specs/ces-revision-drivers-stage-9-findings.md`.
 
 **Architecture:** `collection_days.py` gains the closing day and `W_t`, so `data/panel/collection_days.parquet` carries them. A new script, `scripts/collection_rate_sources.py`, stages the LABSTAT extract, `ce.footnote` and the Internet Archive copies of `cesregrec.htm` in a gitignored folder. It promotes them into `data/raw/` only after an offline validity check and the prose reading. A new module, `ces_revisions.vintages.collection_rates`, parses those sources into `data/panel/collection_rates.parquet` and holds the D8 comparison. A new module, `ces_revisions.first_closing`, builds the samples and the fits. `scripts/first_closing.py` runs the D8 check and writes the findings' generated blocks.
@@ -73,7 +75,7 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
 - Consumes: `business_days(start, end)` and `federal_holidays(year)` in `ces_revisions.vintages.federal_calendar`.
 - Produces: `is_federal_holiday(day: date) -> bool`, which checks the lists of `day.year` and `day.year + 1`. `federal_holidays` lists a Saturday New Year's Day under its own year, observed on December 31 of the year before, so `federal_holidays(day.year)` alone misses three of the six holiday closing days. `FIRST_CLOSING_LEAD_DAYS = 7`. `first_closing_date(release_date: date) -> date`. `first_closing_days(reference_month: date, release_date: date) -> int`. `SCHEMA` and the built frame gain `first_closing_date: pl.Date` and `first_closing_days: pl.Int32` after `lapse_delayed`.
 
-- [ ] **Step 1: Write the failing tests.** In `tests/test_federal_calendar.py`:
+- [x] **Step 1: Write the failing tests.** In `tests/test_federal_calendar.py`:
   - `test_is_federal_holiday_sees_a_new_years_day_observed_the_year_before`: `is_federal_holiday(date(2010,12,31))`, `is_federal_holiday(date(2010,1,1))`, and `not is_federal_holiday(date(2010,12,30))`
 
   In `tests/test_collection_days.py`:
@@ -84,11 +86,11 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
   - `test_window_to_first_closing_counts_2003_2026`: on the same 278 rows, the counts of `first_closing_days` are `{8: 1, 9: 26, 10: 59, 11: 36, 12: 42, 13: 52, 14: 42, 15: 20}`, the one 8 is 2026-06, the difference is 4 in 232 rows and 3 in 46, and the 46 fall by calendar month as `{5: 13, 6: 13, 8: 10, 12: 10}`
   - `test_six_closing_days_fall_on_a_holiday`: on the same 278 rows, the reference months whose `first_closing_date` satisfies `is_federal_holiday` are exactly the Decembers of 2004, 2009, 2010, 2015, 2020 and 2021
   - Update `test_day_counts_come_sorted_with_the_stated_schema` to the six-column schema.
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q`. Expected: collection errors, `ImportError: cannot import name 'is_federal_holiday'` and `ImportError: cannot import name 'first_closing_date'`.
-- [ ] **Step 3: Implement** `is_federal_holiday`, the two functions and the two columns. Rewrite the module docstring's sentence on the proxy: `D_t` keeps the release date as its end, and `first_closing_date` and `first_closing_days` follow the owner's rule in D1's words, cited as Global Constraints state.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass.
-- [ ] **Step 5: Check that Stage 1 is unchanged.** Run: `uv run python scripts/vintage_sources.py build`, then `uv run python scripts/collection_window.py report`, then `git diff --exit-code specs/ces-revision-drivers-stage-1-findings.md`. Expected: exit 0.
-- [ ] **Step 6: Commit.** `git add` the five files, then `git commit -m "Add the window to first closing to each release's day counts"`.
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q`. Expected: collection errors, `ImportError: cannot import name 'is_federal_holiday'` and `ImportError: cannot import name 'first_closing_date'`.
+- [x] **Step 3: Implement** `is_federal_holiday`, the two functions and the two columns. Rewrite the module docstring's sentence on the proxy: `D_t` keeps the release date as its end, and `first_closing_date` and `first_closing_days` follow the owner's rule in D1's words, cited as Global Constraints state.
+- [x] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_federal_calendar.py tests/test_collection_days.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass.
+- [x] **Step 5: Check that Stage 1 is unchanged.** Run: `uv run python scripts/vintage_sources.py build`, then `uv run python scripts/collection_window.py report`, then `git diff --exit-code specs/ces-revision-drivers-stage-1-findings.md`. Expected: exit 0.
+- [x] **Step 6: Commit.** `git add` the five files, then `git commit -m "Add the window to first closing to each release's day counts"`.
 
 ### Task 2: Parsers for the C1 sources, and the D8 comparison
 
@@ -109,8 +111,8 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
   - `archive_comparison(rates: pl.DataFrame) -> pl.DataFrame`: one row per archive copy, sorted by `source`, with `compared`, `differing` and `only_in_copy` (all `pl.Int64`), over C1, C2 and C3 values as integer tenths (F4).
   - `archive_differences(rates: pl.DataFrame) -> pl.DataFrame`: `series_id`, `reference_month`, `source`, `copy_value`, `labstat_value` for each value whose tenths differ.
 
-- [ ] **Step 1: Write the fixture.** One page with a prose paragraph above the table that holds the words "first preliminary" and the numbers "March 7, 2025". Then one `<table>`: a header row of month names, and for each of the three sections a one-cell section row and two year rows (1981 with a blank cell, and 2003 with all 12 months).
-- [ ] **Step 2: Write the failing tests** in `tests/test_collection_rates.py`:
+- [x] **Step 1: Write the fixture.** One page with a prose paragraph above the table that holds the words "first preliminary" and the numbers "March 7, 2025". Then one `<table>`: a header row of month names, and for each of the three sections a one-cell section row and two year rows (1981 with a blank cell, and 2003 with all 12 months).
+- [x] **Step 2: Write the failing tests** in `tests/test_collection_rates.py`:
   - `test_labstat_values_read_padded_fields_and_skip_annual_and_blank_cells`: from an inline text with a header line, a padded `CEU00000000C1  \t2003\tM01\t     65.2\t` line, an `M13` line, a `-` value line and a blank value line, the frame has one row, `("CEU00000000C1", date(2003,1,1), "labstat", 65.2, None)`
   - `test_labstat_values_keep_footnote_codes`: a `2025\tM09\t 70.1\tE` line gives `footnote_code == "E"`
   - `test_registry_page_values_read_three_sections_into_c1_c2_c3`: the fixture gives 11 values for 1981 and 12 for 2003 in each of the three series, and `source` is the passed timestamp
@@ -119,10 +121,10 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
   - `test_collection_rates_combine_labstat_and_each_copy`: in a `tmp_path` raw directory with a LABSTAT extract and two copies, the frame has three `source` values and the schema `SCHEMA`
   - `test_archive_comparison_counts_values_by_tenths`: LABSTAT 70.5 against a copy's 70.50 is compared and does not differ, 70.4 against 70.5 differs, a copy value with no LABSTAT value is `only_in_copy`, and `CEU05000000RR` rows are not compared
   - `test_archive_differences_list_each_changed_value`: the 70.4 case gives one row with `copy_value == 70.4` and `labstat_value == 70.5`
-- [ ] **Step 3: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rates.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.vintages.collection_rates'`.
-- [ ] **Step 4: Implement** the constants and the module as the Interfaces state.
-- [ ] **Step 5: Run the tests to verify they pass.** Run: the Step 3 command. Expected: 8 passed.
-- [ ] **Step 6: Commit.** `git add` the four files, then `git commit -m "Parse the LABSTAT collection rates and the archived registry pages"`.
+- [x] **Step 3: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rates.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.vintages.collection_rates'`.
+- [x] **Step 4: Implement** the constants and the module as the Interfaces state.
+- [x] **Step 5: Run the tests to verify they pass.** Run: the Step 3 command. Expected: 8 passed.
+- [x] **Step 6: Commit.** `git add` the four files, then `git commit -m "Parse the LABSTAT collection rates and the archived registry pages"`.
 
 ### Task 3: The fetch and promote commands, and the existing fetch's manifest
 
@@ -147,7 +149,7 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
   - Commands: `status` prints each year's status, the staged LABSTAT and footnote files, and every staged copy that does not parse, and exits 0 only when no year is `"pending"` and every source is staged. `prose` prints `page_prose` for `RECON_COPY` and each year's chosen copy. `promote` copies those files, the extract and the footnote into `data/raw/` and adds their manifest rows. It refuses (exit 1, writing nothing) while `status` would exit 1, and when any target file or manifest row already exists.
 - Produces, in `scripts/vintage_sources.py`: `fetch_sources` writes the staged manifest with its own rows plus every existing row whose file it does not write and which still exists in `raw_dir`.
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_collection_rate_sources.py`, with `collection_rate_sources.archive_inventory.open_url` patched to return a fake response that has a body and headers, and with `tmp_path` staging. `tests/fake_https.py` answers with empty bodies only, so it does not fit here.
+- [x] **Step 1: Write the failing tests** in `tests/test_collection_rate_sources.py`, with `collection_rate_sources.archive_inventory.open_url` patched to return a fake response that has a body and headers, and with `tmp_path` staging. `tests/fake_https.py` answers with empty bodies only, so it does not fit here.
   - `test_extract_keeps_the_header_and_the_four_series_byte_for_byte`: padded lines with `\r\n` endings for C1, C2, C3, RR and two other series give the header and the four lines, unchanged
   - `test_short_download_stages_nothing`: a body shorter than its `Content-Length` raises `ValueError`, and an `http.client.IncompleteRead` raises `ValueError`. After `fetch_labstat` meets either one on every attempt, no `raw/` file is staged.
   - `test_fetch_labstat_refuses_without_a_contact_address`: exit 1, and no request made
@@ -163,16 +165,17 @@ The owner approved the plan with these defaults on 2026-11-17 ("Approve as is").
 
   In `tests/test_vintage_sources.py`:
   - `test_fetch_keeps_the_manifest_rows_of_sources_it_does_not_fetch`: as in `test_fetch_promotes_a_complete_validated_snapshot`, with `bls/ce-collection-rates.tsv` and its row present before the fetch. After the fetch, that row is unchanged and the file's bytes are unchanged.
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rate_sources.py tests/test_vintage_sources.py -q`. Expected: `ModuleNotFoundError: No module named 'collection_rate_sources'`. With that module stubbed, the new `test_vintage_sources.py` test fails because the row is dropped.
-- [ ] **Step 3: Implement** the script and the `fetch_sources` change as the Interfaces state. Add the Commands lines to CLAUDE.md:
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rate_sources.py tests/test_vintage_sources.py -q`. Expected: `ModuleNotFoundError: No module named 'collection_rate_sources'`. With that module stubbed, the new `test_vintage_sources.py` test fails because the row is dropped.
+- [x] **Step 3: Implement** the script and the `fetch_sources` change as the Interfaces state. Add the Commands lines to CLAUDE.md:
   - `uv run --env-file <main checkout>/.project.env python scripts/collection_rate_sources.py fetch-labstat  # network, owner's yes: stage the LABSTAT C1–C3 extract and ce.footnote`
   - `uv run python scripts/collection_rate_sources.py fetch-archive  # network, owner's yes: stage the next Internet Archive copy of cesregrec.htm for each unresolved year`
   - `uv run python scripts/collection_rate_sources.py status  # offline: which staged copies parse, and which years remain`
   - `uv run python scripts/collection_rate_sources.py prose  # offline: print each chosen copy's text outside its tables`
   - `uv run python scripts/collection_rate_sources.py promote  # offline: add the staged sources to data/raw/ with manifest rows`
-- [ ] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command, then `uv run pytest -m "not slow and not network" -q`. Expected: all pass.
-- [ ] **Step 5: Commit.** `git add scripts/collection_rate_sources.py scripts/vintage_sources.py CLAUDE.md tests/test_collection_rate_sources.py tests/test_vintage_sources.py`, then `git commit -m "Add the collection-rate fetch and promote commands, and keep their manifest rows"`.
-- [ ] **Step 6: Review.** Dispatch one task-reviewer with this task's brief, the Step 4 test output and the diff of the Step 5 commit. The review checks the Global Constraints on `data/raw/`, the contact address and the Internet Archive pauses. Fix each finding test first, or rule it in the ledger, before Task 4.
+  > Deviation: a replay that neither parses nor matches its CDX digest is retried, and a page that parses is kept whatever its digest. An empty listing is an error and never replaces a saved one. Both listings are required, and a replay that fails every attempt stops the walk with exit 1 (ledger rulings). The final review made `year_status` walk each year's captures latest first, so an older valid copy waits until every newer capture is checked (spec § Sources, archive copies).
+- [x] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command, then `uv run pytest -m "not slow and not network" -q`. Expected: all pass.
+- [x] **Step 5: Commit.** `git add scripts/collection_rate_sources.py scripts/vintage_sources.py CLAUDE.md tests/test_collection_rate_sources.py tests/test_vintage_sources.py`, then `git commit -m "Add the collection-rate fetch and promote commands, and keep their manifest rows"`.
+- [x] **Step 6: Review.** Dispatch one task-reviewer with this task's brief, the Step 4 test output and the diff of the Step 5 commit. The review checks the Global Constraints on `data/raw/`, the contact address and the Internet Archive pauses. Fix each finding test first, or rule it in the ledger, before Task 4.
 
 ### Task 4: The gated runs, the prose reading and the committed sources
 
@@ -188,16 +191,20 @@ This task writes `data/raw/`. It is a mutant task only if Step 3 changes the par
 - Consumes: Task 3's commands.
 - Produces: the committed sources and their manifest rows, which Task 5 reads.
 
-- [ ] **Step 1: Fetch LABSTAT.** Ask the owner for a yes to run `fetch-labstat`. On the yes only, run: `/usr/bin/time -p uv run --env-file <main checkout>/.project.env python scripts/collection_rate_sources.py fetch-labstat`. Expected: exit 0, and a staged extract with lines for all four series. Record the wall time in the ledger.
-- [ ] **Step 2: Fetch the archive copies.** Ask the owner for a yes to run `fetch-archive`. On the yes only, run: `/usr/bin/time -p uv run python scripts/collection_rate_sources.py fetch-archive`. Expected: two listings, and up to 18 copies staged (the last `200` copy of each year from 2008 to 2024, and `RECON_COPY`). Record the wall time.
-- [ ] **Step 3: Check validity offline.** Run: `uv run python scripts/collection_rate_sources.py status`. For each staged copy that does not parse, read it with a one-off `uv run python -I` script in `/tmp`.
+- [x] **Step 1: Fetch LABSTAT.** Ask the owner for a yes to run `fetch-labstat`. On the yes only, run: `/usr/bin/time -p uv run --env-file <main checkout>/.project.env python scripts/collection_rate_sources.py fetch-labstat`. Expected: exit 0, and a staged extract with lines for all four series. Record the wall time in the ledger.
+  > Deviation: the first run staged nothing, because LABSTAT's answer had no `Content-Length`. F3 now also accepts chunked framing, and a body with neither framing is refused once, without retries (ledger ruling). The owner approved the second run, which staged the extract and `ce.footnote`.
+- [x] **Step 2: Fetch the archive copies.** Ask the owner for a yes to run `fetch-archive`. On the yes only, run: `/usr/bin/time -p uv run python scripts/collection_rate_sources.py fetch-archive`. Expected: two listings, and up to 18 copies staged (the last `200` copy of each year from 2008 to 2024, and `RECON_COPY`). Record the wall time.
+  > Deviation: a replay that matches nothing is kept in `staging/unvouched/` for reading and is never staged (ledger ruling). No replay needed it.
+- [x] **Step 3: Check validity offline.** Run: `uv run python scripts/collection_rate_sources.py status`. For each staged copy that does not parse, read it with a one-off `uv run python -I` script in `/tmp`.
   - If it holds the three sections in a layout the parser misses, copy a short excerpt to `tests/fixtures/vintages/cesregrec-<timestamp>-excerpt.htm`. Add a failing test that the excerpt gives its values, extend `registry_page_values` until the test passes, and rerun `status`.
   - If it truly lacks the table (a stub or an error page), leave it. Once the parser reads every real layout, a year that is still `"pending"` needs one more Step 2 run, with its own yes. That run walks the year down to its first valid copy, or marks it `"missing"`.
-- [ ] **Step 4: Read the prose.** Run: `uv run python scripts/collection_rate_sources.py prose`, and read every copy's text. If any copy describes when collection for the first preliminary estimate ends, stop. Report the copy's timestamp and the passage to the owner in chat, and promote nothing until the owner rules. Record the outcome in the ledger only.
-- [ ] **Step 5: Promote.** Run: `uv run python scripts/collection_rate_sources.py promote`, then `uv run python scripts/vintage_sources.py manifest`. Expected: `git diff data/raw/manifest.csv` shows only added lines, and the second command changes nothing more. `git status` lists only new files under `data/raw/bls/` and `data/raw/internet-archive/cesregrec/`.
-- [ ] **Step 6: Pin the provenance.** In `tests/test_vintage_sources.py`, add `test_collection_rate_sources_record_their_origin`. The extract's row has `derived_from` starting with `LABSTAT_URL`, a 64-character `derived_from_sha256` and a `last_modified` ending in ` GMT`. The footnote's row has `url == FOOTNOTE_URL`. Each copy's row has a `url` that starts with `https://web.archive.org/web/<its timestamp>id_/`. The copies include `RECON_COPY`, and no year from 2008 to 2024 has more than one copy.
-- [ ] **Step 7: Verify.** Run: `uv run pytest -m "not slow and not network" -q`. Expected: all pass, `test_the_manifest_lists_every_committed_source_with_its_hash_and_size` included.
-- [ ] **Step 8: Commit.** `git add data/raw tests/test_vintage_sources.py`, and any Step 3 parser files. Then `git commit -m "Commit the collection-rate sources: the LABSTAT extract, ce.footnote and the archived registry pages"`.
+  > Deviation: the 2008–2019 copies nest the registry table inside a layout table, so `registry_page_values` and `page_prose` read only innermost tables. The fix went in test first, with the fixture `tests/fixtures/vintages/cesregrec-20191212004825-excerpt.htm`.
+- [x] **Step 4: Read the prose.** Run: `uv run python scripts/collection_rate_sources.py prose`, and read every copy's text. If any copy describes when collection for the first preliminary estimate ends, stop. Report the copy's timestamp and the passage to the owner in chat, and promote nothing until the owner rules. Record the outcome in the ledger only.
+  > Deviation: the reading also covered each copy's full text, tables included (Task 3 ruling).
+- [x] **Step 5: Promote.** Run: `uv run python scripts/collection_rate_sources.py promote`, then `uv run python scripts/vintage_sources.py manifest`. Expected: `git diff data/raw/manifest.csv` shows only added lines, and the second command changes nothing more. `git status` lists only new files under `data/raw/bls/` and `data/raw/internet-archive/cesregrec/`.
+- [x] **Step 6: Pin the provenance.** In `tests/test_vintage_sources.py`, add `test_collection_rate_sources_record_their_origin`. The extract's row has `derived_from` starting with `LABSTAT_URL`, a 64-character `derived_from_sha256` and a `last_modified` ending in ` GMT`. The footnote's row has `url == FOOTNOTE_URL`. Each copy's row has a `url` that starts with `https://web.archive.org/web/<its timestamp>id_/`. The copies include `RECON_COPY`, and no year from 2008 to 2024 has more than one copy.
+- [x] **Step 7: Verify.** Run: `uv run pytest -m "not slow and not network" -q`. Expected: all pass, `test_the_manifest_lists_every_committed_source_with_its_hash_and_size` included.
+- [x] **Step 8: Commit.** `git add data/raw tests/test_vintage_sources.py`, and any Step 3 parser files. Then `git commit -m "Commit the collection-rate sources: the LABSTAT extract, ce.footnote and the archived registry pages"`.
 
 ### Task 5: The collection-rate table in the vintage build, and the D8 check
 
@@ -212,19 +219,20 @@ This task writes `data/raw/`. It is a mutant task only if Step 3 changes the par
 - Consumes: `build_collection_rates`, `archive_comparison` and `archive_differences` (Task 2). The committed sources (Task 4).
 - Produces: `VintageBuild.collection_rates`, written as `data/panel/collection_rates.parquet`. `scripts/first_closing.py check`, which reads that file, prints `archive_comparison` and every row of `archive_differences`, and exits 1 on any difference or when the file is missing (naming `scripts/vintage_sources.py build`).
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_collection_rates.py`, on `vintage_data.collection_rates()`:
+- [x] **Step 1: Write the failing tests** in `tests/test_collection_rates.py`, on `vintage_data.collection_rates()`:
   - `test_labstat_c1_runs_from_1981_without_october_2025`: the LABSTAT C1 months start at 1981-01, end no earlier than 2026-10, and lack 2025-10. BLS replaces the LABSTAT file each month, so the end month depends on the fetch date. Record the committed end month in the ledger. No sample depends on it, because every sample ends at 2026-08.
   - `test_footnote_e_marks_september_and_november_2025`: LABSTAT C1 has `footnote_code == "E"` at 2025-09 and 2025-11
   - `test_c1_matches_the_recon_values`: LABSTAT C1 is 77.9 at 2013-09, 83.5 at 2013-10, 73.8 at 2025-11 and 69.5 at 2026-01, and its yearly means round to 65.3 in 2003, 77.3 in 2013 and 60.4 in 2024
   - `test_the_2025_copy_matches_labstat`: source `RECON_COPY` has 530 C1, 526 C2 and 527 C3 values, runs from 1981-01 to 2025-02, and has no row in `archive_differences`
   - `test_check_refuses_without_a_built_panel`: with `first_closing.PANEL_DIR` patched to an empty `tmp_path`, `first_closing.main(["check"]) == 1`, and stderr names `vintage_sources.py build`
   - `test_check_prints_each_difference_and_exits_1`: with `vintage_data.collection_rates()` written to a patched `PANEL_DIR` after one copy's C1 value is raised by 0.1, `main(["check"]) == 1`, and stdout names that copy and month
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rates.py -q`. Expected: `AttributeError: module 'vintage_data' has no attribute 'collection_rates'`, and `ModuleNotFoundError: No module named 'first_closing'` for the two command tests.
-- [ ] **Step 3: Implement** the build field, the cached accessor, the `composed()` key, `scripts/first_closing.py check` and the CLAUDE.md lines.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_collection_rates.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass. If a recon value differs, stop and report it to the owner. The recon read the same sources, so a difference means a parse fault or a changed source.
-- [ ] **Step 5: Run the D8 check.** Run: `uv run python scripts/vintage_sources.py build`, then `uv run python scripts/first_closing.py check`. If it exits 1, stop before any fit, and report the differences to the owner (spec § Check that C1 never changed). If it exits 0, add `test_no_archived_value_differs_from_labstat`: `archive_differences` is empty, and `archive_comparison` lists every committed copy with its `compared` count as printed.
-- [ ] **Step 6: Check that Stage 1 is unchanged.** Run: `uv run python scripts/collection_window.py report`, then `git diff --exit-code specs/ces-revision-drivers-stage-1-findings.md`. Expected: exit 0.
-- [ ] **Step 7: Commit.** `git add` the changed files, then `git commit -m "Build the collection-rate table and check the archived values against LABSTAT"`.
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_collection_rates.py -q`. Expected: `AttributeError: module 'vintage_data' has no attribute 'collection_rates'`, and `ModuleNotFoundError: No module named 'first_closing'` for the two command tests.
+- [x] **Step 3: Implement** the build field, the cached accessor, the `composed()` key, `scripts/first_closing.py check` and the CLAUDE.md lines.
+- [x] **Step 4: Run the tests to verify they pass.** Run: `uv run pytest tests/test_collection_rates.py -q` and `uv run pytest -m slow tests/test_vintage_build.py -q`. Expected: all pass. If a recon value differs, stop and report it to the owner. The recon read the same sources, so a difference means a parse fault or a changed source.
+- [x] **Step 5: Run the D8 check.** Run: `uv run python scripts/vintage_sources.py build`, then `uv run python scripts/first_closing.py check`. If it exits 1, stop before any fit, and report the differences to the owner (spec § Check that C1 never changed). If it exits 0, add `test_no_archived_value_differs_from_labstat`: `archive_differences` is empty, and `archive_comparison` lists every committed copy with its `compared` count as printed.
+  > Deviation: the check found one difference: C1 for June 2012 is 64.6 in the 2012-11-14 copy and 72.9 in LABSTAT. The owner ruled "LABSTAT's 72.9". `check` exits 1 only on a difference not in `ACCEPTED_DIFFERENCES`, and the Step 1 test `test_no_archived_value_differs_from_labstat` became `test_the_only_archived_difference_is_the_one_the_owner_accepted`, beside `test_check_accepts_only_the_differences_the_owner_ruled_on`.
+- [x] **Step 6: Check that Stage 1 is unchanged.** Run: `uv run python scripts/collection_window.py report`, then `git diff --exit-code specs/ces-revision-drivers-stage-1-findings.md`. Expected: exit 0.
+- [x] **Step 7: Commit.** `git add` the changed files, then `git commit -m "Build the collection-rate table and check the archived values against LABSTAT"`.
 
 ### Task 6: The Stage 9 analysis functions
 
@@ -250,7 +258,7 @@ This task writes `data/raw/`. It is a mutant task only if Step 3 changes the par
   - `final_week_holidays(months) -> pl.DataFrame`: per calendar month, over the `"main"` and `"pandemic"` months, `releases` and `with_holiday`, the count with `collection_days − first_closing_days == 3`.
   - The fits share one private helper. Its design columns are the intercept, the regressor, a dummy for each reference year after the first, a dummy for each calendar month after January, and `five_week` last. It returns n, clusters, β, its CR1 standard error, and the contrast interval from the t quantile on clusters − 1 degrees of freedom.
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_first_closing.py`, on small synthetic frames built in the test file:
+- [x] **Step 1: Write the failing tests** in `tests/test_first_closing.py`, on small synthetic frames built in the test file:
   - `test_month_sample_labels_each_period_and_drops_the_dropped_months`: one month each of main, pandemic and lapse, and 2025-10, give three rows with `period` main, pandemic and lapse
   - `test_month_sample_refuses_a_main_month_without_c1`: `pytest.raises(ValueError, match="2004-05")`
   - `test_revision_sample_takes_period_and_rate_from_the_months`: a revision row of a lapse month gets `period == "lapse"` and the month's `c1`
@@ -262,10 +270,11 @@ This task writes `data/raw/`. It is a mutant task only if Step 3 changes the par
   - `test_quintile_deviation_is_taken_within_the_reference_year`: two years with C1 means 60 and 80 give deviations centered on 0 in each
   - `test_lapse_releases_keep_missing_revisions_null`: a lapse month with no F→T row has null `NSA_F_T` and `SA_F_T`
   - `test_holiday_closings_and_final_week_counts`: a December release on 2011-01-07 has its closing day on 2010-12-31, a holiday, and counts once in `with_holiday`
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_first_closing.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.first_closing'`.
-- [ ] **Step 3: Implement** the module as the Interfaces state.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 11 passed.
-- [ ] **Step 5: Commit.** `git add src/ces_revisions/first_closing.py tests/test_first_closing.py`, then `git commit -m "Add the Stage 9 samples and fits on the window to first closing and C1"`.
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_first_closing.py -q`. Expected: `ModuleNotFoundError: No module named 'ces_revisions.first_closing'`.
+- [x] **Step 3: Implement** the module as the Interfaces state.
+- [x] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: 11 passed.
+  > Deviation: three tests beyond the plan's 11 cover `revisions_by_quintile`, `pandemic_by_window` and `rates_by_window`, so the run passed 14 (ledger ruling).
+- [x] **Step 5: Commit.** `git add src/ces_revisions/first_closing.py tests/test_first_closing.py`, then `git commit -m "Add the Stage 9 samples and fits on the window to first closing and C1"`.
 
 ### Task 7: The report command, the findings file and the Stage 1 Limits bullet
 
@@ -293,34 +302,41 @@ Steps 6 to 9 are not a mutant task.
 
   Means and C1 to one decimal, coefficients to two decimals, and intervals to one decimal. Revisions are in thousands, C1 in percent.
 
-- [ ] **Step 1: Write the failing tests** in `tests/test_first_closing.py`:
+- [x] **Step 1: Write the failing tests** in `tests/test_first_closing.py`:
   These tests follow Stage 1's `test_report_fills_the_four_generated_blocks`: they write `vintage_data.table_changes()`, `collection_days()` and `collection_rates()` to a patched `PANEL_DIR`, and patch `FINDINGS` to a `tmp_path` file with the nine block markers.
   - `test_report_refuses_without_a_built_panel`: with `PANEL_DIR` patched to an empty `tmp_path`, exit 1, and stderr names `vintage_sources.py build`
   - `test_report_refuses_when_an_archived_value_differs`: with one copy's C1 value raised by 0.1, exit 1, the difference printed, and the findings file unchanged
   - `test_report_fills_every_generated_block`: exit 0, every block is filled, the text outside the blocks is unchanged, and stdout reports 256 part (a) months
   - `test_render_window_regression_sets_both_windows_side_by_side`: the header and one row of the rendered O4 table, as exact strings
-- [ ] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_first_closing.py -q`. Expected: the four new tests fail with `AttributeError` for `report`.
-- [ ] **Step 3: Implement** `report` and the renderers. Write the findings skeleton with the sections Question, Answer, Data and window, Results (the nine blocks, each under its own `###` heading with the formula of its fit in a ```` ```math ```` fence where it has one), Limits and Measured cost. Add the CLAUDE.md Commands line: `uv run python scripts/first_closing.py report  # rewrite the Stage 9 findings tables from data/panel/ (offline; run the vintage build first)`.
-- [ ] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: all pass.
-- [ ] **Step 5: Commit.** `git add scripts/first_closing.py specs/ces-revision-drivers-stage-9-findings.md CLAUDE.md tests/test_first_closing.py`, then `git commit -m "Add the Stage 9 report command and the findings skeleton"`.
-- [ ] **Step 6: Make the real run.** Run `rm -rf data/panel` (gitignored, and rebuilt by the next command). Then run `/usr/bin/time -p uv run python scripts/vintage_sources.py build`, then `/usr/bin/time -p uv run python scripts/first_closing.py report`. Expected: part (a) has n = 256 in 23 years, and part (b) and O4 have 254 F→S and 252 F→T rows for each status, in 23 years (F9). The `W_t` values of part (a) run from 8 to 15. Record both wall times.
-- [ ] **Step 7: Cross-check the fits.** In `/tmp`, refit part (a), the four part (b) fits and the eight O4 fits with `uv run --with statsmodels python` and `OLS(...).fit(cov_type="cluster", cov_kwds={"groups": year})`. Expected: coefficients and standard errors agree to 1e-6. Pin the reference values in `tests/test_first_closing.py`, on `vintage_data`, as `test_fits_match_an_independent_statsmodels_fit`.
-- [ ] **Step 8: Write the findings prose and the D7 bullet.**
+- [x] **Step 2: Run the tests to verify they fail.** Run: `uv run pytest tests/test_first_closing.py -q`. Expected: the four new tests fail with `AttributeError` for `report`.
+- [x] **Step 3: Implement** `report` and the renderers. Write the findings skeleton with the sections Question, Answer, Data and window, Results (the nine blocks, each under its own `###` heading with the formula of its fit in a ```` ```math ```` fence where it has one), Limits and Measured cost. Add the CLAUDE.md Commands line: `uv run python scripts/first_closing.py report  # rewrite the Stage 9 findings tables from data/panel/ (offline; run the vintage build first)`.
+  > Deviation: the copies block adds an All row with the totals, so the prose cites a generated count (ledger ruling).
+- [x] **Step 4: Run the tests to verify they pass.** Run: the Step 2 command. Expected: all pass.
+- [x] **Step 5: Commit.** `git add scripts/first_closing.py specs/ces-revision-drivers-stage-9-findings.md CLAUDE.md tests/test_first_closing.py`, then `git commit -m "Add the Stage 9 report command and the findings skeleton"`.
+- [x] **Step 6: Make the real run.** Run `rm -rf data/panel` (gitignored, and rebuilt by the next command). Then run `/usr/bin/time -p uv run python scripts/vintage_sources.py build`, then `/usr/bin/time -p uv run python scripts/first_closing.py report`. Expected: part (a) has n = 256 in 23 years, and part (b) and O4 have 254 F→S and 252 F→T rows for each status, in 23 years (F9). The `W_t` values of part (a) run from 8 to 15. Record both wall times.
+- [x] **Step 7: Cross-check the fits.** In `/tmp`, refit part (a), the four part (b) fits and the eight O4 fits with `uv run --with statsmodels python` and `OLS(...).fit(cov_type="cluster", cov_kwds={"groups": year})`. Expected: coefficients and standard errors agree to 1e-6. Pin the reference values in `tests/test_first_closing.py`, on `vintage_data`, as `test_fits_match_an_independent_statsmodels_fit`.
+  > Deviation: the statsmodels values are also pinned in `test_fits_match_an_independent_statsmodels_fit`, which needs no statsmodels at run time.
+- [x] **Step 8: Write the findings prose and the D7 bullet.**
   - Answer: two or three sentences each for O3 (a), O3 (b) and O4, from the generated numbers. State that O3 (b) is an association.
   - Data and window: the sources, the D8 result (copies compared, values checked), `W_t` by the owner's rule with D1's citation, the samples, and D3: BLS's "10–16 business days" is not reproduced, with the spec's ranges for the four start rules.
   - Results, beside the O4 table: `W_t − D_t` is constant except in the 46 releases with a holiday in the final week, so the two slopes can differ only through those releases. The `D_t` fit on 2003–2026 belongs to Stage 9 only, and it does not replace the Stage 1 tables.
   - Limits: at least the six items of spec § Findings file and report command. Take the meaning of footnote `E` from `data/raw/bls/ce.footnote`. Name the four lapse-delayed months, and state that the rule puts the 2013-09 closing inside the 2013 lapse.
   - Measured cost: the two wall times of Step 6, each network run's wall time from Task 4, and the sessions used.
   - D7: in `specs/ces-revision-drivers-stage-1-findings.md`, replace "Outcome O4 replaces it with BLS's dates when they arrive." with: "The [Stage 9 findings](ces-revision-drivers-stage-9-findings.md) repeat the regression with the window to first closing. That window follows the owner's rule (owner, 2026-11-17): first closing, when BLS stops collecting survey responses for the first estimate, falls one week before the release." Change nothing else in that file.
-- [ ] **Step 9: Verify.** Run: `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass. Rerun `scripts/first_closing.py report`, and check that `git diff --exit-code specs/ces-revision-drivers-stage-9-findings.md` exits 0 after a commit, which shows the blocks are stable. Rerun `scripts/collection_window.py report`, and check that the Stage 1 findings differ from `main` only in the D7 bullet.
-- [ ] **Step 10: Commit.** `git add` the findings files and the test file, then `git commit -m "Report the first-closing collection rate, revision size and the window to first closing"`.
+  > Deviation: the O4 note counts the 45 releases of the fit sample with a final-week holiday, not 46: the fits take the main period only, and the 46th release, May 2021, is a pandemic month (final review; contradicts spec § O4). The sessions line counts 4, which the owner confirmed at the completion gate.
+- [x] **Step 9: Verify.** Run: `uv run pytest -m "not slow and not network" -q`, `uv run ruff check` and `uv run ruff format --check`. Expected: all pass. Rerun `scripts/first_closing.py report`, and check that `git diff --exit-code specs/ces-revision-drivers-stage-9-findings.md` exits 0 after a commit, which shows the blocks are stable. Rerun `scripts/collection_window.py report`, and check that the Stage 1 findings differ from `main` only in the D7 bullet.
+- [x] **Step 10: Commit.** `git add` the findings files and the test file, then `git commit -m "Report the first-closing collection rate, revision size and the window to first closing"`.
 
 ## Completion
 
 After Task 7: run executing-plans' final whole-branch review, then writing-plans' Plan Completion Protocol. Its step 3 adds this item under § stage-1-scale-model of `specs/deferred_items.md` (after the last item at `:416` onward), not under a section for plan 15 (spec § Non-goals):
 
-- [ ] C1, the first-closing collection rate, as a covariate on the log scale of the Stage 1 scale model (Approach C of `specs/ces-revision-drivers-stage-9.md`, deferred by its Non-goals). `specs/stage-1-scale-model/recommendation.md` built the model so that C1 can enter its log scale, and `data/panel/collection_rates.parquet` now supplies C1 from 1981. The fit needs a prior predictive check, SBC and four NUTS fits. It also meets the open decision above on where the scale model's result lands. Size: plan. Done when: the scale model's report gives C1's scale coefficient with its interval, or the owner drops the item.
+- [ ] C1, the first-closing collection rate, as a covariate on the log scale of the Stage 1 scale model (Approach C of `specs/ces-revision-drivers-stage-9.md`, deferred by its Non-goals). `specs/stage-1-scale-model/recommendation.md` built the model so that C1 can enter its log scale, and `data/panel/collection_rates.parquet` now supplies C1 from 1981. The fit needs a prior predictive check, SBC and four NUTS fits. It also meets the open decision above on where the scale model's result lands. Size: plan. Done when: the scale model's report gives C1's scale coefficient with its interval, or the owner drops the item. → item: stage-1-scale-model — 2026-11-17
 
 The ticking pass of step 3 leaves the item "Parked Stage 12, collection-window panel, first-stage C1 model and macro controls" open: this plan delivers its O3 half, and its `Done when` also waits on O7.
 
 Step 3a ticks Stage 9 in the roadmap and writes the Handoff section. Leave the roadmap's open question at `:56` to the next resume.
+
+## Handoff to later stages
+
+- **Stage 8 (Report)** consumes `specs/ces-revision-drivers-stage-9-findings.md` (O3 and O4). Its nine tables are generated blocks: `uv run python scripts/first_closing.py report` runs the D8 check, then rewrites them from `data/panel/` after `uv run python scripts/vintage_sources.py build`, so edit only the prose around them. Each fit gives its coefficient, its year-clustered standard error and a 95% interval for a stated change: 7 days of the window, or 10 points of C1. What shipped beyond the roadmap's Produces: the vintage build writes `data/panel/collection_rates.parquet` (C1, C2 and C3 from LABSTAT and from each archived copy) and adds `first_closing_date` and `first_closing_days` (`W_t`) to `data/panel/collection_days.parquet`. The sources in `data/raw/` are `bls/ce-collection-rates.tsv` (the header and the C1, C2, C3 and `CEU05000000RR` lines of LABSTAT's file), `bls/ce.footnote` and 18 copies in `internet-archive/cesregrec/`. Traps: one archived value differs from LABSTAT, C1 for June 2012 in the 2012-11-14 copy (64.6 against 72.9). The owner ruled that the fits use LABSTAT's value, `ACCEPTED_DIFFERENCES` in `scripts/first_closing.py` holds it, and `check` and `report` exit 1 on any other difference (Task 5 deviation). The O4 fits hold 45 releases with a final-week holiday, and the holiday table counts 46, because it adds May 2021 (Task 7 deviation). From 2004, November's F→T and December's F→S revisions carry benchmark effects, as in Stage 1 (findings, Limits). The one deferred item goes to the Stage 1 scale model, not to a stage: `specs/deferred_items.md`, § stage-1-scale-model.

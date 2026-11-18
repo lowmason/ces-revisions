@@ -451,3 +451,14 @@ plan 11.
       and whether the OLS moves to 2003+. The roadmap's exit test names the
       1979–2026 OLS, so this is the owner's decision. Size: design. Done
       when: the owner rules and the findings file follows.
+- [ ] C1, the first-closing collection rate, as a covariate on the log scale
+      of the Stage 1 scale model (Approach C of
+      `specs/completed/ces-revision-drivers-stage-9.md`, deferred by its
+      Non-goals; added by plan 15 on 2026-11-18).
+      `specs/stage-1-scale-model/recommendation.md` built the model so that C1
+      can enter its log scale, and `data/panel/collection_rates.parquet` now
+      supplies C1 from 1981. The fit needs a prior predictive check, SBC and
+      four NUTS fits. It also meets the open decision above on where the scale
+      model's result lands. Size: plan. Done when: the scale model's report
+      gives C1's scale coefficient with its interval, or the owner drops the
+      item.

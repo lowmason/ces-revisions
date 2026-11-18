@@ -145,7 +145,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Leaves out: nothing.\
       ROUTING: brainstorming
 
-- [ ] Stage 9: Collection window and the first-closing collection rate\
+- [x] Stage 9: Collection window and the first-closing collection rate\
       Objective: Measure whether a longer window to first closing raises the first-closing collection rate, how revision size moves with that rate, and how the Stage 1 answer changes when the window ends at first closing, 2003–2026.\
       Outcomes: O3, O4\
       Track: A\
@@ -154,6 +154,9 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Exit: the findings file reports how the first-closing collection rate moves with the window to first closing, and how the mean absolute F→S and F→T revisions move with that rate, each with its uncertainty (O3). It reports the Stage 1 regression with the window to first closing in place of `D_t`, with its uncertainty (O4). It records the measured cost of the real run and the sessions used.\
       Leaves out: point-in-time awareness: O8 in the Track B Ranked list. Traceability: Stage 8.\
       ROUTING: brainstorming
+
+> Stage 9: COMPLETE (2026-11-18) — implemented by plan 15 (specs/plans/completed/15-ces-revision-drivers-stage-9.md). Its Handoff section names what Stage 8 consumes.
+> Next: resume the roadmap.
 
 ## Ranked list — Track A
 
