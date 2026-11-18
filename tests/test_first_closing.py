@@ -76,6 +76,11 @@ def fit_months(years: range, c1: dict[date, float]) -> pl.DataFrame:
     )
 
 
+def final_week_gap(month: date) -> int:
+    """`D_t - W_t`: 3 in some months, else 4, on a pattern no year or month effect absorbs."""
+    return 3 if (month.year + month.month) % 3 == 0 else 4
+
+
 def fit_revisions(months: pl.DataFrame, outcome) -> pl.DataFrame:
     """One revision per month, status and transition, from outcome(row, status, transition)."""
     rows = []
@@ -89,7 +94,7 @@ def fit_revisions(months: pl.DataFrame, outcome) -> pl.DataFrame:
                         "transition": transition,
                         "absolute_revision": outcome(row, status, transition),
                         "collection_days": row["first_closing_days"]
-                        + (3 if row["reference_month"].month == 12 else 4),
+                        + final_week_gap(row["reference_month"]),
                         "first_closing_days": row["first_closing_days"],
                         "c1": row["c1"],
                         "five_week": row["five_week"],
@@ -246,11 +251,7 @@ def test_window_regressions_fit_each_window_on_the_same_rows():
     on_days = fit_revisions(
         months,
         lambda row, status, transition: (
-            3
-            * (
-                row["first_closing_days"]
-                + (3 if row["reference_month"].month == 12 else 4)
-            )
+            3 * (row["first_closing_days"] + final_week_gap(row["reference_month"]))
         ),
     )
     days_fits = window_regressions(on_days).filter(
