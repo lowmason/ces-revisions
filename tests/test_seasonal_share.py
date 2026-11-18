@@ -1,9 +1,12 @@
 """The seasonal-adjustment shares of SA revision variance (roadmap outcome O9)."""
 
+import archive_inventory
 import polars as pl
 import pytest
+import seasonal_share as seasonal_share_report
 import vintage_data
 
+from ces_revisions.annual import sample
 from ces_revisions.seasonal_share import REGIME_LABELS, seasonal_shares
 from ces_revisions.vintages.accounting import REGIMES, decomposition
 
@@ -172,3 +175,71 @@ def test_every_input_column_is_kept_before_the_three_shares():
     ]
     assert list(shares.select(pl.col("^share_.*$")).schema.values()) == [pl.Float64] * 3
     assert shares.select(table.columns).equals(table)
+
+
+def test_sector_titles_follow_the_coverage_tables():
+    titles = seasonal_share_report.SECTOR_TITLES
+    assert list(titles) == list(sample.SECTORS)
+    for code, title in titles.items():
+        assert sample._LEGACY_SECTOR_BY_TITLE[sample._normalized_title(title)] == code
+
+
+def test_report_lays_out_one_row_per_sector_and_regime(built):
+    first_to_second = seasonal_share_report.render_transition(built, "F_S").splitlines()
+    assert len(first_to_second) == 39
+    assert first_to_second[2].startswith(
+        "| 00 Total nonfarm | cesnaicsrev | 1979-01 to 2003-04 | 291 |"
+    )
+    third_to_benchmark = seasonal_share_report.render_transition(built, "T_B")
+    assert len(third_to_benchmark.splitlines()) == 38
+    assert "cesnaicsrev" not in third_to_benchmark
+
+
+def test_report_shows_the_gap_and_unclipped_shares():
+    shares = seasonal_shares(decomposition_row(10.0, 60.0, 40.0, gap=1.5e-11))
+    rendered = seasonal_share_report.render_transition(shares, "F_S")
+    assert "| 6.00 | 2.00 | -1.00 | 1.5e-11 |" in rendered
+
+
+def test_bounds_count_shares_outside_the_unit_interval(built):
+    lines = seasonal_share_report.render_bounds(built).splitlines()
+    for prefix in (
+        "| Ratio | All | 110 | 0 | 12 |",
+        "| Adjustment | F→S | 37 | 27 |",
+        "| NSA | All | 110 | 2 | 27 |",
+    ):
+        assert any(line.startswith(prefix) for line in lines), prefix
+
+
+def test_report_refuses_without_a_built_panel(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(seasonal_share_report, "PANEL_DIR", tmp_path)
+    assert seasonal_share_report.main(["report"]) == 1
+    assert "scripts/vintage_sources.py build" in capsys.readouterr().err
+
+
+def test_report_fills_the_four_generated_blocks(tmp_path, monkeypatch, capsys, built):
+    decomposition(vintage_data.identity_terms()).write_parquet(
+        tmp_path / seasonal_share_report.INPUT
+    )
+    names = ["stage-3-f-s", "stage-3-s-t", "stage-3-t-b", "stage-3-bounds"]
+    findings = tmp_path / "findings.md"
+    findings.write_text(
+        "".join(
+            f"<!-- BEGIN GENERATED {name} -->\n<!-- END GENERATED {name} -->\n"
+            for name in names
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(seasonal_share_report, "PANEL_DIR", tmp_path)
+    monkeypatch.setattr(seasonal_share_report, "FINDINGS", findings)
+    assert seasonal_share_report.main(["report"]) == 0
+    expected = {
+        "stage-3-f-s": seasonal_share_report.render_transition(built, "F_S"),
+        "stage-3-s-t": seasonal_share_report.render_transition(built, "S_T"),
+        "stage-3-t-b": seasonal_share_report.render_transition(built, "T_B"),
+        "stage-3-bounds": seasonal_share_report.render_bounds(built),
+    }
+    document = findings.read_text(encoding="utf-8")
+    for name, body in expected.items():
+        assert archive_inventory.generated_block(document, name) == f"\n{body}\n\n"
+    assert "report: 110 rows" in capsys.readouterr().out

@@ -76,6 +76,7 @@ uv run python scripts/pilot_run.py shares-report docs/runs/stage-6/news-shares.j
 uv run python scripts/collection_window.py report  # rewrite the Stage 1 findings tables from data/panel/ (offline; run the vintage build first)
 uv run python scripts/first_closing.py check  # offline: compare each archived registry page's C1–C3 with LABSTAT (spec D8); run the vintage build first
 uv run python scripts/first_closing.py report  # rewrite the Stage 9 findings tables from data/panel/ (offline; run the vintage build first)
+uv run python scripts/seasonal_share.py report  # rewrite the O9 findings tables from data/panel/ (offline; run the vintage build first)
 uv run python scripts/scale_model_run.py prior-predictive   # Stage 1 scale model: prior predictive check on the NSA F->S design
 uv run python scripts/scale_model_run.py fit --beta-sd 0.05 0.1 0.2   # fit the four series at three beta priors (about 25 s each on the Mac)
 uv run python scripts/scale_model_run.py sensitivity   # apply the beta-prior rule to the fits' evidence
