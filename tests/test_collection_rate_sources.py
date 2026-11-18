@@ -582,3 +582,19 @@ def test_promote_takes_no_copy_for_a_missing_year(tmp_path):
     assert sources.promote(staging, raw_dir) == 0
     copies = sorted(path.stem for path in (raw_dir / raw.REGISTRY_COPIES).iterdir())
     assert copies == sorted(stamps)
+
+
+def test_extract_matches_whole_series_ids_only():
+    body = (
+        LABSTAT_BODY + b"CEU00000000C1A               \t2003\tM01\t        11.1\t\r\n"
+    )
+    extract = sources.extract_series(io.BytesIO(body), sources.SERIES)
+    assert b"CEU00000000C1A" not in extract
+
+
+def test_prose_drops_tables_with_attributes_in_any_case():
+    page = (
+        '<p>Before.</p><TABLE class="regular" id="t1"><tr><td>55.1</td></tr>'
+        "</TABLE ><p>After.</p>"
+    )
+    assert sources.page_prose(page) == "Before. After."
