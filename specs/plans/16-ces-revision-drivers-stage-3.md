@@ -44,7 +44,7 @@ None.
 
 ## Defaults settled in this plan
 
-Each is put to the owner at plan review as a flagged default.
+The owner approved the plan with these defaults on 2026-11-18 ("Approve as is").
 
 - **F1 (brief): process.** Stage 1's process (roadmap `:23`, the owner's choice for Stage 1 only), without plan 15's two additions (`specs/plans/completed/15-ces-revision-drivers-stage-9.md:51`). executing-plans runs inline. Test first covers the share computation and the findings generator. executing-plans' own gates stay, as in plans 12 (D3) and 15: the mutant gate at each task and the final whole-branch Opus review with its Codex seat. No per-task reviewer, no subagent, and test steps as names with inline assertions. Effect if wrong: the plan carries more or less review than the owner wants.
 - **F2 (brief): the share.** The findings report the plain ratio and the covariance split side by side, and the NSA split beside them, and state that none is bounded in [0, 1]. On the 110 rows, the ratio is above 1 in 12 rows (maximum 9.93). The covariance split is below 0 in 27 rows, all of them F→S, and above 1 in 2. The two splits add to 1 up to the identity gap, which makes the split the one that partitions `Var(r^S)`. Effect if wrong: O9's headline numbers change meaning.
