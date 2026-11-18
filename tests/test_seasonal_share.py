@@ -243,3 +243,92 @@ def test_report_fills_the_four_generated_blocks(tmp_path, monkeypatch, capsys, b
     for name, body in expected.items():
         assert archive_inventory.generated_block(document, name) == f"\n{body}\n\n"
     assert "report: 110 rows" in capsys.readouterr().out
+
+
+TRANSITION_HEADER = [
+    "Sector",
+    "Source",
+    "Regime",
+    "Months",
+    "Var SA",
+    "Var NSA",
+    "Var adjustment change",
+    "Cov(NSA, adjustment change)",
+    "Ratio share",
+    "Adjustment share",
+    "NSA share",
+    "Identity gap",
+]
+BLOCK_NAMES = ["stage-3-f-s", "stage-3-s-t", "stage-3-t-b", "stage-3-bounds"]
+
+
+def stage_report(tmp_path, monkeypatch, before="", after=""):
+    """Point the report at the built decomposition and a findings file of four empty blocks."""
+    decomposition(vintage_data.identity_terms()).write_parquet(
+        tmp_path / seasonal_share_report.INPUT
+    )
+    blocks = "".join(
+        f"<!-- BEGIN GENERATED {name} -->\n<!-- END GENERATED {name} -->\n"
+        for name in BLOCK_NAMES
+    )
+    findings = tmp_path / "findings.md"
+    findings.write_text(before + blocks + after, encoding="utf-8")
+    monkeypatch.setattr(seasonal_share_report, "PANEL_DIR", tmp_path)
+    monkeypatch.setattr(seasonal_share_report, "FINDINGS", findings)
+    return findings
+
+
+def test_report_prints_each_identity_term_in_its_column():
+    shares = seasonal_shares(decomposition_row(10.26, 60.0, 40.0, sector="10"))
+    lines = seasonal_share_report.render_transition(shares, "F_S").splitlines()
+    assert lines[0] == f"| {' | '.join(TRANSITION_HEADER)} |"
+    assert lines[1] == "|---|---|---|" + "---:|" * 9
+    assert lines[2] == (
+        "| 10 Mining and logging | cesvinall | 2023-01 on | 34 | 10.3 | 30.3 | 60.0 "
+        "| 40.0 | 5.85 | 1.95 | -0.95 | 0.0e+00 |"
+    )
+
+
+def test_bounds_count_only_values_strictly_outside_the_unit_interval():
+    table = pl.concat(
+        [
+            decomposition_row(10.0, 60.0, 40.0, transition="F_S"),
+            decomposition_row(10.0, 10.0, 10.0, transition="S_T"),
+            decomposition_row(100.0, 50.0, 20.0, transition="T_B"),
+        ]
+    )
+    rendered = seasonal_share_report.render_bounds(seasonal_shares(table))
+    assert rendered.splitlines() == [
+        "| Share | Transition | Rows | Below 0 | Above 1 | Min | Max |",
+        "|---|---|---:|---:|---:|---:|---:|",
+        "| Ratio | F→S | 1 | 0 | 1 | 6.00 | 6.00 |",
+        "| Ratio | S→T | 1 | 0 | 0 | 1.00 | 1.00 |",
+        "| Ratio | T→B | 1 | 0 | 0 | 0.50 | 0.50 |",
+        "| Ratio | All | 3 | 0 | 1 | 0.50 | 6.00 |",
+        "| Adjustment | F→S | 1 | 0 | 1 | 2.00 | 2.00 |",
+        "| Adjustment | S→T | 1 | 0 | 0 | 0.00 | 0.00 |",
+        "| Adjustment | T→B | 1 | 0 | 0 | 0.30 | 0.30 |",
+        "| Adjustment | All | 3 | 0 | 1 | 0.00 | 2.00 |",
+        "| NSA | F→S | 1 | 1 | 0 | -1.00 | -1.00 |",
+        "| NSA | S→T | 1 | 0 | 0 | 1.00 | 1.00 |",
+        "| NSA | T→B | 1 | 0 | 0 | 0.70 | 0.70 |",
+        "| NSA | All | 3 | 1 | 0 | -1.00 | 1.00 |",
+    ]
+
+
+def test_report_keeps_the_prose_around_the_blocks(tmp_path, monkeypatch):
+    findings = stage_report(
+        tmp_path, monkeypatch, before="Prose before.\n\n", after="\nProse after.\n"
+    )
+    assert seasonal_share_report.main(["report"]) == 0
+    document = findings.read_text(encoding="utf-8")
+    assert document.startswith("Prose before.\n\n<!-- BEGIN GENERATED stage-3-f-s -->")
+    assert document.endswith("<!-- END GENERATED stage-3-bounds -->\n\nProse after.\n")
+
+
+def test_report_run_twice_gives_the_same_file(tmp_path, monkeypatch):
+    findings = stage_report(tmp_path, monkeypatch)
+    assert seasonal_share_report.main(["report"]) == 0
+    first = findings.read_text(encoding="utf-8")
+    assert seasonal_share_report.main(["report"]) == 0
+    assert findings.read_text(encoding="utf-8") == first
