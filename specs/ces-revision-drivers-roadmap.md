@@ -28,6 +28,7 @@ Choices made:
 - Stage 9 after the first-closing rule (owner, 2026-11-17, at the same resume): O4 joins Stage 9, because the rule computes its dates and Stage 9 needs the window to first closing for the C1 rate. Stage 9 covers reference months 2003–2026, the scale model's sample, which the owner chose on 2026-11-17 because of the probability-sample redesign. This supersedes the line above for O4.
 - Where models run (owner, 2026-11-16): research runs go to Lambda. These are the NumPyro model runs whose output a findings file reports: real-panel fits, refits, SBC and O6's GPU probe. The owner rents the instance and starts each run. A session on the Mac gives the commands and reads the run directory that the owner copies back. No session connects to the billed host. The pytest tiers and the existing Mac probe records stay on the Mac. A descriptive table or a small OLS, such as Stage 1's, is not a model run (confirmed at the resume of 2026-11-18).
 - Resume of 2026-11-18 (owner, "Approve all"): Track A stops after Stage 9, and O2 parks in `specs/deferred_items.md`, § ces-revision-drivers-roadmap — 2026-11-18. Stage 1 and O4 found no clear window effect, and the supersectors share one release calendar, so O2 would add no variation in the window. O6 is promoted from the Track B Ranked list to Stage 10.
+- Resume of 2026-11-18, after Stage 3 (owner, "Stop Track C"): Track C stops after Stage 3, and O10 parks in `specs/deferred_items.md`, § ces-revision-drivers-roadmap — 2026-11-18. Stage 3 measured the share from the published NSA and SA values. An X-13 reproduction from the 29 archive-complete releases, none with unrounded inputs, could at best match those values to rounding, and Stage 10 puts the seasonal revisions inside the model.
 
 | # | Outcome | Track | Rank | Cost (estimate; basis) |
 |---|---|---|---|---|
@@ -40,7 +41,7 @@ Choices made:
 | O7 | Each driver's effect on revision variance, estimated jointly in the model with the news/noise split | B | 3 | after O6. Only a real run can tell |
 | O8 | Which model predicts revision size best in real time, and a predicted revision scale for each new release | B | 4 | about 280 refits at past release dates (old roadmap) |
 | O9 | The share of SA revision variance that comes from changes in seasonal adjustment, by sector, transition and regime | C | 1 | small: the table exists (110 rows) and is not yet reported |
-| O10 | The same share with seasonal factors reproduced from BLS's archived X-13 files, for the 29 releases with complete archives | C | 2 | only a real run can tell. The inputs are rounded, so reproduction may fail |
+| O10 | The same share with seasonal factors reproduced from BLS's archived X-13 files, for the 29 releases with complete archives | C | 2 | only a real run can tell. The inputs are rounded, so reproduction may fail. Parked 2026-11-18 (`specs/deferred_items.md`) |
 | O11 | How revision size moves with BLS funding and staffing, FY2009–2026 | D | 1 | a fiscal-year panel keyed by hand from budget documents. The review document names the sources |
 | O12 | The same back to FY1979 | D | 2 | archived budget justifications keyed by hand, with definition breaks |
 | O13 | How birth–death forecast error relates to benchmark revisions, by supersector | E | 1 | the data is on disk. It waits on the open question below |
@@ -189,7 +190,7 @@ O6 left this list for Stage 10 at the resume of 2026-11-18.
 
 ## Ranked list — Track C
 
-1. O10 — only a real run can tell.
+None. The owner stopped Track C at the resume of 2026-11-18 after Stage 3, and O10 parked in `specs/deferred_items.md`.
 
 ## Ranked list — Track D
 

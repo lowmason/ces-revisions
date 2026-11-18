@@ -465,8 +465,9 @@ plan 11.
 
 ## ces-revision-drivers-roadmap — 2026-11-18
 
-The owner stopped Track A of `specs/ces-revision-drivers-roadmap.md` at the
-resume after Stage 9, so its one Ranked-list item parks here. The roadmap stays
+The owner stopped two tracks of `specs/ces-revision-drivers-roadmap.md` on
+this day: Track A at the resume after Stage 9, and Track C at the resume after
+Stage 3. The one Ranked-list item of each track parks here. The roadmap stays
 live.
 - [ ] O2 of `specs/ces-revision-drivers-roadmap.md`: how the mean absolute
       F→S and F→T revisions change with the collection window for each of the
@@ -478,3 +479,19 @@ live.
       § 12-ces-revision-drivers-stage-1 applies. Size: plan. Done when: a
       findings file reports the window effect for each supersector, with its
       uncertainty, or the owner drops the item.
+- [ ] O10 of `specs/ces-revision-drivers-roadmap.md`: the share of SA
+      revision variance that comes from the change in seasonal adjustment,
+      with the seasonal factors reproduced from BLS's archived X-13 files.
+      Stage 3 (O9, `specs/ces-revision-drivers-stage-3-findings.md`) reports
+      that share from the published NSA and SA values. As of 2026-11-18, only
+      the 29 releases from June 2014 on that keep the specification,
+      prior-adjustment and outlier files can seed a reproduction, and none has
+      unrounded inputs, so it can at best match the published SA values to
+      rounding (`docs/ces-revisions-review.md`, Consequences for later
+      stages). The stored files are in `data/seasonal/raw/` (plan 14). The
+      repo has no X-13ARIMA-SEATS program. Three items under
+      § ces-revisions-roadmap wait on this one: Parked Stage 25 and Parked
+      Stage 26, and the O10 part of Parked Stage 14. Each closes when the
+      stage that delivers O10 ticks. Size: design. Done when: a findings file
+      reports the share from the reproduced factors for the archive-complete
+      releases beside O9's share, or the owner drops the item.
