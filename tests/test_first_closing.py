@@ -516,6 +516,19 @@ def test_report_fills_every_generated_block(tmp_path, monkeypatch, capsys):
         outside = outside.replace(body, "")
     assert outside == before
     assert "256 part (a) months" in capsys.readouterr().out
+    rows = {
+        "stage-9-copies": "| All | 18 copies | 23355 | 1 | 0 |",
+        "stage-9-holidays": "| All | 278 | 46 |",
+        "stage-9-rate-by-window": "| All | 256 | 69.9 |",
+        "stage-9-rate-regression": "| 256 | 23 | 2.20 | 0.26 | 11.7 to 19.2 |",
+        "stage-9-revision-by-rate": "| 1 | 52 | -16.1 to -4.0 | 54.7 | 57.2 | 31.0 | 39.0 |",
+        "stage-9-revision-regression": "| SA | F→T | 252 | 23 | 0.46 | 0.59 | -7.7 to 16.8 |",
+        "stage-9-lapse": "| 2025-11 | 2025-12-16 | 2025-12-09 | 22 | 18 | 73.8 (E) "
+        "| 2 | 25 | 8 | 23 |",
+        "stage-9-pandemic": "| All | 22 | 71.2 | 85.0 | 121.7 | 95.1 | 168.1 |",
+    }
+    for name, row in rows.items():
+        assert row in generated_block(document, name).splitlines(), name
 
 
 def test_render_window_regression_sets_both_windows_side_by_side():
@@ -605,3 +618,10 @@ def test_fits_match_an_independent_statsmodels_fit():
         assert (found[key]["n"], found[key]["clusters"]) == (n, clusters), key
         assert found[key]["coefficient"] == pytest.approx(coefficient, abs=1e-6), key
         assert found[key]["se"] == pytest.approx(se, abs=1e-6), key
+
+
+def test_render_copies_marks_a_year_with_no_valid_copy():
+    rates = vintage_data.collection_rates().filter(pl.col("source") != "20180719105627")
+    lines = report_script.render_copies(rates).splitlines()
+    assert "| 2018 | no valid copy | – | – | – |" in lines
+    assert lines[-1] == "| All | 17 copies | 22012 | 1 | 0 |"
