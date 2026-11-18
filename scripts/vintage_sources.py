@@ -182,6 +182,25 @@ def promote_tree(staging_dir: Path, target_dir: Path) -> None:
         staged.replace(target)
 
 
+def kept_rows(raw_dir: Path, written: list[dict[str, str]]) -> list[dict[str, str]]:
+    """The manifest rows of sources this fetch does not write, such as Stage 9's.
+
+    A row whose file no longer exists in raw_dir is dropped, so the manifest still lists
+    exactly the files on disk.
+    """
+    manifest = raw_dir / MANIFEST
+    if not manifest.is_file():
+        return []
+    fetched = {row["file"] for row in written}
+    return [
+        row
+        for row in archive_inventory.read_csv(manifest)
+        if row.get("file")
+        and row["file"] not in fetched
+        and (raw_dir / row["file"]).is_file()
+    ]
+
+
 def refresh_manifest(raw_dir: Path = RAW_DIR) -> int:
     """Rehash the recorded archive without changing acquisition provenance."""
     existing_rows = archive_inventory.read_csv(raw_dir / MANIFEST)
@@ -328,7 +347,7 @@ def fetch_sources(
         )
         archive_inventory.write_csv(
             staged_raw / MANIFEST,
-            sorted(rows, key=lambda row: row["file"]),
+            sorted(rows + kept_rows(raw_dir, rows), key=lambda row: row["file"]),
             MANIFEST_COLUMNS,
         )
 

@@ -289,6 +289,67 @@ def test_fetch_promotes_a_complete_validated_snapshot(monkeypatch, tmp_path: Pat
     assert rows[raw.RESCHEDULES]["fetched_at"] == ""
 
 
+def test_fetch_keeps_the_manifest_rows_of_sources_it_does_not_fetch(
+    monkeypatch, tmp_path: Path
+):
+    raw_dir = tmp_path / "raw"
+    manual_source = raw_dir / raw.RESCHEDULES
+    manual_source.parent.mkdir(parents=True)
+    manual_source.write_bytes(b"release_date,citation\n2025-11-20,example\n")
+    extract = raw_dir / raw.COLLECTION_RATES
+    extract.parent.mkdir(parents=True)
+    extract_bytes = b"series_id\tyear\tperiod\tvalue\tfootnote_codes\n"
+    extract.write_bytes(extract_bytes)
+    kept = vintage_sources.manifest_row(
+        raw.COLLECTION_RATES,
+        "2026-11-17T12:00:00Z",
+        raw_dir=raw_dir,
+        last_modified="Tue, 10 Nov 2026 13:30:00 GMT",
+        derived_from="https://download.bls.gov/pub/time.series/ce/ce.data.0.AllCESSeries",
+        derived_from_sha256="0" * 64,
+    )
+    gone = dict(kept, file="bls/removed-since.tsv")
+    vintage_sources.archive_inventory.write_csv(
+        raw_dir / raw.MANIFEST, [kept, gone], vintage_sources.MANIFEST_COLUMNS
+    )
+    payloads = valid_fetch_payloads()
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    monkeypatch.setattr(vintage_sources.shutil, "which", lambda command: "/pdftotext")
+    monkeypatch.setattr(
+        vintage_sources, "pdftotext_version", lambda: "pdftotext version 26.06.0"
+    )
+    monkeypatch.setattr(
+        vintage_sources,
+        "download",
+        lambda url: (payloads[url], "Fri, 06 Mar 2026 12:06:34 GMT"),
+    )
+    monkeypatch.setattr(
+        vintage_sources,
+        "convert_pdf",
+        lambda source, target: target.write_text("converted\n", encoding="utf-8"),
+    )
+    monkeypatch.setattr(vintage_sources, "extract_comments", lambda workbook: [])
+
+    assert (
+        vintage_sources.fetch_sources(
+            datetime(2026, 11, 20, tzinfo=UTC),
+            raw_dir=raw_dir,
+            workbook_path=tmp_path / "cache" / "cesvin00.xlsx",
+        )
+        == 0
+    )
+
+    rows = {
+        row["file"]: row
+        for row in vintage_sources.archive_inventory.read_csv(raw_dir / raw.MANIFEST)
+    }
+    assert rows[raw.COLLECTION_RATES] == kept
+    assert "bls/removed-since.tsv" not in rows
+    assert extract.read_bytes() == extract_bytes
+    assert list(rows) == sorted(rows)
+    assert vintage_sources.refresh_manifest(raw_dir) == len(rows)
+
+
 def test_fetch_keeps_the_existing_snapshot_after_a_late_parse_failure(
     monkeypatch, tmp_path: Path
 ):
