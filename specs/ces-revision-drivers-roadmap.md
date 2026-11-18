@@ -87,7 +87,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
 > Stage 2: COMPLETE (2026-11-15) — implemented by plan 13 (specs/plans/completed/13-ces-revision-drivers-stage-2.md) with plan 11 (specs/plans/completed/11-ces-revisions.md). Its Handoff section names what Stage 8 consumes.
 > Next: resume the roadmap.
 
-- [ ] Stage 3: Seasonal share of SA revisions\
+- [x] Stage 3: Seasonal share of SA revisions\
       Objective: Report the share of SA revision variance that comes from changes in seasonal adjustment, from the accounting decomposition that is already built.\
       Outcomes: O9\
       Track: C\
@@ -96,6 +96,9 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Exit: the findings file gives, for each sector, transition and regime in the table, the share of SA revision variance from the change in seasonal adjustment, with the identity gap shown (O9). It records the sessions used.\
       Leaves out: nothing. Its input already carries provenance (plan 5).\
       ROUTING: writing-plans
+
+> Stage 3: COMPLETE (2026-11-18) — implemented by plan 16 (specs/plans/completed/16-ces-revision-drivers-stage-3.md). Its Handoff section names what Stage 8 consumes.
+> Next: resume the roadmap.
 
 - [ ] Stage 4: Revision size and BLS funding and staffing, FY2009–2026\
       Objective: Measure how revision size moves with BLS's real budget authority and staffing over the fiscal years 2009–2026.\

@@ -1,6 +1,6 @@
 # Stage 3 findings: the seasonal-adjustment share of SA revision variance
 
-Outcome O9 of the [ces-revision-drivers roadmap](ces-revision-drivers-roadmap.md), Stage 3, implemented by [plan 16](plans/16-ces-revision-drivers-stage-3.md). `uv run python scripts/seasonal_share.py report` writes the four tables below from the built `data/panel/`. Do not edit them by hand.
+Outcome O9 of the [ces-revision-drivers roadmap](ces-revision-drivers-roadmap.md), Stage 3, implemented by [plan 16](plans/completed/16-ces-revision-drivers-stage-3.md). `uv run python scripts/seasonal_share.py report` writes the four tables below from the built `data/panel/`. Do not edit them by hand.
 
 ## Question
 

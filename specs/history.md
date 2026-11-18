@@ -107,3 +107,13 @@ Differences from the design:
 - Deviation (Task 7): the statsmodels values are pinned in `test_fits_match_an_independent_statsmodels_fit`. Source: plan, Task 7.
 - Deviation (Task 7): the O4 note counts the 45 releases of the fit sample with a final-week holiday, which contradicts spec § O4's 46; the 46th, May 2021, is a pandemic month. The sessions line counts 4, as the owner confirmed. Source: plan, Task 7.
 - Deferred: 1 item. Source: specs/deferred_items.md, § stage-1-scale-model.
+
+## 16-ces-revision-drivers-stage-3 — 2026-11-18
+Plan: specs/plans/completed/16-ces-revision-drivers-stage-3.md · Spec: none · Roadmap: specs/ces-revision-drivers-roadmap.md, Stage 3
+
+Differences from the design:
+- Ruling (Task 1): the test helper `decomposition_row` sets `var_revision_nsa = var_sa − var_adj + 2·cov − gap`, not the plan's `+ gap` — accounting.py:128-133 defines `variance_identity_gap = var_revision_sa − (var_revision_nsa + var_adjustment_change − 2·cov)`, so the plan's sign would store a gap column that contradicts the variances beside it — no named test uses a non-zero gap with a share check (gap 0 is the default; Task 2's render test only prints the column), so the cost if wrong is nil.
+- Ruling (Task 1): four tests beyond the plan's seven (the plan's "8 passed" becomes 12) — the mutant gate's step 2 found shapes the plan's tests did not use: a non-zero gap (the only test that separates share_nsa from 1 − share_adjustment), a negative variance among good rows (names the offending row), shuffled row order (sector key), and input columns kept — plan tests are unchanged; the cost if wrong is four extra hermetic tests.
+- Ruling (Task 2): four tests beyond the plan's six (the file holds 22) — the mutant gate's step 2 found shapes the plan's tests did not use: the columns, formats and alignment of one hand-built row, the bounds table at values exactly 0 and 1 with its Min and Max, the prose around the blocks surviving a run, and a second run leaving the file unchanged — plan tests are unchanged — the cost if wrong is four extra hermetic tests and a `stage_report` helper.
+- Deviation (Task 2): Limits has two bullets beyond the five named. The final review then scoped the benchmark bullet to 2004 on and added the March concentration of the 9.93 ratio (commit 9e32a74). Source: plan, Task 2.
+- Deviation (Task 2): the full suite ran once, as `task-done`'s final run on the last commit, not before the Step 10 commit. Source: plan, Task 2.
