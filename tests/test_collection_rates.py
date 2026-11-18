@@ -190,3 +190,14 @@ def test_archive_comparison_rounds_both_values_to_one_decimal():
     )
     assert archive_comparison(rates).rows() == [(COPY, 2, 1, 0)]
     assert archive_differences(rates)["reference_month"].to_list() == [date(2010, 2, 1)]
+
+
+def test_a_year_row_before_any_section_gives_no_value():
+    page = synthetic_page()
+    first_section = page.index('<tr><td colspan="13"><strong>First')
+    stray = "<tr><th>1999</th>" + "<td>12.3</td>" * 12 + "</tr>\n"
+    frame = registry_page_values(
+        page[:first_section] + stray + page[first_section:], COPY
+    )
+    assert 1999 not in frame["reference_month"].dt.year().to_list()
+    assert frame["series_id"].null_count() == 0
