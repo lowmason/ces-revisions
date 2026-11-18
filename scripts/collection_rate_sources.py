@@ -128,9 +128,21 @@ def stream_download(url: str, target: Path) -> tuple[str, str]:
 
 
 def download(url: str) -> tuple[bytes, str]:
-    """A whole payload and its Last-Modified header."""
-    with archive_inventory.open_url(url, timeout=TIMEOUT_SECONDS) as response:
-        return response.read(), response.headers.get("Last-Modified", "")
+    """A whole payload and its Last-Modified header.
+
+    A body cut off before its Content-Length, or ended by IncompleteRead, raises ValueError,
+    which `archive_inventory.retrying` retries.
+    """
+    try:
+        with archive_inventory.open_url(url, timeout=TIMEOUT_SECONDS) as response:
+            payload = response.read()
+            expected = response.headers.get("Content-Length")
+            last_modified = response.headers.get("Last-Modified", "")
+    except http.client.IncompleteRead as error:
+        raise ValueError(f"{url} ended early") from error
+    if expected is not None and len(payload) != int(expected):
+        raise ValueError(f"{url} sent {len(payload)} bytes of {expected}")
+    return payload, last_modified
 
 
 def check_extract(extract: bytes) -> None:
@@ -232,25 +244,31 @@ def copy_file(timestamp: str) -> str:
     return f"{raw.REGISTRY_COPIES}/{timestamp}.htm"
 
 
+def parses(page: bytes, timestamp: str) -> bool:
+    """Whether a copy's table parses into the three sections."""
+    try:
+        registry_page_values(page.decode("utf-8", errors="replace"), timestamp)
+    except ValueError:
+        return False
+    return True
+
+
 def staged_copies(staging: Path) -> dict[str, bool]:
     """Each staged copy's timestamp, and whether its table parses into the three sections."""
-    validity = {}
-    for path in sorted((staging / "raw" / raw.REGISTRY_COPIES).glob("*.htm")):
-        try:
-            registry_page_values(
-                path.read_text(encoding="utf-8", errors="replace"), path.stem
-            )
-        except ValueError:
-            validity[path.stem] = False
-        else:
-            validity[path.stem] = True
-    return validity
+    return {
+        path.stem: parses(path.read_bytes(), path.stem)
+        for path in sorted((staging / "raw" / raw.REGISTRY_COPIES).glob("*.htm"))
+    }
+
+
+def listing_file(staging: Path, index: int) -> Path:
+    return staging / "cdx" / f"{index}.txt"
 
 
 def read_listing(staging: Path) -> Listing | None:
-    """The saved CDX listings of the last fetch-archive run, or None when there are none."""
-    files = sorted((staging / "cdx").glob("*.txt"))
-    if not files:
+    """The saved CDX listings of every address, or None while one is missing."""
+    files = [listing_file(staging, index) for index in range(len(PAGE_KEYS))]
+    if not all(file.is_file() for file in files):
         return None
     return [
         capture
@@ -260,30 +278,49 @@ def read_listing(staging: Path) -> Listing | None:
 
 
 def list_page(staging: Path, index: int, key: str) -> Listing:
-    """One CDX listing, saved before it is parsed so a later offline run can read it."""
-    text = archive_inventory.fetch(archive_inventory.CDX_URL.format(key=key)).decode(
-        "utf-8", "replace"
-    )
-    target = staging / "cdx" / f"{index}.txt"
-    target.parent.mkdir(parents=True, exist_ok=True)
-    target.write_text(text, encoding="utf-8")
-    return archive_inventory.parse_cdx(text)
+    """One CDX listing, saved for a later offline run once it parses into captures.
+
+    The text is saved beside the listing first, so a listing that fails to parse can be read,
+    and it replaces the saved listing only when it holds captures: an empty or throttled answer
+    raises ValueError, which `archive_inventory.retrying` retries.
+    """
+    payload, _ = download(archive_inventory.CDX_URL.format(key=key))
+    text = payload.decode("utf-8", "replace")
+    target = listing_file(staging, index)
+    received = target.with_suffix(".received")
+    received.parent.mkdir(parents=True, exist_ok=True)
+    received.write_text(text, encoding="utf-8")
+    captures = archive_inventory.parse_cdx(text)
+    if not captures:
+        raise ValueError(f"the CDX listing of {key} holds no captures")
+    received.replace(target)
+    return captures
 
 
-def fetch_copy(staging: Path, now: datetime, timestamp: str, original: str) -> bool:
+def fetch_copy(
+    staging: Path, now: datetime, timestamp: str, original: str, digest: str
+) -> bool | None:
     """Stage one archived copy, after the pause the Internet Archive asks for.
 
-    Returns whether it parses, or False with nothing staged when every attempt fails.
+    A replay that neither parses nor hashes to the listing's digest is not the copy, such as a
+    throttled answer, so it counts as a failed attempt. Returns whether the staged copy parses,
+    or None with nothing staged when every attempt fails.
     """
     url = archive_inventory.REPLAY_URL.format(stamp=timestamp, original=original)
+
+    def attempt() -> tuple[bytes, str]:
+        payload, last_modified = download(url)
+        vouched = archive_inventory.payload_digest(payload) == digest
+        if not vouched and not parses(payload, timestamp):
+            raise ValueError(f"{url} neither parses nor matches its digest {digest}")
+        return payload, last_modified
+
     sleep(archive_inventory.PAUSE_SECONDS)
     try:
-        payload, last_modified = archive_inventory.retrying(
-            partial(download, url), what=url
-        )
+        payload, last_modified = archive_inventory.retrying(attempt, what=url)
     except RuntimeError as error:
         print(f"{error}; not staged in this run", file=sys.stderr)
-        return False
+        return None
     stage(
         staging,
         copy_file(timestamp),
@@ -292,7 +329,7 @@ def fetch_copy(staging: Path, now: datetime, timestamp: str, original: str) -> b
         last_modified=last_modified,
         fetched_at=stamp(now),
     )
-    return staged_copies(staging)[timestamp]
+    return parses(payload, timestamp)
 
 
 def fetch_archive(now: datetime, staging: Path = STAGING_DIR) -> int:
@@ -304,27 +341,34 @@ def fetch_archive(now: datetime, staging: Path = STAGING_DIR) -> int:
             partial(list_page, staging, index, key), what=f"CDX listing of {key}"
         )
     recon = [
-        original
-        for moment, original, status, _ in listing
+        (original, digest)
+        for moment, original, status, digest in listing
         if f"{moment:%Y%m%d%H%M%S}" == RECON_COPY and status == "200"
     ]
     if not recon:
         print(f"the listings have no capture {RECON_COPY}", file=sys.stderr)
         return 1
 
+    digests = {f"{moment:%Y%m%d%H%M%S}": digest for moment, _, _, digest in listing}
     candidates = year_candidates(listing)
     staged = staged_copies(staging)
+    unstaged_runs = 0
     for year, status in year_status(candidates, staged).items():
         if status != PENDING:
             continue
         unstaged = [capture for capture in candidates[year] if capture[0] not in staged]
         tried = len(unstaged) < len(candidates[year])
         for timestamp, original in unstaged if tried else unstaged[:1]:
-            if fetch_copy(staging, now, timestamp, original):
+            valid = fetch_copy(staging, now, timestamp, original, digests[timestamp])
+            if valid is None:
+                unstaged_runs += 1
+            if valid is not False:
                 break
     if RECON_COPY not in staged:
-        fetch_copy(staging, now, RECON_COPY, recon[0])
-    return 0
+        recon_original, recon_digest = recon[0]
+        if fetch_copy(staging, now, RECON_COPY, recon_original, recon_digest) is None:
+            unstaged_runs += 1
+    return 1 if unstaged_runs else 0
 
 
 # --- Offline commands ----------------------------------------------------------------------
@@ -410,6 +454,10 @@ def promote(staging: Path = STAGING_DIR, raw_dir: Path = raw.RAW_DIR) -> int:
     provenance = {
         row["file"]: row for row in archive_inventory.read_csv(staging / PROVENANCE)
     }
+    unrecorded = [file for file in files if file not in provenance]
+    if unrecorded:
+        print(f"promote refused: no provenance row for {unrecorded}", file=sys.stderr)
+        return 1
     added = []
     for file in files:
         target = raw_dir / file

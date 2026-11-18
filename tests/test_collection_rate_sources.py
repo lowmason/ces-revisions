@@ -35,6 +35,8 @@ def valid_page() -> bytes:
 
 
 INVALID_PAGE = b"<html><body><p>No table here.</p></body></html>"
+VALID_DIGEST = sources.archive_inventory.payload_digest(valid_page())
+INVALID_DIGEST = sources.archive_inventory.payload_digest(INVALID_PAGE)
 
 
 class FakeResponse:
@@ -55,8 +57,8 @@ class FakeResponse:
 
     def read(self, amount: int = -1) -> bytes:
         chunk = self.stream.read(amount)
-        if self.incomplete and not chunk:
-            raise http.client.IncompleteRead(b"")
+        if self.incomplete and (amount < 0 or not chunk):
+            raise http.client.IncompleteRead(chunk)
         return chunk
 
     def __enter__(self):
@@ -79,6 +81,10 @@ class FakeNetwork:
     def open_url(self, url: str, timeout: float, contact: str | None = None):
         self.events.append(url)
         body = self.bodies[url]
+        if isinstance(body, list):
+            body = body.pop(0) if len(body) > 1 else body[0]
+        if isinstance(body, Exception):
+            raise body
         if isinstance(body, FakeResponse):
             return body
         return FakeResponse(
@@ -102,9 +108,11 @@ def cdx(key: str) -> str:
     return sources.archive_inventory.CDX_URL.format(key=key)
 
 
-def listing(*captures: tuple[str, str, str]) -> bytes:
+def listing(*captures: tuple[str, ...]) -> bytes:
+    """CDX lines; a capture without a fourth field gets the synthetic page's digest."""
     lines = [
-        f"{stamp} {original} {status} DIGEST" for stamp, original, status in captures
+        " ".join([*capture[:3], capture[3] if len(capture) > 3 else VALID_DIGEST])
+        for capture in captures
     ]
     return ("\n".join(lines) + "\n").encode()
 
@@ -357,8 +365,8 @@ def test_fetch_archive_walks_down_a_year_whose_staged_copies_are_invalid(
 ):
     old = [
         ("20101201120000", OLD_PAGE, "200"),
-        ("20111201120000", OLD_PAGE, "200"),
-        ("20110901120000", OLD_PAGE, "200"),
+        ("20111201120000", OLD_PAGE, "200", INVALID_DIGEST),
+        ("20110901120000", OLD_PAGE, "200", INVALID_DIGEST),
         ("20110601120000", OLD_PAGE, "200"),
         ("20110301120000", OLD_PAGE, "200"),
     ]
@@ -387,7 +395,9 @@ def test_fetch_archive_walks_down_a_year_whose_staged_copies_are_invalid(
 
 
 def test_fetch_archive_refuses_a_listing_without_the_recon_copy(monkeypatch, tmp_path):
-    bodies = listings([("20101201120000", OLD_PAGE, "200")], [])
+    bodies = listings(
+        [("20101201120000", OLD_PAGE, "200")], [("20240101120000", NEW_PAGE, "200")]
+    )
     network = FakeNetwork(monkeypatch, bodies)
     assert sources.fetch_archive(NOW, tmp_path / "staging") == 1
     assert network.requests == [cdx(sources.PAGE_KEYS[0]), cdx(sources.PAGE_KEYS[1])]
@@ -509,7 +519,7 @@ def test_fetch_archive_leaves_a_copy_that_fails_every_attempt_unstaged(
 
     monkeypatch.setattr(sources.archive_inventory, "open_url", failing_open)
     staging = tmp_path / "staging"
-    assert sources.fetch_archive(NOW, staging) == 0
+    assert sources.fetch_archive(NOW, staging) == 1
     assert network.requests.count(replay("20101201120000")) == (
         sources.archive_inventory.ATTEMPTS
     )
@@ -598,3 +608,107 @@ def test_prose_drops_tables_with_attributes_in_any_case():
         "</TABLE ><p>After.</p>"
     )
     assert sources.page_prose(page) == "Before. After."
+
+
+def test_fetch_archive_stops_a_walk_at_a_replay_that_fails_every_attempt(
+    monkeypatch, tmp_path
+):
+    old = [
+        ("20111201120000", OLD_PAGE, "200", INVALID_DIGEST),
+        ("20110901120000", OLD_PAGE, "200"),
+        ("20110601120000", OLD_PAGE, "200"),
+    ]
+    staging = tmp_path / "staging"
+    stage_copy(staging, "20111201120000", INVALID_PAGE)
+    stage_copy(staging, RECON_COPY, valid_page())
+    bodies = listings(old, [recon_capture()])
+    bodies[replay("20110901120000")] = [OSError("replay unavailable")]
+    bodies[replay("20110601120000")] = valid_page()
+    network = FakeNetwork(monkeypatch, bodies)
+    assert sources.fetch_archive(NOW, staging) == 1
+    assert replay("20110601120000") not in network.requests
+    assert sources.staged_copies(staging) == {
+        "20111201120000": False,
+        RECON_COPY: True,
+    }
+
+
+def test_fetch_archive_retries_a_replay_that_neither_parses_nor_matches_its_digest(
+    monkeypatch, tmp_path
+):
+    bodies = listings([("20101201120000", OLD_PAGE, "200")], [recon_capture()])
+    bodies[replay("20101201120000")] = [INVALID_PAGE, valid_page()]
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    network = FakeNetwork(monkeypatch, bodies)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert network.requests.count(replay("20101201120000")) == 2
+    assert sources.staged_copies(staging) == {
+        "20101201120000": True,
+        RECON_COPY: True,
+    }
+
+
+def test_fetch_archive_accepts_a_copy_that_parses_whatever_its_digest(
+    monkeypatch, tmp_path
+):
+    bodies = listings(
+        [("20101201120000", OLD_PAGE, "200", "OTHERDIGEST")], [recon_capture()]
+    )
+    bodies[replay("20101201120000")] = valid_page()
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    network = FakeNetwork(monkeypatch, bodies)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert network.requests.count(replay("20101201120000")) == 1
+    assert sources.staged_copies(staging)["20101201120000"] is True
+
+
+def test_an_empty_listing_is_retried_and_never_replaces_a_saved_one(
+    monkeypatch, tmp_path
+):
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    saved = (staging / "cdx" / "0.txt").read_bytes()
+    bodies = listings([("20101201120000", OLD_PAGE, "200")], [recon_capture()])
+    bodies[cdx(sources.PAGE_KEYS[0])] = b""
+    network = FakeNetwork(monkeypatch, bodies)
+    with pytest.raises(RuntimeError):
+        sources.fetch_archive(NOW, staging)
+    assert network.requests.count(cdx(sources.PAGE_KEYS[0])) == (
+        sources.archive_inventory.ATTEMPTS
+    )
+    assert (staging / "cdx" / "0.txt").read_bytes() == saved
+
+
+def test_status_needs_both_listings(tmp_path):
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    (staging / "cdx" / "1.txt").unlink()
+    assert sources.show_status(staging) == 1
+
+
+def test_download_turns_a_cut_off_body_into_a_retryable_error(monkeypatch):
+    ended = FakeResponse(FOOTNOTE_BODY[:5], incomplete=True)
+    short = FakeResponse(FOOTNOTE_BODY[:5], {"Content-Length": str(len(FOOTNOTE_BODY))})
+    FakeNetwork(monkeypatch, {"https://example.org/ended": ended})
+    with pytest.raises(ValueError, match="ended"):
+        sources.download("https://example.org/ended")
+    FakeNetwork(monkeypatch, {"https://example.org/short": short})
+    with pytest.raises(ValueError, match="bytes"):
+        sources.download("https://example.org/short")
+
+
+def test_promote_refuses_a_staged_file_without_provenance(tmp_path):
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    rows = sources.archive_inventory.read_csv(staging / sources.PROVENANCE)
+    sources.archive_inventory.write_csv(
+        staging / sources.PROVENANCE,
+        [row for row in rows if row["file"] != raw.CE_FOOTNOTES],
+        sources.PROVENANCE_COLUMNS,
+    )
+    raw_dir = raw_tree(tmp_path)
+    before = snapshot(raw_dir)
+    assert sources.promote(staging, raw_dir) == 1
+    assert snapshot(raw_dir) == before
