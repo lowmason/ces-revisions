@@ -2,13 +2,16 @@
 
 from datetime import date, timedelta
 
+import first_closing as report_script
 import numpy as np
 import polars as pl
 import pytest
+import vintage_data
+from archive_inventory import generated_block
 from polars.testing import assert_frame_equal
 from scipy import stats
 
-from ces_revisions.collection_window import five_week_interval
+from ces_revisions.collection_window import absolute_revisions, five_week_interval
 from ces_revisions.first_closing import (
     C1_SERIES,
     RATE_CONTRAST_POINTS,
@@ -27,6 +30,7 @@ from ces_revisions.first_closing import (
     window_regressions,
 )
 from ces_revisions.vintages.collection_days import SCHEMA as DAYS_SCHEMA
+from ces_revisions.vintages.collection_rates import RECON_COPY
 from ces_revisions.vintages.collection_rates import SCHEMA as RATES_SCHEMA
 from ces_revisions.vintages.months import add_months
 
@@ -431,3 +435,96 @@ def test_rates_by_window_counts_main_months_and_averages_c1():
         }
     )
     assert rates_by_window(months).rows() == [(9, 2, 55.0), (12, 1, 70.0)]
+
+
+BLOCKS = (
+    "stage-9-copies",
+    "stage-9-holidays",
+    "stage-9-rate-by-window",
+    "stage-9-rate-regression",
+    "stage-9-revision-by-rate",
+    "stage-9-revision-regression",
+    "stage-9-window-regression",
+    "stage-9-lapse",
+    "stage-9-pandemic",
+)
+
+
+def real_revisions() -> pl.DataFrame:
+    days = vintage_data.collection_days()
+    months = month_sample(days, vintage_data.collection_rates())
+    return revision_sample(
+        absolute_revisions(vintage_data.table_changes(), days), months
+    )
+
+
+def report_tree(tmp_path, monkeypatch, rates: pl.DataFrame | None = None):
+    """A built panel and a findings file with every block's markers, patched in."""
+    vintage_data.table_changes().write_parquet(tmp_path / "panel.parquet")
+    vintage_data.collection_days().write_parquet(tmp_path / "collection_days.parquet")
+    (vintage_data.collection_rates() if rates is None else rates).write_parquet(
+        tmp_path / "collection_rates.parquet"
+    )
+    findings = tmp_path / "findings.md"
+    findings.write_text(
+        "# Title\n\n"
+        + "".join(
+            f"Before {name}.\n\n<!-- BEGIN GENERATED {name} -->\n"
+            f"<!-- END GENERATED {name} -->\n\n"
+            for name in BLOCKS
+        )
+        + "The end.\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(report_script, "PANEL_DIR", tmp_path)
+    monkeypatch.setattr(report_script, "FINDINGS", findings)
+    return findings
+
+
+def test_report_refuses_without_a_built_panel(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(report_script, "PANEL_DIR", tmp_path)
+    assert report_script.main(["report"]) == 1
+    assert "vintage_sources.py build" in capsys.readouterr().err
+
+
+def test_report_refuses_when_an_archived_value_differs(tmp_path, monkeypatch, capsys):
+    raised = (
+        (pl.col("source") == RECON_COPY)
+        & (pl.col("series_id") == C1_SERIES)
+        & (pl.col("reference_month") == date(2013, 9, 1))
+    )
+    rates = vintage_data.collection_rates().with_columns(
+        value=pl.when(raised).then(pl.col("value") + 0.1).otherwise(pl.col("value"))
+    )
+    findings = report_tree(tmp_path, monkeypatch, rates)
+    before = findings.read_text(encoding="utf-8")
+    assert report_script.main(["report"]) == 1
+    assert f"{C1_SERIES} 2013-09 {RECON_COPY}" in capsys.readouterr().out
+    assert findings.read_text(encoding="utf-8") == before
+
+
+def test_report_fills_every_generated_block(tmp_path, monkeypatch, capsys):
+    findings = report_tree(tmp_path, monkeypatch)
+    before = findings.read_text(encoding="utf-8")
+    assert report_script.main(["report"]) == 0
+    document = findings.read_text(encoding="utf-8")
+    outside = document
+    for name in BLOCKS:
+        body = generated_block(document, name)
+        assert body.startswith("\n|"), name
+        assert body.endswith("|\n\n"), name
+        outside = outside.replace(body, "")
+    assert outside == before
+    assert "256 part (a) months" in capsys.readouterr().out
+
+
+def test_render_window_regression_sets_both_windows_side_by_side():
+    lines = report_script.render_window_regression(real_revisions()).splitlines()
+    assert lines[0] == (
+        "| Status | Transition | n | Years | `D_t` coefficient | SE "
+        "| `D_t` 7 days, 95% CI | `W_t` coefficient | SE | `W_t` 7 days, 95% CI |"
+    )
+    assert lines[2] == (
+        "| NSA | F→S | 254 | 23 | -0.89 | 2.13 | -37.1 to 24.6 "
+        "| -0.60 | 2.23 | -36.5 to 28.1 |"
+    )
