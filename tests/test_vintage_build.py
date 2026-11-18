@@ -44,6 +44,7 @@ def composed() -> dict[str, pl.DataFrame]:
             vintage_data.identity_terms()
         ),
         "collection_days": vintage_data.collection_days(),
+        "collection_rates": vintage_data.collection_rates(),
     }
 
 

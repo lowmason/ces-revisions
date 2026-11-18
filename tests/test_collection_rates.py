@@ -3,12 +3,15 @@
 from datetime import date
 from pathlib import Path
 
+import first_closing
 import polars as pl
 import pytest
+import vintage_data
 
 from ces_revisions.vintages import raw
 from ces_revisions.vintages.collection_rates import (
     LABSTAT_SOURCE,
+    RECON_COPY,
     SCHEMA,
     archive_comparison,
     archive_differences,
@@ -221,3 +224,129 @@ def test_a_registry_table_inside_a_layout_table_gives_its_values():
     assert value["CEU00000000C2", date(1981, 3, 1)] == 74.3
     assert ("CEU00000000C2", date(1982, 5, 1)) not in value
     assert value["CEU00000000C3", date(1982, 12, 1)] == 87.9
+
+
+C1 = "CEU00000000C1"
+
+
+def labstat_c1() -> pl.DataFrame:
+    rates = vintage_data.collection_rates()
+    return rates.filter(
+        (pl.col("source") == LABSTAT_SOURCE) & (pl.col("series_id") == C1)
+    )
+
+
+def test_labstat_c1_runs_from_1981_without_october_2025():
+    months = labstat_c1()["reference_month"]
+    assert months.min() == date(1981, 1, 1)
+    assert months.max() >= date(2026, 10, 1)
+    assert date(2025, 10, 1) not in months.to_list()
+
+
+def test_footnote_e_marks_september_and_november_2025():
+    marked = labstat_c1().filter(pl.col("footnote_code") == "E")["reference_month"]
+    assert date(2025, 9, 1) in marked.to_list()
+    assert date(2025, 11, 1) in marked.to_list()
+
+
+def test_c1_matches_the_recon_values():
+    c1 = labstat_c1()
+    value = dict(c1.select("reference_month", "value").iter_rows())
+    assert value[date(2013, 9, 1)] == 77.9
+    assert value[date(2013, 10, 1)] == 83.5
+    assert value[date(2025, 11, 1)] == 73.8
+    assert value[date(2026, 1, 1)] == 69.5
+    means = dict(
+        c1.group_by(pl.col("reference_month").dt.year().alias("year"))
+        .agg(pl.col("value").mean())
+        .iter_rows()
+    )
+    assert round(means[2003], 1) == 65.3
+    assert round(means[2013], 1) == 77.3
+    assert round(means[2024], 1) == 60.4
+
+
+def test_the_2025_copy_matches_labstat():
+    rates = vintage_data.collection_rates()
+    copy = rates.filter(pl.col("source") == RECON_COPY)
+    counts = dict(copy.group_by("series_id").len().iter_rows())
+    assert counts == {C1: 530, "CEU00000000C2": 526, "CEU00000000C3": 527}
+    assert copy["reference_month"].min() == date(1981, 1, 1)
+    assert copy["reference_month"].max() == date(2025, 2, 1)
+    assert archive_differences(rates).filter(pl.col("source") == RECON_COPY).is_empty()
+
+
+def test_check_refuses_without_a_built_panel(monkeypatch, tmp_path, capsys):
+    monkeypatch.setattr(first_closing, "PANEL_DIR", tmp_path)
+    assert first_closing.main(["check"]) == 1
+    assert "vintage_sources.py build" in capsys.readouterr().err
+
+
+def test_check_prints_each_difference_and_exits_1(monkeypatch, tmp_path, capsys):
+    rates = vintage_data.collection_rates()
+    raised = (
+        (pl.col("source") == RECON_COPY)
+        & (pl.col("series_id") == C1)
+        & (pl.col("reference_month") == date(2013, 9, 1))
+    )
+    rates.with_columns(
+        value=pl.when(raised).then(pl.col("value") + 0.1).otherwise(pl.col("value"))
+    ).write_parquet(tmp_path / "collection_rates.parquet")
+    monkeypatch.setattr(first_closing, "PANEL_DIR", tmp_path)
+    assert first_closing.main(["check"]) == 1
+    printed = capsys.readouterr().out
+    assert f"{C1} 2013-09 {RECON_COPY}" in printed
+
+
+def test_check_accepts_only_the_differences_the_owner_ruled_on(
+    monkeypatch, tmp_path, capsys
+):
+    vintage_data.collection_rates().write_parquet(tmp_path / "collection_rates.parquet")
+    monkeypatch.setattr(first_closing, "PANEL_DIR", tmp_path)
+    assert first_closing.main(["check"]) == 0
+    printed = capsys.readouterr().out
+    assert (
+        f"{C1} 2012-06 20121114143627: 64.6 against LABSTAT 72.9, accepted" in printed
+    )
+    monkeypatch.setattr(first_closing, "ACCEPTED_DIFFERENCES", frozenset())
+    assert first_closing.main(["check"]) == 1
+
+
+COMPARED = {
+    "20081204164446": 995,
+    "20090831195859": 1022,
+    "20100615144206": 1052,
+    "20111205012811": 1106,
+    "20121114143627": 1139,
+    "20131109043233": 1175,
+    "20141110094945": 1211,
+    "20150905111214": 1241,
+    "20161214012544": 1286,
+    "20170523103601": 1301,
+    "20180719105627": 1343,
+    "20191212004825": 1394,
+    "20201219101554": 1430,
+    "20211228210841": 1466,
+    "20221209230559": 1502,
+    "20231207233658": 1535,
+    "20241231185714": 1574,
+    "20250319165303": 1583,
+}
+
+
+def test_the_only_archived_difference_is_the_one_the_owner_accepted():
+    rates = vintage_data.collection_rates()
+    differences = {
+        (series, month, source, round(copy_value, 1), round(labstat_value, 1))
+        for series, month, source, copy_value, labstat_value in archive_differences(
+            rates
+        ).iter_rows()
+    }
+    assert differences == first_closing.ACCEPTED_DIFFERENCES
+    committed = sorted(
+        path.stem for path in (raw.RAW_DIR / raw.REGISTRY_COPIES).glob("*.htm")
+    )
+    comparison = archive_comparison(rates)
+    assert comparison["source"].to_list() == committed
+    assert dict(comparison.select("source", "compared").iter_rows()) == COMPARED
+    assert comparison["only_in_copy"].sum() == 0
