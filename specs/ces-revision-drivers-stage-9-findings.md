@@ -12,7 +12,7 @@ Does a longer window to first closing raise the first-closing collection rate C1
 
 **O3 (b).** The data show no clear association between C1 and revision size. For 10 more points of C1, the 95% intervals are -14.4 to 3.1 thousand (NSA F→S), -15.5 to 3.6 (NSA F→T), -9.2 to 5.1 (SA F→S) and -7.7 to 16.8 (SA F→T), against mean absolute revisions of 28 to 48 thousand. Three of the four point estimates are negative, but each interval includes zero. This is an association, not an effect of C1 (Limits).
 
-**O4.** Ending the window at first closing changes the Stage 1 answer very little. For each status and transition, the 95% intervals for a 7-day change with `W_t` and with `D_t` differ by at most 6 thousand at either end. For NSA F→S they are -36.5 to 28.1 thousand with `W_t` and -37.1 to 24.6 with `D_t`. Both windows give uninformative answers on 2003–2026: 23 year clusters cannot separate a moderate effect from none. The two windows differ only in the 46 releases with a holiday in the final week, so close slopes are expected.
+**O4.** Ending the window at first closing changes the Stage 1 answer very little. For each status and transition, the 95% intervals for a 7-day change with `W_t` and with `D_t` differ by at most 6 thousand at either end. For NSA F→S they are -36.5 to 28.1 thousand with `W_t` and -37.1 to 24.6 with `D_t`. Both windows give uninformative answers on 2003–2026: 23 year clusters cannot separate a moderate effect from none. The gap between the two windows changes only in the 45 releases of the fit sample with a holiday in the final week, so close slopes are expected.
 
 ## Data and window
 
@@ -158,7 +158,7 @@ The quintiles cut C1 less its reference year's mean over the 256 part (a) months
 |r_t| = \alpha + \beta X_t + \delta F_t + \mu_{y(t)} + \nu_{m(t)} + \varepsilon_t, \qquad X_t \in \{D_t, W_t\}
 ```
 
-`X_t` is `D_t` in one fit and `W_t` in the other, on the same rows. `W_t − D_t` is constant except in the 46 releases with a holiday in the final week, so the two slopes can differ only through those releases. This `D_t` fit on 2003–2026 belongs to Stage 9 only. It does not replace the Stage 1 tables.
+`X_t` is `D_t` in one fit and `W_t` in the other, on the same rows. `W_t − D_t` is constant except in the 45 releases of the fit sample with a holiday in the final week, so the two slopes can differ only through those releases. The holiday table counts 46, because it also covers the pandemic period, which adds May 2021. This `D_t` fit on 2003–2026 belongs to Stage 9 only. It does not replace the Stage 1 tables.
 
 <!-- BEGIN GENERATED stage-9-window-regression -->
 
@@ -219,4 +219,4 @@ The quintiles cut C1 less its reference year's mean over the 256 part (a) months
 
 - **Wall time of the real run** (on this Mac, from a worktree with no `data/panel/`): `scripts/vintage_sources.py build` took 8.35 s and `scripts/first_closing.py report` 1.43 s, measured with `/usr/bin/time -p`.
 - **Network fetches**, each timed apart with `/usr/bin/time -p`: `fetch-labstat` took 37.85 s, after a first run that stopped in 31.28 s with nothing staged, because LABSTAT's answer had no `Content-Length`. `fetch-archive` took 190.94 s for 2 listings and 18 copies.
-- **Sessions:** 1, the session that executed plan 15 on 2026-11-18.
+- **Sessions:** 4, one for each pull request: the session that resumed the roadmap for Stage 9 (PR 22), the one that wrote the spec (PR 23), the one that wrote plan 15 (PR 24), and the one that executed plan 15 on 2026-11-18.
