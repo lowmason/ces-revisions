@@ -162,7 +162,10 @@ plan 11.
       FY2009 on (`specs/completed/ces-revisions-roadmap.md`, parked 2026-11-15
       by the outcome-first reset). Spec Req 3 institutional rows and Req 13
       inputs. The funding and staffing panel is O11. The four-field
-      shutdown-events table enters the model under O7, and the descriptive
+      shutdown-events table enters the model under O7. So do the
+      continuing-resolution rows `cr_days`, `cr_extensions` and
+      `full_year_cr` (owner, 2026-11-18, D3 of O11's spec,
+      `specs/ces-revision-drivers-stage-4.md`). The descriptive
       party-composition table belongs to the report, O16. Size: plan. Done
       when: the stages of `specs/ces-revision-drivers-roadmap.md` that deliver
       O11, O7 and O16 have all ticked.
