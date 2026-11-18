@@ -15,8 +15,8 @@ Choices made:
 - Stack: Python 3.14, the uv 0.13 series, float64 JAX with NumPyro, and Polars (CLAUDE.md).
 - GPUs: rented by hand from Lambda. Only the owner rents, pays for and terminates them.
 - Built inputs (owner, 2026-11-15): the Kalman engine (plan 1), the review document and its inventory (plan 2), the vintage panel, release index and accounting decomposition in `data/panel/` (plan 5), the annual tables in `data/annual/panel/` (plan 6), and the operators in `data/operators/` (plan 8). Each rebuilds offline with its `build` command in CLAUDE.md.
-- Plan 11 (owner, 2026-11-15): it stays on branch `claude/ces-revisions-stage-6-bd9ab7` until Stage 2 finishes it.
-- Plan IDs (2026-11-15): the next new plan takes ID 12. Plans 9 and 10 were on the abandoned `codex/plan-10-cloud-gpu-runner` branch, which this repository no longer holds, and plan 11 is on a local branch that was never pushed. writing-plans' `entry_check.py` reports 12 only where that branch exists. A clone without it, such as a cloud session or a Lambda host, reports 9.
+- Plan 11 (owner, 2026-11-15): it stayed on branch `claude/ces-revisions-stage-6-bd9ab7` until Stage 2 finished it. It reached `main` with plan 13 (PR 14).
+- Plan IDs (2026-11-18): plans 11 to 15 are in `specs/plans/completed/`, and the next new plan takes ID 16. writing-plans' `entry_check.py` is the authority.
 - Day count `D_t` (owner, 2026-11-15): federal business days from the first business day after the 12th, up to but not including the actual release date. Holidays are those of 5 U.S.C. 6103 as observed each year, computed by rule. Lapse days count as business days, and the affected releases are flagged. Reference months 2025-09 and 2025-10 are dropped. `D_t` stands alone, with no window to the second print.
 - Smallest standard for O1 (owner, 2026-11-15): total nonfarm, NSA and SA, 1979–2026. Mean absolute F→S and F→T revision for each `D_t` value, and one regression with year and calendar-month controls. March 2020 to December 2021 reported apart. One findings file with the table and no figure.
 - Target for O1 (owner, 2026-11-15): one session, on the same day.
@@ -26,11 +26,13 @@ Choices made:
 - Resume of 2026-11-17 (owner, "Approve all"): O4 records BLS's refusal and stays ranked, and the Stage 8 and Stage 9 entries cite the Stage 1 work that landed after plan 12's Handoff (commit a3a54a1 and PR 21).
 - First closing (owner, 2026-11-17): first closing, when BLS stops collecting survey responses for the first estimate, falls one week before the release. No public BLS page states it. By this rule the window to first closing is `D_t` less 4 business days, or less 3 when a holiday falls in the release's final week.
 - Stage 9 after the first-closing rule (owner, 2026-11-17, at the same resume): O4 joins Stage 9, because the rule computes its dates and Stage 9 needs the window to first closing for the C1 rate. Stage 9 covers reference months 2003–2026, the scale model's sample, which the owner chose on 2026-11-17 because of the probability-sample redesign. This supersedes the line above for O4.
+- Where models run (owner, 2026-11-16): research runs go to Lambda. These are the NumPyro model runs whose output a findings file reports: real-panel fits, refits, SBC and O6's GPU probe. The owner rents the instance and starts each run. A session on the Mac gives the commands and reads the run directory that the owner copies back. No session connects to the billed host. The pytest tiers and the existing Mac probe records stay on the Mac. A descriptive table or a small OLS, such as Stage 1's, is not a model run (confirmed at the resume of 2026-11-18).
+- Resume of 2026-11-18 (owner, "Approve all"): Track A stops after Stage 9, and O2 parks in `specs/deferred_items.md`, § ces-revision-drivers-roadmap — 2026-11-18. Stage 1 and O4 found no clear window effect, and the supersectors share one release calendar, so O2 would add no variation in the window. O6 is promoted from the Track B Ranked list to Stage 10.
 
 | # | Outcome | Track | Rank | Cost (estimate; basis) |
 |---|---|---|---|---|
 | O1 | How mean absolute revision (F→S, F→T) changes with the length of the collection window, total nonfarm, 1979–2026 | A | 1 | about one session: every input is on disk, and the holiday rule is computed offline |
-| O2 | The same for each of the 11 supersectors, 2003–2026 | A | 3 | small after O1: the data is on disk, 12 series × 280 months |
+| O2 | The same for each of the 11 supersectors, 2003–2026 | A | 3 | small after O1: the data is on disk, 12 series × 280 months. Parked 2026-11-18 (`specs/deferred_items.md`) |
 | O3 | Whether a longer window raises the first-closing collection rate, and how revision size moves with that rate, 2003–2026 (1981–2026 until the resume of 2026-11-17) | A | 2 | one LABSTAT fetch for C1–C3. First-published values need Internet Archive pages, which throttle bursts |
 | O4 | The O1 answer with first-closing dates in place of the release-date proxy, 2003–2026 | A | 4 | small, in Stage 9: the owner's first-closing rule computes the dates. BLS declined on 2026-09-14 to share them (`specs/deferred_items.md`, retired 2026-11-16; Resolved at resume, 2026-11-17) |
 | O5 | How much of each total-nonfarm revision is news and how much is noise, 1979–2026 | B | 1 | the fit is done on plan 11's branch. About one session to finish without GPUs, and up to \$40 more with them |
@@ -53,11 +55,11 @@ Tracks: A — Collection window (research). B — Revision model (research). Spl
 ## Open questions
 
 - Req 11 of the old spec dates the birth–death method changes differently from the documented `birth_death_forecast` row of `docs/ces-revisions-review.md`. The owner has not decided whether to amend Req 11. Stage 5 needs that decision before its plan.
-- BLS's [response-rate page](https://www.bls.gov/osmr/response-rates/) gives "10–16 business days" of collection before the first preliminary release. The owner's first-closing rule gives 8 to 15 business days for the 278 releases of 2003–2026 that no lapse delayed, counted from the 13th through the closing day. The page does not say where its count starts. It is also open whether the rule holds for a release that a lapse delayed. Stage 9 needs both settled before its plan.
+- BLS's [response-rate page](https://www.bls.gov/osmr/response-rates/) gives "10–16 business days" of collection before the first preliminary release. The owner's first-closing rule gives 8 to 15 business days for the 278 releases of 2003–2026 that no lapse delayed, counted from the 13th through the closing day. The page does not say where its count starts. It is also open whether the rule holds for a release that a lapse delayed. Stage 9 went ahead with both open, by decision rather than by finding ([findings](ces-revision-drivers-stage-9-findings.md)). No start rule it tried reproduces BLS's range, so `W_t` starts on the 13th, and a start that moves every release by the same days changes no slope (D3). The four lapse-delayed months stay out of every fit, so the rule is untested for them (D2). A later stage that needs the window's level, or `W_t` for a lapse-delayed month, needs them settled before its plan.
 
 ## Stages
 
-The order follows the owner's track ranking. Each core stage is a cheap answer on data that is already built, so the core stages come first. This diverges from the old roadmap, which put the model before every driver answer. Stages 1–7 are independent of one another and may run in any order. Stage 8 reads the findings of the stages that have ticked. Stage 9 was promoted from the Track A Ranked list at the resume after Stage 1, and it is independent of Stages 2–7.
+The order follows the owner's track ranking. Each core stage is a cheap answer on data that is already built, so the core stages come first. This diverges from the old roadmap, which put the model before every driver answer. Stages 1–7 are independent of one another and may run in any order. Stage 8 reads the findings of the stages that have ticked. Stage 9 was promoted from the Track A Ranked list at the resume after Stage 1, and it is independent of Stages 2–7. Stage 10 was promoted from the Track B Ranked list at the resume after Stage 9, and it is independent of Stages 3–7.
 
 - [x] Stage 1: Collection window and revision size, total nonfarm\
       Objective: Measure how mean absolute F→S and F→T revisions of total nonfarm change with the day count `D_t`, 1979–2026, at the owner's smallest standard.\
@@ -139,7 +141,7 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
       Objective: Write the report of the answers that the ticked stages found, with intervals and stated limits.\
       Outcomes: O16\
       Track: G\
-      Consumes: The findings file of each ticked stage, and of any stage promoted from a Ranked list. From Stage 7: the finished review document. From Stage 1: the findings file and the command that regenerates its tables (plan 12, Handoff). Those tables rebuild from the committed `data/raw/`, so they meet this stage's rule for generated numbers (Resolved at resume, 2026-11-15). After that Handoff, the Stage 1 findings gained a 95% interval for the change from 12 to 19 days and a fit with the 5-week control (commit a3a54a1), and the scale model's report, `docs/runs/stage-1-scale-model/report.md`, was added beside them (PR 21). Where that report's result lands is the owner's open decision in `specs/deferred_items.md`, § stage-1-scale-model (Resolved at resume, 2026-11-17). From Stage 2: the findings file and the command that regenerates its table from the committed JSON, with no run directory (plan 13, Handoff; Resolved at resume, 2026-11-17).\
+      Consumes: The findings file of each ticked stage, and of any stage promoted from a Ranked list. From Stage 7: the finished review document. From Stage 1: the findings file and the command that regenerates its tables (plan 12, Handoff). Those tables rebuild from the committed `data/raw/`, so they meet this stage's rule for generated numbers (Resolved at resume, 2026-11-15). After that Handoff, the Stage 1 findings gained a 95% interval for the change from 12 to 19 days and a fit with the 5-week control (commit a3a54a1), and the scale model's report, `docs/runs/stage-1-scale-model/report.md`, was added beside them (PR 21). Where that report's result lands is the owner's open decision in `specs/deferred_items.md`, § stage-1-scale-model (Resolved at resume, 2026-11-17). From Stage 2: the findings file and the command that regenerates its table from the committed JSON, with no run directory (plan 13, Handoff; Resolved at resume, 2026-11-17). From Stage 9: the findings file and `scripts/first_closing.py report`, which runs the archive check and then rewrites its nine tables from `data/panel/` after the vintage build, so only the prose around them is hand-written. That Handoff names the traps. The C1 item it deferred to § stage-1-scale-model of `specs/deferred_items.md` meets the same open decision on the scale model's report (plan 15, Handoff; Resolved at resume, 2026-11-18).\
       Produces: the report under `docs/`.\
       Exit: the report has a section for each outcome whose stage has ticked, with its limits and with the interval or uncertainty that its findings file reports. Where a findings file reports none, as Stage 3's descriptive shares may not, the section says the result is descriptive. Every number and table in it is generated by code from committed artifacts, which places traceability for the report here. `uv run ruff format --check` passes on it (O16).\
       Leaves out: nothing.\
@@ -158,18 +160,29 @@ The order follows the owner's track ranking. Each core stage is a cheap answer o
 > Stage 9: COMPLETE (2026-11-18) — implemented by plan 15 (specs/plans/completed/15-ces-revision-drivers-stage-9.md). Its Handoff section names what Stage 8 consumes.
 > Next: resume the roadmap.
 
+- [ ] Stage 10: News and noise by supersector\
+      Objective: Estimate the news/noise split of each supersector's revisions, with benchmark and seasonal revisions inside the model, on GPUs rented from Lambda.\
+      Outcomes: O6\
+      Track: B\
+      Consumes: From Stage 2: its Produces on `main`, the pilot model (`ces_revisions.pilot`), the run harness (`ces_revisions.runs`) and `docs/decisions/seasonal-state.md`, and the Stage 2 findings. Built inputs from plans 1, 5, 6 and 8. The GPU work deferred from plan 11, with its \$40 cap and the GPU rule's four open points (`specs/deferred_items.md`, § 11-ces-revisions), and the parked items of § ces-revisions-roadmap that O6 covers. The Where models run and GPUs lines under Choices made.\
+      Produces: the GPU measurement record and the GPU choice. `specs/ces-revision-drivers-stage-10-findings.md`, with the news shares by supersector and the measured cost.\
+      Exit: the findings file reports the posterior news share of each supersector's revisions, with intervals, from a fit that meets Req 18, with benchmark and seasonal revisions inside the model (O6). It records the GPU measurement, the measured cost of the real run on Lambda, and the sessions used.\
+      Leaves out: full validation suites at supersector scale: O17 in the Track B Ranked list. Point-in-time awareness: O8 in the Track B Ranked list. The drivers' effects on revision variance: O7 in the Track B Ranked list.\
+      ROUTING: brainstorming
+
 ## Ranked list — Track A
 
-1. O2 — small after Stage 1. The data is on disk.
+None. The owner stopped Track A at the resume of 2026-11-18, and O2 parked in `specs/deferred_items.md`.
 
 O4 left this list for Stage 9 at the resume of 2026-11-17.
 
 ## Ranked list — Track B
 
-1. O6 — about 64 h per fit on the Mac (an estimate). It picks up the GPU measurement and the GPU choice: plan 11's Task 13 with its \$40 cap, and the GPU rule of its Task 14.
-2. O7 — after O6. Only a real run can tell.
-3. O8 — about 280 refits at past release dates. It picks up point-in-time awareness: `observable_at` for every input, the day count and the funding and staffing values included.
-4. O17 — full validation suites, approved 2026-11-15. SBC multiplies each fit's cost.
+1. O7 — after O6. Only a real run can tell.
+2. O8 — about 280 refits at past release dates. It picks up point-in-time awareness: `observable_at` for every input, the day count and the funding and staffing values included.
+3. O17 — full validation suites, approved 2026-11-15. SBC multiplies each fit's cost.
+
+O6 left this list for Stage 10 at the resume of 2026-11-18.
 
 ## Ranked list — Track C
 
