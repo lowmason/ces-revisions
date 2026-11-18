@@ -712,3 +712,19 @@ def test_promote_refuses_a_staged_file_without_provenance(tmp_path):
     before = snapshot(raw_dir)
     assert sources.promote(staging, raw_dir) == 1
     assert snapshot(raw_dir) == before
+
+
+def test_a_first_run_does_not_walk_past_an_invalid_latest_copy(monkeypatch, tmp_path):
+    old = [
+        ("20101201120000", OLD_PAGE, "200", INVALID_DIGEST),
+        ("20100601120000", OLD_PAGE, "200"),
+    ]
+    bodies = listings(old, [recon_capture()])
+    bodies[replay("20101201120000")] = INVALID_PAGE
+    bodies[replay("20100601120000")] = valid_page()
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    network = FakeNetwork(monkeypatch, bodies)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert replay("20100601120000") not in network.requests
+    assert sources.staged_copies(staging)["20101201120000"] is False
