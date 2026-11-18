@@ -462,3 +462,19 @@ plan 11.
       model's result lands. Size: plan. Done when: the scale model's report
       gives C1's scale coefficient with its interval, or the owner drops the
       item.
+
+## ces-revision-drivers-roadmap — 2026-11-18
+
+The owner stopped Track A of `specs/ces-revision-drivers-roadmap.md` at the
+resume after Stage 9, so its one Ranked-list item parks here. The roadmap stays
+live.
+- [ ] O2 of `specs/ces-revision-drivers-roadmap.md`: how the mean absolute
+      F→S and F→T revisions change with the collection window for each of the
+      11 supersectors, 2003–2026. Stage 1 (`D_t`, total nonfarm) and Stage 9
+      (O4, the window to first closing) found no clear window effect. The
+      supersectors share one release calendar, so O2 adds no variation in the
+      window and keeps the same 23 year clusters. The revisions would come
+      from `data/panel/stage_changes.parquet`, and the join-key item under
+      § 12-ces-revision-drivers-stage-1 applies. Size: plan. Done when: a
+      findings file reports the window effect for each supersector, with its
+      uncertainty, or the owner drops the item.
