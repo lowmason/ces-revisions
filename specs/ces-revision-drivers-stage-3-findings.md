@@ -10,9 +10,7 @@ A revision is the later value of a month's over-the-month employment change minu
 
 ## Answer
 
-The change in seasonal adjustment carries a large part of the SA revision variance in S→T and T→B, and little or none in F→S. Across the 11 supersectors, the median adjustment share is 0.32 to 0.57 for S→T and 0.66 to 0.82 for T→B, depending on the regime. For F→S it is -0.28 to -0.01.
-
-These shares are descriptive. They carry no interval, and none of the three shares is bounded in [0, 1]. The plain ratio is above 1 in 12 of 110 rows (largest 9.93). The adjustment share is below 0 in 27 rows, all F→S, and above 1 in 2.
+The change in seasonal adjustment carries a large part of the SA revision variance in S→T and T→B, and little or none in F→S. For the 11 supersectors, the median adjustment share of the three regimes is 0.32 to 0.57 for S→T, 0.66 to 0.82 for T→B and -0.28 to -0.01 for F→S (medians of the supersector rows in the tables below). The shares are descriptive and carry no interval, and none is bounded in [0, 1]: the plain ratio is above 1 in 12 of 110 rows (largest 9.93), and the adjustment share is below 0 in 27 rows, all F→S, and above 1 in 2.
 
 ## Data and shares
 
