@@ -447,3 +447,138 @@ def test_promote_refuses_to_overwrite_an_existing_source(tmp_path):
     before = snapshot(raw_dir)
     assert sources.promote(staging, raw_dir) == 1
     assert snapshot(raw_dir) == before
+
+
+def test_download_without_a_content_length_is_refused_before_reading(
+    monkeypatch, tmp_path
+):
+    unsized = FakeResponse(LABSTAT_BODY, {"Last-Modified": LAST_MODIFIED})
+    FakeNetwork(monkeypatch, {sources.LABSTAT_URL: unsized})
+    with pytest.raises(ValueError, match="Content-Length"):
+        sources.stream_download(sources.LABSTAT_URL, tmp_path / "full")
+    assert not (tmp_path / "full").exists()
+    assert unsized.stream.tell() == 0
+
+
+def test_fetch_labstat_refuses_a_file_without_every_series(monkeypatch, tmp_path):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    without_rr = b"".join(
+        line
+        for line in LABSTAT_BODY.splitlines(keepends=True)
+        if not line.startswith(b"CEU05000000RR")
+    )
+    FakeNetwork(
+        monkeypatch,
+        {sources.LABSTAT_URL: without_rr, sources.FOOTNOTE_URL: FOOTNOTE_BODY},
+    )
+    staging = tmp_path / "staging"
+    with pytest.raises(ValueError, match="CEU05000000RR"):
+        sources.fetch_labstat(NOW, staging)
+    assert not (staging / "raw").exists()
+
+
+def test_fetch_labstat_refuses_footnotes_without_their_header(monkeypatch, tmp_path):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    FakeNetwork(
+        monkeypatch,
+        {
+            sources.LABSTAT_URL: LABSTAT_BODY,
+            sources.FOOTNOTE_URL: b"<html>error</html>",
+        },
+    )
+    staging = tmp_path / "staging"
+    with pytest.raises(ValueError, match="footnote"):
+        sources.fetch_labstat(NOW, staging)
+    assert not (staging / "raw" / raw.CE_FOOTNOTES).exists()
+
+
+def test_fetch_archive_leaves_a_copy_that_fails_every_attempt_unstaged(
+    monkeypatch, tmp_path, capsys
+):
+    old = [("20101201120000", OLD_PAGE, "200"), ("20100601120000", OLD_PAGE, "200")]
+    bodies = listings(old, [recon_capture()])
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    network = FakeNetwork(monkeypatch, bodies)
+    original_open = network.open_url
+
+    def failing_open(url, timeout, contact=None):
+        if url == replay("20101201120000"):
+            network.events.append(url)
+            raise OSError("replay unavailable")
+        return original_open(url, timeout, contact)
+
+    monkeypatch.setattr(sources.archive_inventory, "open_url", failing_open)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert network.requests.count(replay("20101201120000")) == (
+        sources.archive_inventory.ATTEMPTS
+    )
+    assert replay("20100601120000") not in network.requests
+    assert sources.staged_copies(staging) == {RECON_COPY: True}
+    assert "not staged" in capsys.readouterr().err
+
+
+def test_prose_drops_scripts_and_styles():
+    page = (
+        "<html><head><style>p { color: red; }</style>"
+        "<script>var first = 'preliminary';</script></head>"
+        "<body><p>Collection rates by release.</p></body></html>"
+    )
+    assert sources.page_prose(page) == "Collection rates by release."
+
+
+def test_status_exits_0_only_when_every_source_is_staged_and_no_year_pending(
+    tmp_path, capsys
+):
+    assert sources.show_status(tmp_path / "empty") == 1
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    stage_copy(staging, "20151201120000", INVALID_PAGE)
+    assert sources.show_status(staging) == 0
+    out = capsys.readouterr().out
+    assert "2015: 20151215120000" in out
+    assert "does not parse: 20151201120000" in out
+    (staging / "raw" / raw.CE_FOOTNOTES).unlink()
+    assert sources.show_status(staging) == 1
+    assert f"{raw.CE_FOOTNOTES}: not staged" in capsys.readouterr().out
+
+
+def test_status_refuses_an_invalid_recon_copy(tmp_path):
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    stage_copy(staging, RECON_COPY, INVALID_PAGE)
+    assert sources.show_status(staging) == 1
+
+
+def test_prose_command_prints_each_chosen_copy(tmp_path, capsys):
+    staging = tmp_path / "staging"
+    stamps = staged_tree(staging, skip_year=2012)
+    stage_copy(staging, "20151201120000", INVALID_PAGE)
+    assert sources.show_prose(staging) == 0
+    headers = [
+        line for line in capsys.readouterr().out.splitlines() if line.startswith("==")
+    ]
+    assert headers == [f"== {stamp} ==" for stamp in stamps]
+
+
+def test_promote_refuses_a_file_the_manifest_already_lists(tmp_path):
+    staging = tmp_path / "staging"
+    staged_tree(staging)
+    raw_dir = raw_tree(tmp_path)
+    rows = sources.archive_inventory.read_csv(raw_dir / raw.MANIFEST)
+    listed = dict(rows[0], file=raw.CE_FOOTNOTES)
+    sources.archive_inventory.write_csv(
+        raw_dir / raw.MANIFEST, [*rows, listed], vintage_sources.MANIFEST_COLUMNS
+    )
+    before = snapshot(raw_dir)
+    assert sources.promote(staging, raw_dir) == 1
+    assert snapshot(raw_dir) == before
+
+
+def test_promote_takes_no_copy_for_a_missing_year(tmp_path):
+    staging = tmp_path / "staging"
+    stamps = staged_tree(staging, skip_year=2012)
+    raw_dir = raw_tree(tmp_path)
+    assert sources.promote(staging, raw_dir) == 0
+    copies = sorted(path.stem for path in (raw_dir / raw.REGISTRY_COPIES).iterdir())
+    assert copies == sorted(stamps)
