@@ -28,6 +28,7 @@ LABSTAT_BODY = (
     b"CEU05000000001                \t2003\tM01\t      110000\t\r\n"
 )
 FOOTNOTE_BODY = b"footnote_code\tfootnote_text\r\nE\tExample footnote.\r\n"
+CHUNKED = {"Transfer-Encoding": "chunked", "Last-Modified": LAST_MODIFIED}
 
 
 def valid_page() -> bytes:
@@ -54,6 +55,8 @@ class FakeResponse:
         for name, value in (headers or {}).items():
             self.headers[name] = value
         self.incomplete = incomplete
+        self.status = 200
+        self.version = 11
 
     def read(self, amount: int = -1) -> bytes:
         chunk = self.stream.read(amount)
@@ -464,7 +467,7 @@ def test_download_without_a_content_length_is_refused_before_reading(
 ):
     unsized = FakeResponse(LABSTAT_BODY, {"Last-Modified": LAST_MODIFIED})
     FakeNetwork(monkeypatch, {sources.LABSTAT_URL: unsized})
-    with pytest.raises(ValueError, match="Content-Length"):
+    with pytest.raises(sources.FramingError, match="Content-Length"):
         sources.stream_download(sources.LABSTAT_URL, tmp_path / "full")
     assert not (tmp_path / "full").exists()
     assert unsized.stream.tell() == 0
@@ -689,7 +692,7 @@ def test_status_needs_both_listings(tmp_path):
 
 
 def test_download_turns_a_cut_off_body_into_a_retryable_error(monkeypatch):
-    ended = FakeResponse(FOOTNOTE_BODY[:5], incomplete=True)
+    ended = FakeResponse(FOOTNOTE_BODY[:5], CHUNKED, incomplete=True)
     short = FakeResponse(FOOTNOTE_BODY[:5], {"Content-Length": str(len(FOOTNOTE_BODY))})
     FakeNetwork(monkeypatch, {"https://example.org/ended": ended})
     with pytest.raises(ValueError, match="ended"):
@@ -747,3 +750,98 @@ def test_an_unvouched_page_that_does_not_parse_is_kept_for_reading(
     capsys.readouterr()
     assert sources.show_status(staging) == 1
     assert "unvouched: 20101201120000" in capsys.readouterr().out
+
+
+def test_status_does_not_list_a_kept_page_whose_copy_was_staged_later(
+    monkeypatch, tmp_path, capsys
+):
+    bodies = listings([("20101201120000", OLD_PAGE, "200")], [recon_capture()])
+    bodies[replay("20101201120000")] = [INVALID_PAGE, valid_page()]
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    FakeNetwork(monkeypatch, bodies)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 0
+    assert (staging / sources.UNVOUCHED / "20101201120000.htm").is_file()
+    capsys.readouterr()
+    sources.show_status(staging)
+    assert "unvouched:" not in capsys.readouterr().out
+
+
+def test_a_chunked_download_without_a_content_length_streams_and_hashes(
+    monkeypatch, tmp_path
+):
+    FakeNetwork(monkeypatch, {sources.LABSTAT_URL: FakeResponse(LABSTAT_BODY, CHUNKED)})
+    target = tmp_path / "full"
+    assert sources.stream_download(sources.LABSTAT_URL, target) == (
+        hashlib.sha256(LABSTAT_BODY).hexdigest(),
+        LAST_MODIFIED,
+    )
+    assert target.read_bytes() == LABSTAT_BODY
+
+
+def test_a_cut_off_chunked_download_stages_nothing(monkeypatch, tmp_path):
+    ended = FakeResponse(LABSTAT_BODY[:-10], CHUNKED, incomplete=True)
+    FakeNetwork(monkeypatch, {sources.LABSTAT_URL: ended})
+    with pytest.raises(ValueError, match="ended"):
+        sources.stream_download(sources.LABSTAT_URL, tmp_path / "ended")
+    assert not (tmp_path / "ended").exists()
+
+
+def test_an_unframed_body_is_refused_once_with_its_framing_headers(
+    monkeypatch, tmp_path
+):
+    monkeypatch.setenv("BLS_CONTACT_EMAIL", "someone@example.org")
+    unframed = FakeResponse(
+        LABSTAT_BODY, {"Last-Modified": LAST_MODIFIED, "Connection": "close"}
+    )
+    network = FakeNetwork(monkeypatch, {sources.LABSTAT_URL: unframed})
+    staging = tmp_path / "staging"
+    with pytest.raises(sources.FramingError) as refusal:
+        sources.fetch_labstat(NOW, staging)
+    message = str(refusal.value)
+    assert "HTTP/1.1 200" in message
+    assert "Transfer-Encoding: none" in message
+    assert "Connection: close" in message
+    assert network.requests == [sources.LABSTAT_URL]
+    assert unframed.stream.tell() == 0
+    assert [path for path in staging.rglob("*") if path.is_file()] == []
+
+
+def test_a_chunked_header_wins_over_a_content_length(monkeypatch, tmp_path):
+    both = FakeResponse(
+        LABSTAT_BODY, {"Content-Length": "1", "Transfer-Encoding": "Chunked"}
+    )
+    FakeNetwork(monkeypatch, {sources.LABSTAT_URL: both})
+    target = tmp_path / "full"
+    sources.stream_download(sources.LABSTAT_URL, target)
+    assert target.read_bytes() == LABSTAT_BODY
+
+
+def test_download_follows_the_same_framing_rule(monkeypatch):
+    chunked = FakeResponse(FOOTNOTE_BODY, CHUNKED)
+    unframed = FakeResponse(FOOTNOTE_BODY, {"Last-Modified": LAST_MODIFIED})
+    FakeNetwork(
+        monkeypatch,
+        {
+            "https://example.org/chunked": chunked,
+            "https://example.org/unframed": unframed,
+        },
+    )
+    assert sources.download("https://example.org/chunked") == (
+        FOOTNOTE_BODY,
+        LAST_MODIFIED,
+    )
+    with pytest.raises(sources.FramingError, match="Content-Length"):
+        sources.download("https://example.org/unframed")
+    assert unframed.stream.tell() == 0
+
+
+def test_main_reports_a_framing_refusal_and_exits_1(monkeypatch, capsys):
+    def refuse(now):
+        raise sources.FramingError("example refusal")
+
+    monkeypatch.setattr(sources, "fetch_labstat", refuse)
+    monkeypatch.setattr(sources, "fetch_archive", refuse)
+    assert sources.main(["fetch-labstat"]) == 1
+    assert sources.main(["fetch-archive"]) == 1
+    assert capsys.readouterr().err.count("example refusal") == 2

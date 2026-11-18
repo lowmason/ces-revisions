@@ -94,12 +94,45 @@ def extract_series(lines: Iterable[bytes], series: tuple[str, ...]) -> bytes:
     return b"".join(kept)
 
 
+class FramingError(Exception):
+    """A response whose body has neither chunked framing nor a Content-Length.
+
+    http.client cannot tell such a body cut off from a whole one. The server's framing does not
+    change between attempts, so `archive_inventory.retrying` does not retry this error.
+    """
+
+
+FRAMING_HEADERS = ("Transfer-Encoding", "Content-Encoding", "Connection")
+
+
+def body_length(url: str, response: http.client.HTTPResponse) -> int | None:
+    """The body's Content-Length, or None when chunked framing marks the body's end.
+
+    http.client raises IncompleteRead for a chunked body cut off before its last chunk, as it
+    does for a body short of its Content-Length, so either framing shows a whole body. As in
+    http.client, chunked framing wins over a Content-Length.
+    """
+    headers = response.headers
+    if headers.get("Transfer-Encoding", "").lower() == "chunked":
+        return None
+    expected = headers.get("Content-Length")
+    if expected is not None:
+        return int(expected)
+    framing = ", ".join(
+        f"{name}: {headers.get(name, 'none')}" for name in FRAMING_HEADERS
+    )
+    raise FramingError(
+        f"{url} answered HTTP/{response.version / 10:.1f} {response.status} with neither "
+        f"chunked framing nor a Content-Length ({framing}); not retried"
+    )
+
+
 def stream_download(url: str, target: Path) -> tuple[str, str]:
     """Stream url to target: the body's SHA-256 and its Last-Modified header.
 
     A body whose length differs from Content-Length, or that http.client ends with
     IncompleteRead, raises ValueError, which `archive_inventory.retrying` retries, and leaves
-    no file at target.
+    no file at target. A body with no framing to check raises FramingError (`body_length`).
     """
     target.parent.mkdir(parents=True, exist_ok=True)
     digest = hashlib.sha256()
@@ -110,15 +143,13 @@ def stream_download(url: str, target: Path) -> tuple[str, str]:
             archive_inventory.open_url(url, timeout=TIMEOUT_SECONDS) as response,
             target.open("wb") as handle,
         ):
-            expected = response.headers.get("Content-Length")
-            if expected is None:
-                raise ValueError(f"{url} sent no Content-Length to check the bytes by")
+            expected = body_length(url, response)
             while chunk := response.read(CHUNK_BYTES):
                 digest.update(chunk)
                 handle.write(chunk)
                 written += len(chunk)
             last_modified = response.headers.get("Last-Modified", "")
-        if written != int(expected):
+        if expected is not None and written != expected:
             raise ValueError(f"{url} sent {written} bytes of {expected}")
         complete = True
     except http.client.IncompleteRead as error:
@@ -133,16 +164,17 @@ def download(url: str) -> tuple[bytes, str]:
     """A whole payload and its Last-Modified header.
 
     A body cut off before its Content-Length, or ended by IncompleteRead, raises ValueError,
-    which `archive_inventory.retrying` retries.
+    which `archive_inventory.retrying` retries. A body with no framing to check raises
+    FramingError (`body_length`).
     """
     try:
         with archive_inventory.open_url(url, timeout=TIMEOUT_SECONDS) as response:
+            expected = body_length(url, response)
             payload = response.read()
-            expected = response.headers.get("Content-Length")
             last_modified = response.headers.get("Last-Modified", "")
     except http.client.IncompleteRead as error:
         raise ValueError(f"{url} ended early") from error
-    if expected is not None and len(payload) != int(expected):
+    if expected is not None and len(payload) != expected:
         raise ValueError(f"{url} sent {len(payload)} bytes of {expected}")
     return payload, last_modified
 
@@ -497,10 +529,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     command = parser.parse_args(argv).command
     now = datetime.now(UTC).replace(microsecond=0)
-    if command == "fetch-labstat":
-        return fetch_labstat(now)
-    if command == "fetch-archive":
-        return fetch_archive(now)
+    try:
+        if command == "fetch-labstat":
+            return fetch_labstat(now)
+        if command == "fetch-archive":
+            return fetch_archive(now)
+    except FramingError as error:
+        print(error, file=sys.stderr)
+        return 1
     if command == "status":
         return show_status()
     if command == "prose":
