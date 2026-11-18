@@ -46,6 +46,8 @@ SERIES = ("CEU00000000C1", "CEU00000000C2", "CEU00000000C3", "CEU05000000RR")
 PAGE_KEYS = ("bls.gov/web/cesregrec.htm", "bls.gov/web/empsit/cesregrec.htm")
 STAGING_DIR = raw.DATA_DIR / "cache" / "collection-rates"
 PROVENANCE = "provenance.csv"
+# Replays that neither parse nor match their digest: kept for reading, never staged as copies.
+UNVOUCHED = "unvouched"
 PROVENANCE_COLUMNS = [
     "file",
     "url",
@@ -312,6 +314,9 @@ def fetch_copy(
         payload, last_modified = download(url)
         vouched = archive_inventory.payload_digest(payload) == digest
         if not vouched and not parses(payload, timestamp):
+            kept = staging / UNVOUCHED / f"{timestamp}.htm"
+            kept.parent.mkdir(parents=True, exist_ok=True)
+            kept.write_bytes(payload)
             raise ValueError(f"{url} neither parses nor matches its digest {digest}")
         return payload, last_modified
 
@@ -401,6 +406,9 @@ def show_status(staging: Path = STAGING_DIR) -> int:
     for timestamp, valid in staged.items():
         if not valid:
             print(f"does not parse: {timestamp}")
+    for path in sorted((staging / UNVOUCHED).glob("*.htm")):
+        if path.stem not in staged:
+            print(f"unvouched: {path.stem}")
     return 0 if complete and recon else 1
 
 

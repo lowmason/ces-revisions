@@ -728,3 +728,22 @@ def test_a_first_run_does_not_walk_past_an_invalid_latest_copy(monkeypatch, tmp_
     assert sources.fetch_archive(NOW, staging) == 0
     assert replay("20100601120000") not in network.requests
     assert sources.staged_copies(staging)["20101201120000"] is False
+
+
+def test_an_unvouched_page_that_does_not_parse_is_kept_for_reading(
+    monkeypatch, tmp_path, capsys
+):
+    bodies = listings(
+        [("20101201120000", OLD_PAGE, "200", "OTHERDIGEST")], [recon_capture()]
+    )
+    bodies[replay("20101201120000")] = INVALID_PAGE
+    bodies[replay(RECON_COPY, NEW_PAGE)] = valid_page()
+    FakeNetwork(monkeypatch, bodies)
+    staging = tmp_path / "staging"
+    assert sources.fetch_archive(NOW, staging) == 1
+    assert "20101201120000" not in sources.staged_copies(staging)
+    kept = staging / sources.UNVOUCHED / "20101201120000.htm"
+    assert kept.read_bytes() == INVALID_PAGE
+    capsys.readouterr()
+    assert sources.show_status(staging) == 1
+    assert "unvouched: 20101201120000" in capsys.readouterr().out
