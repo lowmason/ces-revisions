@@ -113,3 +113,62 @@ def test_built_shares_keep_values_outside_the_unit_interval(built):
     assert below.height == 27
     assert set(below["transition"]) == {"F_S"}
     assert built.filter(pl.col("share_adjustment") > 1).height == 2
+
+
+def test_the_splits_add_to_one_less_the_identity_gap_over_variance():
+    row = seasonal_shares(decomposition_row(100.0, 50.0, 20.0, gap=2.0)).row(
+        0, named=True
+    )
+    assert row["share_adjustment"] == pytest.approx(0.3)
+    assert row["share_nsa"] == pytest.approx(0.68)
+    assert row["share_adjustment"] + row["share_nsa"] == pytest.approx(0.98)
+
+
+def test_the_refusal_names_the_offending_row_among_good_ones():
+    table = pl.concat(
+        [
+            decomposition_row(100.0, 50.0, 20.0, sector="10"),
+            decomposition_row(-1.0, 5.0, 1.0, sector="20", transition="T_B"),
+        ]
+    )
+    with pytest.raises(ValueError, match="cesvinall 20 T_B 2023_present"):
+        seasonal_shares(table)
+
+
+def test_rows_are_ordered_by_transition_then_sector_then_regime():
+    keys = [
+        ("T_B", "10", "2023_present"),
+        ("F_S", "20", "2003_2019"),
+        ("S_T", "00", "2020_2022"),
+        ("F_S", "10", "pre_2003"),
+        ("F_S", "10", "2023_present"),
+        ("F_S", "10", "2003_2019"),
+    ]
+    table = pl.concat(
+        [
+            decomposition_row(10.0, 5.0, 1.0, transition=t, sector=s, regime=r)
+            for t, s, r in keys
+        ]
+    )
+    ordered = seasonal_shares(table).select("transition", "sector", "regime").rows()
+    assert ordered == [
+        ("F_S", "10", "pre_2003"),
+        ("F_S", "10", "2003_2019"),
+        ("F_S", "10", "2023_present"),
+        ("F_S", "20", "2003_2019"),
+        ("S_T", "00", "2020_2022"),
+        ("T_B", "10", "2023_present"),
+    ]
+
+
+def test_every_input_column_is_kept_before_the_three_shares():
+    table = decomposition_row(100.0, 50.0, 20.0)
+    shares = seasonal_shares(table)
+    assert shares.columns == [
+        *table.columns,
+        "share_ratio",
+        "share_adjustment",
+        "share_nsa",
+    ]
+    assert list(shares.select(pl.col("^share_.*$")).schema.values()) == [pl.Float64] * 3
+    assert shares.select(table.columns).equals(table)
