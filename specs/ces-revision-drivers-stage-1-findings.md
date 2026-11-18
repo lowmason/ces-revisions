@@ -97,7 +97,7 @@ The same four fits add `δ F_t`, where `F_t` is 1 for a month with a 5-week surv
 
 ## Limits
 
-- **`D_t` is a proxy.** BLS publishes no first-closing dates, so the release date stands in for the end of first-closing collection. Outcome O4 replaces it with BLS's dates when they arrive.
+- **`D_t` is a proxy.** BLS publishes no first-closing dates, so the release date stands in for the end of first-closing collection. The [Stage 9 findings](ces-revision-drivers-stage-9-findings.md) repeat the regression with the window to first closing. That window follows the owner's rule (owner, 2026-11-17): first closing, when BLS stops collecting survey responses for the first estimate, falls one week before the release.
 - **The window varies little.** 542 of the 546 main-period releases have `D_t` from 12 to 19, and the cells for 12, 20, 22, 24 and 26 hold one release each. The slope rests on that narrow range. It does not show what a window much longer than the schedule's would do.
 - **The window is mostly calendar.** The weekday of the 12th sets both the reference week and the release date, so `D_t` follows the calendar closely. The 5-week control removes the largest calendar effect it shares. Other calendar effects that the year and month dummies do not take in may remain.
 - **The second release's window.** The F→S revision also depends on how long collection ran before the second estimate. The fits do not include that window.

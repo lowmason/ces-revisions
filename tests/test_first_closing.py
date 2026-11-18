@@ -528,3 +528,80 @@ def test_render_window_regression_sets_both_windows_side_by_side():
         "| NSA | F→S | 254 | 23 | -0.89 | 2.13 | -37.1 to 24.6 "
         "| -0.60 | 2.23 | -36.5 to 28.1 |"
     )
+
+
+# Part (a), part (b) and O4 refit on 2026-11-18 with statsmodels' OLS and cov_type="cluster"
+# (groups: reference year), on the same samples: (n, clusters, coefficient, SE).
+STATSMODELS = {
+    ("a",): (256, 23, 2.2021074616486676, 0.2588851612353298),
+    ("b", "NSA", "F_S"): (254, 23, -0.561445780972097, 0.421327890028848),
+    ("o4", "NSA", "F_S", "collection_days"): (
+        254,
+        23,
+        -0.8906056949039298,
+        2.12725172379526,
+    ),
+    ("o4", "NSA", "F_S", "first_closing_days"): (
+        254,
+        23,
+        -0.5984307433799726,
+        2.225247168598903,
+    ),
+    ("b", "NSA", "F_T"): (252, 23, -0.5970448353736879, 0.4611525781081342),
+    ("o4", "NSA", "F_T", "collection_days"): (
+        252,
+        23,
+        -0.6910185854569246,
+        2.1641299369689704,
+    ),
+    ("o4", "NSA", "F_T", "first_closing_days"): (
+        252,
+        23,
+        -0.21370267612061034,
+        2.3330176952158976,
+    ),
+    ("b", "SA", "F_S"): (254, 23, -0.20390799450760388, 0.34497771784936393),
+    ("o4", "SA", "F_S", "collection_days"): (
+        254,
+        23,
+        -0.5075276554050184,
+        1.4172496928236396,
+    ),
+    ("o4", "SA", "F_S", "first_closing_days"): (
+        254,
+        23,
+        -0.42558150016685475,
+        1.5596993712543374,
+    ),
+    ("b", "SA", "F_T"): (252, 23, 0.45694967546591103, 0.5908014072841022),
+    ("o4", "SA", "F_T", "collection_days"): (
+        252,
+        23,
+        -0.2847495884447864,
+        1.6028541500493783,
+    ),
+    ("o4", "SA", "F_T", "first_closing_days"): (
+        252,
+        23,
+        0.09581536985087485,
+        1.7470036054698213,
+    ),
+}
+
+
+def test_fits_match_an_independent_statsmodels_fit():
+    days = vintage_data.collection_days()
+    months = month_sample(days, vintage_data.collection_rates())
+    revisions = real_revisions()
+    found = {}
+    for row in rate_regression(months).iter_rows(named=True):
+        found["a",] = row
+    for row in revision_regression(revisions).iter_rows(named=True):
+        found["b", row["seasonal_status"], row["transition"]] = row
+    for row in window_regressions(revisions).iter_rows(named=True):
+        found["o4", row["seasonal_status"], row["transition"], row["window"]] = row
+    assert found.keys() == STATSMODELS.keys()
+    for key, (n, clusters, coefficient, se) in STATSMODELS.items():
+        assert (found[key]["n"], found[key]["clusters"]) == (n, clusters), key
+        assert found[key]["coefficient"] == pytest.approx(coefficient, abs=1e-6), key
+        assert found[key]["se"] == pytest.approx(se, abs=1e-6), key
