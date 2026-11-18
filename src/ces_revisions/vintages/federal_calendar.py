@@ -53,6 +53,15 @@ def federal_holidays(year: int) -> tuple[date, ...]:
     return tuple(sorted([_observed(day) for day in fixed] + floating))
 
 
+def is_federal_holiday(day: date) -> bool:
+    """Whether day is an observed legal public holiday.
+
+    A Saturday New Year's Day is listed under its own year but observed on December 31 of the
+    year before, so the lists of day's year and the next year are both checked.
+    """
+    return day in federal_holidays(day.year) or day in federal_holidays(day.year + 1)
+
+
 def business_days(start: date, end: date) -> int:
     """Weekdays from start up to, but not including, end that are not holidays.
 

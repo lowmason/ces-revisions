@@ -4,7 +4,11 @@ from datetime import date
 
 import pytest
 
-from ces_revisions.vintages.federal_calendar import business_days, federal_holidays
+from ces_revisions.vintages.federal_calendar import (
+    business_days,
+    federal_holidays,
+    is_federal_holiday,
+)
 
 
 def test_federal_holidays_2026_match_opm():
@@ -78,3 +82,9 @@ def test_thanksgiving_is_the_fourth_thursday_when_november_has_five():
 def test_columbus_day_is_the_second_monday_not_october_12():
     assert date(2024, 10, 14) in federal_holidays(2024)
     assert date(2024, 10, 11) not in federal_holidays(2024)
+
+
+def test_is_federal_holiday_sees_a_new_years_day_observed_the_year_before():
+    assert is_federal_holiday(date(2010, 12, 31))
+    assert is_federal_holiday(date(2010, 1, 1))
+    assert not is_federal_holiday(date(2010, 12, 30))

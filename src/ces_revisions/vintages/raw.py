@@ -27,6 +27,9 @@ VINTAGE_COMMENTS = "bls/cesvin00-comments.csv"
 RTDSM_LEVELS = "philadelphiafed/employMvMd.xlsx"
 RTDSM_RELEASE_DATES = "philadelphiafed/release-dates-employment-situation.xls"
 RESCHEDULES = "manual/es-reschedules.csv"
+COLLECTION_RATES = "bls/ce-collection-rates.tsv"
+CE_FOOTNOTES = "bls/ce.footnote"
+REGISTRY_COPIES = "internet-archive/cesregrec"
 MANIFEST = "manifest.csv"
 
 # Total nonfarm and the eleven supersectors of Req 5, keyed by vintage-file code. These twelve

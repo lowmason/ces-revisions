@@ -14,6 +14,7 @@ from ces_revisions.vintages import (
     stages,
 )
 from ces_revisions.vintages.collection_days import build_collection_days
+from ces_revisions.vintages.collection_rates import build_collection_rates
 from ces_revisions.vintages.months import add_months
 
 
@@ -83,3 +84,8 @@ def identity_terms() -> pl.DataFrame:
 @cache
 def collection_days() -> pl.DataFrame:
     return build_collection_days(index())
+
+
+@cache
+def collection_rates() -> pl.DataFrame:
+    return build_collection_rates()
