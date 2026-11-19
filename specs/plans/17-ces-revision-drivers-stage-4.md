@@ -48,7 +48,7 @@ None. The owner's decisions of 2026-11-18 are D1–D5 in the spec.
 
 ## Defaults settled in this plan
 
-Each is for the owner's review at the plan review.
+The owner approved the plan with these defaults on 2026-11-19 ("Approve as is").
 
 - **F1: process.** executing-plans inline, as plans 15 and 16, because Tasks 3 to 5 stop for the owner's yes or ruling, which a subagent cannot ask for. Plan 15's one task-reviewer pass returns, on Task 2, which writes `data/annual/raw/`, changes the manifest code of every annual source and sends network requests. Effect if wrong: more or less review than the owner wants.
 - **F2 (brief): batched keying stops.** Key all 17 first columns and the FY2027 CBJ's FY2026 Enacted column first. Then put each kind of keying stop to the owner as one question, listing every CBJ and line it covers, before any fit (Task 5, Step 6). The fetch stop cannot wait: a failed address stops `fetch-dol` at once. Recurring stops are a guess, not a finding: `docs/ces-revisions-review.md:90` records restatement footnotes in the appropriation histories, but the summary tables of the two CBJs on disk carry none. Effect if wrong: a stop that recurs in many CBJs interrupts the owner once per CBJ, not once per kind.
